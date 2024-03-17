@@ -1,5 +1,6 @@
 // COMPARTIDOS
 :root {
+  --add-color: #1c961a;
   --success-color: #28C125;
   --danger-color: #D9332B;
 }
@@ -7,76 +8,73 @@
 
 :root {
 
-  // MODO CLARO
-  .theme-light {
+  // TEMA CLARO POR DEFECTO O AL APLICAR LA CLASE .theme-light
+  --primary-color: #333333;
+  --secondary-color: #F8F8F8;
 
-    --primary-color: #333333;
-    --secondary-color: #F8F8F8;
+  --background-color: #F8F8F8;
+  --border-color: #e0e0e0;
+  --outline-color: #80808066;
 
-    --background-color: #F8F8F8;
-    --border-color: #e0e0e0;
-    --outline-color: #80808066;
+  --bg-scroll-color: #bbbbbb;
 
-    --bg-scroll-color: #bbbbbb;
+  --bg-breadcrum-color: #F3F0F0;
 
-    --bg-breadcrum-color: #F3F0F0;
+  --bg-card-color: #ffffff;
+  --border-color-card: #efefef;
 
-    --bg-card-color: #ffffff;
-    --border-color-card: #efefef;
+  --border-color-section-title: #dee2e6;
 
-    --border-color-section-title: #dee2e6;
+  --bg-menu-color: #F8F8F8;
+  --icon-menu-toggle-color: #313131;
+  --menu-item-hover-active-color: #e4e4e4;
+  --menu-item-hover-active-text: #131313;
 
-    --bg-menu-color: #F8F8F8;
-    --icon-menu-toggle-color: #313131;
-    --menu-item-hover-active-color: #e4e4e4;
-    --menu-item-hover-active-text: #131313;
+  --text-color: #131313;
+  --icon-color: #232222;
+  --icon-add-color: #28C125;
 
-    --text-color: #131313;
-    --icon-color: #232222;
-    --icon-add-color: #28C125;
+  --bg-header-table-color: #D9D9D9;
+  --bg-odd-row-table-color: #F2F2F2;
+  --bg-even-row-table-color: #FBFAFA;
+  --bg--header-sorted-table-color: #b7b7b7;
+  --bg--header-resize-column-color: #929292;
 
-    --bg-header-table-color: #D9D9D9;
-    --bg-odd-row-table-color: #F2F2F2;
-    --bg-even-row-table-color: #FBFAFA;
-    --bg--header-sorted-table-color: #b7b7b7;
-    --bg--header-resize-column-color: #929292;
+  --bg-btn-primary-color: #333333;
+  --border-btn-primary-color: #232222;
+  --hover-btn-primary-color: #232222;
+  --text-btn-primary-color: #FFFFFF;
+  --text-btn-primary-transparent-color: #131313;
+  --icon-btn-primary-transparent-color: #8b8b8b;
+  --hover-bg-btn-primary-transparent-color: #b1b1b129;
+  --icon-btn-primary-color: #8b8b8b;
 
-    --bg-btn-primary-color: #333333;
-    --border-btn-primary-color: #232222;
-    --hover-btn-primary-color: #232222;
-    --text-btn-primary-color: #FFFFFF;
-    --text-btn-primary-transparent-color: #131313;
-    --icon-btn-primary-transparent-color: #8b8b8b;
-    --hover-bg-btn-primary-transparent-color: #b1b1b129;
-    --icon-btn-primary-color: #8b8b8b;
+  --bg-btn-secondary-color: #F8F8F8;
+  --border-btn-secondary-color: #313131;
+  --hover-btn-secondary-color: #eeeeee;
+  --text-btn-secondary-color: #313131;
+  --text-btn-secondary-transparent-color: #313131;
+  --icon-btn-secondary-transparent-color: #313131;
+  --hover-bg-btn-secondary-transparent-color: #b1b1b129;
+  --icon-btn-secondary-color: #313131;
 
-    --bg-btn-secondary-color: #F8F8F8;
-    --border-btn-secondary-color: #313131;
-    --hover-btn-secondary-color: #eeeeee;
-    --text-btn-secondary-color: #313131;
-    --text-btn-secondary-transparent-color: #313131;
-    --icon-btn-secondary-transparent-color: #313131;
-    --hover-bg-btn-secondary-transparent-color: #b1b1b129;
-    --icon-btn-secondary-color: #313131;
+  --bg-pagination-active-color: #333333;
+  --text-pagination-active-color: #FFFFFF;
+  --border-pagination-page-color: #757575;
 
-    --bg-pagination-active-color: #333333;
-    --text-pagination-active-color: #FFFFFF;
-    --border-pagination-page-color: #757575;
+  --bg-field-search-dropdown-color: #F8F8F8;
+  --bg-field-color: #E6E6E6;
+  --border-checkbox-radiobutton-color: #b3b3b3;
+  --border-field-color: #b3b3b3;
+  --border-field-disabled-color: #d5d5d5;
 
-    --bg-field-search-dropdown-color: #F8F8F8;
-    --bg-field-color: #E6E6E6;
-    --border-checkbox-radiobutton-color: #b3b3b3;
-    --border-field-color: #b3b3b3;
-    --border-field-disabled-color: #d5d5d5;
+  --bg-spinner-primary-color: #333333;
 
-    --bg-spinner-primary-color: #333333;
+  --shadow-box: 2px 2px 4px 0px rgba(117, 117, 117, 0.80);
+  --shadow-btn: 2px 2px 4px 0px rgba(117, 117, 117, 0.80);
+  --shadow-card: 0px 2px 1px -1px rgba(117, 117, 117, 0.2), 0px 1px 1px 0px rgba(117, 117, 117, .14), 0px 1px 3px 0px rgba(117, 117, 117, .12);
 
-    --shadow-box: 2px 2px 4px 0px rgba(117, 117, 117, 0.80);
-    --shadow-btn: 2px 2px 4px 0px rgba(117, 117, 117, 0.80);
-    --shadow-card: 0px 2px 1px -1px rgba(117, 117, 117, 0.2), 0px 1px 1px 0px rgba(117, 117, 117, .14), 0px 1px 3px 0px rgba(117, 117, 117, .12);
-  }
-
-  // MODO OSCURO
+  // MODO OSCURO AL APLICAR CLASE .theme-dark
   .theme-dark {
 
     --primary-color: #616161;

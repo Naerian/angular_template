@@ -11,7 +11,9 @@
     "watch": "ng build --watch --configuration dev",
     "test": "ng test",
     "compodoc": "npx compodoc --language es-ES --theme readthedocs --disableDomTree --hideGenerator --minimal --silent --name \"Documentación técnica\" --customFavicon \"./src/favicon.ico\" --customLogo \"./src/assets/images/logo/logo_full_250.png\" -p tsconfig.doc.json",
-    "sonar": "sonar-scanner"
+    "sonar": "sonar-scanner",
+    "storybook": "ng run uem-sis-app:storybook",
+    "build-storybook": "ng run uem-sis-app:build-storybook"
   },
   "private": true,
   "dependencies": {
@@ -41,6 +43,14 @@
     "@angular-devkit/build-angular": "^17.2.0",
     "@angular/cli": "^17.2.0",
     "@angular/compiler-cli": "^17.2.1",
+    "@compodoc/compodoc": "^1.1.23",
+    "@storybook/addon-docs": "^7.6.17",
+    "@storybook/addon-essentials": "^7.6.17",
+    "@storybook/addon-interactions": "^7.6.17",
+    "@storybook/addon-links": "^7.6.17",
+    "@storybook/angular": "^7.6.17",
+    "@storybook/blocks": "^7.6.17",
+    "@storybook/test": "^7.6.17",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
@@ -50,7 +60,10 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "karma-junit-reporter": "^2.0.1",
     "prettier": "^3.2.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "sonar-scanner": "^3.1.0",
+    "storybook": "^7.6.17",
     "typescript": "~5.2.2"
   }
 }

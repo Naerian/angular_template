@@ -40,6 +40,8 @@ export class ThemesService {
 
   /**
    * Función para obtener el tema del localStorage o del sistema operativo
+   * - Si el tema del localStorage existe, lo establecemos.
+   * - Si no, detectamos el tema del sistema operativo o del navegador.
    */
   private _getColorScheme() {
 

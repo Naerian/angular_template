@@ -1,6 +1,5 @@
 import { Meta, StoryObj, argsToTemplate, moduleMetadata } from "@storybook/angular";
 import { CardComponent } from "./card.component";
-import { CardHeaderComponent } from "./card-header/card-header.component";
 import { TranslateModule } from "@ngx-translate/core";
 import { CardModule } from "./card.module";
 
@@ -17,7 +16,7 @@ const meta: Meta<CardComponent> = {
       providers: []
     }),
   ],
-  render: (args: CardComponent) => ({
+  render: (args) => ({
     props: {
       ...args,
     },

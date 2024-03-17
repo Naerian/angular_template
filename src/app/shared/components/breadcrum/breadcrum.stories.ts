@@ -15,7 +15,7 @@ const meta: Meta<BreadcrumComponent> = {
       providers: []
     }),
   ],
-  render: (args: BreadcrumComponent) => ({
+  render: (args) => ({
     props: {
       ...args,
     },
