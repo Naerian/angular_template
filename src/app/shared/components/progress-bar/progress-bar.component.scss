@@ -1,0 +1,82 @@
+@import 'base';
+
+:host {
+  display: flex;
+  justify-content: center;
+}
+
+.progress-bar {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
+
+  &__value {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 75px;
+    color: var(--text-color);
+  }
+
+  &__container {
+    border-width: 0.5px;
+    border-style: solid;
+    border-radius: 5px;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--bg-field-color);
+    border-color: var(--border-field-disabled-color);
+
+    &__bar {
+      height: 100%;
+      background-color: var(--primary-color);
+    }
+
+    &__value {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      height: 100%;
+      width: 100%;
+      color: var(--secondary-color);
+    }
+
+    &--size-xs {
+      height: 15px;
+      font-size: 10px;
+    }
+
+    &--size-s {
+      height: 20px;
+      font-size: 11px;
+    }
+
+    &--size-xm {
+      height: 22px;
+      font-size: 12px;
+    }
+
+    &--size-m {
+      height: 26px;
+      font-size: 12px;
+    }
+
+    &--size-l {
+      height: 32px;
+      font-size: 14px;
+    }
+
+    &--size-xl {
+      height: 38px;
+      font-size: 14px;
+    }
+  }
+
+}

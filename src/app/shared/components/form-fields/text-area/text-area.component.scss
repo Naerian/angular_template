@@ -1,0 +1,43 @@
+@import 'base';
+
+.neo-textarea {
+  display: flex;
+  flex-direction: column;
+
+  &--disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &__label {
+    &--required {
+      &::after {
+        content: '*';
+        color: var(--danger-color);
+      }
+    }
+  }
+
+  &__wrapper {
+    position: relative;
+    &__field {
+      width: 100%;
+      border-radius: 5px;
+      box-sizing: border-box;
+      text-decoration: none;
+      padding: 10px;
+
+      &--has-error {
+        border: 1px solid var(--danger-color);
+      }
+
+      &.no-resize {
+        resize: none;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+      }
+    }
+  }
+}

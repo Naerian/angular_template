@@ -1,0 +1,35 @@
+<div class="neo-checkbox">
+  @if (label) {
+    <label class="neo-checkbox__label" [for]="_id()" [title]="_title()">{{
+      label
+    }}</label>
+  }
+  <div class="neo-checkbox__control size-{{ inputSize }}">
+    <input
+      #input
+      class="neo-checkbox__control__input"
+      type="checkbox"
+      [id]="_id()"
+      [tabIndex]="disabled ? -1 : 0"
+      [attr.aria-label]="label || _title() || ''"
+      [attr.name]="name"
+      [disabled]="_disabled()"
+      [checked]="_checked()"
+      [indeterminate]="_indeterminate()"
+      (click)="onClickTargetCheckbox()"
+      (change)="onChangeCheckbox($event)"
+    />
+    <div
+      class="neo-checkbox__control__checkmark"
+      (click)="onClickTargetCheckbox()"
+    ></div>
+    <label
+      class="neo-checkbox__control__label size-{{ inputSize }}"
+      [for]="_id()"
+      [title]="_title()"
+      #checkboxContent
+    >
+      <ng-content></ng-content>
+    </label>
+  </div>
+</div>

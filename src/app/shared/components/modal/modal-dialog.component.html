@@ -1,0 +1,45 @@
+<div class="modal-box">
+  <div mat-dialog-title class="modal-box__title">
+    @if (data.title) {
+      <neo-section-title [icon]="data.iconTitle || ''" [title]="data.title">
+      </neo-section-title>
+    }
+    @if (data.canBeClosed) {
+      <button
+        class="modal-box__close"
+        [title]="'app.cerrar' | translate"
+        [attr.aria-label]="'app.cerrar' | translate"
+        (click)="cancel()"
+        clickable
+        autofocus
+      >
+        <i class="ri-close-fill"></i>
+      </button>
+    }
+  </div>
+  @if (data.message) {
+    <div
+      mat-dialog-content
+      class="modal-box__body"
+      [innerHTML]="data.message | safeHtml"
+    ></div>
+  }
+  @if (data.cancelText || data.confirmText) {
+    <div mat-dialog-actions class="modal-box__footer">
+      @if (data.confirmText) {
+        <neo-button (click)="confirm()" size="xm" color="primary">{{
+          data.confirmText
+        }}</neo-button>
+      }
+      @if (data.cancelText) {
+        <neo-button
+          cdkFocusInitial
+          color="secondary"
+          (click)="cancel()"
+          size="xm"
+          >{{ data.cancelText }}</neo-button
+        >
+      }
+    </div>
+  }
+</div>

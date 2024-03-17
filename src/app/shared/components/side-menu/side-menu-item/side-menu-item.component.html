@@ -1,0 +1,48 @@
+@if (itemMenu.route) {
+  <a
+    class="item-menu"
+    [class.active]="itemMenu.active"
+    [title]="itemMenu.label | translate"
+    [routerLink]="[itemMenu.route]"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [routerLinkActive]="['active']"
+    (click)="activeItemMenu(itemMenu)"
+  >
+    <span class="item-menu__label">{{ itemMenu.label | translate }}</span>
+  </a>
+} @else {
+  <div
+    clickable
+    class="item-menu"
+    [title]="itemMenu.label | translate"
+    [class.active]="itemMenu.active"
+    (click)="handleClick(itemMenu)"
+  >
+    <div class="item-menu__wrapper">
+      <span class="item-menu__label">{{ itemMenu.label | translate }}</span>
+      @if (itemMenu.childrens && itemMenu.childrens.length > 0) {
+        <div class="item-menu__toggle">
+          <i class="fa fa-angle-right"></i>
+          @if (itemMenu.expanded) {
+            <i class="ri-arrow-down-s-line"></i>
+          } @else {
+            <i class="ri-arrow-right-s-line"></i>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  <div
+    class="item-menu__childrens {{ 'level_' + depthLevel }}"
+    [ngClass]="{ opened: itemMenu.expanded }"
+  >
+    @for (itemChildren of itemMenu.childrens; track itemChildren) {
+      <neo-side-menu-item
+        [itemMenu]="itemChildren"
+        [depthLevel]="depthLevel + 1"
+        [keepMultipleOpen]="keepMultipleOpen"
+        (setActive)="activeItemMenu(itemMenu)"
+      ></neo-side-menu-item>
+    }
+  </div>
+}

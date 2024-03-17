@@ -1,0 +1,47 @@
+<div
+  class="tabs"
+  [class.tabs--vertical]="orientation === 'v'"
+  [class.tabs--horizontal]="orientation === 'h'"
+>
+  @if (tabs && tabs.length > 1) {
+    <div
+      class="tabs__nav type-{{ type }}"
+      [class.tabs__nav--vertical]="orientation === 'v'"
+      [class.tabs__nav--horizontal]="orientation === 'h'"
+    >
+      @for (tab of tabs; track $index; let isLast = $last) {
+        <div
+          class="tabs__nav__item"
+          (click)="selected(tab, $index)"
+          clickable
+          [class.tabs__nav__item--active]="tab.isActive"
+          [title]="tab._title"
+          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="tab.route ? [tab.route] : []"
+          [routerLinkActive]="tab.route ? ['tabs__nav__item--active'] : []"
+        >
+          @if (!tab.tabLabel) {
+            @if (tab.icon) {
+              <span class="tabs__nav__item__icon"
+                ><i [class]="tab.icon"></i
+              ></span>
+            }
+            <span class="tabs__nav__item__label">{{ tab._title }}</span>
+          } @else {
+            <ng-container
+              *ngTemplateOutlet="tab.tabLabel.templateRef"
+            ></ng-container>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <div class="tabs__content">
+    @if (type === "tab") {
+      <ng-content select="neo-tabs-item"></ng-content>
+    } @else {
+      <router-outlet></router-outlet>
+    }
+  </div>
+</div>

@@ -1,0 +1,10 @@
+@import 'base';
+
+.neo-form-error {
+  font-size: 0.80rem;
+  letter-spacing: 0.5px;
+  font-style: italic;
+  small {
+    color: var(--danger-color);
+  }
+}

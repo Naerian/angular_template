@@ -1,0 +1,30 @@
+<div class="neo-radiobutton">
+  <div class="neo-radiobutton__control size-{{ inputSize }}">
+    <input
+      class="neo-radiobutton__control__input"
+      #input
+      type="radio"
+      [id]="_id()"
+      [checked]="checked"
+      [disabled]="_disabled()"
+      [attr.name]="name"
+      [attr.value]="value"
+      [tabIndex]="disabled ? -1 : 0"
+      [attr.aria-label]="_title()"
+      [attr.aria-labelledby]="_id()"
+      (change)="onClickTargetRadioButton($event)"
+    />
+    <div
+      class="neo-radiobutton__control__checkmark"
+      (click)="onClickTargetRadioButton($event)"
+    ></div>
+    <label
+      class="neo-radiobutton__control__label size-{{ inputSize }}"
+      [for]="_id()"
+      [title]="_title()"
+      #radioButtonContent
+    >
+      <ng-content></ng-content>
+    </label>
+  </div>
+</div>

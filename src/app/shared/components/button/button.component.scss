@@ -1,0 +1,355 @@
+@import 'base';
+
+:host {
+  display: inline-block;
+  cursor: pointer;
+}
+
+[disabled],
+.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.neo-btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  display: flex;
+  border-radius: 5px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  align-items: center;
+  justify-content: center;
+
+  &--all-width {
+    width: 100%;
+  }
+
+  span,
+  p,
+  div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  i {
+    font-weight: normal;
+  }
+
+  &:not(.neo-btn-icon):not(.neo-btn-transparent) {
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  &[disabled],
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  &.neo-btn-xs {
+    padding: 3px 10px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    line-height: 12px;
+    height: 20px;
+
+    &.neo-btn-transparent:not(.neo-btn-icon) {
+      i {
+        font-size: 0.7rem;
+      }
+    }
+  }
+
+  &.neo-btn-s {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 0.75rem;
+    height: 25px;
+
+    &.neo-btn-transparent:not(.neo-btn-icon) {
+      i {
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  &.neo-btn-xm {
+    padding: 10px 15px;
+    font-size: 0.80rem;
+    font-weight: 700;
+    line-height: 0.80rem;
+    height: 30px;
+  }
+
+  &.neo-btn-m {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 0.9rem;
+    height: 35px;
+
+    &.neo-btn-transparent:not(.neo-btn-icon) {
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  &.neo-btn-l {
+    padding: 15px 20px;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1rem;
+    height: 40px;
+
+    &.neo-btn-transparent:not(.neo-btn-icon) {
+      i {
+        font-size: 1.10rem;
+      }
+    }
+  }
+
+  &.neo-btn-xl {
+    padding: 20px 25px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.2rem;
+    height: 45px;
+
+    &.neo-btn-transparent:not(.neo-btn-icon) {
+      i {
+        font-size: 1.30rem;
+      }
+    }
+  }
+
+  &.neo-btn-transparent {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: 0px;
+
+    &:not(.neo-btn-icon) {
+      height: auto;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+
+      span,
+      div,
+      p {
+        text-decoration-line: underline;
+      }
+    }
+  }
+
+  &.neo-btn-none {
+    padding: 0;
+  }
+
+  &.neo-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 5px;
+
+    &.neo-btn-xs {
+      font-size: 0.75rem;
+      width: 20px;
+      height: 20px;
+    }
+
+    &.neo-btn-s {
+      font-size: 0.9rem;
+      width: 25px;
+      height: 25px;
+    }
+
+    &.neo-btn-xm {
+      font-size: 1rem;
+      width: 30px;
+      height: 30px;
+    }
+
+    &.neo-btn-m {
+      font-size: 1.25rem;
+      width: 35px;
+      height: 35px;
+    }
+
+    &.neo-btn-l {
+      font-size: 1.35rem;
+      width: 40px;
+      height: 40px;
+    }
+
+    &.neo-btn-xl {
+      font-size: 1.60rem;
+      width: 45px;
+      height: 45px;
+    }
+  }
+
+  &.neo-btn-transparent,
+  &.neo-btn-icon {
+    box-shadow: none;
+    color: var(--text-color);
+    background-color: transparent;
+    border: none;
+  }
+
+  &.neo-btn-secondary,
+  &.neo-btn-primary {
+
+    &.neo-btn-transparent,
+    &.neo-btn-icon {
+      box-shadow: none;
+      background-color: transparent;
+      border: none;
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: transparent;
+      }
+    }
+  }
+
+  &.neo-btn-primary {
+
+    &:not(.neo-btn-transparent):not(.neo-btn-icon),
+    &.neo-btn-icon:not(.neo-btn-transparent) {
+      background-color: var(--bg-btn-primary-color);
+      border-color: var(--border-btn-primary-color);
+      box-shadow: var(--shadow-btn);
+      color: var(--text-btn-primary-color);
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--hover-btn-primary-color);
+      }
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--text-btn-primary-color);
+        }
+      }
+    }
+
+    &.neo-btn-transparent {
+      color: var(--text-btn-primary-transparent-color);
+
+      &.neo-btn-icon {
+        color: var(--icon-btn-primary-color);
+      }
+
+      &:not(.neo-btn-icon) {
+        i::before {
+          color: var(--icon-btn-primary-transparent-color);
+        }
+      }
+    }
+
+    &.neo-btn-icon {
+
+      i::before {
+        color: var(--icon-btn-primary-color);
+      }
+
+      &.neo-btn-transparent {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-bg-btn-primary-transparent-color);
+        }
+      }
+
+      &:not(.neo-btn-transparent) {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-btn-primary-color);
+        }
+      }
+    }
+  }
+
+  &.neo-btn-secondary {
+
+    &:not(.neo-btn-transparent):not(.neo-btn-icon),
+    &.neo-btn-icon:not(.neo-btn-transparent) {
+      background-color: var(--bg-btn-secondary-color);
+      border-color: var(--border-btn-secondary-color);
+      box-shadow: var(--shadow-btn);
+
+      color: var(--text-btn-secondary-color);
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--hover-btn-secondary-color);
+      }
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--text-btn-secondary-color);
+        }
+      }
+    }
+
+    &.neo-btn-transparent {
+
+      color: var(--text-btn-secondary-transparent-color);
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--icon-btn-secondary-color);
+        }
+      }
+
+      &:not(.neo-btn-icon) {
+        i::before {
+          color: var(--icon-btn-secondary-transparent-color);
+        }
+      }
+    }
+
+    &.neo-btn-icon {
+      i::before {
+        color: var(--icon-btn-secondary-color);
+      }
+
+      &.neo-btn-transparent {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-bg-btn-secondary-transparent-color);
+        }
+      }
+
+      &:not(.neo-btn-transparent) {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-btn-secondary-color);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,176 @@
+<div class="calendar-picker">
+  @if (viewMode() === "default") {
+    <div class="calendar-picker__default">
+      <div class="calendar-picker__header">
+        <div
+          clickable
+          class="calendar-picker__header__btn"
+          (click)="prevMonth()"
+          [title]="'calendar.prevMonth' | translate"
+        >
+          <i class="ri-arrow-left-s-line"></i>
+        </div>
+        <div class="calendar-picker__header__actions">
+          <span
+            class="calendar-picker__header__actions--selector"
+            clickable
+            (click)="chageViewMode('months', $event)"
+            [title]="'calendar.changeMonth' | translate"
+          >
+            {{
+              "date.month." + (currentCalendar() | date: "MMMM" | lowercase)
+                | translate
+            }}
+            <i class="ri-arrow-down-s-line arrow-dropdown"></i>
+          </span>
+          <span
+            class="calendar-picker__header__actions--selector"
+            clickable
+            (click)="chageViewMode('years', $event)"
+            [title]="'calendar.changeYear' | translate"
+          >
+            {{ currentCalendar() | date: "yyyy" }}
+            <i class="ri-arrow-down-s-line arrow-dropdown"></i>
+          </span>
+        </div>
+        <div
+          clickable
+          class="calendar-picker__header__btn"
+          (click)="nextMonth()"
+          [title]="'calendar.nextMonth' | translate"
+        >
+          <i class="ri-arrow-right-s-line"></i>
+        </div>
+      </div>
+      <table class="calendar-picker__content calendar-picker__days">
+        <thead>
+          <tr class="calendar-picker__days__weekDays">
+            <th scope="col">
+              {{ "date.calendar.monday.short" | translate }}
+            </th>
+            <th scope="col">
+              {{ "date.calendar.tuesday.short" | translate }}
+            </th>
+            <th scope="col">
+              {{ "date.calendar.wednesday.short" | translate }}
+            </th>
+            <th scope="col">
+              {{ "date.calendar.thursday.short" | translate }}
+            </th>
+            <th scope="col">
+              {{ "date.calendar.friday.short" | translate }}
+            </th>
+            <th scope="col">
+              {{ "date.calendar.saturday.short" | translate }}
+            </th>
+            <th scope="col">
+              {{ "date.calendar.sunday.short" | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let week of calendarWeeks(); let weekIdx = index">
+            <td
+              *ngFor="let day of week"
+              class="calendar-picker__days__item"
+              [ngClass]="{
+                selected: isSameSelectedDay(day.date) || isRangeDate(day.date),
+                today: isToday(day.date)
+              }"
+            >
+              <span *ngIf="!day.isCurrentMonth" class="no-day">{{
+                day.date | date: "dd"
+              }}</span>
+              <span
+                *ngIf="day.isCurrentMonth"
+                (click)="
+                  type === 'day'
+                    ? setDay(day.date, $event)
+                    : type === 'week'
+                      ? setWeekDate(weekIdx, $event)
+                      : setRangeDate(day.date, $event)
+                "
+                clickable
+                [title]="
+                  (day.date | date: 'dd') +
+                  '/' +
+                  (day.date | date: 'MM') +
+                  '/' +
+                  (day.date | date: 'yyyy')
+                "
+                >{{ day.date | date: "dd" }}</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  } @else if (viewMode() === "months") {
+    <div
+      class="calendar-picker__months"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+    >
+      <div class="calendar-picker__header">
+        <span>{{ "calendar.month" | translate }}</span>
+      </div>
+      <div class="calendar-picker__content calendar-picker__months__content">
+        <ng-container *ngFor="let month of allMonths(); let idxMonth = index">
+          <div
+            class="calendar-picker__months__item"
+            [ngClass]="{
+              selected: (currentCalendar() | date: 'MMMM') === month
+            }"
+          >
+            <span
+              (click)="changeMonth(idxMonth, $event)"
+              clickable
+              [title]="'date.month.' + month | lowercase | translate"
+              >{{ "date.month." + month | lowercase | translate }}</span
+            >
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  } @else {
+    <div
+      class="calendar-picker__years"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+    >
+      <div class="calendar-picker__header">
+        <div
+          clickable
+          class="calendar-picker__header__btn"
+          (click)="prevYears()"
+          [title]="'app.anterior' | translate"
+        >
+          <i class="ri-arrow-left-s-line"></i>
+        </div>
+        <span>{{ "date.year" | translate }}</span>
+        <div
+          clickable
+          class="calendar-picker__header__btn"
+          (click)="nextYears()"
+          [title]="'app.siguiente' | translate"
+        >
+          <i class="ri-arrow-right-s-line"></i>
+        </div>
+      </div>
+      <div class="calendar-picker__content calendar-picker__years__content">
+        <ng-container *ngFor="let year of allYears()">
+          <div
+            class="calendar-picker__years__item"
+            [ngClass]="{
+              selected: (currentCalendar() | date: 'yyyy') === year
+            }"
+          >
+            <span (click)="changeYear(year, $event)" clickable [title]="year">{{
+              year
+            }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  }
+</div>

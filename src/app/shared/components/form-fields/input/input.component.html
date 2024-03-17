@@ -1,0 +1,50 @@
+<div
+  class="neo-input"
+  [title]="label || ''"
+  [class.neo-input--disabled]="_disabled()"
+>
+  @if (label) {
+    <label
+      [attr.for]="id"
+      [id]="labelId()"
+      class="neo-input__label"
+      [class.neo-input__label--required]="required"
+    >
+      <span [innerHtml]="label"></span>
+    </label>
+  }
+  <div class="neo-input__wrapper">
+    <input
+      #input="ngModel"
+      class="neo-input__wrapper__field size-{{ inputSize }}"
+      [ngClass]="{
+        'neo-input__wrapper__field--has-error':
+          hasErrors() ||
+          (input?.errors && (input?.dirty || input?.touched)) ||
+          false
+      }"
+      [(ngModel)]="value"
+      (input)="onInput(input.value)"
+      (blur)="onBlur()"
+      [attr.id]="id"
+      [attr.type]="type"
+      [attr.min]="min"
+      [attr.max]="max"
+      [attr.aria-disabled]="_disabled()"
+      [attr.aria-readonly]="readonly"
+      [attr.aria-label]="placeholder"
+      [attr.aria-labelledby]="labelId()"
+      [readonly]="readonly"
+      [disabled]="_disabled()"
+      [required]="required"
+      [attr.aria-required]="required"
+      [attr.placeholder]="placeholder"
+      [attr.size]="size"
+      [attr.minlength]="minlength"
+      [attr.maxlength]="maxlength"
+      [attr.autocomplete]="autocomplete"
+      [attr.name]="name"
+      [title]="title || label || placeholder || ''"
+    />
+  </div>
+</div>

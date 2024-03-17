@@ -1,0 +1,96 @@
+<div
+  class="neo-input-date-picker"
+  [title]="label || ''"
+  [class.neo-input-date-picker--disabled]="_disabled()"
+>
+  @if (label) {
+    <label
+      class="neo-input-date-picker__label"
+      [attr.for]="id"
+      [id]="labelId()"
+      [class.neo-input-date-picker__label--required]="required"
+    >
+      <span [innerHtml]="label"></span>
+    </label>
+  }
+  <div class="neo-input-date-picker__wrapper">
+    <input
+      (click)="toogleCalendar($event)"
+      clickable
+      cdkOverlayOrigin
+      #datePicker="cdkOverlayOrigin"
+      #datePickerInput="ngModel"
+      class="neo-input-date-picker__wrapper__field size-{{ inputSize }}"
+      [class.neo-input-date-picker__wrapper__field--has-error]="
+        hasErrors() ||
+        (datePickerInput?.errors &&
+          (datePickerInput?.dirty || datePickerInput?.touched)) ||
+        false
+      "
+      [value]="_value()"
+      [(ngModel)]="value"
+      (input)="onInput(datePickerInput.value)"
+      (blur)="onBlur()"
+      [attr.id]="id"
+      [attr.aria-disabled]="_disabled()"
+      [attr.aria-readonly]="true"
+      [attr.aria-label]="placeholder"
+      [attr.aria-labelledby]="labelId()"
+      [readonly]="true"
+      [disabled]="_disabled()"
+      [required]="required"
+      [attr.aria-required]="required"
+      [attr.placeholder]="placeholder"
+      [attr.autocomplete]="autocomplete"
+      [attr.name]="name"
+      [title]="title || label || placeholder || ''"
+      autocomplete="off"
+      type="text"
+    />
+    @if (showIconCalendar) {
+      <div
+        class="neo-input-date-picker__wrapper__icon-calendar"
+        [class.disabled]="_disabled()"
+        (click)="
+          !_disabled() ? toogleCalendar($event) : $event.preventDefault()
+        "
+        clickable
+        cdkOverlayOrigin
+        #datePicker="cdkOverlayOrigin"
+      >
+        <i [class]="icon"></i>
+      </div>
+    }
+  </div>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="datePicker"
+  [cdkConnectedOverlayOpen]="isDatePickerOpened()"
+  [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  (detach)="closeCalendar()"
+  (backdropClick)="closeCalendar()"
+>
+  <div
+    (clickOutside)="closeCalendar()"
+    (escapeKey)="closeCalendar()"
+    cdkTrapFocus
+    [cdkTrapFocusAutoCapture]="true"
+  >
+    <neo-calendar-picker
+      [defaultDate]="type !== 'range' && type !== 'week' ? defaultDate() : ''"
+      [startDate]="
+        type === 'range' || type === 'week' ? currentDate()[0] || '' : ''
+      "
+      [endDate]="
+        type === 'range' || type === 'week' ? currentDate()[1] || '' : ''
+      "
+      [type]="type"
+      (dateSelected)="setCalendarValue($event)"
+      class="neo-input-date-picker__calendar"
+    ></neo-calendar-picker>
+  </div>
+</ng-template>

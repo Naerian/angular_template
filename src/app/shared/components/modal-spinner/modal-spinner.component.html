@@ -1,0 +1,37 @@
+<div class="modal-box modal-spinner">
+  <div mat-dialog-title class="modal-box__title">
+    @if (data.title) {
+      <neo-section-title [icon]="data.iconTitle || 'ri-loop-left-line'" [title]="data.title">
+      </neo-section-title>
+    }
+    @if (data.canBeClosed) {
+      <button
+        class="modal-box__close"
+        [title]="'app.cerrar' | translate"
+        [attr.aria-label]="'app.cerrar' | translate"
+        (click)="close()"
+        clickable
+        autofocus
+      >
+        <i class="ri-close-fill"></i>
+      </button>
+    }
+  </div>
+  <div mat-dialog-content class="modal-box__body modal-spinner__body">
+    <neo-spinner
+      size="xm"
+      [label]="data.label || data.title || ''"
+    ></neo-spinner>
+  </div>
+  @if (data.canBeClosed) {
+    <div mat-dialog-actions class="modal-box__footer">
+      <neo-button
+        cdkFocusInitial
+        color="secondary"
+        (click)="close()"
+        size="xm"
+        >{{ "app.cancelar" | translate }}</neo-button
+      >
+    </div>
+  }
+</div>

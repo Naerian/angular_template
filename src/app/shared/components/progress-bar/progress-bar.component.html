@@ -1,0 +1,21 @@
+<div class="progress-bar">
+  <div
+    class="progress-bar__container progress-bar__container--size-{{ size }}"
+    [title]="title ? title + ': ' + progressValue : progressValue"
+  >
+    <div
+      class="progress-bar__container__bar"
+      [ngStyle]="{
+        'background-color': color,
+        width: progressBarWidth + '%'
+      }"
+    >
+      @if (showProgress && valueInside) {
+        <span class="progress-bar__container__value">{{ progressValue }}</span>
+      }
+    </div>
+  </div>
+  @if (showProgress && !valueInside) {
+    <span class="progress-bar__value">{{ progressValue }}</span>
+  }
+</div>

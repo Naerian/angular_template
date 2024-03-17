@@ -1,0 +1,8 @@
+@import "./base";
+
+.root-content,
+.root-content *,
+.mat-mdc-dialog-content {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--bg-scroll-color) var(--background-color) !important;
+}

@@ -1,0 +1,16 @@
+<div
+  #itemMenuContent
+  class="item-menu-context"
+  (click)="onClickItem($event)"
+  clickable
+  [title]="_title()"
+>
+  @if (!label) {
+    <ng-content></ng-content>
+  } @else {
+   <div class="item-menu-context__icon">
+    <i [class]="icon"></i>
+   </div>
+   <div class="item-menu-context__label">{{ label }}</div>
+  }
+</div>

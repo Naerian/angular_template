@@ -1,0 +1,19 @@
+<div
+  class="spinner"
+  [ngClass]="{
+    'spinner--overlay': overlay,
+    'spinner--center': label && label !== ''
+  }"
+  [style.position]="overlay ? position : 'inherit'"
+>
+  <div class="spinner__icon spinner__icon--size-{{ size }}"></div>
+
+  @if (label && label !== "") {
+    <div
+      class="spinner__label"
+      [ngStyle]="{ color: labelColor, 'font-size': labelSize }"
+    >
+      {{ label }}
+    </div>
+  }
+</div>

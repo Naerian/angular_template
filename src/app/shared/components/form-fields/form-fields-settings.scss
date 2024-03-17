@@ -1,0 +1,135 @@
+.neo-input,
+.neo-input-password,
+.neo-input-date-picker,
+.neo-textarea,
+.neo-select-dropdown {
+  &__label {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 5px;
+    gap: 5px;
+  }
+}
+
+.neo-select-dropdown__field,
+.neo-input__wrapper__field,
+.neo-input-password__wrapper__field,
+.neo-input-date-picker__wrapper__field,
+.neo-checkbox__control,
+.neo-checkbox__control__label,
+.neo-radiobutton__control,
+.neo-radiobutton__control__label {
+
+  &.size-xs {
+    font-size: 0.6rem;
+    line-height: 0.6rem;
+  }
+
+  &.size-s {
+    font-size: 0.7rem;
+    line-height: 0.7rem;
+  }
+
+  &.size-xm {
+    font-size: 0.75rem;
+    line-height: 0.75rem;
+  }
+
+  &.size-m {
+    font-size: 0.8rem;
+    line-height: 0.8rem;
+  }
+
+  &.size-l {
+    font-size: 0.85rem;
+    line-height: 0.85rem;
+  }
+
+  &.size-xl {
+    font-size: 0.9rem;
+    line-height: 0.9rem;
+  }
+}
+
+.neo-select-dropdown__field,
+.neo-input__wrapper__field,
+.neo-input-password__wrapper__field,
+.neo-input-date-picker__wrapper__field,
+.neo-checkbox__control,
+.neo-radiobutton__control {
+  &.size-xs {
+    height: 25px;
+  }
+
+  &.size-s {
+    height: 28px;
+  }
+
+  &.size-xm {
+    height: 32px;
+  }
+
+  &.size-m {
+    height: 35px;
+  }
+
+  &.size-l {
+    height: 40px;
+  }
+
+  &.size-xl {
+    height: 45px;
+  }
+}
+
+.neo-checkbox__control,
+.neo-radiobutton__control {
+
+  &.size-xs &__checkmark,
+  &.size-s &__checkmark {
+    height: 10px;
+    width: 10px;
+
+    &::after {
+      border-width: 4px;
+    }
+  }
+
+  &.size-xm &__checkmark {
+    height: 14px;
+    width: 14px;
+
+    &::after {
+      border-width: 4px;
+    }
+  }
+
+  &.size-m &__checkmark {
+    height: 18px;
+    width: 18px;
+
+    &::after {
+      border-width: 5px;
+    }
+  }
+
+  &.size-l &__checkmark {
+    height: 22px;
+    width: 22px;
+
+    &::after {
+      border-width: 6px;
+    }
+  }
+
+  &.size-xl &__checkmark {
+    height: 26px;
+    width: 26px;
+
+    &::after {
+      border-width: 8px;
+    }
+  }
+}

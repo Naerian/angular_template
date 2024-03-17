@@ -1,0 +1,711 @@
+<neo-card [collapsable]="true">
+  <neo-card-header>
+    <div>Tipos de botones</div>
+  </neo-card-header>
+  <div class="row">
+    <div class="col-2">
+      <label>Botón primary</label>
+      <neo-button (click)="buttonClicked()">Botón primary</neo-button>
+    </div>
+    <div class="col-2">
+      <label>Botón primary deshabilitado</label>
+      <neo-button (click)="buttonClicked()" [disabled]="true"
+        >Botón primary</neo-button
+      >
+    </div>
+    <div class="col-2">
+      <label>Botón secondary</label>
+      <neo-button color="secondary" (click)="buttonClicked()"
+        >Botón secondary</neo-button
+      >
+    </div>
+    <div class="col-2">
+      <label>Botón secondary deshabilitado</label>
+      <neo-button color="secondary" [disabled]="true" (click)="buttonClicked()"
+        >Botón secondary</neo-button
+      >
+    </div>
+    <div class="col-2">
+      <label>Primary transparente + icono</label>
+      <neo-button [transparent]="true">
+        <i class="ri-user-line"></i>
+        <span>Botón transparente</span>
+      </neo-button>
+    </div>
+    <div class="col-2">
+      <label>Secondary transparente + icono</label>
+      <neo-button [color]="'secondary'" [transparent]="true">
+        <i class="ri-user-line"></i>
+        <span>Botón transparente</span>
+      </neo-button>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-4">
+      <label>Botón XS</label>
+      <neo-button [size]="'xs'">Botón XS</neo-button>
+    </div>
+    <div class="col-4">
+      <label>Botón S</label>
+      <neo-button [size]="'s'">Botón S</neo-button>
+    </div>
+    <div class="col-4">
+      <label>Botón XM</label>
+      <neo-button [size]="'xm'">Botón XM</neo-button>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-4">
+      <label>Botón M</label>
+      <neo-button [size]="'m'">Botón M</neo-button>
+    </div>
+    <div class="col-4">
+      <label>Botón L</label>
+      <neo-button [size]="'l'">Botón L</neo-button>
+    </div>
+    <div class="col-4">
+      <label>Botón XL</label>
+      <neo-button [size]="'xl'">Botón XL</neo-button>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-4">
+      <label>Primary y transparente</label>
+      <neo-button [size]="'m'" color="primary" mode="icon" [transparent]="true">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+    <div class="col-4">
+      <label>Secondary y transparente</label>
+      <neo-button
+        [size]="'m'"
+        color="secondary"
+        mode="icon"
+        [transparent]="true"
+      >
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+    <div class="col-4">
+      <label>Default y transparente</label>
+      <neo-button [size]="'m'" mode="icon" [transparent]="true">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-4">
+      <label>Primary y background</label>
+      <neo-button [size]="'m'" color="primary" mode="icon">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+    <div class="col-4">
+      <label>Secondary y background</label>
+      <neo-button [size]="'m'" color="secondary" mode="icon">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+    <div class="col-4">
+      <label>Default y background</label>
+      <neo-button [size]="'m'" mode="icon">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+  </div>
+</neo-card>
+<hr />
+<neo-card>
+  <neo-card-header>
+    <div>Tipos de toast</div>
+  </neo-card-header>
+  <div class="row">
+    <div class="col-4">
+      <label>Toast success</label>
+      <neo-button color="secondary" (click)="toastSuccess()"
+        >Toast success</neo-button
+      >
+    </div>
+    <div class="col-4">
+      <label>Toast error</label>
+      <neo-button color="secondary" (click)="toastError()"
+        >Toast error</neo-button
+      >
+    </div>
+    <div class="col-4">
+      <label>Toast warning</label>
+      <neo-button color="secondary" (click)="toastWarning()"
+        >Toast warning</neo-button
+      >
+    </div>
+  </div>
+</neo-card>
+<hr />
+<neo-card>
+  <neo-card-header>
+    <div>Tipos de inputs</div>
+  </neo-card-header>
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-6 mb-2 mt-2">
+      <neo-input
+        label="Input normal"
+        (change)="inputChange($event)"
+      ></neo-input>
+      <br />
+      <neo-input
+        label="Input normal requerido con mensaje"
+        [(ngModel)]="inputvalue"
+        [required]="true"
+        #neoInput="ngModel"
+      ></neo-input>
+      @if (neoInput.invalid && (neoInput.dirty || neoInput.touched)) {
+        @if (neoInput.errors?.["required"]) {
+          <neo-form-error>Campo requerido</neo-form-error>
+        }
+      }
+      <br />
+      <neo-input
+        label="Input normal deshabilitado"
+        [disabled]="true"
+        [required]="true"
+        [value]="'Texto de prueba'"
+      ></neo-input>
+      <br />
+      <neo-input-password label="Input password"></neo-input-password>
+      <br />
+      <form [formGroup]="testForm">
+        <neo-input
+          [label]="'Campo con ReactiveForm'"
+          formControlName="name"
+          [required]="true"
+        ></neo-input>
+      </form>
+      <br />
+      <neo-textarea label="Textarea"></neo-textarea>
+      <br />
+      <neo-textarea label="Textarea required" [required]="true"></neo-textarea>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6 mb-2 mt-2">
+      <neo-select
+        label="Selector de opciones"
+        [classes]="['testClass', 'testClass2']"
+      >
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+        <neo-option value="3">Opción 4</neo-option>
+        <neo-option value="3">Opción 5</neo-option>
+        <neo-option value="3">Opción 6</neo-option>
+        <neo-option value="3">Opción 7</neo-option>
+        <neo-option value="3">Opción 8</neo-option>
+        <neo-option value="3">Opción 9</neo-option>
+      </neo-select>
+      <br />
+      <neo-select label="Selector de opciones requerido" [required]="true">
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+      </neo-select>
+      <br />
+      <neo-select label="Selector de opciones múltiple" [multiple]="true">
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+      </neo-select>
+      <br />
+      <neo-select
+        label="Selector de opciones múltiple requerido"
+        [multiple]="true"
+        [required]="true"
+      >
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+      </neo-select>
+      <br />
+      <neo-select label="Selector de opciones deshabilitado" [disabled]="true">
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+      </neo-select>
+      <br />
+      <neo-select label="Selector de opciones con buscador" [search]="true">
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+        <neo-option value="3">Opción 4</neo-option>
+        <neo-option value="3">Opción 5</neo-option>
+        <neo-option value="3">Opción 6</neo-option>
+        <neo-option value="3">Opción 7</neo-option>
+        <neo-option value="3">Opción 8</neo-option>
+        <neo-option value="3">Opción 9</neo-option>
+      </neo-select>
+      <br />
+      <neo-select
+        label="Selector de opciones múltiple con buscador"
+        [multiple]="true"
+        [search]="true"
+      >
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+        <neo-option value="3">Opción 4</neo-option>
+        <neo-option value="3">Opción 5</neo-option>
+      </neo-select>
+    </div>
+  </div>
+</neo-card>
+<hr />
+<neo-card>
+  <neo-card-header> <div>Tipos de modales y sidebar</div></neo-card-header>
+  <div class="row">
+    <div class="col-4">
+      <label
+        >Apertura de Sidebar con cambio de contenido en su interior</label
+      >
+      <neo-button (click)="openSidebar()">Abrir sidebar</neo-button>
+    </div>
+    <div class="col-4">
+      <label>Ventana modal normal</label>
+      <neo-button (click)="openModal()">Abrir modal</neo-button>
+    </div>
+    <div class="col-4">
+      <label>Ventana modal con componente</label>
+      <neo-button (click)="openModalComponent()"
+        >Abrir modal con componente</neo-button
+      >
+    </div>
+  </div>
+</neo-card>
+<hr />
+<neo-card>
+  <neo-card-header>
+    <div>Tipos de spinners</div>
+  </neo-card-header>
+  <div class="row">
+    <div class="col-3">
+      <label>Spinner ultra pequeño (xs)</label>
+      <neo-spinner size="xs"></neo-spinner>
+    </div>
+    <div class="col-3">
+      <label>Spinner normal (M)</label>
+      <neo-spinner size="m"></neo-spinner>
+    </div>
+    <div class="col-3">
+      <label>Spinner normal con label</label>
+      <neo-spinner size="m" [label]="'Texto de prueba'"></neo-spinner>
+    </div>
+    <div class="col-3">
+      <label
+        >Spinner normal con overlay (absolute)</label
+      >
+      <div style="position: relative; width: 100%; height: 100%">
+        <neo-spinner size="m" [overlay]="true"></neo-spinner>
+      </div>
+    </div>
+  </div>
+</neo-card>
+<hr />
+<neo-card>
+  <neo-card-header>
+    <div>Tipos de barras de progreso</div>
+  </neo-card-header>
+  <div class="row">
+    <div class="col-12">
+      <div class="row">
+        <div class="col-3">
+          <label>Barra de progreso normal</label>
+          <neo-progress-bar
+            [progressNumber]="80"
+            [isProgressInteger]="true"
+          ></neo-progress-bar>
+        </div>
+        <div class="col-3">
+          <label>Barra de progreso partido</label>
+          <neo-progress-bar [progressSplit]="[20, 75]"></neo-progress-bar>
+        </div>
+        <div class="col-3">
+          <label>Barra de progreso sin texto</label>
+          <neo-progress-bar
+            [progressNumber]="80"
+            [showProgress]="false"
+          ></neo-progress-bar>
+        </div>
+        <div class="col-3">
+          <label
+            >Barra de progreso con color custom</label
+          >
+          <neo-progress-bar
+            [progressNumber]="65"
+            [isProgressInteger]="true"
+            [color]="'#5CAD4B'"
+          ></neo-progress-bar>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 mt-4">
+      <div class="row">
+        <div class="col-2">
+          <label>Barra de progreso XS</label>
+          <neo-progress-bar
+            [size]="'xs'"
+            [progressNumber]="80"
+            [isProgressInteger]="true"
+          ></neo-progress-bar>
+        </div>
+        <div class="col-2">
+          <label>Barra de progreso S</label>
+          <neo-progress-bar
+            [size]="'s'"
+            [progressNumber]="80"
+            [isProgressInteger]="true"
+          ></neo-progress-bar>
+        </div>
+        <div class="col-2">
+          <label>Barra de progreso XM</label>
+          <neo-progress-bar
+            [size]="'xm'"
+            [progressNumber]="80"
+            [isProgressInteger]="true"
+          ></neo-progress-bar>
+        </div>
+        <div class="col-2">
+          <label>Barra de progreso M</label>
+          <neo-progress-bar
+            [size]="'m'"
+            [progressNumber]="80"
+            [isProgressInteger]="true"
+          ></neo-progress-bar>
+        </div>
+        <div class="col-2">
+          <label>Barra de progreso L</label>
+          <neo-progress-bar
+            [size]="'l'"
+            [progressNumber]="80"
+            [isProgressInteger]="true"
+          ></neo-progress-bar>
+        </div>
+        <div class="col-2">
+          <label>Barra de progreso XL</label>
+          <neo-progress-bar
+            [size]="'xl'"
+            [progressNumber]="80"
+            [isProgressInteger]="true"
+          ></neo-progress-bar>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 mt-4">
+      <div class="row">
+        <div class="col-6">
+          <label
+            >Barra de progreso (%) con valor fuera</label
+          >
+          <neo-progress-bar
+            [size]="'m'"
+            [progressNumber]="65"
+            [valueInside]="false"
+            [isProgressInteger]="true"
+          ></neo-progress-bar>
+        </div>
+        <div class="col-6">
+          <label
+            >Barra de progreso (X,Y) con valor fuera</label
+          >
+          <neo-progress-bar
+            [size]="'m'"
+            [progressSplit]="[12, 78]"
+            [valueInside]="false"
+            [isProgressInteger]="true"
+          ></neo-progress-bar>
+        </div>
+      </div>
+    </div>
+  </div>
+</neo-card>
+<hr />
+<neo-card>
+  <neo-card-header>
+    <div>Misceláneo</div>
+  </neo-card-header>
+  <div class="row">
+    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
+      <label>Menú contextual</label>
+      <neo-menu-context size="xm">
+        <neo-item-menu-context>Test 1</neo-item-menu-context>
+        <neo-item-menu-context>Test 2</neo-item-menu-context>
+      </neo-menu-context>
+    </div>
+    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
+      <label>Cambio de tema (claro / oscuro)</label>
+      <neo-theme-toggle size="xm"></neo-theme-toggle>
+    </div>
+    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
+      <neo-checkbox
+        [label]="'Label del checkbox'"
+        [checked]="true"
+        (change)="checkboxChange($event)"
+        >Checkbox</neo-checkbox
+      >
+    </div>
+    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
+      <neo-checkbox
+        [label]="'Label del checkbox indeterminate'"
+        [indeterminate]="true"
+        (change)="checkboxChange($event)"
+        >Checkbox</neo-checkbox
+      >
+    </div>
+    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
+      <neo-checkbox
+        [label]="'Label del checkbox ngModel'"
+        [checked]="true"
+        [(ngModel)]="checkboxValue"
+        (change)="checkboxChangeNM()"
+        >Checkbox ngModel</neo-checkbox
+      >
+    </div>
+    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
+      <neo-radio-button-group
+        [label]="'Label del radiobutton'"
+        [name]="'testRadiobutton'"
+        [(ngModel)]="radioButtonValue"
+        (change)="radioChangeNG()"
+      >
+        <neo-radio-button value="1">Option 1</neo-radio-button>
+        <neo-radio-button value="2">Option 2</neo-radio-button>
+      </neo-radio-button-group>
+    </div>
+  </div>
+</neo-card>
+<hr />
+<div class="row">
+  <div class="col-12 col-md-12 col-lg-6">
+    <neo-card>
+      <neo-card-header>
+        <div>Tabla con filtro de columnas e ID fija</div>
+      </neo-card-header>
+      <neo-filter-columns-table
+        [columns]="columnDefinitions"
+        (columnsChange)="columnsChanged($event)"
+      ></neo-filter-columns-table>
+      <div
+        class="neo-table neo-table-responsive"
+        style="height: 350px; margin-top: 5px"
+      >
+        <table
+          mat-table
+          class="neo-table"
+          [dataSource]="dataSource"
+          matSort
+          [matSortDisableClear]="true"
+          [matSortActive]="'name'"
+          [matSortDirection]="'asc'"
+        >
+          <ng-container matColumnDef="id" [sticky]="true">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let row">{{ row?.id || "" }}</td>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let row">{{ row?.name || "" }}</td>
+          </ng-container>
+          <ng-container matColumnDef="description">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>
+              Description
+            </th>
+            <td mat-cell *matCellDef="let row">{{ row?.description || "" }}</td>
+          </ng-container>
+          <ng-container matColumnDef="price">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>Price</th>
+            <td mat-cell *matCellDef="let row">{{ row?.price || "" }}</td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="getDisplayedColumns(); sticky: true"
+          ></tr>
+          <tr
+            mat-row
+            *matRowDef="
+              let row;
+              columns: getDisplayedColumns();
+              let index = index
+            "
+            [ngClass]="{ even: index % 2 === 0, odd: index % 2 !== 0 }"
+          ></tr>
+        </table>
+      </div>
+      <a
+        (click)="showInfoTable = !showInfoTable"
+        style="font-size: 11px; font-weight: 700; cursor: pointer"
+      >
+        {{ showInfoTable ? "Ocultar" : "Mostrar" }} información de la tabla</a
+      >
+      @if (showInfoTable) {
+        <pre style="background: #ccc; padding: 5px; font-size: 11px">{{
+          columnDefinitions | json
+        }}</pre>
+      }
+    </neo-card>
+  </div>
+  <div class="col-12 col-md-12 col-lg-6">
+    <neo-card>
+      <neo-card-header>
+        <div>Paginadores</div>
+      </neo-card-header>
+      <label>Paginador con rango izquierda</label>
+      <neo-paginator [total]="100" [position]="'left'"></neo-paginator>
+      <br />
+      <label>Paginador con rango derecha</label>
+      <neo-paginator [total]="100"></neo-paginator>
+      <br />
+      <label>Paginador con rango derecha y total</label>
+      <neo-paginator [total]="100" [showTotal]="true"></neo-paginator>
+      <br />
+      <label>Paginador completo</label>
+      <neo-paginator
+        [total]="10"
+        [type]="'fullnumber'"
+        [position]="'left'"
+      ></neo-paginator>
+      <br />
+      <label>Paginador sin números</label>
+      <neo-paginator
+        [total]="10"
+        [type]="'nonumber'"
+        [position]="'left'"
+      ></neo-paginator>
+      <br />
+      <label>Paginador divisor</label>
+      <neo-paginator
+        [total]="100"
+        [type]="'dividenumber'"
+        [position]="'left'"
+      ></neo-paginator>
+    </neo-card>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-6">
+    <neo-card>
+      <neo-card-header>
+        <div>Tabs normales</div>
+      </neo-card-header>
+      <neo-tabs>
+        <neo-tabs-item title="Tab 1">
+          <p>Contenido tab 1</p>
+        </neo-tabs-item>
+        <neo-tabs-item title="Tab 2">
+          <p>Contenido tab 2</p>
+        </neo-tabs-item>
+        <neo-tabs-item title="Tab 3">
+          <p>Contenido tab 3</p>
+        </neo-tabs-item>
+      </neo-tabs>
+    </neo-card>
+  </div>
+  <div class="col-6">
+    <neo-card>
+      <neo-card-header>
+        <div>Tab con iconos y html</div>
+      </neo-card-header>
+      <neo-tabs>
+        <neo-tabs-item title="Tab 1">
+          <div
+            *neoTabsItemLabel
+            style="display: flex; gap: 10px; align-items: center"
+          >
+            <i class="ri-calendar-event-line"></i>
+            <span>Tab 1 HTML</span>
+          </div>
+          <p>Contenido tab 1</p>
+        </neo-tabs-item>
+        <neo-tabs-item title="Tab 2">
+          <div
+            *neoTabsItemLabel
+            style="display: flex; gap: 10px; align-items: center"
+          >
+            <i class="ri-user-search-line"></i>
+            <span>Tab 2HTML</span>
+          </div>
+          <p>Contenido tab 2</p>
+        </neo-tabs-item>
+      </neo-tabs>
+    </neo-card>
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-12">
+    <neo-card>
+      <neo-card-header>
+        <div>Calendarios</div>
+      </neo-card-header>
+      <div class="row">
+        <div class="col-4">
+          <label>Calendario normal</label>
+          <small>Fecha: {{ dateInfo1?.date || "-" }}</small>
+          <neo-calendar-picker
+            (dateSelected)="dateInfo1 = $event"
+          ></neo-calendar-picker>
+        </div>
+        <div class="col-4">
+          <label>Calendario semana</label>
+          <small
+            >Fecha: {{ dateInfo2?.date[0] || "-" }} -
+            {{ dateInfo2?.date[1] || "-" }}</small
+          >
+          <neo-calendar-picker
+            [type]="'week'"
+            (dateSelected)="dateInfo2 = $event"
+          ></neo-calendar-picker>
+        </div>
+        <div class="col-4">
+          <label>Calendario rango</label>
+          <small
+            >Fecha: {{ dateInfo3?.date[0] || "-" }} -
+            {{ dateInfo3?.date[1] || "-" }}</small
+          >
+          <neo-calendar-picker
+            [type]="'range'"
+            (dateSelected)="dateInfo3 = $event"
+          ></neo-calendar-picker>
+        </div>
+      </div>
+    </neo-card>
+  </div>
+  <div class="col-6 col-md-6 col-lg-12 mb-2 mt-2">
+    <neo-card>
+      <neo-card-header>
+        <div>Diferentes datepicker</div>
+      </neo-card-header>
+      <neo-input-date-picker label="Date picker"></neo-input-date-picker>
+      <br />
+      <neo-input-date-picker
+        label="Date picker requerido"
+        [required]="true"
+      ></neo-input-date-picker>
+      <br />
+      <neo-input-date-picker
+        label="Date picker deshabilitado"
+        [disabled]="true"
+      ></neo-input-date-picker>
+      <br />
+      <neo-input-date-picker
+        [type]="'range'"
+        label="Date picker de rango"
+      ></neo-input-date-picker>
+      <br />
+      <neo-input-date-picker
+        [type]="'week'"
+        label="Date picker de semana"
+      ></neo-input-date-picker>
+    </neo-card>
+  </div>
+</div>

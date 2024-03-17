@@ -1,0 +1,16 @@
+<button
+  #btnContent
+  class="neo-btn neo-btn-{{ size }} neo-btn-{{ color }} neo-btn-{{ mode }}"
+  [class.neo-btn--all-width]="allWidth"
+  [attr.type]="type"
+  [disabled]="disabled"
+  [autofocus]="focus"
+  [class.disabled]="disabled"
+  [class.neo-btn-transparent]="transparent"
+  [title]="_title()"
+  [attr.aria-label]="_title()"
+  (click)="clickOnButton($event)"
+  clickable
+>
+  <ng-content></ng-content>
+</button>

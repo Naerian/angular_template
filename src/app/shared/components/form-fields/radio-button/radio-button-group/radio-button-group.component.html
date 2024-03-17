@@ -1,0 +1,10 @@
+<div class="neo-radio-button-group" [title]="_title()">
+  @if (label && !hideLabel) {
+    <label class="neo-radio-button-group__label">
+      <span [innerHtml]="label"></span>
+    </label>
+  }
+  <div class="neo-radio-button-group__items {{ direction }}">
+    <ng-content></ng-content>
+  </div>
+</div>

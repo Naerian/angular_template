@@ -1,0 +1,42 @@
+@import 'base';
+
+.neo-main-menu {
+  bottom: 0;
+  float: none;
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 1001;
+  transition: left 0.3s;
+  width: 255px;
+  margin-top: 45px;
+  padding-bottom: 45px;
+  background-color: var(--bg-menu-color);
+  box-shadow: var(--shadow-box);
+
+  &--right {
+    right: 0;
+    left: auto;
+  }
+
+  &--left {
+    right: auto;
+    left: 0;
+  }
+
+  &__wrapper {
+    padding: 10px;
+  }
+
+  &__backdrop {
+    background: #0000002b;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    display: block;
+    z-index: 50;
+  }
+}

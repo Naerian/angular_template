@@ -1,0 +1,70 @@
+<div
+  [class]="[
+    'card',
+    collapsable && _isCollapsed() && icon ? 'card--size-' + size : ''
+  ]"
+  [class.card--collapsed]="_isCollapsed()"
+  [class.card--collapsable]="collapsable"
+  [class.card--icon]="collapsable && _isCollapsed() && icon"
+>
+  @if (collapsable && !_isCollapsed()) {
+    <div class="card__collapse-header" [class.card__collapse-header--with-header]="neoCardHeader">
+      <neo-button
+        [size]="'s'"
+        color="primary"
+        mode="icon"
+        [title]="'app.colapsar' | translate"
+        [transparent]="true"
+        (click)="toggleCollapse($event)"
+      >
+        <i class="ri-arrow-up-wide-line"></i>
+      </neo-button>
+    </div>
+  }
+  @if (
+    !collapsable ||
+    (collapsable && (!_isCollapsed() || (_isCollapsed() && !icon)))
+  ) {
+    <ng-content select="neo-card-header"></ng-content>
+  }
+  <div class="card__content" [class.card__content--collapsed]="_isCollapsed()" [class.card__content--with-header]="neoCardHeader">
+    <ng-content></ng-content>
+  </div>
+  @if (collapsable && _isCollapsed()) {
+    @if (!icon) {
+      <div
+        class="card__collapsed-content--label"
+        [class.in-header]="neoCardHeader"
+      >
+        @if (label !== "") {
+          <span>{{ label }}</span>
+        }
+        <neo-button
+          [size]="'s'"
+          color="primary"
+          mode="icon"
+          [title]="'app.expandir' | translate"
+          [transparent]="true"
+          (click)="toggleCollapse($event)"
+        >
+          <i class="ri-arrow-down-wide-fill"></i>
+        </neo-button>
+      </div>
+    } @else {
+      <div class="card__collapsed-content--icon">
+        <neo-button
+          [size]="'s'"
+          color="primary"
+          [mode]="label ? 'button' : 'icon'"
+          [transparent]="true"
+          (click)="toggleCollapse($event)"
+        >
+          <i [class]="icon"></i>
+          @if (label !== "") {
+            <span>{{ label }}</span>
+          }
+        </neo-button>
+      </div>
+    }
+  }
+</div>

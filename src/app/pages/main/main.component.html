@@ -1,0 +1,50 @@
+<div class="main-content" cdkScrollable>
+  <nav class="main-header navbar">
+    <div class="main-header__left">
+      <div
+        [ngClass]="{
+          'expanded-menu': isMenuOpened(),
+          'collapsed-menu': !isMenuOpened()
+        }"
+        id="nvar_menu"
+        class="main-header__left__menu"
+        [title]="'menu.open_close' | translate"
+        (click)="toggleMenu()"
+        clickable
+      >
+        @if (isMenuOpened()) {
+          <i class="ri-menu-fold-line"></i>
+        } @else {
+          <i class="ri-menu-line"></i>
+        }
+      </div>
+      <div class="main-header__left__logo">
+        <neo-logo [size]="'s'"></neo-logo>
+      </div>
+      <div class="main-header__left__breadcrum">
+        <neo-breadcrum></neo-breadcrum>
+      </div>
+    </div>
+    <div class="main-header__actions">
+      <neo-theme-toggle size="xm" color="secondary"></neo-theme-toggle>
+      <neo-fullscreen-toggle
+        size="xm"
+        color="secondary"
+      ></neo-fullscreen-toggle>
+      <!-- <neo-button
+        mode="icon"
+        size="xm"
+        color="secondary"
+        (click)="logout()"
+        [title]="'login.logout' | translate"
+      >
+        <i class="ri-logout-circle-r-line"></i>
+      </neo-button> -->
+    </div>
+  </nav>
+  <neo-side-menu class="navbar_menu"></neo-side-menu>
+  <div class="content-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+  <neo-sidebar-panel></neo-sidebar-panel>
+</div>

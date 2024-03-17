@@ -1,0 +1,147 @@
+// COMPARTIDOS
+:root {
+  --success-color: #28C125;
+  --danger-color: #D9332B;
+}
+
+
+:root {
+
+  // MODO CLARO
+  .theme-light {
+
+    --primary-color: #333333;
+    --secondary-color: #F8F8F8;
+
+    --background-color: #F8F8F8;
+    --border-color: #e0e0e0;
+    --outline-color: #80808066;
+
+    --bg-scroll-color: #bbbbbb;
+
+    --bg-breadcrum-color: #F3F0F0;
+
+    --bg-card-color: #ffffff;
+    --border-color-card: #efefef;
+
+    --border-color-section-title: #dee2e6;
+
+    --bg-menu-color: #F8F8F8;
+    --icon-menu-toggle-color: #313131;
+    --menu-item-hover-active-color: #e4e4e4;
+    --menu-item-hover-active-text: #131313;
+
+    --text-color: #131313;
+    --icon-color: #232222;
+    --icon-add-color: #28C125;
+
+    --bg-header-table-color: #D9D9D9;
+    --bg-odd-row-table-color: #F2F2F2;
+    --bg-even-row-table-color: #FBFAFA;
+    --bg--header-sorted-table-color: #b7b7b7;
+    --bg--header-resize-column-color: #929292;
+
+    --bg-btn-primary-color: #333333;
+    --border-btn-primary-color: #232222;
+    --hover-btn-primary-color: #232222;
+    --text-btn-primary-color: #FFFFFF;
+    --text-btn-primary-transparent-color: #131313;
+    --icon-btn-primary-transparent-color: #8b8b8b;
+    --hover-bg-btn-primary-transparent-color: #b1b1b129;
+    --icon-btn-primary-color: #8b8b8b;
+
+    --bg-btn-secondary-color: #F8F8F8;
+    --border-btn-secondary-color: #313131;
+    --hover-btn-secondary-color: #eeeeee;
+    --text-btn-secondary-color: #313131;
+    --text-btn-secondary-transparent-color: #313131;
+    --icon-btn-secondary-transparent-color: #313131;
+    --hover-bg-btn-secondary-transparent-color: #b1b1b129;
+    --icon-btn-secondary-color: #313131;
+
+    --bg-pagination-active-color: #333333;
+    --text-pagination-active-color: #FFFFFF;
+    --border-pagination-page-color: #757575;
+
+    --bg-field-search-dropdown-color: #F8F8F8;
+    --bg-field-color: #E6E6E6;
+    --border-checkbox-radiobutton-color: #b3b3b3;
+    --border-field-color: #b3b3b3;
+    --border-field-disabled-color: #d5d5d5;
+
+    --bg-spinner-primary-color: #333333;
+
+    --shadow-box: 2px 2px 4px 0px rgba(117, 117, 117, 0.80);
+    --shadow-btn: 2px 2px 4px 0px rgba(117, 117, 117, 0.80);
+    --shadow-card: 0px 2px 1px -1px rgba(117, 117, 117, 0.2), 0px 1px 1px 0px rgba(117, 117, 117, .14), 0px 1px 3px 0px rgba(117, 117, 117, .12);
+  }
+
+  // MODO OSCURO
+  .theme-dark {
+
+    --primary-color: #616161;
+    --secondary-color: #F8F8F8;
+
+    --background-color: #121212;
+    --border-color: #282828;
+    --outline-color: #27272766;
+
+    --bg-scroll-color: #333333;
+
+    --bg-breadcrum-color: #282828;
+
+    --bg-card-color: #0c0c0c;
+    --border-color-card: #0f0f0f;
+
+    --border-color-section-title: #dee2e6;
+
+    --bg-menu-color: #282828;
+    --icon-menu-toggle-color: #FFFFFF;
+    --menu-item-hover-active-color: #121212;
+    --menu-item-hover-active-text: #FFFFFF;
+
+    --text-color: #ffffff;
+    --icon-color: #ffffff;
+    --icon-add-color: #28C125;
+
+    --bg-header-table-color: #0a0a0a;
+    --bg-odd-row-table-color: #101010;
+    --bg-even-row-table-color: #202020;
+    --bg--header-sorted-table-color: #080808;
+    --bg--header-resize-column-color: #929292;
+
+    --bg-btn-primary-color: #616161;
+    --border-btn-primary-color: #1c1919;
+    --hover-btn-primary-color: #1c1919;
+    --text-btn-primary-color: #FFFFFF;
+    --text-btn-primary-transparent-color: #FFFFFF;
+    --icon-btn-primary-transparent-color: #a1a1a1;
+    --hover-bg-btn-primary-transparent-color: #000000;
+    --icon-btn-primary-color: #a1a1a1;
+
+    --bg-btn-secondary-color: #F8F8F8;
+    --border-btn-secondary-color: #D9D9D9;
+    --hover-btn-secondary-color: #eeeeee;
+    --text-btn-secondary-color: #313131;
+    --text-btn-secondary-transparent-color: #FFFFFF;
+    --icon-btn-secondary-transparent-color: #FFFFFF;
+    --hover-bg-btn-secondary-transparent-color: #000000;
+    --icon-btn-secondary-color: #FFFFFF;
+
+    --bg-pagination-active-color: #616161;
+    --text-pagination-active-color: #ffffff;
+    --border-pagination-page-color: #757575;
+
+    --bg-field-search-dropdown-color: #F8F8F8;
+    --bg-field-color: #282828;
+    --border-checkbox-radiobutton-color: #929292;
+    --border-field-color: #4b4b4b;
+    --border-field-disabled-color: #000000;
+
+    --bg-spinner-primary-color: #616161;
+
+    --shadow-box: 2px 2px 4px 0px rgb(0 0 0);
+    --shadow-btn: 2px 2px 4px 0px rgb(0 0 0);
+    --shadow-card: 0px 2px 1px -1px rgba(0 0 0, 0.2), 0px 1px 1px 0px rgba(0 0 0, .14), 0px 1px 3px 0px rgba(0 0 0, .12);
+  }
+}

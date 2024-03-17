@@ -1,0 +1,34 @@
+@if (isPanelVisible()) {
+  <aside
+    class="sidebar-panel size-{{ size() }}"
+    [class.sidebar-panel--left]="position() === LEFT_POSITION"
+    [class.sidebar-panel--right]="position() === RIGHT_POSITION"
+    [class.sidebar-panel--top]="position() === TOP_POSITION"
+    [class.sidebar-panel--bottom]="position() === BOTTOM_POSITION"
+    [ngClass]="classes() || ''"
+    [cdkTrapFocus]="isPanelVisible()"
+    [cdkTrapFocusAutoCapture]="isPanelVisible()"
+    [@slideByPosition]="position()"
+    (escapeKey)="close()"
+  >
+    <div class="sidebar-panel__header">
+      <div class="sidebar-panel__header__wrapper">
+        <h1 [innerHTML]="title() || ''"></h1>
+        <button
+          class="sidebar-panel__header__close"
+          [title]="'app.cerrar' | translate"
+          [attr.aria-label]="'app.cerrar' | translate"
+          (click)="close()"
+          clickable
+          autofocus
+        >
+          <i class="ri-close-fill"></i>
+        </button>
+      </div>
+    </div>
+    <div class="sidebar-panel__wrapper">
+      <ng-container #content></ng-container>
+    </div>
+  </aside>
+  <div class="sidebar-panel__overlay" [@fadeInOutPanel] (click)="close()"></div>
+}

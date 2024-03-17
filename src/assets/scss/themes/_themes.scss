@@ -1,0 +1,34 @@
+@import "./base";
+@import "./typography";
+@import "./animations";
+@import "./toastr";
+@import "./scrollbars";
+@import "./tables";
+@import "./modal";
+@import "./inputs";
+
+:root {
+  *:focus {
+    outline-color: var(--outline-color) !important;
+    outline-style: solid !important;
+    outline-width: 1px !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.root-content {
+  background-color: var(--background-color);
+}
+
+.main-header {
+  background-color: var(--background-color);
+}

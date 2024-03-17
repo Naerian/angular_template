@@ -1,0 +1,18 @@
+<neo-button
+  mode="icon"
+  [size]="size"
+  [color]="color"
+  [transparent]="transparent"
+  (click)="toggleFullScreen()"
+  [title]="
+    (isFullScreen() ? 'app.full_screen_exit' : 'app.full_screen')
+      | translate
+  "
+>
+  <i
+    [ngClass]="{
+      'ri-fullscreen-exit-line': isFullScreen(),
+      'ri-fullscreen-line': !isFullScreen()
+    }"
+  ></i>
+</neo-button>

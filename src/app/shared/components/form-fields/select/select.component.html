@@ -1,0 +1,155 @@
+<div class="neo-select-dropdown">
+  @if (label !== "" && label !== undefined && label !== null) {
+    <label
+      (click)="toggleDropdown($event)"
+      class="neo-select-dropdown__label"
+      [class.neo-select-dropdown__label--required]="required"
+    >
+      <span [innerHtml]="label"></span>
+    </label>
+  }
+
+  @if (!_disabled() && options && options.length > 0) {
+    <div
+      #selectField
+      class="neo-select-dropdown__field size-{{ inputSize }}"
+      [title]="title || label"
+      [ngClass]="classes"
+      [class.transparent]="transparent"
+      [class.neo-select-dropdown__field--has-error]="
+        hasErrors() || _hasErrors() || false
+      "
+      (click)="toggleDropdown($event)"
+      clickable
+      (focusout)="checkErrors()"
+      cdkOverlayOrigin
+      #selectDropdown="cdkOverlayOrigin"
+      [attr.id]="id"
+      [attr.aria-labelledby]="id"
+    >
+      <div class="neo-select-dropdown__field__value">
+        @if (!multiple && optionSelected()) {
+          <span
+            class="neo-select-dropdown__field__value__label"
+            [innerHTML]="optionSelected().label | safeHtml"
+          ></span>
+        }
+        @if (multiple && optionsSelected().length > 0) {
+          <span
+            class="neo-select-dropdown__field__value__label"
+            [innerHTML]="
+              optionsSelected().length === 1
+                ? (optionsSelected()[0].label | safeHtml)
+                : optionsSelected().length +
+                  ' ' +
+                  ('select.multiple_choices' | translate)
+            "
+          ></span>
+        }
+        @if (
+          (!multiple && !optionSelected()) ||
+          (multiple && optionsSelected().length === 0)
+        ) {
+          <span class="neo-select-dropdown__field__value__label">{{
+            placeholder || "select.select_option" | translate
+          }}</span>
+        }
+      </div>
+      <i
+        class="ri-arrow-down-s-line neo-select-dropdown__field__arrow-dropdown"
+        [ngClass]="{ open: isDropdownOpened() }"
+      ></i>
+    </div>
+
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="selectDropdown"
+      [cdkConnectedOverlayOpen]="isDropdownOpened()"
+      [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+      cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+      [cdkConnectedOverlayHasBackdrop]="true"
+      (detach)="closeDropdown()"
+      (backdropClick)="closeDropdown()"
+    >
+      <div class="neo-select-dropdown__dropdown">
+        @if (search) {
+          <div class="neo-select-dropdown__dropdown__search">
+            <input
+              #searchInput
+              class="neo-select-dropdown__dropdown__search__input"
+              type="text"
+              [placeholder]="'app.buscar' | translate"
+              (input)="searchOption(searchInput.value)"
+            />
+            <i
+              class="ri-search-line neo-select-dropdown__dropdown__search__icon"
+            ></i>
+          </div>
+        }
+        <div
+          class="neo-select-dropdown__dropdown__options"
+          [cdkTrapFocus]="!search"
+          [cdkTrapFocusAutoCapture]="!search"
+          [ngStyle]="{ 'min-width': selectField.offsetWidth + 'px' }"
+        >
+          <!-- LISTADO DE OPTIONS -->
+          @if (isDropdownOpened()) {
+            @for (option of optionsFiltered(); track option) {
+              <div
+                #itemOption
+                class="neo-select-dropdown__dropdown__options__item"
+                [class.neo-select-dropdown__dropdown__options__item--selected]="
+                  option.selected
+                "
+                [class.neo-select-dropdown__dropdown__options__item--disabled]="
+                  option.disabled
+                "
+                [autofocus]="option.selected"
+                (click)="changeOption(option)"
+                clickable
+                [title]="option.label | striphtml"
+              >
+                @if (option.selected) {
+                  <i class="ri-check-line"></i>
+                }
+                <span
+                  class="neo-select-dropdown__dropdown__options__item__label"
+                  [innerHTML]="option.label | safeHtml"
+                ></span>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </ng-template>
+  } @else {
+    <!-- SE CARGARÁ SI EL COMPONENTE ESTÁ DESHABILITADO -->
+    <div
+      [attr.aria-disabled]="true"
+      class="neo-select-dropdown__field size-{{ inputSize }}"
+      [class.neo-select-dropdown__field--disabled]="true"
+      [class.neo-select-dropdown__field--transparent]="transparent"
+      [title]="title || label"
+      [ngClass]="classes"
+      [attr.id]="id"
+      [attr.aria-labelledby]="id"
+    >
+      <div class="neo-select-dropdown__field__value">
+        @if (optionSelected()) {
+          <span
+            class="neo-select-dropdown__field__value__label"
+            [innerHTML]="optionSelected().label | safeHtml"
+          ></span>
+        } @else {
+          <span class="neo-select-dropdown__field__value__label">{{
+            placeholder || "select.select_option" | translate
+          }}</span>
+        }
+      </div>
+      <i
+        class="ri-arrow-down-s-line neo-select-dropdown__field__arrow-dropdown"
+        [ngClass]="{ open: isDropdownOpened() }"
+      ></i>
+    </div>
+  }
+</div>

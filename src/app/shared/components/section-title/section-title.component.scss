@@ -1,0 +1,36 @@
+@import 'base';
+
+.section-title {
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  padding-bottom: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  margin-bottom: 10px;
+  line-height: 1rem;
+  color: var(--text-color);
+
+  &--no-line {
+    border-bottom: none;
+  }
+
+  &--icon-no-color {
+    i:before {
+      color: var(--text-color);
+    }
+  }
+
+  h4 {
+    font-size: 0.85rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 0.85rem;
+    letter-spacing: 0.15px;
+    margin: 0;
+  }
+}

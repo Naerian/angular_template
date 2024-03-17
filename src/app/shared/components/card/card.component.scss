@@ -1,0 +1,80 @@
+@import 'base';
+
+:host {
+  display: flex;
+  flex-direction: column;
+
+  &.card-collapsed-icon {
+    align-items: flex-start;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 5px;
+  background-color: var(--bg-card-color);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color-card);
+
+  &:not(.card--icon) {
+    min-height: 45px;
+  }
+
+  &--collapsed:not(.card--icon) {
+    min-height: 40px;
+  }
+
+  &--icon {
+    padding: 0.35rem;
+  }
+
+  &--collapsable {
+    position: relative;
+  }
+
+  &__collapse-header {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+
+    &--with-header {
+      top: 16px;
+      right: 20px;
+    }
+  }
+
+  &__content {
+    padding: 1.2rem;
+    font-size: 0.9rem;
+
+    &--collapsed {
+      display: none;
+    }
+
+    &--with-header {
+      padding-top: 0;
+    }
+  }
+
+  &__collapsed-content--label {
+
+    &:not(.in-header) {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 0 10px;
+    }
+
+    &.in-header {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+    }
+  }
+
+}

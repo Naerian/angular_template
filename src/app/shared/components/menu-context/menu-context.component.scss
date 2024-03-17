@@ -1,0 +1,24 @@
+@import 'base';
+
+:host {
+  display: flex;
+}
+
+.menu-context {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 5px;
+  min-width: 100px;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  box-shadow: var(--shadow-box) !important;
+
+  &__btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}

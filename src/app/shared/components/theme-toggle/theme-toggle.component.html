@@ -1,0 +1,19 @@
+<neo-button
+  mode="icon"
+  [color]="color"
+  [transparent]="transparent"
+  (click)="toggleTheme($event)"
+  [size]="size"
+  [title]="
+    (currentTheme() === LIGHT_THEME
+      ? 'theme.dark_theme'
+      : 'theme.light_theme'
+    ) | translate
+  "
+>
+  @if (currentTheme() === LIGHT_THEME) {
+    <i class="ri-moon-line"></i>
+  } @else {
+    <i class="ri-sun-line"></i>
+  }
+</neo-button>

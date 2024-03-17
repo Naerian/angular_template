@@ -1,0 +1,112 @@
+@import 'base';
+
+.paginator {
+  display: flex;
+  justify-content: space-between;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-size: 0.85rem;
+  line-height: 0.85rem;
+
+  &--dir_right {
+    flex-direction: row-reverse;
+  }
+
+  &__pagination {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    list-style: none;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-bottom: 0;
+    margin-top: 0;
+    gap: 5px;
+
+    &__page {
+
+      border: 0.5px solid var(--border-pagination-page-color) !important;
+      border-radius: 2px;
+
+      &--link,
+      &--range {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 25px;
+        height: 25px;
+        padding: 5px;
+        cursor: pointer;
+        color: var(--text-color) !important;
+
+        i::before {
+          color: var(--text-color) !important;
+        }
+      }
+
+      &--range {
+        cursor: default;
+      }
+
+      &.disabled {
+        opacity: 0.5;
+
+        .paginator__pagination__page--link {
+          pointer-events: none;
+          cursor: auto;
+        }
+      }
+
+      &:hover,
+      &.active {
+        border: 0.5px solid var(--bg-pagination-active-color) !important;
+        background-color: var(--bg-pagination-active-color) !important;
+        border-radius: 2px;
+
+        .paginator__pagination__page--link {
+          color: var(--text-pagination-active-color) !important;
+        }
+      }
+
+      &:has(.paginator__pagination__page--range) {
+        &:hover {
+          background-color: transparent !important;
+          border: 0.5px solid var(--border-pagination-page-color) !important;
+        }
+      }
+    }
+
+    &__dividenumber {
+      display: flex;
+      align-items: center;
+      min-width: 45px;
+      justify-content: center;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      gap: 5px;
+      color: var(--text-color) !important;
+
+      &--current,
+      &--total {
+        color: var(--text-color) !important;
+      }
+    }
+  }
+
+  &__total_results {
+    min-width: 65px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    padding: 5px 10px;
+    color: var(--text-color) !important;
+    border: 0.5px solid var(--border-pagination-page-color) !important;
+    border-radius: 2px;
+  }
+}

@@ -1,0 +1,64 @@
+@import 'base';
+
+.neo-input-date-picker {
+  position: relative;
+
+  &--disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &__label {
+    &--required {
+      &::after {
+        content: '*';
+        color: var(--danger-color);
+      }
+    }
+  }
+
+  &__wrapper {
+    position: relative;
+
+    &__field {
+      width: 100%;
+      border-radius: 5px;
+      box-sizing: border-box;
+      padding: 10px 10px;
+      padding-right: 40px;
+      cursor: pointer;
+
+      &[disabled],
+      &:disabled {
+        cursor: not-allowed;
+      }
+
+      &--has-error {
+        border: 1px solid var(--danger-color);
+      }
+    }
+
+    &__icon-calendar {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      i:before {
+        color: var(--icon-field-color);
+      }
+    }
+  }
+
+  &__calendar {
+    .calendar-picker {
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+}

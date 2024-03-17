@@ -1,0 +1,15 @@
+@if (isActive) {
+  @if (!tabBody && !tabHeader && !tabFooter) {
+    <div class="tabs__content__item">
+      <ng-content></ng-content>
+    </div>
+  } @else {
+    <div class="tabs__content__item" [class.tabs__content__item--no_header]="!tabHeader">
+      <ng-content select="neo-tabs-header"></ng-content>
+
+      <ng-content select="neo-tabs-content"></ng-content>
+
+      <ng-content select="neo-tabs-footer"></ng-content>
+    </div>
+  }
+}

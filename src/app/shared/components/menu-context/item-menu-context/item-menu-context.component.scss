@@ -1,0 +1,38 @@
+@import 'base';
+
+.item-menu-context {
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-color);
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  font-size: 0.75rem;
+  line-height: 0.8rem;
+  height: 30px;
+
+  &__label {
+    font-weight: 600;
+  }
+
+  &__icon {
+    i::before {
+      color: var(--icon-btn-primary-transparent-color) !important;
+    }
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: var(--hover-bg-btn-primary-transparent-color);
+
+    .item-menu-context__label {
+      text-decoration: underline;
+    }
+  }
+
+}

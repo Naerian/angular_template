@@ -1,0 +1,25 @@
+@if (isMenuOpened()) {
+  <aside
+    class="neo-main-menu"
+    [class.neo-main-menu--left]="position === LEFT_MENU_POSITION"
+    [class.neo-main-menu--right]="position === RIGHT_MENU_POSITION"
+    role="navigation"
+    [@slideByPosition]="position"
+    [ngClass]="{
+      open: isMenuOpened(),
+      close: !isMenuOpened()
+    }"
+  >
+    <div class="neo-main-menu__wrapper">
+      @for (item of menu; track item) {
+        <neo-side-menu-item class="neo-main-menu__item" [itemMenu]="item" (closeMainItemsMenu)="shrinkItems(item)">
+        </neo-side-menu-item>
+      }
+    </div>
+  </aside>
+  <div
+    [@fadeInOutMenu]
+    class="neo-main-menu__backdrop"
+    (click)="closeSideMenu()"
+  ></div>
+}

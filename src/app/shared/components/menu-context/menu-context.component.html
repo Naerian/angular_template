@@ -1,0 +1,33 @@
+<neo-button
+  mode="icon"
+  [color]="color"
+  [size]="size"
+  [transparent]="transparent"
+  (click)="toggleMenuContext($event)"
+  [title]="title"
+  cdkOverlayOrigin
+  #menuContext="cdkOverlayOrigin"
+>
+  <i [class]="icon"></i>
+</neo-button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="menuContext"
+  [cdkConnectedOverlayOpen]="isMenuContextOpened()"
+  [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  (detach)="close()"
+  (backdropClick)="close()"
+>
+  <div
+    class="menu-context"
+    (clickOutside)="close()"
+    (escapeKey)="close()"
+    cdkTrapFocus
+    [cdkTrapFocusAutoCapture]="true"
+  >
+    <ng-content></ng-content>
+  </div>
+</ng-template>

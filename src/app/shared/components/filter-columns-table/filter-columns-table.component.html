@@ -1,0 +1,60 @@
+<neo-button
+  [mode]="label ? 'button' : 'icon'"
+  [title]="label"
+  [size]="size"
+  [transparent]="transparent"
+  [disabled]="_columns().length === 0"
+  [color]="color"
+  (click)="toggleOverlay($event)"
+  cdkOverlayOrigin
+  #filterColumnsOverlay="cdkOverlayOrigin"
+>
+  <i [class]="icon"></i>
+  @if (label) {
+    <span>{{ label }}</span>
+  }
+</neo-button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="filterColumnsOverlay"
+  [cdkConnectedOverlayOpen]="isFiltersOpened()"
+  [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  (detach)="closeFilters()"
+  (backdropClick)="closeFilters()"
+>
+  <div
+    class="filter-columns-table"
+    cdkTrapFocus
+    [cdkTrapFocusAutoCapture]="true"
+    (escapeKey)="closeFilters()"
+  >
+    <div class="filter-columns-table--select_all">
+      <neo-checkbox
+        [title]="'app.select_all2' | translate"
+        [checked]="isSomeColumnsSelected() && isAllColumnsSelected()"
+        [indeterminate]="isSomeColumnsSelected() && !isAllColumnsSelected()"
+        class="size-s"
+        (click)="$event.stopPropagation()"
+        (change)="changeVisibilityAllColumns($event)"
+      >
+        {{ "app.select_all2" | translate }}
+      </neo-checkbox>
+    </div>
+    <div class="filter-columns-table--columns">
+      @for (column of _columns(); track column) {
+        <neo-checkbox
+          [title]="column.label | snakeTextToString"
+          class="size-s"
+          [checked]="column?.visible || false"
+          (click)="$event.stopPropagation()"
+          (change)="changeVisibilityColumn($event, $index)"
+        >
+          {{ column.label | snakeTextToString }}
+        </neo-checkbox>
+      }
+    </div>
+  </div>
+</ng-template>

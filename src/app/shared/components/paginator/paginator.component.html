@@ -1,0 +1,192 @@
+<nav class="paginator" class="{{ 'paginator--dir_' + position }}">
+  @if (type === "fullnumber" || type === "rangenumber") {
+    @if (total !== 0 && total > pageSize) {
+      <ul class="paginator__pagination">
+        @if (showLastFirstBtns) {
+          <li
+            class="paginator__pagination__page"
+            (click)="pageSelected(1, $event)"
+            clickable
+            [class.disabled]="currentPage() === 1"
+            [title]="'pagination.first_page' | translate"
+          >
+            <span class="paginator__pagination__page--link">
+              <i class="ri-skip-left-line"></i>
+            </span>
+          </li>
+        }
+        <li
+          class="paginator__pagination__page"
+          (click)="pageSelected(currentPage() - 1, $event)"
+          clickable
+          [class.disabled]="currentPage() === 1"
+          [title]="'app.anterior' | translate"
+        >
+          <span class="paginator__pagination__page--link"
+            ><i class="ri-arrow-left-s-line"></i
+          ></span>
+        </li>
+
+        @if (type === "rangenumber" && currentPage() - range > 1) {
+          <li class="disabled paginator__pagination__page">
+            <span class="paginator__pagination__page--range">...</span>
+          </li>
+        }
+
+        @for (page of pages(); track page) {
+          <li
+            class="paginator__pagination__page"
+            [class.active]="page === currentPage()"
+          >
+            @if (page !== currentPage()) {
+              <span
+                class="paginator__pagination__page--link"
+                (click)="pageSelected(page, $event)"
+                clickable
+                [title]="'pagination.page' | translate: { page: page }"
+              >
+                {{ page }}
+              </span>
+            }
+
+            @if (page === currentPage()) {
+              <span
+                class="paginator__pagination__page--link"
+                [title]="'pagination.page' | translate: { page: page }"
+                >{{ page }}</span
+              >
+            }
+          </li>
+        }
+
+        @if (
+          type === "rangenumber" && currentPage() + range - 1 < totalPages()
+        ) {
+          <li
+            class="paginator__pagination__page"
+            class="disabled paginator__pagination__page"
+          >
+            <span class="paginator__pagination__page--range">...</span>
+          </li>
+        }
+
+        <li
+          class="paginator__pagination__page"
+          (click)="pageSelected(currentPage() + 1, $event)"
+          clickable
+          [class.disabled]="currentPage() === totalPages()"
+          [title]="'app.siguiente' | translate"
+        >
+          <span class="paginator__pagination__page--link"
+            ><i class="ri-arrow-right-s-line"></i
+          ></span>
+        </li>
+
+        @if (showLastFirstBtns) {
+          <li
+            class="paginator__pagination__page"
+            (click)="pageSelected(totalPages(), $event)"
+            clickable
+            [class.disabled]="currentPage() === totalPages()"
+            [title]="'pagination.last_page' | translate"
+          >
+            <span class="paginator__pagination__page--link">
+              <i class="ri-skip-right-line"></i>
+            </span>
+          </li>
+        }
+      </ul>
+    }
+  } @else if (type === "nonumber" || type === "dividenumber") {
+    @if (total !== 0) {
+      <ul class="paginator__pagination">
+        @if (showLastFirstBtns) {
+          <li
+            class="paginator__pagination__page"
+            (click)="pageSelected(1, $event)"
+            clickable
+            [class.disabled]="currentPage() === 1"
+            [title]="'pagination.first_page' | translate"
+          >
+            <span class="paginator__pagination__page--link">
+              <i class="ri-skip-left-line"></i>
+            </span>
+          </li>
+        }
+
+        <li
+          class="paginator__pagination__page"
+          (click)="pageSelected(currentPage() - 1, $event)"
+          clickable
+          [class.disabled]="currentPage() === 1"
+          [title]="'app.anterior' | translate"
+        >
+          <span class="paginator__pagination__page--link"
+            ><i class="ri-arrow-left-s-line"></i
+          ></span>
+        </li>
+
+        @if (type === "dividenumber") {
+          <li class="paginator__pagination__dividenumber">
+            <span class="paginator__pagination__dividenumber--current">{{
+              currentPage()
+            }}</span
+            >/<span
+              class="paginator__pagination__dividenumber--total"
+              [title]="
+                'pagination.page_to_of_total'
+                  | translate: { page: currentPage(), total: totalPages }
+              "
+              >{{ totalPages() }}</span
+            >
+          </li>
+        }
+
+        <li
+          class="paginator__pagination__page"
+          (click)="pageSelected(currentPage() + 1, $event)"
+          clickable
+          [class.disabled]="currentPage() === totalPages()"
+          [title]="'app.siguiente' | translate"
+        >
+          <span class="paginator__pagination__page--link"
+            ><i class="ri-arrow-right-s-line"></i
+          ></span>
+        </li>
+
+        @if (showLastFirstBtns) {
+          <li
+            class="paginator__pagination__page"
+            (click)="pageSelected(totalPages(), $event)"
+            clickable
+            [class.disabled]="currentPage() === totalPages()"
+            [title]="'pagination.last_page' | translate"
+          >
+            <span class="paginator__pagination__page--link">
+              <i class="ri-skip-right-line"></i>
+            </span>
+          </li>
+        }
+      </ul>
+    }
+  }
+  @if (showTotal && total > 0) {
+    <div
+      class="paginator__total_results"
+      [title]="
+        'pagination.total_label'
+          | translate
+            : {
+                totalPageResults: totalResults(),
+                totalResults: total
+              }
+      "
+    >
+      <span class="paginator__total_results--currents">
+        {{ totalResults() }}</span
+      >
+      /
+      <span class="paginator__total_results--total">{{ total }}</span>
+    </div>
+  }
+</nav>

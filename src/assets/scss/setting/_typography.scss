@@ -1,0 +1,183 @@
+// FONT-FAMILI
+:root {
+  --font-family: "OpenSans", sans-serif;
+}
+
+// LIGHT Y LIGHT ITALIC
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-Light.ttf");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-LightItalic.ttf");
+  font-weight: 300;
+  font-style: italic;
+}
+
+// REGULAR Y REGULAR ITALIC
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-Regular.ttf");
+  font-weight: 400;
+}
+
+// MEDIUM Y MEDIUM ITALIC
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-Medium.ttf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-MediumItalic.ttf");
+  font-weight: 500;
+  font-style: italic;
+}
+
+// SEMIBOLD Y SEMIBOLD ITALIC
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-SemiBold.ttf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-SemiBoldItalic.ttf");
+  font-weight: 600;
+  font-style: italic;
+}
+
+// BOLD Y BOLD ITALIC
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-Bold.ttf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-BoldItalic.ttf");
+  font-weight: 700;
+  font-style: italic;
+}
+
+// EXTRABOLD Y EXTRABOLD ITALIC
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-ExtraBold.ttf");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("./../../font/OpenSans/OpenSans-ExtraBoldItalic.ttf");
+  font-weight: 800;
+  font-style: italic;
+}
+
+body,
+button,
+input,
+label,
+select,
+textarea {
+  font-family: var(--font-family) !important;
+}
+
+label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+  gap: 5px;
+}
+
+// CABECERAS Y ENUNCIADOS
+h1 {
+  font-family: var(--font-family) !important;
+  ;
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.21;
+  letter-spacing: normal;
+  margin: 24px 0px 24px 0px;
+}
+
+h2 {
+  font-family: var(--font-family) !important;
+  ;
+  font-size: 1.25rem;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: normal;
+  margin: 24px 0px 24px 0px;
+}
+
+h3 {
+  font-family: var(--font-family) !important;
+  ;
+  font-size: 0.87rem;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.29;
+  letter-spacing: normal;
+}
+
+h4 {
+  font-family: var(--font-family) !important;
+  ;
+  font-size: 0.80rem;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.29;
+  letter-spacing: normal;
+}
+
+h5 {
+  font-family: var(--font-family) !important;
+  ;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.29;
+  letter-spacing: normal;
+}
+
+h6 {
+  font-family: var(--font-family) !important;
+  ;
+  font-size: 0.70rem;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.29;
+  letter-spacing: normal;
+}
+
+mat-radio-button label,
+mat-checkbox label {
+  font-family: var(--font-family) !important;
+  ;
+}
+
+.neo-table mat-header-row,
+.neo-table mat-row {
+  font-family: var(--font-family) !important;
+  ;
+}
