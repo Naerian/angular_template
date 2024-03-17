@@ -1,4 +1,4 @@
-# Universidad Europea de Madrid
+# TEMPLATE DE PROYECTO ANGULAR
 
 [![Angular](https://img.shields.io/badge/Angular%20CLI-17.2.1-red?style=for-the-badge)](#)
 
@@ -14,18 +14,21 @@ Proyecto desarrollado en [Angular](https://github.com/angular/angular-cli), junt
 npm run compodoc
 ```
 
+## Ver componentes compartidos
+**DEMO:** http://localhost:4200/test
+
 ## Despliegues / Compilaciones
 
 
-###### **- LANZAR WEB (LOCAL) (http://localhost:4200/):**
+###### **WEB LOCAL**
 
-> Lanzará la web en local, bajo el propio servidor de Angular cuya ruta por defecto será **http://localhost:4200/**.
+> Lanzará la web en local, bajo el propio servidor de Angular cuya ruta por defecto será **http://localhost:4200/test**.
 
 ```sh
 npm run ng:serve
 ```
 
-###### **- COMPILACIÓN WEB (PRO, PRE y DEV):**
+###### **COMPILACIÓN (PRO, PRE y DEV):**
 
 > Compilará la web en la carpeta **/dist** del proyecto.
 
@@ -49,4 +52,4 @@ Para más información, revisa la documentación oficial de [Angular CLI](https:
 
 Ejecutar `ng test` para lanzar los test unitarios vía [Karma](https://karma-runner.github.io) / Jasmine .
 
-###### &copy; NEORIS - UEM
+###### &copy; NEORIS - ÁNGEL JIMÉNEZ
