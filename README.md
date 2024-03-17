@@ -4,7 +4,7 @@
 
 [![Angular Material](https://img.shields.io/badge/Angular%20Material-17.2.0-blue?style=for-the-badge)](#)
 
-Proyecto desarrollado en [Angular](https://github.com/angular/angular-cli), junto con [Angular Material](https://material.angular.io/). Éste último ha sido útil para la creación de tablas, overlays, checkbox, radiobutton y varias utilidades de accesibilidad.
+Proyecto desarrollado en [Angular](https://github.com/angular/angular-cli), junto con [Angular Material](https://material.angular.io/). Éste último ha sido útil para la creación de tablas, overlays y varias utilidades de accesibilidad.
 
 ## Documentación técnica
 
