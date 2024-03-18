@@ -2,16 +2,24 @@ import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { ElementRef, EventEmitter, InputSignal, Output, ViewChild, ViewChildren, WritableSignal, input, signal } from '@angular/core';
 import { Component, ContentChildren, forwardRef, Input, QueryList } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { OptionsComponent } from './options/options.component';
 import { InputSize } from '../models/form-field.entity';
+import { OptionsDirective } from './options/options.directive';
 
 /**
  * @name
  * neo-select
  * @description
- * Componente para crear un campo de selección junto con el componente `neo-options`.
+ * Componente para crear un campo de selección junto con la directiva `neo-options`.
  * @example
- * <neo-select [label]="'Label'" [title]="'Title'" [id]="'id'" [multiple]="false" [transparent]="false" [customOptions]="false" [cssClass]="'css-class'" [placeholder]="'Placeholder'" [inputSize]="'m'" (change)="change($event)"></neo-select>
+ * <neo-select [label]="'Label'" [title]="'Title'" [id]="'id'" [multiple]="false" [search]="true" [transparent]="false" [cssClass]="'css-class'" [placeholder]="'Placeholder'" [inputSize]="'m'" (change)="change($event)">
+ *    <neo-options [value]="1" [selected]="true" [disabled]="false">Opción 1</neo-options>
+ *    <neo-options [value]="2" [selected]="false" [disabled]="false">Opción 2</neo-options>
+ * </neo-select>
+ * - o -
+ * <neo-select formControlName="select">
+ *    <neo-options [value]="1" [selected]="true" [disabled]="false">Opción 1</neo-options>
+ *    <neo-options [value]="2" [selected]="false" [disabled]="false">Opción 2</neo-options>
+ * </neo-select>
  */
 @Component({
   selector: 'neo-select',
@@ -54,14 +62,14 @@ export class SelectComponent implements ControlValueAccessor {
 
   @ViewChild('searchInput') searchInput: ElementRef = null as unknown as ElementRef;
   @ViewChildren('itemOption') itemsOption: QueryList<ElementRef> = [] as unknown as QueryList<ElementRef>;
-  @ContentChildren(OptionsComponent) options: QueryList<OptionsComponent> = null as unknown as QueryList<OptionsComponent>;
+  @ContentChildren(OptionsDirective) options: QueryList<OptionsDirective> = null as unknown as QueryList<OptionsDirective>;
 
   _disabled: WritableSignal<boolean> = signal(false);
 
   isDropdownOpened: WritableSignal<boolean> = signal(false);
-  optionsFiltered: WritableSignal<OptionsComponent[]> = signal([] as OptionsComponent[]); // Se utilizará para almacenar las opciones filtradas por el input de búsqueda
-  optionSelected: WritableSignal<any> = signal(null); // // Se utilizará para almecenar un objeto OPTION completo (OptionsComponent)
-  optionsSelected: WritableSignal<OptionsComponent[]> = signal([]); // Se utilizará para almecenar el array de objetos OPTION completo (OptionsComponent)
+  optionsFiltered: WritableSignal<OptionsDirective[]> = signal([] as OptionsDirective[]); // Se utilizará para almacenar las opciones filtradas por el input de búsqueda
+  optionSelected: WritableSignal<any> = signal(null); // // Se utilizará para almecenar un objeto OPTION completo (OptionsDirective)
+  optionsSelected: WritableSignal<OptionsDirective[]> = signal([]); // Se utilizará para almecenar el array de objetos OPTION completo (OptionsDirective)
   optionsSelectedValues: WritableSignal<any[]> = signal([]); // Se utilizará para emitir los valores en un array cuando sea múltiple
   scrollStrategy: ScrollStrategy;
 
@@ -74,7 +82,7 @@ export class SelectComponent implements ControlValueAccessor {
   ngAfterContentInit(): void {
 
     // Si alguno ha sido marcado como "true" usando su input, notificamos al selector
-    const optionSelected: OptionsComponent | null = this.options.find(option => option.selected) || null;
+    const optionSelected: OptionsDirective | null = this.options.find(option => option.selected) || null;
     if (optionSelected)
       this.writeValue(optionSelected?.value || null);
 
@@ -96,12 +104,10 @@ export class SelectComponent implements ControlValueAccessor {
     this.isDropdownOpened.set(!this.isDropdownOpened());
 
     // Si el campo está abierto y tiene búsqueda, enfocamos el input
-    // --
-    // Si no, movemos el scroll a la opción seleccionada
     if (this.isDropdownOpened() && this.search)
       this.setFocusToSearch();
-    else
-      this.scrollToOptionSelected();
+
+    this.scrollToOptionSelected();
   }
 
   /**
@@ -135,7 +141,7 @@ export class SelectComponent implements ControlValueAccessor {
     if (textToSearchNormalized === '') return this.optionsFiltered.set(this.options.toArray());
 
     // Si no, filtramos las opciones que contengan el texto buscado
-    const optionsFiltereds = this.options.filter((option: OptionsComponent) => {
+    const optionsFiltereds = this.options.filter((option: OptionsDirective) => {
       const labelNormalized: string = String(option.label).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
       return labelNormalized.includes(textToSearchNormalized);
     });
@@ -156,14 +162,22 @@ export class SelectComponent implements ControlValueAccessor {
    */
   scrollToOptionSelected() {
     setTimeout(() => {
-      if (this.isDropdownOpened() && !this.search && this.optionSelected() && this.itemsOption?.length > 0) {
-        let elementSelected: ElementRef | undefined = this.itemsOption?.find(element => element.nativeElement.classList.contains('selected')) || undefined;
-        elementSelected?.nativeElement?.scrollIntoView();
+      if (this.isDropdownOpened() && (this.optionSelected() || this.optionsSelected().length > 0) && this.itemsOption?.length > 0) {
+        let elementSelected: ElementRef | undefined = this.itemsOption?.find(element => element.nativeElement.getAttribute('data-selected') === 'true') || undefined;
+        elementSelected?.nativeElement?.scrollIntoView({ behavior: "instant" });
+
+        // Si no hay campo de búsqueda, enfocamos en el elemento seleccionado
+        if (!this.search)
+          elementSelected?.nativeElement?.focus();
       }
     }, 0);
   }
 
-  changeOption(optionItem: any) {
+  /**
+   * Método para cambiar la opción seleccionada en el selector
+   * @param {OptionsDirective | null} optionItem
+   */
+  changeOption(optionItem: OptionsDirective | null) {
 
     if (optionItem && !optionItem?.disabled) {
       if (this.multiple) {
@@ -209,41 +223,17 @@ export class SelectComponent implements ControlValueAccessor {
     }
   }
 
+  /**
+   * Método para desmarcar todas las opciones
+   */
   unselectOptions() {
     this.options?.forEach((option) => option.selected = false);
   }
 
-  // Funciones de control de eventos
-  onChange: any = () => { };
-  onTouched: any = () => { };
-
-  writeValue(value: any) {
-    if (this.options) {
-
-      // Si es de selector múltiple, al pasar los valores iniciales
-      // comprobamos si viene un array o datos normales.
-      // --
-      // Si no es multiple, marcamos solo el valor
-      if (this.multiple) {
-
-        if (value) {
-          if (value instanceof Array) {
-            value.forEach(element => this.findSetOption(element));
-          } else {
-            this.findSetOption(value);
-          }
-        } else {
-          this.optionSelected.set(null);
-          this.unselectOptions();
-        }
-
-      } else {
-        this.findSetOption(value);
-      }
-
-    }
-  }
-
+  /**
+   * Método para buscar y marcar la opción seleccionada
+   * @param value
+   */
   findSetOption(value: any) {
 
     let isResetOptionSelected: boolean = false;
@@ -277,6 +267,37 @@ export class SelectComponent implements ControlValueAccessor {
 
     }
 
+  }
+
+  // Funciones de control de eventos
+  onChange: any = () => { };
+  onTouched: any = () => { };
+
+  writeValue(value: any) {
+    if (this.options) {
+
+      // Si es de selector múltiple, al pasar los valores iniciales
+      // comprobamos si viene un array o datos normales.
+      // --
+      // Si no es multiple, marcamos solo el valor
+      if (this.multiple) {
+
+        if (value) {
+          if (value instanceof Array) {
+            value.forEach(element => this.findSetOption(element));
+          } else {
+            this.findSetOption(value);
+          }
+        } else {
+          this.optionSelected.set(null);
+          this.unselectOptions();
+        }
+
+      } else {
+        this.findSetOption(value);
+      }
+
+    }
   }
 
   registerOnChange(fn: any): void {

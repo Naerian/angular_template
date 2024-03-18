@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SelectComponent } from './select.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SelectModule } from './select.module';
+import { OptionsDirective } from './options/options.directive';
 
 @Component({
   selector: 'test-select',
@@ -92,43 +93,32 @@ describe('SelectComponent', () => {
   });
 
   it('changeOption selected false', () => {
-    const elem: ElementRef = {} as ElementRef<any>;
-    const optionItem = {
+    const optionItem: OptionsDirective = {
       selected: false,
-      content: elem,
       value: 'tests',
       label: 'tests',
-    };
+    } as OptionsDirective;
     component.multiple = true;
     fixture.detectChanges();
     component.changeOption(optionItem);
   });
 
-  it('changeOption single', () => {
-    fixture.detectChanges();
-    component.changeOption(component?.options?.get(0));
-  });
-
   it('changeOption multiple', () => {
-    const elem: ElementRef = {} as ElementRef<any>;
-    const optionItem = {
-      selected: true,
-      content: elem,
+    const optionItem: OptionsDirective = {
+      selected: false,
       value: 'tests',
       label: 'tests',
-    };
+    } as OptionsDirective;
     component.multiple = true;
     component.changeOption(optionItem);
   });
 
   it('changeOption multiple false', () => {
-    const elem: ElementRef = {} as ElementRef<any>;
-    const optionItem = {
-      selected: true,
-      content: elem,
+    const optionItem: OptionsDirective = {
+      selected: false,
       value: 'tests',
       label: 'tests',
-    };
+    } as OptionsDirective;
     component.multiple = false;
     component.changeOption(optionItem);
   });

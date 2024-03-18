@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OptionsComponent } from './options/options.component';
 import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule } from '@angular/forms';
@@ -11,11 +10,11 @@ import { EscapeKeyDirective } from '@shared/directives/escape-key.directive';
 import { SafeHtmlPipe } from '@shared/pipes/safeHtml/safe-html.pipe';
 import { StripHtmlPipe } from '@shared/pipes/striphtml/striphtml.pipe';
 import { SelectComponent } from './select.component';
+import { OptionsDirective } from './options/options.directive';
 
 @NgModule({
   declarations: [
     SelectComponent,
-    OptionsComponent
   ],
   imports: [
     CommonModule,
@@ -27,11 +26,12 @@ import { SelectComponent } from './select.component';
     StripHtmlPipe,
     ClickableDirective,
     ClickOutsideDirective,
-    EscapeKeyDirective
+    EscapeKeyDirective,
+    OptionsDirective
   ],
   exports: [
     SelectComponent,
-    OptionsComponent
+    OptionsDirective
   ]
 })
 export class SelectModule { }

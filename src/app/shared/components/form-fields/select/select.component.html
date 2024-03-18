@@ -71,7 +71,11 @@
       (detach)="closeDropdown()"
       (backdropClick)="closeDropdown()"
     >
-      <div class="neo-select-dropdown__dropdown">
+      <div
+        class="neo-select-dropdown__dropdown"
+        [cdkTrapFocus]="true"
+        [cdkTrapFocusAutoCapture]="true"
+      >
         @if (search) {
           <div class="neo-select-dropdown__dropdown__search">
             <input
@@ -98,19 +102,21 @@
               <div
                 #itemOption
                 class="neo-select-dropdown__dropdown__options__item"
+                [attr.data-selected]="option.selected"
                 [class.neo-select-dropdown__dropdown__options__item--selected]="
                   option.selected
                 "
                 [class.neo-select-dropdown__dropdown__options__item--disabled]="
                   option.disabled
                 "
-                [autofocus]="option.selected"
                 (click)="changeOption(option)"
                 clickable
                 [title]="option.label | striphtml"
               >
                 @if (option.selected) {
-                  <i class="ri-check-line"></i>
+                  <i
+                    class="ri-check-line neo-select-dropdown__dropdown__options__item__icon-selected"
+                  ></i>
                 }
                 <span
                   class="neo-select-dropdown__dropdown__options__item__label"
