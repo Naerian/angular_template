@@ -1,7 +1,6 @@
-import { AfterContentInit, Component, ContentChildren, EventEmitter, Input, Output, QueryList, ViewEncapsulation } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, EventEmitter, Input, Output, QueryList, ViewEncapsulation, forwardRef } from '@angular/core';
 import { TabsItemComponent } from './tabs-item/tabs-item.component';
 import { TabOrientation, TabType } from './models/tabs.entity';
-import { TabsFooterComponent } from './tabs-item/tabs-footer/tabs-footer.component';
 
 /**
  * @name
@@ -26,7 +25,7 @@ import { TabsFooterComponent } from './tabs-item/tabs-footer/tabs-footer.compone
 })
 export class TabsComponent implements AfterContentInit {
 
-  @ContentChildren(TabsItemComponent) tabs: QueryList<TabsItemComponent> = [] as unknown as QueryList<TabsItemComponent>;
+  @ContentChildren(forwardRef(() => TabsItemComponent), { descendants: true }) tabs!: QueryList<TabsItemComponent>;
 
   @Input() type: TabType = 'tab';
   @Input() orientation: TabOrientation = 'v';

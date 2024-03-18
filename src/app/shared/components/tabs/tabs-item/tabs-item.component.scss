@@ -25,12 +25,12 @@
         overflow-y: auto;
         padding-right: 5px;
         padding-left: 5px;
-        height: calc(100vh - 280px);
+        height: calc(100vh - 275px);
       }
 
       &--no_header {
         .tabs__content__item__body {
-          height: calc(100vh - 275px);
+          height: calc(100vh - 245px);
         }
       }
 

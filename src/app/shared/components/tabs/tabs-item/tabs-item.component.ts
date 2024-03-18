@@ -1,9 +1,9 @@
-import { Component, ContentChild, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ContentChild, ContentChildren, Input, OnInit, QueryList, ViewEncapsulation, forwardRef } from '@angular/core';
 import { TabLabelDirective } from '@shared/components/tabs/directives/tab-label.directive';
 import { DEFAULT_TITLE } from '../models/tabs.entity';
-import { TabsFooterComponent } from './tabs-footer/tabs-footer.component';
-import { TabsBodyComponent } from './tabs-body/tabs-body.component';
-import { TabsHeaderComponent } from './tabs-header/tabs-header.component';
+import { TabsHeaderDirective } from './tabs-header/tabs-header.directive';
+import { TabsBodyDirective } from './tabs-body/tabs-body.directive';
+import { TabsFooterDirective } from './tabs-footer/tabs-footer.directive';
 
 /**
  * @name
@@ -36,11 +36,15 @@ import { TabsHeaderComponent } from './tabs-header/tabs-header.component';
 })
 export class TabsItemComponent implements OnInit {
 
-  @ContentChild(TabsHeaderComponent) tabHeader: TabsHeaderComponent | null = null;
-  @ContentChild(TabsBodyComponent) tabBody: TabsBodyComponent | null = null;
-  @ContentChild(TabsFooterComponent) tabFooter: TabsFooterComponent | null = null;
+  @ContentChild(TabsHeaderDirective) tabHeader!: TabsHeaderDirective;
+  @ContentChild(TabsBodyDirective) tabBody!: TabsBodyDirective;
+  @ContentChild(TabsFooterDirective) tabFooter!: TabsFooterDirective;
 
-  @ContentChild(TabLabelDirective) tabLabel: TabLabelDirective | null = null;
+  // @ContentChildren(forwardRef(() => TabsHeaderDirective), { descendants: true }) tabHeader!: QueryList<TabsHeaderDirective>;
+  // @ContentChildren(forwardRef(() => TabsBodyDirective), { descendants: true }) tabBody!: QueryList<TabsBodyDirective>;
+  // @ContentChildren(forwardRef(() => TabsFooterDirective), { descendants: true }) tabFooter!: QueryList<TabsFooterDirective>;
+
+  @ContentChild(TabLabelDirective) tabLabel!: TabLabelDirective;
 
   @Input() active: boolean = false;
   @Input() title: string = '';
