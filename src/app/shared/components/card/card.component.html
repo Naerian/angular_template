@@ -18,7 +18,7 @@
   let-iconSize="iconSize"
 >
   <neo-button
-    [size]="iconSize"
+    [size]="iconSize || 's'"
     color="primary"
     [mode]="!label ? 'icon' : 'button'"
     [title]="'app.expandir' | translate"
@@ -39,7 +39,10 @@
   "
 >
   @if (neoCardHeader) {
-    <div class="neo-card__header" [class.neo-card__header--collapsed]="_isCollapsed()">
+    <div
+      class="neo-card__header"
+      [class.neo-card__header--collapsed]="_isCollapsed()"
+    >
       <div class="neo-card__header__title">
         <ng-content select="neo-card-header"></ng-content>
       </div>
