@@ -62,7 +62,7 @@
     }
 
     &__input:indeterminate~&__checkmark::after {
-      border-width: 2px 5px;
+      border-width: 2px 5px !important;
     }
 
     &__label {

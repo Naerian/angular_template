@@ -1,6 +1,6 @@
 import { Component, ContentChild, HostBinding, Input, WritableSignal, signal, Output, EventEmitter } from '@angular/core';
 import { ButtonSize } from '../button/models/button.entity';
-import { CardHeaderComponent } from './card-header/card-header.component';
+import { CardHeaderDirective } from './card-header/card-header.directive';
 
 /**
  * Componente para crear una tarjeta e incluir contenido dentro de ella
@@ -22,22 +22,22 @@ export class CardComponent {
   /**
    * Contenido del header de la tarjeta (si lo hubiera) mediante el componente `neo-card-header`
    */
-  @ContentChild(CardHeaderComponent) neoCardHeader!: CardHeaderComponent;
+  @ContentChild(CardHeaderDirective) neoCardHeader!: CardHeaderDirective;
 
   /**
    * Título de la tarjeta (si lo hubiera) que se muestra en el header de la tarjeta
    */
-  @Input() label: string = '';
+  @Input() labelCollpased: string = '';
 
   /**
    * Icono para el título de la tarjeta (si lo hubiera) que se muestra en el header de la tarjeta al colapsarla
    */
-  @Input() icon: string = '';
+  @Input() iconCollpased: string = '';
 
   /**
    * Tamaño del botón al que pasará el tamaño de la tarjeta (si lo hubiera) cuando se colapse
    */
-  @Input() size: ButtonSize = 's';
+  @Input() sizeIconCollapsed: ButtonSize = 's';
 
   /**
    * Indica si la tarjeta es colapsable
@@ -49,7 +49,7 @@ export class CardComponent {
    */
   @HostBinding('class.card-collapsed-icon')
   get isCollapsedIcon(): boolean {
-    return (this.collapsable && this._isCollapsed() && this.icon !== '') || false;
+    return (this.collapsable && this._isCollapsed() && this.iconCollpased !== '') || false;
   };
 
   /**

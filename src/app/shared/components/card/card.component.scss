@@ -1,15 +1,6 @@
 @import 'base';
 
-:host {
-  display: flex;
-  flex-direction: column;
-
-  &.card-collapsed-icon {
-    align-items: flex-start;
-  }
-}
-
-.card {
+.neo-card {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -17,32 +8,43 @@
   background-color: var(--bg-card-color);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--border-color-card);
+  min-height: 20px;
+  position: relative;
 
-  &:not(.card--icon) {
-    min-height: 45px;
-  }
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem;
+    padding-bottom: 0;
 
-  &--collapsed:not(.card--icon) {
-    min-height: 40px;
-  }
-
-  &--icon {
-    padding: 0.35rem;
-  }
-
-  &--collapsable {
-    position: relative;
-  }
-
-  &__collapse-header {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-
-    &--with-header {
-      top: 16px;
-      right: 20px;
+    &--collapsed {
+      padding-bottom: 1.2rem;
     }
+
+    &__title {
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  &__collapsed {
+    padding: 0.3rem 0.5rem;
+  }
+
+  &--collapsed-label {
+    display: inline-flex;
+    width: auto;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__collapse-action {
+    position: absolute;
+    top: 5px;
+    right: 5px;
   }
 
   &__content {
@@ -52,29 +54,5 @@
     &--collapsed {
       display: none;
     }
-
-    &--with-header {
-      padding-top: 0;
-    }
   }
-
-  &__collapsed-content--label {
-
-    &:not(.in-header) {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      font-weight: 600;
-      font-size: 14px;
-      padding: 0 10px;
-    }
-
-    &.in-header {
-      position: absolute;
-      top: 16px;
-      right: 20px;
-    }
-  }
-
 }

@@ -2498,7 +2498,7 @@
         },
         {
             "name": "ThemesService",
-            "id": "injectable-ThemesService-b3af3ab55865f84e16dbdedaa7991683fb409cefbf66716544486daee6d196a379a94d5f1436ac48bde881a5c030581971b715286401bf58684209f8dd30e112",
+            "id": "injectable-ThemesService-2873a1bfa0ae4ffe3b2e2ebcdefedb331d46220f645ffe4f9ab38a3cab672f3ce8f1add2d1ab3ba4e29cd462c949d5cb31bdea04ef5f425495e1caf8ad57b109",
             "file": "src/app/shared/components/theme-toggle/service/themes.service.ts",
             "properties": [
                 {
@@ -2549,11 +2549,11 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 44,
+                    "line": 46,
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\n\nFunción para obtener el tema del localStorage o del sistema operativo\n",
-                    "description": "<p>Función para obtener el tema del localStorage o del sistema operativo</p>\n",
+                    "rawdescription": "\n\nFunción para obtener el tema del localStorage o del sistema operativo\n- Si el tema del localStorage existe, lo establecemos.\n- Si no, detectamos el tema del sistema operativo o del navegador.\n",
+                    "description": "<p>Función para obtener el tema del localStorage o del sistema operativo</p>\n<ul>\n<li>Si el tema del localStorage existe, lo establecemos.</li>\n<li>Si no, detectamos el tema del sistema operativo o del navegador.</li>\n</ul>\n",
                     "modifierKind": [
                         123
                     ]
@@ -2637,7 +2637,7 @@
                     "optional": false,
                     "returnType": "ThemeType",
                     "typeParameters": [],
-                    "line": 80,
+                    "line": 82,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nFunción para obtener el tema actual\n",
@@ -2645,8 +2645,8 @@
                     "jsdoctags": [
                         {
                             "tagName": {
-                                "pos": 3077,
-                                "end": 3084,
+                                "pos": 3211,
+                                "end": 3218,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -2664,7 +2664,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 60,
+                    "line": 62,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nFunción para inicializar el tema en el servicio y establecer la clase correspondiente en el body\n",
@@ -2683,7 +2683,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 70,
+                    "line": 72,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nFunción para establecer el tema en el servicio y establecer la clase correspondiente en el body.\nEsta función se usa para cambiar el tema manualmente desde el componente `theme-toggle`\n",
@@ -2691,8 +2691,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2727,
-                                "end": 2733,
+                                "pos": 2861,
+                                "end": 2867,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -2703,8 +2703,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 2721,
-                                "end": 2726,
+                                "pos": 2855,
+                                "end": 2860,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -2720,7 +2720,7 @@
             "deprecationMessage": "",
             "description": "",
             "rawdescription": "\n",
-            "sourceCode": "import { Injectable, Renderer2, RendererFactory2, WritableSignal, signal } from '@angular/core';\r\nimport { environment } from '@environments/environment';\r\nimport { DARK_THEME, LIGHT_THEME, PREFIX_THEME_CLASS, ThemeType } from '../model/theme.entity';\r\n\r\n@Injectable({\r\n  providedIn: 'root'\r\n})\r\nexport class ThemesService {\r\n\r\n  private renderer: Renderer2;\r\n  private colorScheme: WritableSignal<ThemeType> = signal(LIGHT_THEME);\r\n\r\n  constructor(rendererFactory: RendererFactory2) {\r\n    // Crea un nuevo renderizador desde renderFactory, para que sea posible usar renderer2 en un servicio\r\n    this.renderer = rendererFactory.createRenderer(null, null);\r\n  }\r\n\r\n  /**\r\n   * Función para detectar si el navegador admite `prefers-color-scheme` y establecer el tema en consecuencia\r\n   * - Si el navegador admite `prefers-color-scheme`, establecemos el tema en función del sistema operativo o del navegador\r\n   * - Si el navegador no admite `prefers-color-scheme`, establecer el tema claro por defecto\r\n   */\r\n  private _detectPrefersColorScheme() {\r\n    // Primero detectamos si el navegador admite `prefers-color-scheme`\r\n    if (window.matchMedia('(prefers-color-scheme)').media !== 'not all') {\r\n      this.colorScheme.set(window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_THEME : LIGHT_THEME);\r\n    } else {\r\n      this.colorScheme.set(LIGHT_THEME);\r\n    }\r\n  }\r\n\r\n  /**\r\n   * Función para establecer el tema en el servicio y en localStorage\r\n   * @param {ThemeType} scheme - Tema a establecer\r\n   */\r\n  private _setColorScheme(scheme: ThemeType) {\r\n    this.colorScheme.set(scheme);\r\n    localStorage.setItem(environment.THEME_STORAGE_KEY, scheme);\r\n  }\r\n\r\n  /**\r\n   * Función para obtener el tema del localStorage o del sistema operativo\r\n   */\r\n  private _getColorScheme() {\r\n\r\n    // Obtenemos el tema del localStorage si existe\r\n    const localStorageColorScheme: ThemeType | null = (localStorage.getItem(environment.THEME_STORAGE_KEY) as ThemeType) || null;\r\n\r\n    // Si el tema del localStorage existe, lo establecemos. Si no, detectamos el tema del sistema operativo\r\n    if (localStorageColorScheme) {\r\n      this.colorScheme.set(localStorageColorScheme);\r\n    } else {\r\n      this._detectPrefersColorScheme();\r\n    }\r\n  }\r\n\r\n  /**\r\n   * Función para inicializar el tema en el servicio y establecer la clase correspondiente en el body\r\n   */\r\n  initTheme() {\r\n    this._getColorScheme();\r\n    this.renderer.addClass(document.body, PREFIX_THEME_CLASS + this.colorScheme());\r\n  }\r\n\r\n  /**\r\n   * Función para establecer el tema en el servicio y establecer la clase correspondiente en el body.\r\n   * Esta función se usa para cambiar el tema manualmente desde el componente `theme-toggle`\r\n   * @param scheme\r\n   */\r\n  setTheme(scheme: ThemeType) {\r\n    this._setColorScheme(scheme);\r\n    this.renderer.removeClass(document.body, PREFIX_THEME_CLASS + (this.colorScheme() === DARK_THEME ? LIGHT_THEME : DARK_THEME));\r\n    this.renderer.addClass(document.body, PREFIX_THEME_CLASS + scheme);\r\n  }\r\n\r\n  /**\r\n   * Función para obtener el tema actual\r\n   * @returns {ThemeType}\r\n   */\r\n  getCurrentTheme(): ThemeType {\r\n    return this.colorScheme();\r\n  }\r\n\r\n}\r\n",
+            "sourceCode": "import { Injectable, Renderer2, RendererFactory2, WritableSignal, signal } from '@angular/core';\r\nimport { environment } from '@environments/environment';\r\nimport { DARK_THEME, LIGHT_THEME, PREFIX_THEME_CLASS, ThemeType } from '../model/theme.entity';\r\n\r\n@Injectable({\r\n  providedIn: 'root'\r\n})\r\nexport class ThemesService {\r\n\r\n  private renderer: Renderer2;\r\n  private colorScheme: WritableSignal<ThemeType> = signal(LIGHT_THEME);\r\n\r\n  constructor(rendererFactory: RendererFactory2) {\r\n    // Crea un nuevo renderizador desde renderFactory, para que sea posible usar renderer2 en un servicio\r\n    this.renderer = rendererFactory.createRenderer(null, null);\r\n  }\r\n\r\n  /**\r\n   * Función para detectar si el navegador admite `prefers-color-scheme` y establecer el tema en consecuencia\r\n   * - Si el navegador admite `prefers-color-scheme`, establecemos el tema en función del sistema operativo o del navegador\r\n   * - Si el navegador no admite `prefers-color-scheme`, establecer el tema claro por defecto\r\n   */\r\n  private _detectPrefersColorScheme() {\r\n    // Primero detectamos si el navegador admite `prefers-color-scheme`\r\n    if (window.matchMedia('(prefers-color-scheme)').media !== 'not all') {\r\n      this.colorScheme.set(window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_THEME : LIGHT_THEME);\r\n    } else {\r\n      this.colorScheme.set(LIGHT_THEME);\r\n    }\r\n  }\r\n\r\n  /**\r\n   * Función para establecer el tema en el servicio y en localStorage\r\n   * @param {ThemeType} scheme - Tema a establecer\r\n   */\r\n  private _setColorScheme(scheme: ThemeType) {\r\n    this.colorScheme.set(scheme);\r\n    localStorage.setItem(environment.THEME_STORAGE_KEY, scheme);\r\n  }\r\n\r\n  /**\r\n   * Función para obtener el tema del localStorage o del sistema operativo\r\n   * - Si el tema del localStorage existe, lo establecemos.\r\n   * - Si no, detectamos el tema del sistema operativo o del navegador.\r\n   */\r\n  private _getColorScheme() {\r\n\r\n    // Obtenemos el tema del localStorage si existe\r\n    const localStorageColorScheme: ThemeType | null = (localStorage.getItem(environment.THEME_STORAGE_KEY) as ThemeType) || null;\r\n\r\n    // Si el tema del localStorage existe, lo establecemos. Si no, detectamos el tema del sistema operativo\r\n    if (localStorageColorScheme) {\r\n      this.colorScheme.set(localStorageColorScheme);\r\n    } else {\r\n      this._detectPrefersColorScheme();\r\n    }\r\n  }\r\n\r\n  /**\r\n   * Función para inicializar el tema en el servicio y establecer la clase correspondiente en el body\r\n   */\r\n  initTheme() {\r\n    this._getColorScheme();\r\n    this.renderer.addClass(document.body, PREFIX_THEME_CLASS + this.colorScheme());\r\n  }\r\n\r\n  /**\r\n   * Función para establecer el tema en el servicio y establecer la clase correspondiente en el body.\r\n   * Esta función se usa para cambiar el tema manualmente desde el componente `theme-toggle`\r\n   * @param scheme\r\n   */\r\n  setTheme(scheme: ThemeType) {\r\n    this._setColorScheme(scheme);\r\n    this.renderer.removeClass(document.body, PREFIX_THEME_CLASS + (this.colorScheme() === DARK_THEME ? LIGHT_THEME : DARK_THEME));\r\n    this.renderer.addClass(document.body, PREFIX_THEME_CLASS + scheme);\r\n  }\r\n\r\n  /**\r\n   * Función para obtener el tema actual\r\n   * @returns {ThemeType}\r\n   */\r\n  getCurrentTheme(): ThemeType {\r\n    return this.colorScheme();\r\n  }\r\n\r\n}\r\n",
             "constructorObj": {
                 "name": "constructor",
                 "description": "",
@@ -2997,6 +2997,37 @@
                 }
             ],
             "extends": []
+        },
+        {
+            "name": "CardHeaderDirective",
+            "id": "directive-CardHeaderDirective-83040e9d60b336d5507fe9a433a40a3fa02143c89838640a6e21a5562428d9a7749e747bef42a2db881e0ecd3614bc19b5dd898f3c9bc3fac98a6c109a77d659",
+            "file": "src/app/shared/components/card/card-header/card-header.directive.ts",
+            "type": "directive",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Directive } from '@angular/core';\r\n\r\n@Directive({\r\n  selector: 'neo-card-header',\r\n  exportAs: 'neoCardHeader',\r\n  standalone: true\r\n})\r\nexport class CardHeaderDirective {\r\n\r\n  constructor() { }\r\n\r\n}\r\n",
+            "selector": "neo-card-header",
+            "providers": [],
+            "exportAs": "neoCardHeader",
+            "hostDirectives": [],
+            "standalone": true,
+            "inputsClass": [],
+            "outputsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "extends": [],
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [],
+                "line": 8
+            }
         },
         {
             "name": "ClickableDirective",
@@ -6310,7 +6341,7 @@
         },
         {
             "name": "CardComponent",
-            "id": "component-CardComponent-dd603087066f83df4fe42591ff9afe3ae28de92fe3dbcce7ea34174ed2c654684bc8839b9b92fa3caf88af25ae3fc9cf30d6dabf50f245704d2bdf21ce73d748",
+            "id": "component-CardComponent-83e4f8ab8006f0f29445d40e952ef15e3e8bfc811c5bf7a32db0eea1bd0ab4ff508fc7990c69c136d3fc7a5ce04b7193df2c902c3af59a9af5d5b595d5271a0e",
             "file": "src/app/shared/components/card/card.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -6340,7 +6371,7 @@
                     "decorators": []
                 },
                 {
-                    "name": "icon",
+                    "name": "iconCollpased",
                     "defaultValue": "''",
                     "deprecated": false,
                     "deprecationMessage": "",
@@ -6351,7 +6382,7 @@
                     "decorators": []
                 },
                 {
-                    "name": "label",
+                    "name": "labelCollpased",
                     "defaultValue": "''",
                     "deprecated": false,
                     "deprecationMessage": "",
@@ -6362,7 +6393,7 @@
                     "decorators": []
                 },
                 {
-                    "name": "size",
+                    "name": "sizeIconCollapsed",
                     "defaultValue": "'s'",
                     "deprecated": false,
                     "deprecationMessage": "",
@@ -6401,7 +6432,7 @@
                     "name": "neoCardHeader",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "type": "CardHeaderComponent",
+                    "type": "CardHeaderDirective",
                     "optional": false,
                     "description": "<p>Contenido del header de la tarjeta (si lo hubiera) mediante el componente <code>neo-card-header</code></p>\n",
                     "line": 25,
@@ -6409,7 +6440,7 @@
                     "decorators": [
                         {
                             "name": "ContentChild",
-                            "stringifiedArguments": "CardHeaderComponent"
+                            "stringifiedArguments": "CardHeaderDirective"
                         }
                     ],
                     "modifierKind": [
@@ -6443,8 +6474,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2422,
-                                "end": 2427,
+                                "pos": 2462,
+                                "end": 2467,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6456,8 +6487,8 @@
                             "deprecationMessage": "",
                             "optional": true,
                             "tagName": {
-                                "pos": 2408,
-                                "end": 2413,
+                                "pos": 2448,
+                                "end": 2453,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6466,22 +6497,22 @@
                             },
                             "comment": "<p>Evento de click</p>\n",
                             "typeExpression": {
-                                "pos": 2414,
-                                "end": 2421,
+                                "pos": 2454,
+                                "end": 2461,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 316,
                                 "type": {
-                                    "pos": 2415,
-                                    "end": 2420,
+                                    "pos": 2455,
+                                    "end": 2460,
                                     "flags": 16777216,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 1,
                                     "kind": 183,
                                     "typeName": {
-                                        "pos": 2415,
-                                        "end": 2420,
+                                        "pos": 2455,
+                                        "end": 2460,
                                         "flags": 16777216,
                                         "modifierFlagsCache": 0,
                                         "transformFlags": 0,
@@ -6518,8 +6549,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2688,
-                                "end": 2693,
+                                "pos": 2728,
+                                "end": 2733,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6531,8 +6562,8 @@
                             "deprecationMessage": "",
                             "optional": true,
                             "tagName": {
-                                "pos": 2674,
-                                "end": 2679,
+                                "pos": 2714,
+                                "end": 2719,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6541,22 +6572,22 @@
                             },
                             "comment": "<p>Evento de click</p>\n",
                             "typeExpression": {
-                                "pos": 2680,
-                                "end": 2687,
+                                "pos": 2720,
+                                "end": 2727,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 316,
                                 "type": {
-                                    "pos": 2681,
-                                    "end": 2686,
+                                    "pos": 2721,
+                                    "end": 2726,
                                     "flags": 16777216,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 1,
                                     "kind": 183,
                                     "typeName": {
-                                        "pos": 2681,
-                                        "end": 2686,
+                                        "pos": 2721,
+                                        "end": 2726,
                                         "flags": 16777216,
                                         "modifierFlagsCache": 0,
                                         "transformFlags": 0,
@@ -6593,8 +6624,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2119,
-                                "end": 2124,
+                                "pos": 2159,
+                                "end": 2164,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6606,8 +6637,8 @@
                             "deprecationMessage": "",
                             "optional": true,
                             "tagName": {
-                                "pos": 2105,
-                                "end": 2110,
+                                "pos": 2145,
+                                "end": 2150,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6616,22 +6647,22 @@
                             },
                             "comment": "<p>Evento de click</p>\n",
                             "typeExpression": {
-                                "pos": 2111,
-                                "end": 2118,
+                                "pos": 2151,
+                                "end": 2158,
                                 "flags": 16842752,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 316,
                                 "type": {
-                                    "pos": 2112,
-                                    "end": 2117,
+                                    "pos": 2152,
+                                    "end": 2157,
                                     "flags": 16777216,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 1,
                                     "kind": 183,
                                     "typeName": {
-                                        "pos": 2112,
-                                        "end": 2117,
+                                        "pos": 2152,
+                                        "end": 2157,
                                         "flags": 16777216,
                                         "modifierFlagsCache": 0,
                                         "transformFlags": 0,
@@ -6664,11 +6695,11 @@
             "description": "<p>Componente para crear una tarjeta e incluir contenido dentro de ella</p>\n<b>Example :</b><div><pre class=\"line-numbers\"><code class=\"language-html\">&lt;neo-card label=&quot;Título de la tarjeta&quot; icon=&quot;icono&quot; size=&quot;s&quot; [collapsable]=&quot;true&quot;&gt;\n   &lt;neo-card-header&gt;\n      &lt;div&gt;Tipos de botones&lt;/div&gt;\n   &lt;/neo-card-header&gt;\n   &lt;p&gt;Contenido de la tarjeta&lt;/p&gt;\n&lt;/neo-card&gt;</code></pre></div>",
             "rawdescription": "\n\nComponente para crear una tarjeta e incluir contenido dentro de ella\n```html\n<neo-card label=\"Título de la tarjeta\" icon=\"icono\" size=\"s\" [collapsable]=\"true\">\n   <neo-card-header>\n      <div>Tipos de botones</div>\n   </neo-card-header>\n   <p>Contenido de la tarjeta</p>\n</neo-card>\n```",
             "type": "component",
-            "sourceCode": "import { Component, ContentChild, HostBinding, Input, WritableSignal, signal, Output, EventEmitter } from '@angular/core';\r\nimport { ButtonSize } from '../button/models/button.entity';\r\nimport { CardHeaderComponent } from './card-header/card-header.component';\r\n\r\n/**\r\n * Componente para crear una tarjeta e incluir contenido dentro de ella\r\n * @example\r\n * <neo-card label=\"Título de la tarjeta\" icon=\"icono\" size=\"s\" [collapsable]=\"true\">\r\n *    <neo-card-header>\r\n*       <div>Tipos de botones</div>\r\n *    </neo-card-header>\r\n *    <p>Contenido de la tarjeta</p>\r\n * </neo-card>\r\n */\r\n@Component({\r\n  selector: 'neo-card',\r\n  templateUrl: './card.component.html',\r\n  styleUrls: ['./card.component.scss'],\r\n})\r\nexport class CardComponent {\r\n\r\n  /**\r\n   * Contenido del header de la tarjeta (si lo hubiera) mediante el componente `neo-card-header`\r\n   */\r\n  @ContentChild(CardHeaderComponent) neoCardHeader!: CardHeaderComponent;\r\n\r\n  /**\r\n   * Título de la tarjeta (si lo hubiera) que se muestra en el header de la tarjeta\r\n   */\r\n  @Input() label: string = '';\r\n\r\n  /**\r\n   * Icono para el título de la tarjeta (si lo hubiera) que se muestra en el header de la tarjeta al colapsarla\r\n   */\r\n  @Input() icon: string = '';\r\n\r\n  /**\r\n   * Tamaño del botón al que pasará el tamaño de la tarjeta (si lo hubiera) cuando se colapse\r\n   */\r\n  @Input() size: ButtonSize = 's';\r\n\r\n  /**\r\n   * Indica si la tarjeta es colapsable\r\n   */\r\n  @Input() collapsable?: boolean = false;\r\n\r\n  /**\r\n   * Indica si la tarjeta está colapsada o no añadiendo la clase \"card-collapsed-icon\" al componente\r\n   */\r\n  @HostBinding('class.card-collapsed-icon')\r\n  get isCollapsedIcon(): boolean {\r\n    return (this.collapsable && this._isCollapsed() && this.icon !== '') || false;\r\n  };\r\n\r\n  /**\r\n   * Evento que se emite cuando la tarjeta se colapsa o se expande\r\n   */\r\n  @Output() collapsed: EventEmitter<boolean> = new EventEmitter(false);\r\n\r\n  /**\r\n   * Indica si la tarjeta está colapsada o no\r\n   */\r\n  _isCollapsed: WritableSignal<boolean> = signal(false);\r\n\r\n  /**\r\n   * Función para colapsar o expandir la tarjeta\r\n   * @param {Event} event Evento de click\r\n   */\r\n  public toggleCollapse(event?: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this._isCollapsed.set(!this._isCollapsed());\r\n    this.collapsed.emit(this._isCollapsed());\r\n  }\r\n\r\n  /**\r\n   * Función para colapsar la tarjeta\r\n   * @param {Event} event Evento de click\r\n   */\r\n  public collapse(event?: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this._isCollapsed.set(true);\r\n    this.collapsed.emit(true);\r\n  }\r\n\r\n  /**\r\n   * Función para expandir la tarjeta\r\n   * @param {Event} event Evento de click\r\n   */\r\n  public expand(event?: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this._isCollapsed.set(false);\r\n    this.collapsed.emit(false);\r\n  }\r\n}\r\n",
+            "sourceCode": "import { Component, ContentChild, HostBinding, Input, WritableSignal, signal, Output, EventEmitter } from '@angular/core';\r\nimport { ButtonSize } from '../button/models/button.entity';\r\nimport { CardHeaderDirective } from './card-header/card-header.directive';\r\n\r\n/**\r\n * Componente para crear una tarjeta e incluir contenido dentro de ella\r\n * @example\r\n * <neo-card label=\"Título de la tarjeta\" icon=\"icono\" size=\"s\" [collapsable]=\"true\">\r\n *    <neo-card-header>\r\n*       <div>Tipos de botones</div>\r\n *    </neo-card-header>\r\n *    <p>Contenido de la tarjeta</p>\r\n * </neo-card>\r\n */\r\n@Component({\r\n  selector: 'neo-card',\r\n  templateUrl: './card.component.html',\r\n  styleUrls: ['./card.component.scss'],\r\n})\r\nexport class CardComponent {\r\n\r\n  /**\r\n   * Contenido del header de la tarjeta (si lo hubiera) mediante el componente `neo-card-header`\r\n   */\r\n  @ContentChild(CardHeaderDirective) neoCardHeader!: CardHeaderDirective;\r\n\r\n  /**\r\n   * Título de la tarjeta (si lo hubiera) que se muestra en el header de la tarjeta\r\n   */\r\n  @Input() labelCollpased: string = '';\r\n\r\n  /**\r\n   * Icono para el título de la tarjeta (si lo hubiera) que se muestra en el header de la tarjeta al colapsarla\r\n   */\r\n  @Input() iconCollpased: string = '';\r\n\r\n  /**\r\n   * Tamaño del botón al que pasará el tamaño de la tarjeta (si lo hubiera) cuando se colapse\r\n   */\r\n  @Input() sizeIconCollapsed: ButtonSize = 's';\r\n\r\n  /**\r\n   * Indica si la tarjeta es colapsable\r\n   */\r\n  @Input() collapsable?: boolean = false;\r\n\r\n  /**\r\n   * Indica si la tarjeta está colapsada o no añadiendo la clase \"card-collapsed-icon\" al componente\r\n   */\r\n  @HostBinding('class.card-collapsed-icon')\r\n  get isCollapsedIcon(): boolean {\r\n    return (this.collapsable && this._isCollapsed() && this.iconCollpased !== '') || false;\r\n  };\r\n\r\n  /**\r\n   * Evento que se emite cuando la tarjeta se colapsa o se expande\r\n   */\r\n  @Output() collapsed: EventEmitter<boolean> = new EventEmitter(false);\r\n\r\n  /**\r\n   * Indica si la tarjeta está colapsada o no\r\n   */\r\n  _isCollapsed: WritableSignal<boolean> = signal(false);\r\n\r\n  /**\r\n   * Función para colapsar o expandir la tarjeta\r\n   * @param {Event} event Evento de click\r\n   */\r\n  public toggleCollapse(event?: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this._isCollapsed.set(!this._isCollapsed());\r\n    this.collapsed.emit(this._isCollapsed());\r\n  }\r\n\r\n  /**\r\n   * Función para colapsar la tarjeta\r\n   * @param {Event} event Evento de click\r\n   */\r\n  public collapse(event?: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this._isCollapsed.set(true);\r\n    this.collapsed.emit(true);\r\n  }\r\n\r\n  /**\r\n   * Función para expandir la tarjeta\r\n   * @param {Event} event Evento de click\r\n   */\r\n  public expand(event?: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this._isCollapsed.set(false);\r\n    this.collapsed.emit(false);\r\n  }\r\n}\r\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": "@import 'base';\r\n\r\n:host {\r\n  display: flex;\r\n  flex-direction: column;\r\n\r\n  &.card-collapsed-icon {\r\n    align-items: flex-start;\r\n  }\r\n}\r\n\r\n.card {\r\n  display: flex;\r\n  flex-direction: column;\r\n  box-sizing: border-box;\r\n  border-radius: 5px;\r\n  background-color: var(--bg-card-color);\r\n  box-shadow: var(--shadow-card);\r\n  border: 1px solid var(--border-color-card);\r\n\r\n  &:not(.card--icon) {\r\n    min-height: 45px;\r\n  }\r\n\r\n  &--collapsed:not(.card--icon) {\r\n    min-height: 40px;\r\n  }\r\n\r\n  &--icon {\r\n    padding: 0.35rem;\r\n  }\r\n\r\n  &--collapsable {\r\n    position: relative;\r\n  }\r\n\r\n  &__collapse-header {\r\n    position: absolute;\r\n    top: 10px;\r\n    right: 20px;\r\n\r\n    &--with-header {\r\n      top: 16px;\r\n      right: 20px;\r\n    }\r\n  }\r\n\r\n  &__content {\r\n    padding: 1.2rem;\r\n    font-size: 0.9rem;\r\n\r\n    &--collapsed {\r\n      display: none;\r\n    }\r\n\r\n    &--with-header {\r\n      padding-top: 0;\r\n    }\r\n  }\r\n\r\n  &__collapsed-content--label {\r\n\r\n    &:not(.in-header) {\r\n      display: flex;\r\n      flex-direction: row;\r\n      align-items: center;\r\n      justify-content: space-between;\r\n      font-weight: 600;\r\n      font-size: 14px;\r\n      padding: 0 10px;\r\n    }\r\n\r\n    &.in-header {\r\n      position: absolute;\r\n      top: 16px;\r\n      right: 20px;\r\n    }\r\n  }\r\n\r\n}\r\n",
+                    "data": "@import 'base';\r\n\r\n.neo-card {\r\n  display: flex;\r\n  flex-direction: column;\r\n  box-sizing: border-box;\r\n  border-radius: 5px;\r\n  background-color: var(--bg-card-color);\r\n  box-shadow: var(--shadow-card);\r\n  border: 1px solid var(--border-color-card);\r\n  min-height: 20px;\r\n\r\n  &__content {\r\n    padding: 1.2rem;\r\n    font-size: 0.9rem;\r\n  }\r\n}\r\n",
                     "styleUrl": "./card.component.scss"
                 }
             ],
@@ -6687,47 +6718,7 @@
                     }
                 }
             },
-            "templateData": "<div\r\n  [class]=\"[\r\n    'card',\r\n    collapsable && _isCollapsed() && icon ? 'card--size-' + size : ''\r\n  ]\"\r\n  [class.card--collapsed]=\"_isCollapsed()\"\r\n  [class.card--collapsable]=\"collapsable\"\r\n  [class.card--icon]=\"collapsable && _isCollapsed() && icon\"\r\n>\r\n  @if (collapsable && !_isCollapsed()) {\r\n    <div class=\"card__collapse-header\" [class.card__collapse-header--with-header]=\"neoCardHeader\">\r\n      <neo-button\r\n        [size]=\"'s'\"\r\n        color=\"primary\"\r\n        mode=\"icon\"\r\n        [title]=\"'app.colapsar' | translate\"\r\n        [transparent]=\"true\"\r\n        (click)=\"toggleCollapse($event)\"\r\n      >\r\n        <i class=\"ri-arrow-up-wide-line\"></i>\r\n      </neo-button>\r\n    </div>\r\n  }\r\n  @if (\r\n    !collapsable ||\r\n    (collapsable && (!_isCollapsed() || (_isCollapsed() && !icon)))\r\n  ) {\r\n    <ng-content select=\"neo-card-header\"></ng-content>\r\n  }\r\n  <div class=\"card__content\" [class.card__content--collapsed]=\"_isCollapsed()\" [class.card__content--with-header]=\"neoCardHeader\">\r\n    <ng-content></ng-content>\r\n  </div>\r\n  @if (collapsable && _isCollapsed()) {\r\n    @if (!icon) {\r\n      <div\r\n        class=\"card__collapsed-content--label\"\r\n        [class.in-header]=\"neoCardHeader\"\r\n      >\r\n        @if (label !== \"\") {\r\n          <span>{{ label }}</span>\r\n        }\r\n        <neo-button\r\n          [size]=\"'s'\"\r\n          color=\"primary\"\r\n          mode=\"icon\"\r\n          [title]=\"'app.expandir' | translate\"\r\n          [transparent]=\"true\"\r\n          (click)=\"toggleCollapse($event)\"\r\n        >\r\n          <i class=\"ri-arrow-down-wide-fill\"></i>\r\n        </neo-button>\r\n      </div>\r\n    } @else {\r\n      <div class=\"card__collapsed-content--icon\">\r\n        <neo-button\r\n          [size]=\"'s'\"\r\n          color=\"primary\"\r\n          [mode]=\"label ? 'button' : 'icon'\"\r\n          [transparent]=\"true\"\r\n          (click)=\"toggleCollapse($event)\"\r\n        >\r\n          <i [class]=\"icon\"></i>\r\n          @if (label !== \"\") {\r\n            <span>{{ label }}</span>\r\n          }\r\n        </neo-button>\r\n      </div>\r\n    }\r\n  }\r\n</div>\r\n"
-        },
-        {
-            "name": "CardHeaderComponent",
-            "id": "component-CardHeaderComponent-f057c7120a8f5d50c5936be80de377d3387bdedb54e1a5c5bd68cf1b175172c73272ae72ba742838b7d2ac590f290e6cdc2f363f767b283deeca6c9daff17f1e",
-            "file": "src/app/shared/components/card/card-header/card-header.component.ts",
-            "encapsulation": [
-                "ViewEncapsulation.None"
-            ],
-            "entryComponents": [],
-            "inputs": [],
-            "outputs": [],
-            "providers": [],
-            "selector": "neo-card-header",
-            "styleUrls": [],
-            "styles": [],
-            "templateUrl": [
-                "./card-header.component.html"
-            ],
-            "viewProviders": [],
-            "hostDirectives": [],
-            "inputsClass": [],
-            "outputsClass": [],
-            "propertiesClass": [],
-            "methodsClass": [],
-            "deprecated": false,
-            "deprecationMessage": "",
-            "hostBindings": [],
-            "hostListeners": [],
-            "standalone": false,
-            "imports": [],
-            "description": "<p>Componente para crear el header de una tarjeta e incluir contenido dentro de ella junto con el componente <code>neo-card</code>.</p>\n<b>Example :</b><div><pre class=\"line-numbers\"><code class=\"language-html\">&lt;neo-card label=&quot;Título de la tarjeta&quot; icon=&quot;icono&quot; size=&quot;s&quot; [collapsable]=&quot;true&quot;&gt;\n   &lt;neo-card-header&gt;\n      &lt;div&gt;Título de la card&lt;/div&gt;\n   &lt;/neo-card-header&gt;\n   &lt;p&gt;Contenido de la card&lt;/p&gt;\n&lt;/neo-card&gt;</code></pre></div>",
-            "rawdescription": "\n\nComponente para crear el header de una tarjeta e incluir contenido dentro de ella junto con el componente `neo-card`.\n```html\n<neo-card label=\"Título de la tarjeta\" icon=\"icono\" size=\"s\" [collapsable]=\"true\">\n   <neo-card-header>\n      <div>Título de la card</div>\n   </neo-card-header>\n   <p>Contenido de la card</p>\n</neo-card>\n```",
-            "type": "component",
-            "sourceCode": "import { Component, ViewEncapsulation } from '@angular/core';\r\n\r\n/**\r\n * Componente para crear el header de una tarjeta e incluir contenido dentro de ella junto con el componente `neo-card`.\r\n * @example\r\n * <neo-card label=\"Título de la tarjeta\" icon=\"icono\" size=\"s\" [collapsable]=\"true\">\r\n *    <neo-card-header>\r\n*       <div>Título de la card</div>\r\n *    </neo-card-header>\r\n *    <p>Contenido de la card</p>\r\n * </neo-card>\r\n */\r\n@Component({\r\n  selector: 'neo-card-header',\r\n  templateUrl: './card-header.component.html',\r\n  styleUrl: './card-header.component.scss',\r\n  encapsulation: ViewEncapsulation.None\r\n})\r\nexport class CardHeaderComponent {\r\n\r\n}\r\n",
-            "styleUrl": "./card-header.component.scss",
-            "assetsDirs": [],
-            "styleUrlsData": "",
-            "stylesData": "",
-            "extends": [],
-            "templateData": "<div class=\"card__header\">\r\n  <ng-content></ng-content>\r\n</div>\r\n"
+            "templateData": "<div class=\"neo-card\">\r\n  <div class=\"neo-card__header\">\r\n    <ng-content select=\"neo-card-header\"></ng-content>\r\n  </div>\r\n  <div class=\"neo-card__content\">\r\n    <ng-content></ng-content>\r\n  </div>\r\n</div>\r\n"
         },
         {
             "name": "CheckboxComponent",
@@ -7190,7 +7181,7 @@
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ".neo-checkbox {\r\n  display: flex;\r\n  position: relative;\r\n  flex-direction: column;\r\n  align-items: flex-start;\r\n\r\n  &__control {\r\n    display: flex;\r\n    position: relative;\r\n    cursor: pointer;\r\n    align-items: center;\r\n\r\n    &__input {\r\n      position: absolute;\r\n      opacity: 0;\r\n      cursor: pointer;\r\n      height: 0;\r\n      width: 0;\r\n      margin: 0;\r\n      z-index: -1;\r\n    }\r\n\r\n    &__input:checked~&__checkmark,\r\n    &__input:indeterminate~&__checkmark {\r\n      border-color: var(--border-field-color);\r\n      box-shadow: none;\r\n    }\r\n\r\n    &__input:focus~&__checkmark {\r\n      outline-color: var(--outline-color);\r\n      outline-style: solid;\r\n      outline-width: 1px;\r\n      box-shadow: 0px 0px 2px 1px var(--bg-field-color);\r\n    }\r\n\r\n    &__input:checked~&__checkmark::after,\r\n    &__input:indeterminate~&__checkmark::after {\r\n      opacity: 1;\r\n    }\r\n\r\n    &__checkmark {\r\n      height: 18px;\r\n      width: 18px;\r\n      border: 1px solid var(--border-field-color);\r\n      background-color: var(--bg-field-color);\r\n      transition: background-color 0.25s ease;\r\n      border-radius: 2px;\r\n      cursor: pointer;\r\n      display: flex;\r\n      flex-direction: column;\r\n      align-items: center;\r\n      justify-content: center;\r\n\r\n      &::after {\r\n        content: \"\";\r\n        display: block;\r\n        border: solid var(--primary-color);\r\n        border-width: 5px;\r\n        opacity: 0;\r\n        transition: opacity 0.25s ease;\r\n      }\r\n    }\r\n\r\n    &__input:indeterminate~&__checkmark::after {\r\n      border-width: 2px 5px;\r\n    }\r\n\r\n    &__label {\r\n      color: var(--text-color);\r\n      margin: 0;\r\n      cursor: pointer;\r\n      padding-left: 5px;\r\n    }\r\n  }\r\n\r\n}\r\n",
+                    "data": ".neo-checkbox {\r\n  display: flex;\r\n  position: relative;\r\n  flex-direction: column;\r\n  align-items: flex-start;\r\n\r\n  &__control {\r\n    display: flex;\r\n    position: relative;\r\n    cursor: pointer;\r\n    align-items: center;\r\n\r\n    &__input {\r\n      position: absolute;\r\n      opacity: 0;\r\n      cursor: pointer;\r\n      height: 0;\r\n      width: 0;\r\n      margin: 0;\r\n      z-index: -1;\r\n    }\r\n\r\n    &__input:checked~&__checkmark,\r\n    &__input:indeterminate~&__checkmark {\r\n      border-color: var(--border-field-color);\r\n      box-shadow: none;\r\n    }\r\n\r\n    &__input:focus~&__checkmark {\r\n      outline-color: var(--outline-color);\r\n      outline-style: solid;\r\n      outline-width: 1px;\r\n      box-shadow: 0px 0px 2px 1px var(--bg-field-color);\r\n    }\r\n\r\n    &__input:checked~&__checkmark::after,\r\n    &__input:indeterminate~&__checkmark::after {\r\n      opacity: 1;\r\n    }\r\n\r\n    &__checkmark {\r\n      height: 18px;\r\n      width: 18px;\r\n      border: 1px solid var(--border-field-color);\r\n      background-color: var(--bg-field-color);\r\n      transition: background-color 0.25s ease;\r\n      border-radius: 2px;\r\n      cursor: pointer;\r\n      display: flex;\r\n      flex-direction: column;\r\n      align-items: center;\r\n      justify-content: center;\r\n\r\n      &::after {\r\n        content: \"\";\r\n        display: block;\r\n        border: solid var(--primary-color);\r\n        border-width: 5px;\r\n        opacity: 0;\r\n        transition: opacity 0.25s ease;\r\n      }\r\n    }\r\n\r\n    &__input:indeterminate~&__checkmark::after {\r\n      border-width: 2px 5px !important;\r\n    }\r\n\r\n    &__label {\r\n      color: var(--text-color);\r\n      margin: 0;\r\n      cursor: pointer;\r\n      padding-left: 5px;\r\n    }\r\n  }\r\n\r\n}\r\n",
                     "styleUrl": "./checkbox.component.scss"
                 },
                 {
@@ -17916,13 +17907,13 @@
         },
         {
             "name": "CardModule",
-            "id": "module-CardModule-263ff06675c94fd28c400d757d2dc68c5d11832f38f0f91cf89e465d4648984ac8c58de741b6cdc3dfb960abea2ab536f06e2fee5f5a10fa47f7ec5c45c0f745",
+            "id": "module-CardModule-791821368f2b7fbf717a492f3cde388df2458a1455b73baecb08d53d85f55c36a40fcd7a99ffb29ad182b7af174f7d64fa88c239f5a3447555839b60d05803b8",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "src/app/shared/components/card/card.module.ts",
             "methods": [],
-            "sourceCode": "import { NgModule } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\nimport { TranslateModule } from '@ngx-translate/core';\r\nimport { ButtonComponent } from '../button/button.component';\r\nimport { CardComponent } from './card.component';\r\nimport { CardHeaderComponent } from './card-header/card-header.component';\r\n\r\n@NgModule({\r\n  declarations: [\r\n    CardComponent,\r\n    CardHeaderComponent\r\n  ],\r\n  imports: [\r\n    CommonModule,\r\n    ButtonComponent,\r\n    TranslateModule\r\n  ],\r\n  exports: [\r\n    CardComponent,\r\n    CardHeaderComponent\r\n  ]\r\n})\r\nexport class CardModule { }\r\n",
+            "sourceCode": "import { NgModule } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\nimport { TranslateModule } from '@ngx-translate/core';\r\nimport { ButtonComponent } from '../button/button.component';\r\nimport { CardComponent } from './card.component';\r\nimport { CardHeaderDirective } from './card-header/card-header.directive';\r\n\r\n@NgModule({\r\n  declarations: [\r\n    CardComponent,\r\n  ],\r\n  imports: [\r\n    CommonModule,\r\n    ButtonComponent,\r\n    CardHeaderDirective,\r\n    TranslateModule\r\n  ],\r\n  exports: [\r\n    CardComponent,\r\n    CardHeaderDirective\r\n  ]\r\n})\r\nexport class CardModule { }\r\n",
             "children": [
                 {
                     "type": "providers",
@@ -17933,9 +17924,6 @@
                     "elements": [
                         {
                             "name": "CardComponent"
-                        },
-                        {
-                            "name": "CardHeaderComponent"
                         }
                     ]
                 },
@@ -17944,6 +17932,9 @@
                     "elements": [
                         {
                             "name": "ButtonComponent"
+                        },
+                        {
+                            "name": "CardHeaderDirective"
                         }
                     ]
                 },
@@ -17954,7 +17945,7 @@
                             "name": "CardComponent"
                         },
                         {
-                            "name": "CardHeaderComponent"
+                            "name": "CardHeaderDirective"
                         }
                     ]
                 },
@@ -18622,16 +18613,6 @@
                 "name": "meta",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/app/shared/components/button/button.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "Meta<ButtonComponent>",
-                "defaultValue": "{\r\n  title: 'Botones',\r\n  component: ButtonComponent,\r\n  render: (args: ButtonComponent) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n    template: `\r\n      <neo-button ${argsToTemplate(args)}>Botón</neo-button>\r\n    `\r\n  }),\r\n  argTypes: {\r\n    click: {\r\n      control: { type: null }\r\n    },\r\n    _title: {\r\n      table: { disable: true }\r\n    },\r\n    clickOnButton: {\r\n      control: { type: null }\r\n    },\r\n    ngAfterViewInit: {\r\n      table: { disable: true }\r\n    },\r\n    btnContent: {\r\n      table: { disable: true }\r\n    },\r\n  },\r\n}"
-            },
-            {
-                "name": "meta",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -18642,11 +18623,21 @@
                 "name": "meta",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
+                "file": "src/app/shared/components/button/button.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Meta<ButtonComponent>",
+                "defaultValue": "{\r\n  title: 'Botones',\r\n  component: ButtonComponent,\r\n  render: (args: ButtonComponent) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n    template: `\r\n      <neo-button ${argsToTemplate(args)}>Botón</neo-button>\r\n    `\r\n  }),\r\n  argTypes: {\r\n    click: {\r\n      control: { type: null }\r\n    },\r\n    _title: {\r\n      table: { disable: true }\r\n    },\r\n    clickOnButton: {\r\n      control: { type: null }\r\n    },\r\n    ngAfterViewInit: {\r\n      table: { disable: true }\r\n    },\r\n    btnContent: {\r\n      table: { disable: true }\r\n    },\r\n  },\r\n}"
+            },
+            {
+                "name": "meta",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
                 "file": "src/app/shared/components/card/card.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Meta<CardComponent>",
-                "defaultValue": "{\r\n  title: 'Cards',\r\n  component: CardComponent,\r\n  decorators: [\r\n    moduleMetadata({\r\n      declarations: [],\r\n      imports: [\r\n        CardModule,\r\n        TranslateModule.forRoot(),\r\n      ],\r\n      providers: []\r\n    }),\r\n  ],\r\n  render: (args) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n    template: `\r\n      <neo-card ${argsToTemplate(args)}>\r\n        <neo-card-header>\r\n          <div>Título de la card</div>\r\n        </neo-card-header>\r\n        <p>Contenido de la card</p>\r\n      </neo-card>\r\n      `\r\n  }),\r\n  argTypes: {\r\n    collapsed: {\r\n      control: { type: null }\r\n    },\r\n    _isCollapsed: {\r\n      table: { disable: true }\r\n    },\r\n    isCollapsedIcon: {\r\n      control: { type: null }\r\n    },\r\n    neoCardHeader: {\r\n      control: { type: null }\r\n    },\r\n    toggleCollapse: {\r\n      control: { type: null }\r\n    },\r\n    collapse: {\r\n      control: { type: null }\r\n    },\r\n    expand: {\r\n      control: { type: null }\r\n    }\r\n  },\r\n}"
+                "defaultValue": "{\r\n  title: 'Cards',\r\n  component: CardComponent,\r\n  decorators: [\r\n    moduleMetadata({\r\n      declarations: [],\r\n      imports: [\r\n        CardModule,\r\n        TranslateModule.forRoot(),\r\n      ],\r\n      providers: []\r\n    }),\r\n  ],\r\n  render: (args) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n    template: `\r\n      <neo-card ${argsToTemplate(args)}>\r\n        <span>Contenido de la card</span>\r\n      </neo-card>\r\n      `\r\n  }),\r\n  argTypes: {\r\n    collapsed: {\r\n      control: { type: null }\r\n    },\r\n    _isCollapsed: {\r\n      table: { disable: true }\r\n    },\r\n    isCollapsedIcon: {\r\n      control: { type: null }\r\n    },\r\n    neoCardHeader: {\r\n      control: { type: null }\r\n    },\r\n    toggleCollapse: {\r\n      control: { type: null }\r\n    },\r\n    collapse: {\r\n      control: { type: null }\r\n    },\r\n    expand: {\r\n      control: { type: null }\r\n    }\r\n  },\r\n}"
             },
             {
                 "name": "NEO_RADIO_BUTTON_GROUP",
@@ -18678,7 +18669,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Preview",
-                "defaultValue": "{\n  parameters: {\n    actions: { argTypesRegex: \"^on[A-Z].*\" },\n    controls: {\n      matchers: {\n        color: /(background|color)$/i,\n        date: /Date$/i,\n      },\n    },\n    decorators: [\n      withThemeByClassName({\n        themes: {\n          light: 'theme-light',\n          dark: 'theme-dark',\n        },\n        defaultTheme: 'light',\n      }),\n    ],\n  },\n}"
+                "defaultValue": "{\n  parameters: {\n    actions: { argTypesRegex: \"^on[A-Z].*\" },\n    controls: {\n      matchers: {\n        color: /(background|color)$/i,\n        date: /Date$/i,\n      },\n    }\n  },\n}"
             },
             {
                 "name": "SLIDE_BY_POSITION",
@@ -18946,8 +18937,8 @@
                 "name": "Story",
                 "ctype": "miscellaneous",
                 "subtype": "typealias",
-                "rawtype": "StoryObj<ButtonComponent>",
-                "file": "src/app/shared/components/button/button.stories.ts",
+                "rawtype": "StoryObj<BreadcrumComponent>",
+                "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "description": "",
@@ -18957,8 +18948,8 @@
                 "name": "Story",
                 "ctype": "miscellaneous",
                 "subtype": "typealias",
-                "rawtype": "StoryObj<BreadcrumComponent>",
-                "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+                "rawtype": "StoryObj<ButtonComponent>",
+                "file": "src/app/shared/components/button/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "description": "",
@@ -19200,7 +19191,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Meta<CardComponent>",
-                    "defaultValue": "{\r\n  title: 'Cards',\r\n  component: CardComponent,\r\n  decorators: [\r\n    moduleMetadata({\r\n      declarations: [],\r\n      imports: [\r\n        CardModule,\r\n        TranslateModule.forRoot(),\r\n      ],\r\n      providers: []\r\n    }),\r\n  ],\r\n  render: (args) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n    template: `\r\n      <neo-card ${argsToTemplate(args)}>\r\n        <neo-card-header>\r\n          <div>Título de la card</div>\r\n        </neo-card-header>\r\n        <p>Contenido de la card</p>\r\n      </neo-card>\r\n      `\r\n  }),\r\n  argTypes: {\r\n    collapsed: {\r\n      control: { type: null }\r\n    },\r\n    _isCollapsed: {\r\n      table: { disable: true }\r\n    },\r\n    isCollapsedIcon: {\r\n      control: { type: null }\r\n    },\r\n    neoCardHeader: {\r\n      control: { type: null }\r\n    },\r\n    toggleCollapse: {\r\n      control: { type: null }\r\n    },\r\n    collapse: {\r\n      control: { type: null }\r\n    },\r\n    expand: {\r\n      control: { type: null }\r\n    }\r\n  },\r\n}"
+                    "defaultValue": "{\r\n  title: 'Cards',\r\n  component: CardComponent,\r\n  decorators: [\r\n    moduleMetadata({\r\n      declarations: [],\r\n      imports: [\r\n        CardModule,\r\n        TranslateModule.forRoot(),\r\n      ],\r\n      providers: []\r\n    }),\r\n  ],\r\n  render: (args) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n    template: `\r\n      <neo-card ${argsToTemplate(args)}>\r\n        <span>Contenido de la card</span>\r\n      </neo-card>\r\n      `\r\n  }),\r\n  argTypes: {\r\n    collapsed: {\r\n      control: { type: null }\r\n    },\r\n    _isCollapsed: {\r\n      table: { disable: true }\r\n    },\r\n    isCollapsedIcon: {\r\n      control: { type: null }\r\n    },\r\n    neoCardHeader: {\r\n      control: { type: null }\r\n    },\r\n    toggleCollapse: {\r\n      control: { type: null }\r\n    },\r\n    collapse: {\r\n      control: { type: null }\r\n    },\r\n    expand: {\r\n      control: { type: null }\r\n    }\r\n  },\r\n}"
                 }
             ],
             "src/app/shared/components/theme-toggle/model/theme.entity.ts": [
@@ -19398,7 +19389,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Preview",
-                    "defaultValue": "{\n  parameters: {\n    actions: { argTypesRegex: \"^on[A-Z].*\" },\n    controls: {\n      matchers: {\n        color: /(background|color)$/i,\n        date: /Date$/i,\n      },\n    },\n    decorators: [\n      withThemeByClassName({\n        themes: {\n          light: 'theme-light',\n          dark: 'theme-dark',\n        },\n        defaultTheme: 'light',\n      }),\n    ],\n  },\n}"
+                    "defaultValue": "{\n  parameters: {\n    actions: { argTypesRegex: \"^on[A-Z].*\" },\n    controls: {\n      matchers: {\n        color: /(background|color)$/i,\n        date: /Date$/i,\n      },\n    }\n  },\n}"
                 }
             ],
             "src/app/shared/components/side-menu/animations/slide-by-position.animation.ts": [
@@ -19803,6 +19794,19 @@
                     "kind": 192
                 }
             ],
+            "src/app/shared/components/breadcrum/breadcrum.stories.ts": [
+                {
+                    "name": "Story",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "StoryObj<BreadcrumComponent>",
+                    "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 183
+                }
+            ],
             "src/app/shared/components/button/button.stories.ts": [
                 {
                     "name": "Story",
@@ -19825,19 +19829,6 @@
                     "deprecationMessage": "",
                     "description": "",
                     "kind": 193
-                }
-            ],
-            "src/app/shared/components/breadcrum/breadcrum.stories.ts": [
-                {
-                    "name": "Story",
-                    "ctype": "miscellaneous",
-                    "subtype": "typealias",
-                    "rawtype": "StoryObj<BreadcrumComponent>",
-                    "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "description": "",
-                    "kind": 183
                 }
             ],
             "src/app/shared/components/card/card.stories.ts": [
@@ -19894,7 +19885,7 @@
     },
     "routes": [],
     "coverage": {
-        "count": 35,
+        "count": 34,
         "status": "medium",
         "files": [
             {
@@ -20035,13 +20026,13 @@
                 "status": "low"
             },
             {
-                "filePath": "src/app/shared/components/card/card-header/card-header.component.ts",
-                "type": "component",
-                "linktype": "component",
-                "name": "CardHeaderComponent",
-                "coveragePercent": 100,
-                "coverageCount": "1/1",
-                "status": "very-good"
+                "filePath": "src/app/shared/components/card/card-header/card-header.directive.ts",
+                "type": "directive",
+                "linktype": "directive",
+                "name": "CardHeaderDirective",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
             },
             {
                 "filePath": "src/app/shared/components/card/card.component.ts",

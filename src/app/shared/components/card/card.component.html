@@ -1,70 +1,100 @@
-<div
-  [class]="[
-    'card',
-    collapsable && _isCollapsed() && icon ? 'card--size-' + size : ''
-  ]"
-  [class.card--collapsed]="_isCollapsed()"
-  [class.card--collapsable]="collapsable"
-  [class.card--icon]="collapsable && _isCollapsed() && icon"
+<ng-template #collapseButton>
+  <neo-button
+    [size]="'s'"
+    color="primary"
+    mode="icon"
+    [title]="'app.expandir' | translate"
+    [transparent]="true"
+    (click)="collapse($event)"
+  >
+    <i class="ri-arrow-up-wide-fill"></i>
+  </neo-button>
+</ng-template>
+
+<ng-template
+  #expandButton
+  let-label="label"
+  let-icon="icon"
+  let-iconSize="iconSize"
 >
-  @if (collapsable && !_isCollapsed()) {
-    <div class="card__collapse-header" [class.card__collapse-header--with-header]="neoCardHeader">
-      <neo-button
-        [size]="'s'"
-        color="primary"
-        mode="icon"
-        [title]="'app.colapsar' | translate"
-        [transparent]="true"
-        (click)="toggleCollapse($event)"
-      >
-        <i class="ri-arrow-up-wide-line"></i>
-      </neo-button>
-    </div>
-  }
-  @if (
-    !collapsable ||
-    (collapsable && (!_isCollapsed() || (_isCollapsed() && !icon)))
-  ) {
-    <ng-content select="neo-card-header"></ng-content>
-  }
-  <div class="card__content" [class.card__content--collapsed]="_isCollapsed()" [class.card__content--with-header]="neoCardHeader">
-    <ng-content></ng-content>
-  </div>
-  @if (collapsable && _isCollapsed()) {
-    @if (!icon) {
-      <div
-        class="card__collapsed-content--label"
-        [class.in-header]="neoCardHeader"
-      >
-        @if (label !== "") {
-          <span>{{ label }}</span>
+  <neo-button
+    [size]="iconSize"
+    color="primary"
+    [mode]="!label ? 'icon' : 'button'"
+    [title]="'app.expandir' | translate"
+    [transparent]="true"
+    (click)="expand($event)"
+  >
+    <i [class]="!label && !icon ? 'ri-arrow-down-wide-fill' : icon"></i>
+    @if (label) {
+      <span>{{ label }}</span>
+    }
+  </neo-button>
+</ng-template>
+
+<div
+  class="neo-card"
+  [class.neo-card--collapsed-label]="
+    _isCollapsed() && (iconCollpased || labelCollpased) && !neoCardHeader
+  "
+>
+  @if (neoCardHeader) {
+    <div class="neo-card__header" [class.neo-card__header--collapsed]="_isCollapsed()">
+      <div class="neo-card__header__title">
+        <ng-content select="neo-card-header"></ng-content>
+      </div>
+      <div class="neo-card__header__actions">
+        @if (collapsable) {
+          <div class="neo-card__header__actions__collapse">
+            <ng-container
+              *ngTemplateOutlet="_isCollapsed() ? expandButton : collapseButton"
+            ></ng-container>
+          </div>
         }
-        <neo-button
-          [size]="'s'"
-          color="primary"
-          mode="icon"
-          [title]="'app.expandir' | translate"
-          [transparent]="true"
-          (click)="toggleCollapse($event)"
-        >
-          <i class="ri-arrow-down-wide-fill"></i>
-        </neo-button>
       </div>
-    } @else {
-      <div class="card__collapsed-content--icon">
-        <neo-button
-          [size]="'s'"
-          color="primary"
-          [mode]="label ? 'button' : 'icon'"
-          [transparent]="true"
-          (click)="toggleCollapse($event)"
-        >
-          <i [class]="icon"></i>
-          @if (label !== "") {
-            <span>{{ label }}</span>
+    </div>
+  } @else {
+    @if (collapsable) {
+      @if (!_isCollapsed()) {
+        <div class="neo-card__collapse-action">
+          <ng-container *ngTemplateOutlet="collapseButton"></ng-container>
+        </div>
+      } @else {
+        <div class="neo-card__collapsed">
+          @if (
+            (iconCollpased && !labelCollpased) ||
+            (!iconCollpased && !labelCollpased)
+          ) {
+            <div class="neo-card__collapsed__icon">
+              <ng-container
+                *ngTemplateOutlet="
+                  expandButton;
+                  context: { icon: iconCollpased || 'ri-arrow-down-wide-fill' }
+                "
+              ></ng-container>
+            </div>
+          } @else {
+            <div class="neo-card__collapsed__label">
+              <ng-container
+                *ngTemplateOutlet="
+                  expandButton;
+                  context: {
+                    icon: iconCollpased || null,
+                    iconSize: sizeIconCollapsed,
+                    label: labelCollpased
+                  }
+                "
+              ></ng-container>
+            </div>
           }
-        </neo-button>
-      </div>
+        </div>
+      }
     }
   }
+  <div
+    class="neo-card__content"
+    [class.neo-card__content--collapsed]="_isCollapsed()"
+  >
+    <ng-content></ng-content>
+  </div>
 </div>

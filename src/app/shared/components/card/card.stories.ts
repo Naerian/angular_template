@@ -3,6 +3,7 @@ import { CardComponent } from "./card.component";
 import { TranslateModule } from "@ngx-translate/core";
 import { CardModule } from "./card.module";
 
+type StoryType = CardComponent & { content?: string };
 const meta: Meta<CardComponent> = {
   title: 'Cards',
   component: CardComponent,
@@ -22,10 +23,7 @@ const meta: Meta<CardComponent> = {
     },
     template: `
       <neo-card ${argsToTemplate(args)}>
-        <neo-card-header>
-          <div>Título de la card</div>
-        </neo-card-header>
-        <p>Contenido de la card</p>
+        <span>Contenido de la card</span>
       </neo-card>
       `
   }),
@@ -57,8 +55,23 @@ const meta: Meta<CardComponent> = {
 export default meta;
 type Story = StoryObj<CardComponent>;
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Card: Story = {
-  name: 'Card',
+  name: 'Card sin cabecera',
   args: {},
+};
+
+export const CardWithHeader: Story = {
+  name: 'Card con cabecera',
+  args: { },
+  render: (args: StoryType) => ({
+    props: args,
+    template: `
+    <neo-card ${argsToTemplate(args)}>
+      <neo-card-header>
+        <div>Texto de cabecera</div>
+      </neo-card-header>
+      <span>Contenido de la card</span>
+    </neo-card>
+    `
+  })
 };
