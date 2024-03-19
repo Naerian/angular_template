@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { InputComponent } from './input/input.component';
 import { TextAreaComponent } from './text-area/text-area.component';
 import { InputPasswordComponent } from './input-password/input-password.component';
-import { SelectModule } from './select/select.module';
 import { CalendarDatePickerModule } from './input-date-picker/calendar-date-picker.module';
 import { FormErrorComponent } from './form-error/form-error.component';
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { RadioButtonModule } from './radio-button/radio-button.module';
+import { SelectModule } from './select/select.module';
 
 @NgModule({
   declarations: [],
@@ -16,21 +16,21 @@ import { RadioButtonModule } from './radio-button/radio-button.module';
     InputComponent,
     TextAreaComponent,
     InputPasswordComponent,
-    SelectModule,
     CheckboxComponent,
     FormErrorComponent,
     CalendarDatePickerModule,
-    RadioButtonModule
+    RadioButtonModule,
+    SelectModule
   ],
   exports: [
     InputComponent,
     TextAreaComponent,
     InputPasswordComponent,
     FormErrorComponent,
-    SelectModule,
     CheckboxComponent,
     CalendarDatePickerModule,
-    RadioButtonModule
+    RadioButtonModule,
+    SelectModule
   ]
 })
 export class FormFields { }

@@ -5,13 +5,8 @@
   width: 100%;
 }
 
-.neo-select-dropdown {
+.neo-select {
   position: relative;
-
-  &--disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-  }
 
   &__label {
     &--required {
@@ -38,10 +33,11 @@
     &--disabled {
       cursor: not-allowed;
       border: 1px solid var(--border-field-disabled-color);
+      pointer-events: none;
       opacity: 0.7;
     }
 
-    &--has-error {
+    &--error {
       border: 1px solid var(--danger-color);
     }
 
@@ -128,16 +124,46 @@
       scrollbar-width: thin !important;
       scrollbar-color: var(--bg-scroll-color) var(--bg-field-color) !important;
 
-      &__item {
+      &__group {
         padding: 10px;
+        margin: 3px 0px;
+        font-size: 0.9rem;
+        line-height: 1rem;
+        letter-spacing: 0.3px;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+
+        &--hidden {
+          display: none;
+        }
+
+        &__label {
+          font-weight: 600;
+          cursor: default;
+        }
+
+        &__options {
+          padding-left: 10px;
+          padding-right: 10px;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+        }
+      }
+
+      &__option {
         cursor: pointer;
-        font-size: 12px;
-        line-height: 15px;
+        font-size: 0.75rem;
+        padding: 10px;
+        line-height: 1rem;
         letter-spacing: 0.3px;
         display: flex;
         align-items: center;
-        align-content: center;
         margin: 3px 0px;
+        gap: 5px;
 
         &:hover,
         &:focus,
@@ -146,6 +172,10 @@
           color: var(--text-color) !important;
           background-color: var(--background-color) !important;
           border-radius: 5px !important;
+        }
+
+        &--hidden {
+          display: none;
         }
 
         &__label {
@@ -157,10 +187,7 @@
         }
 
         &--selected {
-          border-radius: 5px;
-          gap: 5px;
-
-          .neo-select-dropdown__dropdown__options__item__label {
+          .neo-select__dropdown__options__item__label {
             font-weight: 600;
           }
         }

@@ -33,12 +33,17 @@ export const NEO_RADIO_BUTTON_GROUP = new InjectionToken<RadioButtonGroupCompone
   selector: 'neo-radio-button-group',
   templateUrl: './radio-button-group.component.html',
   styleUrl: './radio-button-group.component.scss',
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => RadioButtonGroupComponent),
-    multi: true,
-  },
-  { provide: NEO_RADIO_BUTTON_GROUP, useExisting: RadioButtonGroupComponent },]
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => RadioButtonGroupComponent),
+      multi: true,
+    },
+    {
+      provide: NEO_RADIO_BUTTON_GROUP,
+      useExisting: RadioButtonGroupComponent
+    }
+  ]
 })
 export class RadioButtonGroupComponent implements ControlValueAccessor {
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, forwardRef, input, Input, InputSignal, Output, signal, WritableSignal } from '@angular/core';
+import { booleanAttribute, Component, EventEmitter, forwardRef, input, Input, InputSignal, Output, signal, WritableSignal } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
@@ -27,9 +27,9 @@ import { InputSize } from '../models/form-field.entity';
 })
 export class TextAreaComponent {
 
-  @Input() autofocus?: boolean = false;
-  @Input() readonly?: boolean = false;
-  @Input() required: boolean = false;
+  @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
+  @Input({ transform: booleanAttribute }) readonly?: boolean = false;
+  @Input({ transform: booleanAttribute }) required: boolean = false;
   @Input() title?: string;
   @Input() label?: string;
   @Input() name?: string;

@@ -65,6 +65,10 @@ export class TestComponent implements OnInit {
   checkboxValue: boolean = false;
   radioButtonValue: string | null | number = null;
   inputvalue: string = '';
+  selectValue: string = '';
+  selectValueWithDefaultValue: string = '';
+  selectMultipleValue: string[] = [];
+  selectValueWithDefaultMultipleValue: string[] = [];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([
     { id: "1", name: "One name", description: "One", price: 1 },
@@ -206,6 +210,24 @@ export class TestComponent implements OnInit {
 
   checkboxChangeNM() {
     console.log("checkboxChangeNM: ", this.checkboxValue);
+  }
+
+  selectChangeNM() {
+    console.log("selectChangeNM: ", this.selectValue);
+  }
+
+  selectMultipleChangeNM() {
+    console.log("selectMultipleChangeNM: ", this.selectMultipleValue);
+  }
+
+  selectWithDefaultValue(value: any) {
+    this.selectValueWithDefaultValue = value;
+    console.log("selectWithDefaultValue: ", this.selectValueWithDefaultValue);
+  }
+
+  selectWithDefaultMultipleValue(value: any) {
+    this.selectValueWithDefaultMultipleValue = value;
+    console.log("selectWithDefaultValue: ", this.selectValueWithDefaultMultipleValue);
   }
 
   inputChange(value: string) {

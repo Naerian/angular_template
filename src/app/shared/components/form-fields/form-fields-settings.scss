@@ -2,7 +2,7 @@
 .neo-input-password,
 .neo-input-date-picker,
 .neo-textarea,
-.neo-select-dropdown {
+.neo-select {
   &__label {
     display: flex;
     justify-content: flex-start;
@@ -13,7 +13,7 @@
   }
 }
 
-.neo-select-dropdown__field,
+.neo-select__field,
 .neo-input__wrapper__field,
 .neo-input-password__wrapper__field,
 .neo-input-date-picker__wrapper__field,
@@ -53,7 +53,7 @@
   }
 }
 
-.neo-select-dropdown__field,
+.neo-select__field,
 .neo-input__wrapper__field,
 .neo-input-password__wrapper__field,
 .neo-input-date-picker__wrapper__field,

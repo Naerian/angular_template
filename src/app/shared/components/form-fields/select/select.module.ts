@@ -4,17 +4,17 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { ClickOutsideDirective } from '@shared/directives/click-outside.directive';
-import { ClickableDirective } from '@shared/directives/clickable.directive';
-import { EscapeKeyDirective } from '@shared/directives/escape-key.directive';
 import { SafeHtmlPipe } from '@shared/pipes/safeHtml/safe-html.pipe';
 import { StripHtmlPipe } from '@shared/pipes/striphtml/striphtml.pipe';
 import { SelectComponent } from './select.component';
-import { OptionsDirective } from './options/options.directive';
+import { OptionComponent } from './option/option.component';
+import { OptionGroupsComponent } from './option-groups/option-groups.component';
 
 @NgModule({
   declarations: [
     SelectComponent,
+    OptionComponent,
+    OptionGroupsComponent
   ],
   imports: [
     CommonModule,
@@ -23,15 +23,12 @@ import { OptionsDirective } from './options/options.directive';
     A11yModule,
     OverlayModule,
     SafeHtmlPipe,
-    StripHtmlPipe,
-    ClickableDirective,
-    ClickOutsideDirective,
-    EscapeKeyDirective,
-    OptionsDirective
+    StripHtmlPipe
   ],
   exports: [
     SelectComponent,
-    OptionsDirective
+    OptionComponent,
+    OptionGroupsComponent
   ]
 })
 export class SelectModule { }

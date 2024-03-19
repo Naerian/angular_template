@@ -1,9 +1,17 @@
-import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
-import { ElementRef, EventEmitter, InputSignal, Output, ViewChild, ViewChildren, WritableSignal, input, signal } from '@angular/core';
-import { Component, ContentChildren, forwardRef, Input, QueryList } from '@angular/core';
+import { Component, ContentChildren, ElementRef, EventEmitter, InjectionToken, Input, InputSignal, Output, QueryList, ViewChild, ViewEncapsulation, WritableSignal, booleanAttribute, forwardRef, input, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputSize } from '../models/form-field.entity';
-import { OptionsDirective } from './options/options.directive';
+import { OptionComponent } from './option/option.component';
+import { OptionGroupsComponent } from './option-groups/option-groups.component';
+import { SelectionModel } from '@angular/cdk/collections';
+import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { InputsUtilsService } from '../services/inputs-utils.service';
+
+/**
+ * Permite inyectar el componente SelectComponent en el componente OptionComponent y OptionGroupComponent
+ * para poder acceder a sus propiedades y métodos desde el componente hijo
+ */
+export const NEO_SELECT = new InjectionToken<SelectComponent>('SelectComponent');
 
 /**
  * @name
@@ -11,7 +19,7 @@ import { OptionsDirective } from './options/options.directive';
  * @description
  * Componente para crear un campo de selección junto con la directiva `neo-options`.
  * @example
- * <neo-select [label]="'Label'" [title]="'Title'" [id]="'id'" [multiple]="false" [search]="true" [transparent]="false" [cssClass]="'css-class'" [placeholder]="'Placeholder'" [inputSize]="'m'" (change)="change($event)">
+ * <neo-select [label]="'Label'" [title]="'Title'" [id]="'id'" [multiple]="false" [searchable]="true" [transparent]="false" [cssClass]="'css-class'" [placeholder]="'Placeholder'" [inputSize]="'m'" (change)="change($event)">
  *    <neo-options [value]="1" [selected]="true" [disabled]="false">Opción 1</neo-options>
  *    <neo-options [value]="2" [selected]="false" [disabled]="false">Opción 2</neo-options>
  * </neo-select>
@@ -24,108 +32,264 @@ import { OptionsDirective } from './options/options.directive';
 @Component({
   selector: 'neo-select',
   templateUrl: './select.component.html',
-  styleUrls: ['./select.component.scss', './../form-fields-settings.scss'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => SelectComponent),
-    multi: true
-  }]
+  styleUrl: './select.component.scss',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SelectComponent),
+      multi: true,
+    },
+    {
+      provide: NEO_SELECT, useExisting: SelectComponent
+    },
+  ],
+  encapsulation: ViewEncapsulation.None
 })
-
 export class SelectComponent implements ControlValueAccessor {
 
+  @ContentChildren(forwardRef(() => OptionComponent), { descendants: true }) options!: QueryList<OptionComponent>;
+  @ContentChildren(forwardRef(() => OptionGroupsComponent), { descendants: true }) optionGroups!: QueryList<OptionGroupsComponent>;
+
+  @ViewChild('searchInput') searchInput: ElementRef = null as unknown as ElementRef;
+
+  @Input({ transform: booleanAttribute }) multiple?: boolean = false;
+  @Input({ transform: booleanAttribute }) transparent?: boolean = false;
+  @Input({ transform: booleanAttribute }) searchable?: boolean = false;
+  @Input({ transform: booleanAttribute }) required?: boolean = false;
   @Input() label?: string = '';
   @Input() title?: string = '';
-  @Input() required?: boolean = false;
   @Input() id?: string;
-  @Input() multiple?: boolean = false;
-  @Input() transparent?: boolean = false;
-  @Input() search?: boolean = false;
-  @Input() classes?: Array<string> = [];
   @Input() placeholder?: string;
+  @Input() placeholderSearch?: string;
   @Input() inputSize: InputSize = 'm';
-  hasErrors: InputSignal<boolean> = input<boolean>(false);
-  _hasErrors: WritableSignal<boolean> = signal(false);
 
   /**
   * Input para marcar el campo como deshabilitado
   */
-  @Input() set disabled(status: boolean) {
-    this._disabled.set(status);
-  }
-
+  @Input({ transform: booleanAttribute })
   get disabled() {
     return this._disabled();
   }
+  set disabled(status: boolean) {
+    this._disabled.set(status);
+  }
 
-  @Output() change = new EventEmitter<any>();
+  /**
+   * Input para asignar el valor del grupo de radio buttons
+   */
+  @Input()
+  get value(): any {
+    return this._value();
+  }
+  set value(newValue: any) {
+    const valueAssigned = this.setValue(newValue);
 
-  @ViewChild('searchInput') searchInput: ElementRef = null as unknown as ElementRef;
-  @ViewChildren('itemOption') itemsOption: QueryList<ElementRef> = [] as unknown as QueryList<ElementRef>;
-  @ContentChildren(OptionsDirective) options: QueryList<OptionsDirective> = null as unknown as QueryList<OptionsDirective>;
+    if (valueAssigned)
+      this.onChange(valueAssigned);
+  }
 
-  _disabled: WritableSignal<boolean> = signal(false);
+  /**
+   * Función para comparar los valores de las opciones con los valores seleccionados. El primer argumento
+   * es un valor de opción del listado, y el segundo es valaor seleccionado. Debe devolver un `boolean` a true o false.
+   * --
+   * Al hacer un `compareSelectedWith` se forzará la selección de las opciones por valor y si poseen la variable `selected` a `true`
+   * en el componente `OptionComponent` en su inicialización.
+   */
+  @Input()
+  get compareSelectedWith(): Function {
+    return this._compareSelectedWith;
+  }
+  set compareSelectedWith(fn: (o1: any, o2: any) => boolean) {
+    this._compareSelectedWith = fn;
 
+    // Si ya hay opciones seleccionadas, volvemos a inicializar la selección
+    // para comprobar si hay opciones seleccionadas, forzando la selección de las opciones por valor
+    if (this._optionsSelected)
+      this.initSelection(true);
+  }
+
+  /**
+   * Evento que se emite cuando el valor del select cambia
+   */
+  @Output() readonly change = new EventEmitter<any>();
+
+  // Sirve para almanecar el valor seleccionado
+  private _optionsSelected!: SelectionModel<OptionComponent>;
+
+  // Función para comparar el valor seleccionado con el valor de la opción
+  private _compareSelectedWith = (o1: any, o2: any) => o1 === o2;
+
+  // Variables para controlar los errores del campo por si está marcado como requerido
+  hasErrors: InputSignal<boolean> = input<boolean>(false);
+  _hasErrors: WritableSignal<boolean> = signal(false);
+
+  // Variables para controlar el estado del dropdown e indicar si está abierto o cerrado
   isDropdownOpened: WritableSignal<boolean> = signal(false);
-  optionsFiltered: WritableSignal<OptionsDirective[]> = signal([] as OptionsDirective[]); // Se utilizará para almacenar las opciones filtradas por el input de búsqueda
-  optionSelected: WritableSignal<any> = signal(null); // // Se utilizará para almecenar un objeto OPTION completo (OptionsDirective)
-  optionsSelected: WritableSignal<OptionsDirective[]> = signal([]); // Se utilizará para almecenar el array de objetos OPTION completo (OptionsDirective)
-  optionsSelectedValues: WritableSignal<any[]> = signal([]); // Se utilizará para emitir los valores en un array cuando sea múltiple
+
+  // Estrategia de scroll para el overlay
   scrollStrategy: ScrollStrategy;
 
+  private _disabled: WritableSignal<boolean> = signal(false);
+  private _value: WritableSignal<any> = signal(null);
+  labelId: WritableSignal<string> = signal('');
+
   constructor(
+    private readonly _inputsUtilsService: InputsUtilsService,
     scrollStrategyOptions: ScrollStrategyOptions
   ) {
     this.scrollStrategy = scrollStrategyOptions.close();
   }
 
+  ngOnInit() {
+    this._optionsSelected = new SelectionModel<OptionComponent>(this.multiple, []);
+  }
+
   ngAfterContentInit(): void {
-
-    // Si alguno ha sido marcado como "true" usando su input, notificamos al selector
-    const optionSelected: OptionsDirective | null = this.options.find(option => option.selected) || null;
-    if (optionSelected)
-      this.writeValue(optionSelected?.value || null);
-
-    this.optionsFiltered.set(this.options.toArray());
+    // Inicializamos la selección de opciones cuándo el contenido ya ha sido inicializado
+    // para asegurarnos de que las opciones de `OptionComponent` ya han sido renderizadas
+    this.initSelection();
   }
 
   /**
-   * Método para abrir / cerrar el selector
-   * @param {Event} event
+   * Función para crear un id único para el label del input
    */
-  toggleDropdown(event: Event) {
-
-    // Reestablecemos las opciones al abrir el selector por si se ha cerrado con texto de búsqueda
-    this.optionsFiltered.set(this.options.toArray());
-
-    event?.preventDefault();
-    event?.stopPropagation();
-
-    this.isDropdownOpened.set(!this.isDropdownOpened());
-
-    // Si el campo está abierto y tiene búsqueda, enfocamos el input
-    if (this.isDropdownOpened() && this.search)
-      this.setFocusToSearch();
-
-    this.scrollToOptionSelected();
+  createUniqueId(): void {
+    if (!this.id && this.label && this.label !== '') {
+      this.id = this._inputsUtilsService.createUniqueId(this.label);
+      this.labelId.set(`label_${this.id}`);
+    }
   }
 
   /**
-   * Método para cerrar el selector si está abierto
+   * Función para inicializar la selección de opciones y comprobar si hay opciones seleccionadas
+   * en base a un valor pasado por parámetro mediante el Input `value`
    */
-  closeDropdown() {
-    if (this.isDropdownOpened())
-      this.isDropdownOpened.set(false);
+  private initSelection(forceSetByValue: boolean = false): void {
+    setTimeout(() => {
+
+      // Si hay un valor asignado, seleccionamos la opción correspondiente
+      // --
+      // Si no hay un valor asignado, seleccionamos las opciones que estén marcadas como seleccionadas desde el componente `OptionComponent`
+      if (this._value() || forceSetByValue)
+        this.setOptionSelectedByValue(this._value());
+      else
+        this.setOptionSelectedByStatus();
+    }, 0);
   }
 
   /**
-   * Método para comprobar si hay errores en el campo y mostrarlos
+   * Asigna un valor específico al select y devuelve si el valor ha cambiado.
+   * @param {any | any[]} newValue
+   * @returns {boolean}
    */
-  checkErrors() {
-    if (this.required && !this.isDropdownOpened() && ((!this.multiple && !this.optionSelected()) || (this.multiple && this.optionsSelected().length === 0))) {
-      this._hasErrors.set(true);
-    } else
-      this._hasErrors.set(false);
+  private setValue(newValue: any | any[]): boolean {
+
+    if (newValue !== this._value() || (this.multiple && Array.isArray(newValue))) {
+
+      if (this.options)
+        this.setOptionSelectedByValue(newValue);
+
+      this._value.set(newValue);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Función para seleccionar las opciones que estén marcadas como seleccionadas desde el componente `OptionComponent`
+   * mediante el Input `selected`
+   */
+  private setOptionSelectedByStatus(): void {
+    if (this.options && this.options.length > 0) {
+      this.options.forEach((option: OptionComponent) => {
+        if (option.selected) {
+          this._optionsSelected.select(option);
+          option.select();
+        }
+      });
+    }
+  }
+
+  /**
+   * Método para establecer el foco en el input de búsqueda si el select es buscable y está abierto
+   */
+  private setFocusToSearch() {
+    if (this.searchable && this.isDropdownOpened())
+      setTimeout(() => this.searchInput.nativeElement.focus(), 0);
+  }
+
+  /**
+   * Función que selecciona una opción a partir de un valor pasado por parámetro mediante el Input `value`
+   * @param {any | any[]} value
+   */
+  private setOptionSelectedByValue(value: any | any[]): void {
+
+    // Limpiamos las opciones seleccionadas de la variable `_optionsSelected`
+    // y deseleccionamos todas las opciones que hubieran sido seleccionadas
+    this.deselectAllOptions();
+
+    // Si el valor es un array, recorremos el array y seleccionamos las opciones
+    // --
+    // Si el valor no es un array, seleccionamos la opción correspondiente
+    if (this.multiple && value)
+      value.forEach((currentValue: any) => this.selectOptionByValue(currentValue));
+    else
+      this.selectOptionByValue(value);
+  }
+
+  /**
+   * Encuentra y selecciona una opción basada en el valo pasado por parámetro mediante el Input `value`
+   * @returns {OptionComponent | undefined} Opción seleccionada
+   */
+  private selectOptionByValue(value: any): OptionComponent | undefined {
+
+    // Buscamos la opción que coincida con el valor
+    const optionFound = this.options.find((option: OptionComponent) => {
+
+      // Si la opción ya está seleccionada, no la volvemos a seleccionar
+      if (this._optionsSelected.isSelected(option))
+        return false;
+
+      // Comprobamos si el valor de la opción coincide con el valor pasado por parámetro
+      return option.value && this._compareSelectedWith(option.value, value) || false;
+    });
+
+    // Si la opción se ha encontrado, la seleccionamos y la devolvemos.
+    // Además, marcamos la opción como seleccionada
+    if (optionFound) {
+      this._optionsSelected.select(optionFound);
+      optionFound.select();
+    }
+
+    return optionFound;
+  }
+
+  /**
+   * Actualiza el valor del select a partir de las opciones seleccionadas
+   */
+  updateValue(option: OptionComponent): void {
+
+    // Si el select es múltiple, actualizamos el valor a partir de las opciones seleccionadas
+    // comprobando si ya están seleccionadas o no
+    // -
+    // Si el select no es múltiple, actualizamos el valor a partir de la opción seleccionada
+    // limpando la selección anterior
+    if (this.multiple) {
+      if (option.isSelected())
+        this._optionsSelected?.select(option);
+      else
+        this._optionsSelected?.deselect(option);
+      this._value.set(this._optionsSelected.selected.map(option => option.value));
+    } else {
+      this._optionsSelected?.clear();
+      this._optionsSelected?.select(option);
+      this._value.set(this._optionsSelected.selected[0]?.value);
+      this.closeDropdown();
+    }
+
+    // Emitimos el evento de cambio del valor
+    this.onChange(this._value());
+    this.change.emit(this._value());
   }
 
   /**
@@ -138,135 +302,70 @@ export class SelectComponent implements ControlValueAccessor {
     const textToSearchNormalized = String(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
     // Si el texto está vacío, mostramos todas las opciones
-    if (textToSearchNormalized === '') return this.optionsFiltered.set(this.options.toArray());
+    if (textToSearchNormalized === '') return this.options.forEach(option => option.showOptionBySearch());
 
-    // Si no, filtramos las opciones que contengan el texto buscado
-    const optionsFiltereds = this.options.filter((option: OptionsDirective) => {
-      const labelNormalized: string = String(option.label).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-      return labelNormalized.includes(textToSearchNormalized);
+    // Si el texto contiene algún valor filtramos las opciones que contengan dicho texto
+    this.options.forEach((option: OptionComponent) => {
+      const labelNormalized: string = String(option.getLabelText()).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      if (labelNormalized.includes(textToSearchNormalized))
+        option.showOptionBySearch();
+      else
+        option.hideOptionBySearch();
     });
-    this.optionsFiltered.set(optionsFiltereds);
+
 
   }
 
   /**
-   * Método para establecer el foco en el input de búsqueda
+   * Método para abrir / cerrar el selector
+   * @param {Event} event
    */
-  setFocusToSearch() {
-    if (this.search)
-      setTimeout(() => this.searchInput.nativeElement.focus(), 0);
+  toggleDropdown(event: Event) {
+
+    if (this.disabled) return;
+
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    this.isDropdownOpened.set(!this.isDropdownOpened());
+
+    // Si el campo está abierto y tiene búsqueda, enfocamos el input
+    if (this.isDropdownOpened() && this.searchable)
+      this.setFocusToSearch();
   }
 
   /**
-   * Método para mover el scroll a la opción seleccionada
+   * Método para cerrar el selector si está abierto
    */
-  scrollToOptionSelected() {
-    setTimeout(() => {
-      if (this.isDropdownOpened() && (this.optionSelected() || this.optionsSelected().length > 0) && this.itemsOption?.length > 0) {
-        let elementSelected: ElementRef | undefined = this.itemsOption?.find(element => element.nativeElement.getAttribute('data-selected') === 'true') || undefined;
-        elementSelected?.nativeElement?.scrollIntoView({ behavior: "instant" });
-
-        // Si no hay campo de búsqueda, enfocamos en el elemento seleccionado
-        if (!this.search)
-          elementSelected?.nativeElement?.focus();
-      }
-    }, 0);
+  closeDropdown() {
+    if (this.isDropdownOpened())
+      this.isDropdownOpened.set(false);
   }
 
   /**
-   * Método para cambiar la opción seleccionada en el selector
-   * @param {OptionsDirective | null} optionItem
+   * Método para comprobar si hay errores en el campo y mostrarlos.
+   * Se activa si el campo es requerido y no se ha seleccionado ninguna opción
    */
-  changeOption(optionItem: OptionsDirective | null) {
-
-    if (optionItem && !optionItem?.disabled) {
-      if (this.multiple) {
-
-        // Si ya estaba marcado, la borramos
-        // --
-        // Si no, la añadimos al array
-        if (optionItem.selected) {
-          optionItem.selected = false;
-          const index: number = this.optionsSelected().indexOf(optionItem);
-          const indexValues: number = this.optionsSelectedValues().indexOf(optionItem.value);
-          if (index !== -1) {
-            this.optionsSelected.update(options => options.filter((_, idx) => index !== idx));
-            this.optionsSelectedValues.update(options => options.filter((_, idx) => indexValues !== idx));
-          }
-        } else {
-          optionItem.selected = true;
-          this.optionsSelected.update(options => ([...options, optionItem]));
-          this.optionsSelectedValues.update(options => ([...options, optionItem.value]));
-        }
-
-        this.change.emit(this.optionsSelectedValues);
-        this.onChange(this.optionsSelectedValues);
-        this.onTouched();
-
-      } else {
-
-        // Desmarcamos todas las opciones que estén seleccionadas
-        this.unselectOptions();
-
-        // Reinitializamos la búsqueda
-        this.searchOption('');
-
-        // Marcamos la actual
-        optionItem.selected = true;
-
-        this.optionSelected.set(optionItem);
-        this.change.emit(optionItem.value);
-        this.onChange(optionItem.value);
-        this.onTouched();
-        this.closeDropdown();
-      }
-    }
+  checkErrors() {
+    if (this.required && !this.isDropdownOpened() && !this._optionsSelected.isEmpty()) {
+      this._hasErrors.set(true);
+    } else
+      this._hasErrors.set(false);
   }
 
   /**
-   * Método para desmarcar todas las opciones
+   * Método para deseleccionar todas las opciones
    */
-  unselectOptions() {
-    this.options?.forEach((option) => option.selected = false);
+  deselectAllOptions() {
+    this._optionsSelected.clear();
+    this.options.forEach(option => option.deselect());
   }
 
   /**
-   * Método para buscar y marcar la opción seleccionada
-   * @param value
+   * Método para obtener los options seleccionados
    */
-  findSetOption(value: any) {
-
-    let isResetOptionSelected: boolean = false;
-
-    if (value === null || value === undefined || value === '') {
-      this.optionSelected.set(null);
-      this.optionsSelected.set([]);
-      this.optionsSelectedValues.set([]);
-      isResetOptionSelected = true;
-    }
-
-    if ((this.multiple && (this.optionsSelectedValues().indexOf(value) === -1 || this.optionsSelected().indexOf(value) === -1)) || !this.multiple) {
-
-      this.options?.forEach(option => {
-
-        option.selected = false;
-
-        // Comparamos si el option del listado y el valor son iguales
-        if (!isResetOptionSelected && JSON.stringify(option.value) === JSON.stringify(value)) {
-
-          option.selected = true;
-
-          if (this.multiple) {
-            this.optionsSelected.update(options => ([...options, option]));
-            this.optionsSelectedValues.update(options => ([...options, option.value]));
-          } else {
-            this.optionSelected.set(option);
-          }
-        }
-      });
-
-    }
-
+  getSelectedOptions(): OptionComponent[] {
+    return this._optionsSelected.selected;
   }
 
   // Funciones de control de eventos
@@ -274,30 +373,7 @@ export class SelectComponent implements ControlValueAccessor {
   onTouched: any = () => { };
 
   writeValue(value: any) {
-    if (this.options) {
-
-      // Si es de selector múltiple, al pasar los valores iniciales
-      // comprobamos si viene un array o datos normales.
-      // --
-      // Si no es multiple, marcamos solo el valor
-      if (this.multiple) {
-
-        if (value) {
-          if (value instanceof Array) {
-            value.forEach(element => this.findSetOption(element));
-          } else {
-            this.findSetOption(value);
-          }
-        } else {
-          this.optionSelected.set(null);
-          this.unselectOptions();
-        }
-
-      } else {
-        this.findSetOption(value);
-      }
-
-    }
+    this.setValue(value);
   }
 
   registerOnChange(fn: any): void {

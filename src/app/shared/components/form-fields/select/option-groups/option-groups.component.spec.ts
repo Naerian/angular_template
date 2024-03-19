@@ -1,17 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SelectComponent } from './select.component';
+import { OptionGroupsComponent } from './option-groups.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SelectModule } from './select.module';
+import { SelectModule } from '../select.module';
 
-describe('SelectComponent', () => {
-  let component: SelectComponent;
-  let fixture: ComponentFixture<SelectComponent>;
+describe('OptionGroupsComponent', () => {
+  let component: OptionGroupsComponent;
+  let fixture: ComponentFixture<OptionGroupsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SelectComponent],
+      declarations: [
+        OptionGroupsComponent
+      ],
       imports: [
         TranslateModule.forRoot(),
         SelectModule,
@@ -21,7 +23,7 @@ describe('SelectComponent', () => {
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SelectComponent);
+    fixture = TestBed.createComponent(OptionGroupsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

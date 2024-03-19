@@ -1,5 +1,5 @@
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
-import { Component, EventEmitter, forwardRef, Input, Output, signal, WritableSignal, input, InputSignal, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, Output, signal, WritableSignal, input, InputSignal, ViewEncapsulation, booleanAttribute } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DEFAULT_FORMAT, DatePickerType, DateSelected } from './models/date-picker.entity';
 import { CalendarService } from './services/calendar.service';
@@ -30,9 +30,9 @@ import { InputAutocomplete, InputSize } from '../models/form-field.entity';
 })
 export class InputDatePickerComponent implements ControlValueAccessor {
 
-  @Input() autofocus?: boolean = false;
-  @Input() readonly?: boolean = false;
-  @Input() required: boolean = false;
+  @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
+  @Input({ transform: booleanAttribute }) readonly?: boolean = false;
+  @Input({ transform: booleanAttribute }) required: boolean = false;
   @Input() title?: string;
   @Input() label?: string;
   @Input() name?: string;

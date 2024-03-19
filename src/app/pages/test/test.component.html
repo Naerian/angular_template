@@ -191,70 +191,94 @@
     </div>
     <div class="col-12 col-md-6 col-lg-6 mb-2 mt-2">
       <neo-select
-        label="Selector de opciones"
-        [classes]="['testClass', 'testClass2']"
+        [label]="'Selector con NG Model'"
+        [(ngModel)]="selectValue"
+        (change)="selectChangeNM()"
       >
         <neo-option value="1">Opción 1</neo-option>
         <neo-option value="2">Opción 2</neo-option>
         <neo-option value="3">Opción 3</neo-option>
-        <neo-option value="3">Opción 4</neo-option>
-        <neo-option value="3">Opción 5</neo-option>
-        <neo-option value="3">Opción 6</neo-option>
-        <neo-option value="3">Opción 7</neo-option>
-        <neo-option value="3">Opción 8</neo-option>
-        <neo-option value="3">Opción 9</neo-option>
-      </neo-select>
-      <br />
-      <neo-select label="Selector de opciones requerido" [required]="true">
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
-      </neo-select>
-      <br />
-      <neo-select label="Selector de opciones múltiple" [multiple]="true">
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
+        <neo-option value="4">Opción 4</neo-option>
+        <neo-option value="5">Opción 5</neo-option>
+        <neo-option value="6">Opción 6</neo-option>
       </neo-select>
       <br />
       <neo-select
-        label="Selector de opciones múltiple requerido"
+        [label]="'Selector múltiple con NG Model'"
+        [(ngModel)]="selectMultipleValue"
+        (change)="selectMultipleChangeNM()"
         [multiple]="true"
-        [required]="true"
       >
         <neo-option value="1">Opción 1</neo-option>
         <neo-option value="2">Opción 2</neo-option>
         <neo-option value="3">Opción 3</neo-option>
-      </neo-select>
-      <br />
-      <neo-select label="Selector de opciones deshabilitado" [disabled]="true">
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
-      </neo-select>
-      <br />
-      <neo-select label="Selector de opciones con buscador" [search]="true">
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
-        <neo-option value="3">Opción 4</neo-option>
-        <neo-option value="3">Opción 5</neo-option>
-        <neo-option value="3">Opción 6</neo-option>
-        <neo-option value="3">Opción 7</neo-option>
-        <neo-option value="3">Opción 8</neo-option>
-        <neo-option value="3">Opción 9</neo-option>
+        <neo-option value="4">Opción 4</neo-option>
+        <neo-option value="5">Opción 5</neo-option>
+        <neo-option value="6">Opción 6</neo-option>
       </neo-select>
       <br />
       <neo-select
-        label="Selector de opciones múltiple con buscador"
-        [multiple]="true"
-        [search]="true"
+        [label]="'Selector con valor por defecto'"
+        [value]="'3'"
+        (change)="selectWithDefaultValue($event)"
       >
         <neo-option value="1">Opción 1</neo-option>
         <neo-option value="2">Opción 2</neo-option>
         <neo-option value="3">Opción 3</neo-option>
-        <neo-option value="3">Opción 4</neo-option>
-        <neo-option value="3">Opción 5</neo-option>
+        <neo-option value="4">Opción 4</neo-option>
+        <neo-option value="5">Opción 5</neo-option>
+        <neo-option value="6">Opción 6</neo-option>
+      </neo-select>
+      <br />
+      <neo-select
+        [label]="'Selector múltiple con valores por defecto'"
+        [value]="['3', '5', '1']"
+        multiple
+        (change)="selectWithDefaultMultipleValue($event)"
+      >
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+        <neo-option value="4">Opción 4</neo-option>
+        <neo-option value="5">Opción 5</neo-option>
+        <neo-option value="6">Opción 6</neo-option>
+      </neo-select>
+      <br />
+      <neo-select [label]="'Selector con valor por defecto usando el atributo -selected-'" (change)="selectWithDefaultMultipleValue($event)">
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option [selected]="true" value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+        <neo-option value="4">Opción 4</neo-option>
+        <neo-option value="5">Opción 5</neo-option>
+        <neo-option value="6">Opción 6</neo-option>
+      </neo-select>
+      <br />
+      <neo-select [label]="'Selector agrupado con búsqueda'" searchable (change)="selectWithDefaultMultipleValue($event)">
+        <neo-option-groups [label]="'GRUPO 1'">
+          <neo-option value="1">Opción 1</neo-option>
+          <neo-option value="2">Opción 2</neo-option>
+        </neo-option-groups>
+        <neo-option-groups [label]="'GRUPO 2'">
+          <neo-option value="3">Opción 3</neo-option>
+          <neo-option value="4">Opción 4</neo-option>
+        </neo-option-groups>
+        <neo-option-groups [label]="'GRUPO 3'">
+          <neo-option value="5">Opción 1</neo-option>
+          <neo-option value="5">Opción 5</neo-option>
+          <neo-option value="6">Opción 6</neo-option>
+        </neo-option-groups>
+      </neo-select>
+      <br />
+      <neo-select label="Selector requerido" [required]="true">
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
+      </neo-select>
+      <br />
+      <neo-select label="Selector deshabilitado" [disabled]="true">
+        <neo-option value="1">Opción 1</neo-option>
+        <neo-option value="2">Opción 2</neo-option>
+        <neo-option value="3">Opción 3</neo-option>
       </neo-select>
     </div>
   </div>
@@ -264,9 +288,7 @@
   <neo-card-header> <div>Tipos de modales y sidebar</div></neo-card-header>
   <div class="row">
     <div class="col-4">
-      <label
-        >Apertura de Sidebar con cambio de contenido en su interior</label
-      >
+      <label>Apertura de Sidebar con cambio de contenido en su interior</label>
       <neo-button (click)="openSidebar()">Abrir sidebar</neo-button>
     </div>
     <div class="col-4">
@@ -300,9 +322,7 @@
       <neo-spinner size="m" [label]="'Texto de prueba'"></neo-spinner>
     </div>
     <div class="col-3">
-      <label
-        >Spinner normal con overlay (absolute)</label
-      >
+      <label>Spinner normal con overlay (absolute)</label>
       <div style="position: relative; width: 100%; height: 100%">
         <neo-spinner size="m" [overlay]="true"></neo-spinner>
       </div>
@@ -336,9 +356,7 @@
           ></neo-progress-bar>
         </div>
         <div class="col-3">
-          <label
-            >Barra de progreso con color custom</label
-          >
+          <label>Barra de progreso con color custom</label>
           <neo-progress-bar
             [progressNumber]="65"
             [isProgressInteger]="true"
@@ -402,9 +420,7 @@
     <div class="col-12 mt-4">
       <div class="row">
         <div class="col-6">
-          <label
-            >Barra de progreso (%) con valor fuera</label
-          >
+          <label>Barra de progreso (%) con valor fuera</label>
           <neo-progress-bar
             [size]="'m'"
             [progressNumber]="65"
@@ -413,9 +429,7 @@
           ></neo-progress-bar>
         </div>
         <div class="col-6">
-          <label
-            >Barra de progreso (X,Y) con valor fuera</label
-          >
+          <label>Barra de progreso (X,Y) con valor fuera</label>
           <neo-progress-bar
             [size]="'m'"
             [progressSplit]="[12, 78]"
