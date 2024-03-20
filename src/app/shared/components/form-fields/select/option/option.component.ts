@@ -66,11 +66,15 @@ export class OptionComponent {
   private _hideBySearch: WritableSignal<boolean> = signal(false);
   private _labelText: string = '';
   private _labelHtml: string = '';
+  private _elementRef: ElementRef;
 
   constructor(
     @Optional() @Inject(NEO_SELECT) private selectParent: SelectComponent,
-    @Optional() @Inject(NEO_OPTION_GROUPS) private groupOption: OptionGroupsComponent
-  ) { }
+    @Optional() @Inject(NEO_OPTION_GROUPS) private groupOption: OptionGroupsComponent,
+    private readonly elementRef: ElementRef,
+  ) {
+    this._elementRef = elementRef;
+  }
 
   ngAfterContentInit(): void {
     // Obtenemos el contenido para asignarlo a la propiedad label
@@ -156,6 +160,14 @@ export class OptionComponent {
    */
   getLabelHtml(): string {
     return this._labelHtml;
+  }
+
+  /**
+   * Método para obtener el `ElementRef` del componente
+   * @returns {ElementRef}
+   */
+  getElementRef(): ElementRef {
+    return this._elementRef;
   }
 
 }

@@ -71,6 +71,7 @@
     [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
     cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
     [cdkConnectedOverlayHasBackdrop]="true"
+    (attach)="attachDropdown()"
     (detach)="closeDropdown()"
     (backdropClick)="closeDropdown()"
   >

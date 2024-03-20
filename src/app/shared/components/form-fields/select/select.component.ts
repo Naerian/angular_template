@@ -4,8 +4,9 @@ import { InputSize } from '../models/form-field.entity';
 import { OptionComponent } from './option/option.component';
 import { OptionGroupsComponent } from './option-groups/option-groups.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { CdkConnectedOverlay, ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { InputsUtilsService } from '../services/inputs-utils.service';
+import { take } from 'rxjs';
 
 /**
  * Permite inyectar el componente SelectComponent en el componente OptionComponent y OptionGroupComponent
@@ -51,6 +52,7 @@ export class SelectComponent implements ControlValueAccessor {
   @ContentChildren(forwardRef(() => OptionGroupsComponent), { descendants: true }) optionGroups!: QueryList<OptionGroupsComponent>;
 
   @ViewChild('searchInput') searchInput: ElementRef = null as unknown as ElementRef;
+  @ViewChild(CdkConnectedOverlay) protected _cdkConnectedOverlay!: CdkConnectedOverlay;
 
   @Input({ transform: booleanAttribute }) multiple?: boolean = false;
   @Input({ transform: booleanAttribute }) transparent?: boolean = false;
@@ -316,8 +318,13 @@ export class SelectComponent implements ControlValueAccessor {
       else
         option.hideOptionBySearch();
     });
+  }
 
-
+  /**
+   * Método para resetear la búsqueda y mostrar todas las opciones
+   */
+  resetSearch() {
+    this.options.forEach(option => option.showOptionBySearch());
   }
 
   /**
@@ -333,9 +340,30 @@ export class SelectComponent implements ControlValueAccessor {
 
     this.isDropdownOpened.set(!this.isDropdownOpened());
 
-    // Si el campo está abierto y tiene búsqueda, enfocamos el input
-    if (this.isDropdownOpened() && this.searchable)
-      this.setFocusToSearch();
+  }
+
+  /**
+   * Método para comprobar si el dropdown está abierto mediante el evento 'attach'
+   * del overlay de Angular CDK en la vista
+   */
+  attachDropdown() {
+
+    // Nos suscribimos al evento de cambio de posición del overlay
+    this._cdkConnectedOverlay.positionChange.pipe(take(1)).subscribe(
+      () => {
+
+        // Si el campo está abierto
+        if (this.isDropdownOpened()) {
+
+          // Hacemos scroll al primer `neo-option` seleccionado
+          this.scrollToSelectedOption();
+
+          // Establecemos el foco en el input de búsqueda si el select permite búsqueda
+          if (this.searchable)
+            this.setFocusToSearch();
+        }
+      }
+    );
   }
 
   /**
@@ -344,6 +372,9 @@ export class SelectComponent implements ControlValueAccessor {
   closeDropdown() {
     if (this.isDropdownOpened())
       this.isDropdownOpened.set(false);
+
+    // Reseteamos la búsqueda
+    this.resetSearch();
 
     // Comprobamos si hay errores en el campo
     this.checkErrors();
@@ -373,6 +404,21 @@ export class SelectComponent implements ControlValueAccessor {
    */
   getSelectedOptions(): OptionComponent[] {
     return this._optionsSelected.selected;
+  }
+
+  /**
+   * Método para hacer scroll al primer `neo-option` seleccionado
+   */
+  scrollToSelectedOption() {
+    const selectedOption = this.options.find(option => option.isSelected());
+
+    // Hacemos scroll al primer `neo-option` seleccionado
+    if (selectedOption)
+      selectedOption.getElementRef().nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Si el select no tiene búsqueda, establecemos el foco en la opción seleccionada
+    if (!this.searchable)
+      selectedOption?.getElementRef().nativeElement.focus();
   }
 
   // Funciones de control de eventos

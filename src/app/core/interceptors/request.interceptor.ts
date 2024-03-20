@@ -5,6 +5,9 @@ import { catchError, map } from 'rxjs/operators';
 import { InterceptorService } from './services/interceptors.service';
 
 export const requestInterceptor: HttpInterceptorFn = (request: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> => {
+
+  const _interceptorService = inject(InterceptorService);
+
   return next(request).pipe(
 
     // Para el cambio y comprobación de estados desde backend
@@ -12,7 +15,6 @@ export const requestInterceptor: HttpInterceptorFn = (request: HttpRequest<any>,
       return event;
     }),
     catchError((err) => {
-      const _interceptorService = inject(InterceptorService);
       return _interceptorService.interceptorError(err, request);
     }),
 
