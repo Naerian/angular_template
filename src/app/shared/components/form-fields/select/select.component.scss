@@ -124,6 +124,10 @@
       scrollbar-width: thin !important;
       scrollbar-color: var(--bg-scroll-color) var(--bg-field-color) !important;
 
+      &--empty {
+        display: none;
+      }
+
       &__group {
         padding: 10px;
         margin: 3px 0px;

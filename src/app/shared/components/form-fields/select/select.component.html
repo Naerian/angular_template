@@ -15,7 +15,6 @@
     #selectDropdown="cdkOverlayOrigin"
     class="neo-select__field size-{{ inputSize }}"
     (click)="toggleDropdown($event)"
-    (focusout)="checkErrors()"
     [title]="title || label"
     [class.neo-select__field--error]="hasErrors() || _hasErrors()"
     [class.neo-select__field--disabled]="disabled"
@@ -32,7 +31,6 @@
     [attr.aria-owns]="id"
     [attr.aria-describedby]="title || label"
     [attr.id]="id"
-    clickable
     cdkOverlayOrigin
   >
     <div class="neo-select__field__value">
@@ -79,10 +77,12 @@
     <div
       class="neo-select__dropdown"
       [ngStyle]="{ 'min-width': selectField.offsetWidth + 'px' }"
+      role="listbox"
+      tabindex="-1"
       [cdkTrapFocus]="true"
       [cdkTrapFocusAutoCapture]="true"
     >
-      @if (searchable) {
+      @if (searchable && options.length > 0) {
         <div class="neo-select__dropdown__search">
           <input
             #searchInput
@@ -94,7 +94,10 @@
           <i class="ri-search-line neo-select__dropdown__search__icon"></i>
         </div>
       }
-      <div class="neo-select__dropdown__options">
+      <div
+        class="neo-select__dropdown__options"
+        [class.neo-select__dropdown__options--empty]="options.length === 0"
+      >
         <ng-content select="neo-option, neo-option-groups"></ng-content>
       </div>
     </div>

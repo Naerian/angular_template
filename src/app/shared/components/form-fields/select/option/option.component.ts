@@ -23,6 +23,10 @@ import { NEO_SELECT, SelectComponent } from '../select.component';
     '[attr.aria-disabled]': 'disabled', // Atributo para indicar si la opción está deshabilitada
     '[attr.aria-hidden]': 'isHideBySearch()', // Atributo para indicar si la opción está oculta por la búsqueda
     '[attr.aria-label]': 'getLabelText()', // Atributo para indicar el texto de la opción
+    '(click)': 'toggleSelectOption()', // Evento para seleccionar o deseleccionar la opción
+    '(keydown.enter)': 'toggleSelectOption()', // Evento para seleccionar o deseleccionar la opción
+    '(keydown.space)': 'toggleSelectOption()', // Evento para seleccionar o deseleccionar la opción
+    '[tabindex]': 'disabled ? -1 : 0' // Atributo para poder seleccionar la opción con el teclado
   },
   encapsulation: ViewEncapsulation.None
 })

@@ -32,7 +32,7 @@ export const NEO_SELECT = new InjectionToken<SelectComponent>('SelectComponent')
 @Component({
   selector: 'neo-select',
   templateUrl: './select.component.html',
-  styleUrl: './select.component.scss',
+  styleUrls: ['./select.component.scss', './../form-fields-settings.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -340,6 +340,9 @@ export class SelectComponent implements ControlValueAccessor {
   closeDropdown() {
     if (this.isDropdownOpened())
       this.isDropdownOpened.set(false);
+
+    // Comprobamos si hay errores en el campo
+    this.checkErrors();
   }
 
   /**
@@ -347,7 +350,7 @@ export class SelectComponent implements ControlValueAccessor {
    * Se activa si el campo es requerido y no se ha seleccionado ninguna opción
    */
   checkErrors() {
-    if (this.required && !this.isDropdownOpened() && !this._optionsSelected.isEmpty()) {
+    if (this.required && !this.isDropdownOpened() && this._optionsSelected.isEmpty()) {
       this._hasErrors.set(true);
     } else
       this._hasErrors.set(false);
