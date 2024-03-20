@@ -3,82 +3,66 @@
     <div>Tipos de botones</div>
   </neo-card-header>
   <div class="row">
-    <div class="col-2">
+    <div class="col-3">
       <label>Botón primary</label>
-      <neo-button (click)="buttonClicked()">Botón primary</neo-button>
+      <neo-button [color]="'primary'" (click)="buttonClicked()"
+        >Botón primary</neo-button
+      >
     </div>
-    <div class="col-2">
+    <div class="col-3">
       <label>Botón primary deshabilitado</label>
-      <neo-button (click)="buttonClicked()" [disabled]="true"
+      <neo-button [color]="'primary'" [disabled]="true"
         >Botón primary</neo-button
       >
     </div>
     <div class="col-2">
-      <label>Botón secondary</label>
-      <neo-button color="secondary" (click)="buttonClicked()"
-        >Botón secondary</neo-button
-      >
-    </div>
-    <div class="col-2">
-      <label>Botón secondary deshabilitado</label>
-      <neo-button color="secondary" [disabled]="true" (click)="buttonClicked()"
-        >Botón secondary</neo-button
-      >
-    </div>
-    <div class="col-2">
       <label>Primary transparente + icono</label>
-      <neo-button [transparent]="true">
+      <neo-button [color]="'primary'" [transparent]="true">
         <i class="ri-user-line"></i>
-        <span>Botón transparente</span>
+        <span>Botón primary</span>
       </neo-button>
     </div>
     <div class="col-2">
-      <label>Secondary transparente + icono</label>
-      <neo-button [color]="'secondary'" [transparent]="true">
-        <i class="ri-user-line"></i>
-        <span>Botón transparente</span>
+      <label>Primary y background</label>
+      <neo-button [size]="'m'" color="primary" mode="icon">
+        <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
-  </div>
-  <br />
-  <div class="row">
-    <div class="col-4">
-      <label>Botón XS</label>
-      <neo-button [size]="'xs'">Botón XS</neo-button>
-    </div>
-    <div class="col-4">
-      <label>Botón S</label>
-      <neo-button [size]="'s'">Botón S</neo-button>
-    </div>
-    <div class="col-4">
-      <label>Botón XM</label>
-      <neo-button [size]="'xm'">Botón XM</neo-button>
-    </div>
-  </div>
-  <br />
-  <div class="row">
-    <div class="col-4">
-      <label>Botón M</label>
-      <neo-button [size]="'m'">Botón M</neo-button>
-    </div>
-    <div class="col-4">
-      <label>Botón L</label>
-      <neo-button [size]="'l'">Botón L</neo-button>
-    </div>
-    <div class="col-4">
-      <label>Botón XL</label>
-      <neo-button [size]="'xl'">Botón XL</neo-button>
-    </div>
-  </div>
-  <br />
-  <div class="row">
-    <div class="col-4">
+    <div class="col-2">
       <label>Primary y transparente</label>
       <neo-button [size]="'m'" color="primary" mode="icon" [transparent]="true">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
-    <div class="col-4">
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-3">
+      <label>Botón secondary</label>
+      <neo-button [color]="'secondary'" (click)="buttonClicked()"
+        >Botón secondary</neo-button
+      >
+    </div>
+    <div class="col-3">
+      <label>Botón secondary deshabilitado</label>
+      <neo-button [color]="'secondary'" [disabled]="true"
+        >Botón secondary</neo-button
+      >
+    </div>
+    <div class="col-2">
+      <label>Secondary transparente + icono</label>
+      <neo-button [color]="'secondary'" [transparent]="true">
+        <i class="ri-user-line"></i>
+        <span>Botón secondary</span>
+      </neo-button>
+    </div>
+    <div class="col-2">
+      <label>Secondary y background</label>
+      <neo-button [size]="'m'" color="secondary" mode="icon">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+    <div class="col-2">
       <label>Secondary y transparente</label>
       <neo-button
         [size]="'m'"
@@ -89,32 +73,164 @@
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
-    <div class="col-4">
-      <label>Default y transparente</label>
-      <neo-button [size]="'m'" mode="icon" [transparent]="true">
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-3">
+      <label>Botón success</label>
+      <neo-button [color]="'success'" (click)="buttonClicked()"
+        >Botón success</neo-button
+      >
+    </div>
+    <div class="col-3">
+      <label>Botón success deshabilitado</label>
+      <neo-button [color]="'success'" [disabled]="true"
+        >Botón success</neo-button
+      >
+    </div>
+    <div class="col-2">
+      <label>Success transparente + icono</label>
+      <neo-button [color]="'success'" [transparent]="true">
+        <i class="ri-user-line"></i>
+        <span>Botón success</span>
+      </neo-button>
+    </div>
+    <div class="col-2">
+      <label>Success y background</label>
+      <neo-button [size]="'m'" color="success" mode="icon">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+    <div class="col-2">
+      <label>Success y transparente</label>
+      <neo-button [size]="'m'" color="success" mode="icon" [transparent]="true">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
   </div>
   <br />
   <div class="row">
-    <div class="col-4">
-      <label>Primary y background</label>
-      <neo-button [size]="'m'" color="primary" mode="icon">
+    <div class="col-3">
+      <label>Botón info</label>
+      <neo-button [color]="'info'" (click)="buttonClicked()"
+        >Botón info</neo-button
+      >
+    </div>
+    <div class="col-3">
+      <label>Botón info deshabilitado</label>
+      <neo-button [color]="'info'" [disabled]="true">Botón info</neo-button>
+    </div>
+    <div class="col-2">
+      <label>Info transparente + icono</label>
+      <neo-button [color]="'info'" [transparent]="true">
+        <i class="ri-user-line"></i>
+        <span>Botón info</span>
+      </neo-button>
+    </div>
+    <div class="col-2">
+      <label>Info y background</label>
+      <neo-button [size]="'m'" color="info" mode="icon">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
-    <div class="col-4">
-      <label>Secondary y background</label>
-      <neo-button [size]="'m'" color="secondary" mode="icon">
+    <div class="col-2">
+      <label>Info y transparente</label>
+      <neo-button [size]="'m'" color="info" mode="icon" [transparent]="true">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
-    <div class="col-4">
-      <label>Default y background</label>
-      <neo-button [size]="'m'" mode="icon">
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-3">
+      <label>Botón danger</label>
+      <neo-button [color]="'danger'" (click)="buttonClicked()"
+        >Botón danger</neo-button
+      >
+    </div>
+    <div class="col-3">
+      <label>Botón danger deshabilitado</label>
+      <neo-button [color]="'danger'" [disabled]="true">Botón danger</neo-button>
+    </div>
+    <div class="col-2">
+      <label>Danger transparente + icono</label>
+      <neo-button [color]="'danger'" [transparent]="true">
+        <i class="ri-user-line"></i>
+        <span>Botón danger</span>
+      </neo-button>
+    </div>
+    <div class="col-2">
+      <label>Danger y background</label>
+      <neo-button [size]="'m'" color="danger" mode="icon">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
+    </div>
+    <div class="col-2">
+      <label>Danger y transparente</label>
+      <neo-button [size]="'m'" color="danger" mode="icon" [transparent]="true">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-3">
+      <label>Botón warning</label>
+      <neo-button [color]="'warning'" (click)="buttonClicked()"
+        >Botón warning</neo-button
+      >
+    </div>
+    <div class="col-3">
+      <label>Botón warning deshabilitado</label>
+      <neo-button [color]="'warning'" [disabled]="true"
+        >Botón warning</neo-button
+      >
+    </div>
+    <div class="col-2">
+      <label>Warning transparente + icono</label>
+      <neo-button [color]="'warning'" [transparent]="true">
+        <i class="ri-user-line"></i>
+        <span>Botón warning</span>
+      </neo-button>
+    </div>
+    <div class="col-2">
+      <label>Warning y background</label>
+      <neo-button [size]="'m'" color="warning" mode="icon">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+    <div class="col-2">
+      <label>Warning y transparente</label>
+      <neo-button [size]="'m'" color="warning" mode="icon" [transparent]="true">
+        <i class="ri-newspaper-fill"></i>
+      </neo-button>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-2">
+      <label>Botón XS</label>
+      <neo-button [size]="'xs'">Botón XS</neo-button>
+    </div>
+    <div class="col-2">
+      <label>Botón S</label>
+      <neo-button [size]="'s'">Botón S</neo-button>
+    </div>
+    <div class="col-2">
+      <label>Botón XM</label>
+      <neo-button [size]="'xm'">Botón XM</neo-button>
+    </div>
+    <div class="col-2">
+      <label>Botón M</label>
+      <neo-button [size]="'m'">Botón M</neo-button>
+    </div>
+    <div class="col-2">
+      <label>Botón L</label>
+      <neo-button [size]="'l'">Botón L</neo-button>
+    </div>
+    <div class="col-2">
+      <label>Botón XL</label>
+      <neo-button [size]="'xl'">Botón XL</neo-button>
     </div>
   </div>
 </neo-card>
@@ -244,7 +360,10 @@
         <neo-option value="6">Opción 6</neo-option>
       </neo-select>
       <br />
-      <neo-select [label]="'Selector con valor por defecto usando el atributo -selected-'" (change)="selectWithDefaultMultipleValue($event)">
+      <neo-select
+        [label]="'Selector con valor por defecto usando el atributo -selected-'"
+        (change)="selectWithDefaultMultipleValue($event)"
+      >
         <neo-option value="1">Opción 1</neo-option>
         <neo-option [selected]="true" value="2">Opción 2</neo-option>
         <neo-option value="3">Opción 3</neo-option>
@@ -253,7 +372,11 @@
         <neo-option value="6">Opción 6</neo-option>
       </neo-select>
       <br />
-      <neo-select [label]="'Selector agrupado con búsqueda'" searchable (change)="selectWithDefaultMultipleValue($event)">
+      <neo-select
+        [label]="'Selector agrupado con búsqueda'"
+        searchable
+        (change)="selectWithDefaultMultipleValue($event)"
+      >
         <neo-option-groups [label]="'GRUPO 1'">
           <neo-option value="1">Opción 1</neo-option>
           <neo-option value="2">Opción 2</neo-option>

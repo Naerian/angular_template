@@ -352,4 +352,264 @@
       }
     }
   }
+
+  &.neo-btn-success {
+
+    &:not(.neo-btn-transparent):not(.neo-btn-icon),
+    &.neo-btn-icon:not(.neo-btn-transparent) {
+      background-color: var(--bg-btn-success-color);
+      border-color: var(--border-btn-success-color);
+      box-shadow: var(--shadow-btn);
+
+      color: var(--text-btn-success-color);
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--hover-btn-success-color);
+      }
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--text-btn-success-color);
+        }
+      }
+    }
+
+    &.neo-btn-transparent {
+
+      color: var(--text-btn-success-transparent-color);
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--icon-btn-success-color);
+        }
+      }
+
+      &:not(.neo-btn-icon) {
+        i::before {
+          color: var(--icon-btn-success-transparent-color);
+        }
+      }
+    }
+
+    &.neo-btn-icon {
+      i::before {
+        color: var(--icon-btn-success-color);
+      }
+
+      &.neo-btn-transparent {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-bg-btn-success-transparent-color);
+        }
+      }
+
+      &:not(.neo-btn-transparent) {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-btn-success-color);
+        }
+      }
+    }
+  }
+
+  &.neo-btn-info {
+
+    &:not(.neo-btn-transparent):not(.neo-btn-icon),
+    &.neo-btn-icon:not(.neo-btn-transparent) {
+      background-color: var(--bg-btn-info-color);
+      border-color: var(--border-btn-info-color);
+      box-shadow: var(--shadow-btn);
+
+      color: var(--text-btn-info-color);
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--hover-btn-info-color);
+      }
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--text-btn-info-color);
+        }
+      }
+    }
+
+    &.neo-btn-transparent {
+
+      color: var(--text-btn-info-transparent-color);
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--icon-btn-info-color);
+        }
+      }
+
+      &:not(.neo-btn-icon) {
+        i::before {
+          color: var(--icon-btn-info-transparent-color);
+        }
+      }
+    }
+
+    &.neo-btn-icon {
+      i::before {
+        color: var(--icon-btn-info-color);
+      }
+
+      &.neo-btn-transparent {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-bg-btn-info-transparent-color);
+        }
+      }
+
+      &:not(.neo-btn-transparent) {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-btn-info-color);
+        }
+      }
+    }
+  }
+
+  &.neo-btn-danger {
+
+    &:not(.neo-btn-transparent):not(.neo-btn-icon),
+    &.neo-btn-icon:not(.neo-btn-transparent) {
+      background-color: var(--bg-btn-danger-color);
+      border-color: var(--border-btn-danger-color);
+      box-shadow: var(--shadow-btn);
+
+      color: var(--text-btn-danger-color);
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--hover-btn-danger-color);
+      }
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--text-btn-danger-color);
+        }
+      }
+    }
+
+    &.neo-btn-transparent {
+
+      color: var(--text-btn-danger-transparent-color);
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--icon-btn-danger-color);
+        }
+      }
+
+      &:not(.neo-btn-icon) {
+        i::before {
+          color: var(--icon-btn-danger-transparent-color);
+        }
+      }
+    }
+
+    &.neo-btn-icon {
+      i::before {
+        color: var(--icon-btn-danger-color);
+      }
+
+      &.neo-btn-transparent {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-bg-btn-danger-transparent-color);
+        }
+      }
+
+      &:not(.neo-btn-transparent) {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-btn-danger-color);
+        }
+      }
+    }
+  }
+
+  &.neo-btn-warning {
+
+    &:not(.neo-btn-transparent):not(.neo-btn-icon),
+    &.neo-btn-icon:not(.neo-btn-transparent) {
+      background-color: var(--bg-btn-warning-color);
+      border-color: var(--border-btn-warning-color);
+      box-shadow: var(--shadow-btn);
+
+      color: var(--text-btn-warning-color);
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: var(--hover-btn-warning-color);
+      }
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--text-btn-warning-color);
+        }
+      }
+    }
+
+    &.neo-btn-transparent {
+
+      color: var(--text-btn-warning-transparent-color);
+
+      &.neo-btn-icon {
+        i::before {
+          color: var(--icon-btn-warning-color);
+        }
+      }
+
+      &:not(.neo-btn-icon) {
+        i::before {
+          color: var(--icon-btn-warning-transparent-color);
+        }
+      }
+    }
+
+    &.neo-btn-icon {
+      i::before {
+        color: var(--icon-btn-warning-color);
+      }
+
+      &.neo-btn-transparent {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-bg-btn-warning-transparent-color);
+        }
+      }
+
+      &:not(.neo-btn-transparent) {
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-btn-warning-color);
+        }
+      }
+    }
+  }
 }

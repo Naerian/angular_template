@@ -1,10 +1,44 @@
 // COMPARTIDOS
 :root {
-  --add-color: #1c961a;
   --success-color: #28C125;
   --danger-color: #D9332B;
-}
 
+  --bg-btn-success-color: #51a351;
+  --border-btn-success-color: #4c9e4c;
+  --hover-btn-success-color: #4c9e4c;
+  --text-btn-success-color: #FFFFFF;
+  --text-btn-success-transparent-color: #131313;
+  --icon-btn-success-transparent-color: #51a351;
+  --hover-bg-btn-success-transparent-color: #b1b1b129;
+  --icon-btn-success-color: #51a351;
+
+  --bg-btn-info-color: #2f96b4;
+  --border-btn-info-color: #2b8eac;
+  --hover-btn-info-color: #2b8eac;
+  --text-btn-info-color: #FFFFFF;
+  --text-btn-info-transparent-color: #131313;
+  --icon-btn-info-transparent-color: #2f96b4;
+  --hover-bg-btn-info-transparent-color: #b1b1b129;
+  --icon-btn-info-color: #2f96b4;
+
+  --bg-btn-danger-color: #bd362f;
+  --border-btn-danger-color: #b4322b;
+  --hover-btn-danger-color: #b4322b;
+  --text-btn-danger-color: #FFFFFF;
+  --text-btn-danger-transparent-color: #131313;
+  --icon-btn-danger-transparent-color: #bd362f;
+  --hover-bg-btn-danger-transparent-color: #b1b1b129;
+  --icon-btn-danger-color: #bd362f;
+
+  --bg-btn-warning-color: #cd8218;
+  --border-btn-warning-color: #c77d15;
+  --hover-btn-warning-color: #c77d15;
+  --text-btn-warning-color: #FFFFFF;
+  --text-btn-warning-transparent-color: #131313;
+  --icon-btn-warning-transparent-color: #cd8218;
+  --hover-bg-btn-warning-transparent-color: #b1b1b129;
+  --icon-btn-warning-color: #cd8218;
+}
 
 :root {
 
@@ -32,7 +66,6 @@
 
   --text-color: #131313;
   --icon-color: #232222;
-  --icon-add-color: #28C125;
 
   --bg-header-table-color: #D9D9D9;
   --bg-odd-row-table-color: #F2F2F2;
@@ -100,7 +133,6 @@
 
     --text-color: #ffffff;
     --icon-color: #ffffff;
-    --icon-add-color: #28C125;
 
     --bg-header-table-color: #0a0a0a;
     --bg-odd-row-table-color: #101010;
