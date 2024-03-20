@@ -169,9 +169,9 @@
         margin: 3px 0px;
         gap: 5px;
 
-        &:hover,
-        &:focus,
-        &:active,
+        &:hover:not(&--disabled),
+        &:focus:not(&--disabled),
+        &:active:not(&--disabled),
         &--selected {
           color: var(--text-color) !important;
           background-color: var(--background-color) !important;
@@ -204,12 +204,7 @@
 
         &--disabled {
           filter: opacity(0.3) !important;
-        }
-
-        &:hover,
-        &:focus,
-        &:hover:has(:focus) {
-          border-radius: 5px;
+          cursor: default;
         }
 
         &:last-child {

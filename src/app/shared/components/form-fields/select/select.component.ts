@@ -145,6 +145,10 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   ngAfterContentInit(): void {
+
+    // Creamos un id único para el label del input
+    this.createUniqueId();
+
     // Inicializamos la selección de opciones cuándo el contenido ya ha sido inicializado
     // para asegurarnos de que las opciones de `OptionComponent` ya han sido renderizadas
     this.initSelection();
@@ -214,7 +218,7 @@ export class SelectComponent implements ControlValueAccessor {
    * Método para establecer el foco en el input de búsqueda si el select es buscable y está abierto
    */
   private setFocusToSearch() {
-    if (this.searchable && this.isDropdownOpened())
+    if (this.searchable && this.isDropdownOpened() && this.searchInput?.nativeElement)
       setTimeout(() => this.searchInput.nativeElement.focus(), 0);
   }
 
