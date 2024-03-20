@@ -1,6 +1,6 @@
-<div class="error">
-  <span #content><ng-content></ng-content></span>
+<div class="neo-error">
+  <div class="neo-error__content" #content><ng-content></ng-content></div>
   @if (content.textContent === "") {
-    <span>{{ _defaultLabel }}</span>
+    <span class="neo-error__content">{{ _defaultLabel }}</span>
   }
 </div>

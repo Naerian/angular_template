@@ -7,15 +7,25 @@
   justify-content: center;
 }
 
-.error {
+.neo-error {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   margin: 5px 0;
-  &:not(i) {
-    font-size: 0.8rem;
-    font-weight: 600;
+
+  &__content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 5px;
+    font-size: 0.85rem;
     line-height: 1rem;
+    font-weight: 600;
+
+    i {
+      font-weight: 500;
+    }
   }
 }

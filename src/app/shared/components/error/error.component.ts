@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 /**
@@ -16,6 +16,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   imports: [CommonModule, TranslateModule],
   templateUrl: './error.component.html',
   styleUrls: ['./error.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ErrorComponent implements OnInit {
 
