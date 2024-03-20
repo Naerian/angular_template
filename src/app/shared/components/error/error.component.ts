@@ -1,7 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
+/**
+ * @name
+ * ErrorComponent
+ * @description
+ * Componente para mostrar un mensaje de error en la aplicación. Si no se le pasa un mensaje, mostrará un mensaje por defecto.
+ * @example
+ * <neo-error>Mensaje de error</neo-error>
+ */
 @Component({
   selector: 'neo-error',
   standalone: true,
@@ -11,14 +19,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 })
 export class ErrorComponent implements OnInit {
 
-  @Input() label?: string;
-  @Input() textAlign?: 'left' | 'right' | 'center' = 'center';
-
+  _defaultLabel: string = '';
   constructor(private readonly _translateService: TranslateService) { }
 
   ngOnInit(): void {
-    if (typeof this.label === 'undefined' || !this.label || this.label === '') {
-      this.label = this._translateService.instant('app.not_results');
-    }
+    this._defaultLabel = this._translateService.instant('app.not_results');
   }
 }

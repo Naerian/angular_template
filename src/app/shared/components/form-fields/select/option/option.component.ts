@@ -1,6 +1,7 @@
 import { Component, ElementRef, Inject, Input, Optional, ViewChild, ViewEncapsulation, WritableSignal, booleanAttribute, signal } from '@angular/core';
 import { NEO_OPTION_GROUPS, OptionGroupsComponent } from '../option-groups/option-groups.component';
 import { NEO_SELECT, SelectComponent } from '../select.component';
+import { InputsUtilsService } from '../../services/inputs-utils.service';
 
 /**
  * @name
@@ -61,6 +62,7 @@ export class OptionComponent {
 
   @Input() value!: any;
 
+  private _id: string = '';
   private _disabled: WritableSignal<boolean> = signal(false);
   private _selected: WritableSignal<boolean> = signal(false);
   private _hideBySearch: WritableSignal<boolean> = signal(false);
@@ -71,6 +73,7 @@ export class OptionComponent {
   constructor(
     @Optional() @Inject(NEO_SELECT) private selectParent: SelectComponent,
     @Optional() @Inject(NEO_OPTION_GROUPS) private groupOption: OptionGroupsComponent,
+    private readonly _inputsUtilsService: InputsUtilsService,
     private readonly elementRef: ElementRef,
   ) {
     this._elementRef = elementRef;
@@ -81,25 +84,43 @@ export class OptionComponent {
     setTimeout(() => {
       this._labelHtml = this.optionLabel?.nativeElement.innerHTML || '';
       this._labelText = this.optionLabel?.nativeElement.textContent || '';
+      this.createUniqueId();
     }, 0);
+  }
+
+  /**
+   * Método para generar un identificador único para la opción
+   */
+  createUniqueId(): void {
+    this._id = this._inputsUtilsService.createUniqueId(this._labelText);
   }
 
   /**
    * Método para seleccionar o deseleccionar una opción
    */
   toggleSelectOption(): void {
+
     if (this.disabled)
       return;
 
-    if (this.selectParent.multiple) {
-      this._selected.set(!this.selected);
-    } else {
-      this.selectParent.options.forEach(option => option.deselect());
-      this.select();
-    }
+    // Si el select padre no permite múltiples selecciones, deseleccionamos todas las opciones
+    // excepto la que se está seleccionando para poder cambiar su estado justo después
+    // y así poder seleccionarla o deseleccionarla
+    if (!this.selectParent.multiple)
+      this.selectParent.options.forEach(option => option.getId() !== this.getId() ? option.deselect() : null);
+
+    // Alternamos la selección de la opción
+    this.toggle();
 
     // Actualizamos el valor del select padre
     this.selectParent.updateValue(this);
+  }
+
+  /**
+   * Método para alternar la selección de una opción
+   */
+  toggle() {
+    this._selected.set(!this._selected());
   }
 
   /**
@@ -168,6 +189,14 @@ export class OptionComponent {
    */
   getElementRef(): ElementRef {
     return this._elementRef;
+  }
+
+  /**
+   * Método para obtener el identificador único de la opción
+   * @returns string
+   */
+  getId(): string {
+    return this._id;
   }
 
 }

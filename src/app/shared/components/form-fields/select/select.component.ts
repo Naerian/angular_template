@@ -287,9 +287,16 @@ export class SelectComponent implements ControlValueAccessor {
         this._optionsSelected?.deselect(option);
       this._value.set(this._optionsSelected.selected.map(option => option.value));
     } else {
+
       this._optionsSelected?.clear();
-      this._optionsSelected?.select(option);
-      this._value.set(this._optionsSelected.selected[0]?.value);
+
+      if (option.isSelected()) {
+        this._optionsSelected?.select(option);
+        this._value.set(this._optionsSelected.selected[0]?.value);
+      } else {
+        this._value.set(null);
+      }
+
       this.closeDropdown();
     }
 

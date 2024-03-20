@@ -1,3 +1,6 @@
 <div class="error">
-  <p [innerHTML]="label" [ngStyle]="{ 'text-align': textAlign }"></p>
+  <span #content><ng-content></ng-content></span>
+  @if (content.textContent === "") {
+    <span>{{ _defaultLabel }}</span>
+  }
 </div>
