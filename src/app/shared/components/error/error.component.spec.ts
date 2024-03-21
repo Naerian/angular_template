@@ -27,8 +27,8 @@ describe('ErrorComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a label Input', () => {
-    component.label = 'test';
-    expect(component.label).toBeTruthy();
+  it('should have a _defaultLabel', () => {
+    component._defaultLabel = 'test';
+    expect(component._defaultLabel).toBeTruthy();
   });
 });

@@ -33,7 +33,6 @@ export class TextAreaComponent {
   @Input() title?: string;
   @Input() label?: string;
   @Input() name?: string;
-  @Input() id?: string;
   @Input() placeholder?: string;
   @Input() rows: number = 3;
   @Input() cols?: number;
@@ -42,6 +41,16 @@ export class TextAreaComponent {
   @Input() inputSize: InputSize = 'm';
   @Output() change = new EventEmitter<string>();
   hasErrors: InputSignal<boolean> = input<boolean>(false);
+
+   /**
+   * Input para crear un id único para el campo
+   */
+   @Input() set id(value: string) {
+    this._id.set(value);
+  }
+  get id() {
+    return this._id();
+  }
 
   /**
    * Input para marcar el campo como deshabilitado
@@ -65,9 +74,9 @@ export class TextAreaComponent {
     return this._value();
   }
 
+  _id: WritableSignal<string> = signal('');
   _value: WritableSignal<string | null> = signal('');
   _disabled: WritableSignal<boolean> = signal(false);
-  labelId: WritableSignal<string> = signal('');
 
   constructor(
     private readonly _inputsUtilsService: InputsUtilsService,
@@ -81,10 +90,8 @@ export class TextAreaComponent {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id && this.label && this.label !== '') {
-      this.id = this._inputsUtilsService.createUniqueId(this.label);
-      this.labelId.set(`label_${this.id}`);
-    }
+    if (!this._id() && this.label && this.label !== '')
+      this._id.set(this._inputsUtilsService.createUniqueId(this.label));
   }
 
   /**

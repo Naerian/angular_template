@@ -5,7 +5,7 @@
   <div class="row">
     <div class="col-3">
       <label>Botón primary</label>
-      <neo-button [color]="'primary'" (click)="buttonClicked()"
+      <neo-button [color]="'primary'" (onClick)="buttonClicked()"
         >Botón primary</neo-button
       >
     </div>
@@ -39,7 +39,7 @@
   <div class="row">
     <div class="col-3">
       <label>Botón secondary</label>
-      <neo-button [color]="'secondary'" (click)="buttonClicked()"
+      <neo-button [color]="'secondary'" (onClick)="buttonClicked()"
         >Botón secondary</neo-button
       >
     </div>
@@ -78,7 +78,7 @@
   <div class="row">
     <div class="col-3">
       <label>Botón success</label>
-      <neo-button [color]="'success'" (click)="buttonClicked()"
+      <neo-button [color]="'success'" (onClick)="buttonClicked()"
         >Botón success</neo-button
       >
     </div>
@@ -112,7 +112,7 @@
   <div class="row">
     <div class="col-3">
       <label>Botón info</label>
-      <neo-button [color]="'info'" (click)="buttonClicked()"
+      <neo-button [color]="'info'" (onClick)="buttonClicked()"
         >Botón info</neo-button
       >
     </div>
@@ -144,7 +144,7 @@
   <div class="row">
     <div class="col-3">
       <label>Botón danger</label>
-      <neo-button [color]="'danger'" (click)="buttonClicked()"
+      <neo-button [color]="'danger'" (onClick)="buttonClicked()"
         >Botón danger</neo-button
       >
     </div>
@@ -176,7 +176,7 @@
   <div class="row">
     <div class="col-3">
       <label>Botón warning</label>
-      <neo-button [color]="'warning'" (click)="buttonClicked()"
+      <neo-button [color]="'warning'" (onClick)="buttonClicked()"
         >Botón warning</neo-button
       >
     </div>
@@ -251,19 +251,19 @@
   <div class="row">
     <div class="col-4">
       <label>Toast success</label>
-      <neo-button color="secondary" (click)="toastSuccess()"
+      <neo-button color="secondary" (onClick)="toastSuccess()"
         >Toast success</neo-button
       >
     </div>
     <div class="col-4">
       <label>Toast error</label>
-      <neo-button color="secondary" (click)="toastError()"
+      <neo-button color="secondary" (onClick)="toastError()"
         >Toast error</neo-button
       >
     </div>
     <div class="col-4">
       <label>Toast warning</label>
-      <neo-button color="secondary" (click)="toastWarning()"
+      <neo-button color="secondary" (onClick)="toastWarning()"
         >Toast warning</neo-button
       >
     </div>
@@ -421,15 +421,15 @@
   <div class="row">
     <div class="col-4">
       <label>Apertura de Sidebar con cambio de contenido en su interior</label>
-      <neo-button (click)="openSidebar()">Abrir sidebar</neo-button>
+      <neo-button (onClick)="openSidebar()">Abrir sidebar</neo-button>
     </div>
     <div class="col-4">
       <label>Ventana modal normal</label>
-      <neo-button (click)="openModal()">Abrir modal</neo-button>
+      <neo-button (onClick)="openModal()">Abrir modal</neo-button>
     </div>
     <div class="col-4">
       <label>Ventana modal con componente</label>
-      <neo-button (click)="openModalComponent()"
+      <neo-button (onClick)="openModalComponent()"
         >Abrir modal con componente</neo-button
       >
     </div>

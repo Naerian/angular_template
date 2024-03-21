@@ -27,7 +27,7 @@
   @if (data.cancelText || data.confirmText) {
     <div mat-dialog-actions class="modal-box__footer">
       @if (data.confirmText) {
-        <neo-button (click)="confirm()" size="xm" color="primary">{{
+        <neo-button (onClick)="confirm()" size="xm" color="primary">{{
           data.confirmText
         }}</neo-button>
       }
@@ -35,7 +35,7 @@
         <neo-button
           cdkFocusInitial
           color="secondary"
-          (click)="cancel()"
+          (onClick)="cancel()"
           size="xm"
           >{{ data.cancelText }}</neo-button
         >

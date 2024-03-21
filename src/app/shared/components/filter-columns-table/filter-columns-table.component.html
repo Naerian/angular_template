@@ -5,7 +5,7 @@
   [transparent]="transparent"
   [disabled]="_columns().length === 0"
   [color]="color"
-  (click)="toggleOverlay($event)"
+  (onClick)="toggleOverlay($event)"
   cdkOverlayOrigin
   #filterColumnsOverlay="cdkOverlayOrigin"
 >

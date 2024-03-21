@@ -70,7 +70,7 @@ describe('ButtonComponent', () => {
   });
 
   it('should emit a value through a output', () => {
-    const spy = spyOn(component.click, 'emit');
+    const spy = spyOn(component.onClick, 'emit');
     const eventClick = jasmine.createSpyObj('eventVar', [
       'preventDefault',
       'stopPropagation',

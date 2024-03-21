@@ -11,6 +11,7 @@
       [attr.value]="value"
       [tabIndex]="disabled ? -1 : 0"
       [attr.aria-label]="_title()"
+      [attr.aria-describedby]="_title()"
       [attr.aria-labelledby]="_id()"
       (change)="onClickTargetRadioButton($event)"
     />

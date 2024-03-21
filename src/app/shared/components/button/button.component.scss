@@ -28,6 +28,12 @@
     width: 100%;
   }
 
+  [disabled],
+  &--disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+
   span,
   p,
   div {
@@ -43,13 +49,6 @@
   &:not(.neo-btn-icon):not(.neo-btn-transparent) {
     border-width: 1px;
     border-style: solid;
-  }
-
-  &[disabled],
-  &.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-    cursor: default;
   }
 
   &.neo-btn-xs {

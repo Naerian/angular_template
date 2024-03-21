@@ -5,7 +5,7 @@
     mode="icon"
     [title]="'app.expandir' | translate"
     [transparent]="true"
-    (click)="collapse($event)"
+    (onClick)="collapse($event)"
   >
     <i class="ri-arrow-up-wide-fill"></i>
   </neo-button>
@@ -23,7 +23,7 @@
     [mode]="!label ? 'icon' : 'button'"
     [title]="'app.expandir' | translate"
     [transparent]="true"
-    (click)="expand($event)"
+    (onClick)="expand($event)"
   >
     <i [class]="!label && !icon ? 'ri-arrow-down-wide-fill' : icon"></i>
     @if (label) {

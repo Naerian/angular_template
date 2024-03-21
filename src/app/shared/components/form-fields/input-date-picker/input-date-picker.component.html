@@ -6,8 +6,7 @@
   @if (label) {
     <label
       class="neo-input-date-picker__label"
-      [attr.for]="id"
-      [id]="labelId()"
+      [attr.for]="_id()"
       [class.neo-input-date-picker__label--required]="required"
     >
       <span [innerHtml]="label"></span>
@@ -31,11 +30,12 @@
       [(ngModel)]="value"
       (input)="onInput(datePickerInput.value)"
       (blur)="onBlur()"
-      [attr.id]="id"
+      [attr.id]="_id()"
       [attr.aria-disabled]="_disabled()"
       [attr.aria-readonly]="true"
-      [attr.aria-label]="placeholder"
-      [attr.aria-labelledby]="labelId()"
+      [attr.aria-label]="title || label || placeholder || ''"
+      [attr.aria-labelledby]="_id()"
+      [attr.aria-describedby]="title || label || placeholder || ''"
       [readonly]="true"
       [disabled]="_disabled()"
       [required]="required"

@@ -60,10 +60,19 @@ export class SelectComponent implements ControlValueAccessor {
   @Input({ transform: booleanAttribute }) required?: boolean = false;
   @Input() label?: string = '';
   @Input() title?: string = '';
-  @Input() id?: string;
   @Input() placeholder?: string;
   @Input() placeholderSearch?: string;
   @Input() inputSize: InputSize = 'm';
+
+  /**
+   * Input para crear un id único para el campo
+   */
+  @Input() set id(value: string) {
+    this._id.set(value);
+  }
+  get id() {
+    return this._id();
+  }
 
   /**
   * Input para marcar el campo como deshabilitado
@@ -131,9 +140,9 @@ export class SelectComponent implements ControlValueAccessor {
   // Estrategia de scroll para el overlay
   scrollStrategy: ScrollStrategy;
 
+  _id: WritableSignal<string> = signal('');
   private _disabled: WritableSignal<boolean> = signal(false);
   private _value: WritableSignal<any> = signal(null);
-  labelId: WritableSignal<string> = signal('');
 
   constructor(
     private readonly _inputsUtilsService: InputsUtilsService,
@@ -160,10 +169,8 @@ export class SelectComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id && this.label && this.label !== '') {
-      this.id = this._inputsUtilsService.createUniqueId(this.label);
-      this.labelId.set(`label_${this.id}`);
-    }
+    if (!this._id() && this.label && this.label !== '')
+      this._id.set(this._inputsUtilsService.createUniqueId(this.label));
   }
 
   /**

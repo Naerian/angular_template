@@ -33,15 +33,25 @@ export class InputPasswordComponent implements ControlValueAccessor {
   @Input() autofocus?: boolean = false;
   @Input() readonly?: boolean = false;
   @Input() required: boolean = false;
+  @Input() title?: string;
   @Input() label?: string;
   @Input() name?: string;
-  @Input() id?: string;
   @Input() placeholder?: string;
   @Input() size?: number;
   @Input() minlength?: number;
   @Input() maxlength?: number;
   @Input() inputSize: InputSize = 'm';
   hasErrors: InputSignal<boolean> = input<boolean>(false);
+
+  /**
+   * Input para crear un id único para el campo
+   */
+  @Input() set id(value: string) {
+    this._id.set(value);
+  }
+  get id() {
+    return this._id();
+  }
 
   /**
    * Input para marcar el campo como deshabilitado
@@ -67,10 +77,10 @@ export class InputPasswordComponent implements ControlValueAccessor {
 
   @Output() change = new EventEmitter<string>();
 
+  _id: WritableSignal<string> = signal('');
   _value: WritableSignal<string | null> = signal('');
   _disabled: WritableSignal<boolean> = signal(false);
   show: WritableSignal<boolean> = signal(false);
-  labelId: WritableSignal<string> = signal('');
 
   constructor(
     private readonly _inputsUtilsService: InputsUtilsService,
@@ -84,10 +94,8 @@ export class InputPasswordComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id && this.label && this.label !== '') {
-      this.id = this._inputsUtilsService.createUniqueId(this.label);
-      this.labelId.set(`label_${this.id}`);
-    }
+    if (!this._id() && this.label && this.label !== '')
+      this._id.set(this._inputsUtilsService.createUniqueId(this.label));
   }
 
   /**

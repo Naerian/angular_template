@@ -5,8 +5,7 @@
 >
   @if (label) {
     <label
-      [attr.for]="id"
-      [id]="labelId()"
+      [attr.for]="_id()"
       class="neo-input__label"
       [class.neo-input__label--required]="required"
     >
@@ -26,14 +25,15 @@
       [(ngModel)]="value"
       (input)="onInput(input.value)"
       (blur)="onBlur()"
-      [attr.id]="id"
+      [attr.id]="_id()"
       [attr.type]="type"
       [attr.min]="min"
       [attr.max]="max"
       [attr.aria-disabled]="_disabled()"
       [attr.aria-readonly]="readonly"
-      [attr.aria-label]="placeholder"
-      [attr.aria-labelledby]="labelId()"
+      [attr.aria-label]="title || label || placeholder || ''"
+      [attr.aria-labelledby]="_id()"
+      [attr.aria-describedby]="title || label || placeholder || ''"
       [readonly]="readonly"
       [disabled]="_disabled()"
       [required]="required"

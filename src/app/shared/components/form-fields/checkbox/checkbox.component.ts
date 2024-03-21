@@ -104,9 +104,8 @@ export class CheckboxComponent implements ControlValueAccessor {
    * Función para crear un ID único a partir del nombre
    */
   createUniqueId(): void {
-    if (!this._id()) {
+    if (!this._id())
       this._id.set(this._inputsUtilsService.createUniqueId(this._title() || 'neo_checkbox'));
-    }
   }
 
   /**

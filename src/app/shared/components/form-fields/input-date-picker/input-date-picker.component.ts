@@ -36,7 +36,6 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   @Input() title?: string;
   @Input() label?: string;
   @Input() name?: string;
-  @Input() id?: string;
   @Input() type: DatePickerType = 'day';
   @Input() placeholder: string = 'aaaa-mm-dd';
   @Input() icon?: string = 'ri-calendar-2-line';
@@ -45,6 +44,16 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   @Input() showIconCalendar: boolean = true;
   @Input() format: string = DEFAULT_FORMAT;
   hasErrors: InputSignal<boolean> = input<boolean>(false);
+
+  /**
+   * Input para crear un id único para el campo
+   */
+  @Input() set id(value: string) {
+    this._id.set(value);
+  }
+  get id() {
+    return this._id();
+  }
 
   /**
    * Input para marcar el campo como deshabilitado
@@ -71,6 +80,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   @Output() dateSelected = new EventEmitter<string>();
   @Output() change = new EventEmitter<string>();
 
+  _id: WritableSignal<string> = signal('');
   _value: WritableSignal<string> = signal('');
   _disabled: WritableSignal<boolean> = signal(false);
 
@@ -78,8 +88,6 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   defaultDate: WritableSignal<moment.Moment> = signal(moment(new Date()));
   currentDate: WritableSignal<string | string[]> = signal('');
   scrollStrategy: ScrollStrategy;
-
-  labelId: WritableSignal<string> = signal('');
 
   constructor(
     private readonly _calendarService: CalendarService,
@@ -97,10 +105,8 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id && this.label && this.label !== '') {
-      this.id = this._inputsUtilsService.createUniqueId(this.label);
-      this.labelId.set(`label_${this.id}`);
-    }
+    if (!this._id() && this.label && this.label !== '')
+      this._id.set(this._inputsUtilsService.createUniqueId(this.label));
   }
 
   /**
