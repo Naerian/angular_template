@@ -1,0 +1,12 @@
+.neo-form-field {
+  display: flex;
+  flex-direction: column;
+
+  &__error {
+    min-height: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}

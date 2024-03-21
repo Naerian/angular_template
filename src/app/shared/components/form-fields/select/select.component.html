@@ -18,6 +18,8 @@
     (keydown.enter)="toggleDropdown($event)"
     (keydown.space)="toggleDropdown($event)"
     [title]="title || label"
+    [class.neo-select__field--empty]="options.length === 0"
+    [class.neo-select__field--multiple]="multiple"
     [class.neo-select__field--error]="hasErrors() || _hasErrors()"
     [class.neo-select__field--disabled]="disabled"
     [class.neo-select__field--transparent]="transparent"

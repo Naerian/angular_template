@@ -30,7 +30,8 @@
     position: relative;
     gap: 5px;
 
-    &--disabled {
+    &--disabled,
+    &--empty {
       cursor: not-allowed;
       border: 1px solid var(--border-field-disabled-color);
       pointer-events: none;

@@ -1,5 +1,5 @@
 <div class="main-content" cdkScrollable>
-  <nav class="main-header navbar">
+  <header class="main-header navbar">
     <div class="main-header__left">
       <div
         [ngClass]="{
@@ -41,10 +41,10 @@
         <i class="ri-logout-circle-r-line"></i>
       </neo-button> -->
     </div>
-  </nav>
+  </header>
   <neo-side-menu class="navbar_menu"></neo-side-menu>
-  <div class="content-wrapper">
+  <main class="content-wrapper">
     <router-outlet></router-outlet>
-  </div>
+  </main>
   <neo-sidebar-panel></neo-sidebar-panel>
 </div>

@@ -19,7 +19,10 @@ import { InputSize } from '../models/form-field.entity';
 @Component({
   selector: 'neo-radio-button',
   templateUrl: './radio-button.component.html',
-  styleUrls: ['./radio-button.component.scss', './../form-fields-settings.scss']
+  styleUrls: ['./radio-button.component.scss', './../form-fields-settings.scss'],
+  host: {
+    '(focus)': '_inputElement.nativeElement.focus()',
+  }
 })
 export class RadioButtonComponent {
 
@@ -106,7 +109,7 @@ export class RadioButtonComponent {
     return this._checked();
   }
   set checked(value: boolean) {
-    if (this._checked() !== value) {
+    if (this.checked !== value) {
 
       this._checked.set(value);
 
@@ -161,19 +164,18 @@ export class RadioButtonComponent {
     if (this.radioGroup) {
 
       // Si el radio está dentro de un grupo de radio, determina si debe estar marcado
-      this.checked = this.radioGroup.value === this._value;
+      this.checked = this.radioGroup.value === this.value;
 
-      if (this.checked) {
+      // Si el radio button está marcado, actualiza el radio button seleccionado del grupo
+      if (this.checked)
         this.radioGroup.selected = this;
-      }
 
     }
 
     // Utilizamos `_radioDispatcher` para notificar a otros radio buttons con el mismo nombre para desmarcar.
     this._removeUniqueSelectionListener = this._radioDispatcher.listen((id, name) => {
-      if (id !== this.id && name === this.name) {
+      if (id !== this.id && name === this.name)
         this.checked = false;
-      }
     });
   }
 
@@ -213,7 +215,7 @@ export class RadioButtonComponent {
    */
   createUniqueId(): void {
     if (!this._id()) {
-      this._id.set(this._inputsUtilsService.createUniqueId(this._title() || 'neo_radio'));
+      this._id.set(this._inputsUtilsService.createUniqueId('neo_radiobutton'));
     }
   }
 
@@ -225,10 +227,10 @@ export class RadioButtonComponent {
   }
 
   /**
-   * Función lanzada cuando el usuario hace clic en el radio button
+   * Función para determinar si el radio button está marcado
    * @param {Event} event
    */
-  onClickTargetRadioButton(event: Event) {
+  onChangeRadioButton(event: Event) {
 
     event?.stopPropagation();
 
@@ -236,20 +238,29 @@ export class RadioButtonComponent {
     // y emitimos el evento de cambio al grupo de radio buttons
     if (!this.checked && !this.disabled) {
 
-      const groupValueChanged = this.radioGroup && this.value !== this.radioGroup.value;
       this.checked = true;
+
       this._emitChangeEvent();
 
-      if (this.radioGroup) {
-        this.radioGroup.onChange(this.value);
-        if (groupValueChanged)
-          this.radioGroup.emitChangeEvent();
-      }
+      // Actualiza el radio button seleccionado del grupo
+      if (this.radioGroup)
+        this.radioGroup.changeValue(this.value);
+
     }
+  }
+
+  /**
+   * Función lanzada cuando el usuario hace clic en el radio button
+   * @param {Event} event
+   */
+  onClickTargetRadioButton(event: Event) {
+
+    this.onChangeRadioButton(event);
 
     // Si el radio button no está deshabilitado, enfocamos el input
-    if (!this.disabled)
+    if (!this._disabled())
       this._inputElement.nativeElement.focus();
+
   }
 
   ngOnDestroy() {

@@ -105,7 +105,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    */
   createUniqueId(): void {
     if (!this._id())
-      this._id.set(this._inputsUtilsService.createUniqueId(this._title() || 'neo_checkbox'));
+      this._id.set(this._inputsUtilsService.createUniqueId('neo_checkbox'));
   }
 
   /**

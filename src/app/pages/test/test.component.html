@@ -414,6 +414,17 @@
       </neo-select>
     </div>
   </div>
+  <div class="row">
+    <div class="col-12">
+      <neo-form-field>
+        <neo-input
+          label="Input normal dentro de un neo-form-field"
+          (change)="inputChange($event)"
+        ></neo-input>
+        <neo-form-error>Campo requerido</neo-form-error>
+      </neo-form-field>
+    </div>
+  </div>
 </neo-card>
 <hr />
 <neo-card>
@@ -620,7 +631,6 @@
         [label]="'Label del radiobutton'"
         [name]="'testRadiobutton'"
         [(ngModel)]="radioButtonValue"
-        (change)="radioChangeNG()"
       >
         <neo-radio-button value="1">Option 1</neo-radio-button>
         <neo-radio-button value="2">Option 2</neo-radio-button>

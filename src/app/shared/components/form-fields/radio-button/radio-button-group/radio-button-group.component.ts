@@ -231,24 +231,29 @@ export class RadioButtonGroupComponent implements ControlValueAccessor {
     this.change.emit(this._value);
   }
 
+  /**
+   * Función para cambiar el valor del grupo de radio buttons y emitir el evento de cambio
+   * @param {any} value
+   */
+  changeValue(value: any) {
+    this.onChange(value);
+    this.onTouched();
+    this.emitChangeEvent();
+  }
+
   onChange: any = () => { };
   onTouched: any = () => { };
 
-  writeValue(value: string | number | boolean) {
+  writeValue(value: any) {
     this.value = value;
   }
 
-  registerOnChange(fn: Function): void {
+  registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: Function): void {
+  registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  changeValue(value: string | number | boolean) {
-    this.onChange(value);
-    this.onTouched();
   }
 
   setDisabledState(isDisabled: boolean) {

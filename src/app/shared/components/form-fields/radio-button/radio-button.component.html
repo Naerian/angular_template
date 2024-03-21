@@ -6,14 +6,14 @@
       type="radio"
       [id]="_id()"
       [checked]="checked"
-      [disabled]="_disabled()"
+      [disabled]="disabled"
       [attr.name]="name"
       [attr.value]="value"
       [tabIndex]="disabled ? -1 : 0"
       [attr.aria-label]="_title()"
       [attr.aria-describedby]="_title()"
       [attr.aria-labelledby]="_id()"
-      (change)="onClickTargetRadioButton($event)"
+      (change)="onChangeRadioButton($event)"
     />
     <div
       class="neo-radiobutton__control__checkmark"

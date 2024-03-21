@@ -1,5 +1,5 @@
 @if (isMenuOpened()) {
-  <aside
+  <nav
     class="neo-main-menu"
     [class.neo-main-menu--left]="position === LEFT_MENU_POSITION"
     [class.neo-main-menu--right]="position === RIGHT_MENU_POSITION"
@@ -16,7 +16,7 @@
         </neo-side-menu-item>
       }
     </div>
-  </aside>
+  </nav>
   <div
     [@fadeInOutMenu]
     class="neo-main-menu__backdrop"
