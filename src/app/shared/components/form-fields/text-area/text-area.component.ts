@@ -42,11 +42,12 @@ export class TextAreaComponent {
   @Output() change = new EventEmitter<string>();
   hasErrors: InputSignal<boolean> = input<boolean>(false);
 
-   /**
-   * Input para crear un id único para el campo
-   */
-   @Input() set id(value: string) {
+  /**
+  * Input para crear un id único para el campo
+  */
+  @Input() set id(value: string) {
     this._id.set(value);
+    this._labelId.set(`label_${value}`);
   }
   get id() {
     return this._id();
@@ -74,7 +75,13 @@ export class TextAreaComponent {
     return this._value();
   }
 
+  /**
+   * Input para añadir un aria-describedby al campo
+   */
+  @Input('aria-describedby') ariaDescribedBy!: string;
+
   _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
   _value: WritableSignal<string | null> = signal('');
   _disabled: WritableSignal<boolean> = signal(false);
 
@@ -90,8 +97,10 @@ export class TextAreaComponent {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this._id() && this.label && this.label !== '')
-      this._id.set(this._inputsUtilsService.createUniqueId(this.label));
+    if (!this.id) {
+      this._id.set(this._inputsUtilsService.createUniqueId(this.label || 'textarea'));
+      this._labelId.set(`label_${this._id()}`);
+    }
   }
 
   /**

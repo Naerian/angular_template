@@ -1,8 +1,12 @@
 <div class="neo-checkbox">
   @if (label) {
-    <label class="neo-checkbox__label" [for]="_id()" [title]="_title()">{{
-      label
-    }}</label>
+    <label
+      class="neo-checkbox__label"
+      [for]="_id()"
+      [title]="_title()"
+      [attr.id]="_labelId()"
+      >{{ label }}</label
+    >
   }
   <div class="neo-checkbox__control size-{{ inputSize }}">
     <input
@@ -13,8 +17,10 @@
       [tabIndex]="disabled ? -1 : 0"
       [attr.name]="name"
       [attr.aria-label]="label || _title() || ''"
-      [attr.aria-labelledby]="_id()"
-      [attr.aria-describedby]="label || _title() || ''"
+      [attr.aria-labelledby]="_labelId()"
+      [attr.aria-owns]="_labelId()"
+      [attr.aria-controls]="_labelId()"
+      [attr.aria-describedby]="ariaDescribedBy || label || _title() || ''"
       [disabled]="_disabled()"
       [checked]="_checked()"
       [indeterminate]="_indeterminate()"

@@ -48,6 +48,7 @@ export class InputPasswordComponent implements ControlValueAccessor {
    */
   @Input() set id(value: string) {
     this._id.set(value);
+    this._labelId.set(`label_${value}`);
   }
   get id() {
     return this._id();
@@ -75,9 +76,15 @@ export class InputPasswordComponent implements ControlValueAccessor {
     return this._value();
   }
 
+  /**
+   * Input para añadir un aria-describedby al campo
+   */
+  @Input('aria-describedby') ariaDescribedBy!: string;
+
   @Output() change = new EventEmitter<string>();
 
   _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
   _value: WritableSignal<string | null> = signal('');
   _disabled: WritableSignal<boolean> = signal(false);
   show: WritableSignal<boolean> = signal(false);
@@ -94,8 +101,10 @@ export class InputPasswordComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this._id() && this.label && this.label !== '')
-      this._id.set(this._inputsUtilsService.createUniqueId(this.label));
+    if (!this.id) {
+      this._id.set(this._inputsUtilsService.createUniqueId(this.label || 'input-password'));
+      this._labelId.set(`label_${this._id()}`);
+    }
   }
 
   /**

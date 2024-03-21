@@ -3,6 +3,7 @@
     <label
       (click)="toggleDropdown($event)"
       [for]="_id()"
+      [attr.id]="_labelId()"
       class="neo-select__label"
       [class.neo-select__label--required]="required"
     >
@@ -23,17 +24,17 @@
     [class.neo-select__field--error]="hasErrors() || _hasErrors()"
     [class.neo-select__field--disabled]="disabled"
     [class.neo-select__field--transparent]="transparent"
-    [attr.aria-labelledby]="_id()"
+    [attr.aria-labelledby]="_labelId()"
+    [attr.aria-owns]="_labelId()"
+    [attr.aria-controls]="_labelId()"
     [attr.aria-label]="title || label || placeholder || ''"
     [attr.aria-required]="required"
     [attr.aria-expanded]="isDropdownOpened()"
     [attr.aria-haspopup]="true"
-    [attr.aria-controls]="_id()"
     [attr.aria-disabled]="disabled"
     [attr.aria-invalid]="hasErrors() || _hasErrors()"
     [attr.aria-multiselectable]="multiple"
-    [attr.aria-owns]="_id()"
-    [attr.aria-describedby]="title || label || placeholder || ''"
+    [attr.aria-describedby]="ariaDescribedBy || title || label || placeholder || ''"
     [attr.id]="_id()"
     cdkOverlayOrigin
   >

@@ -69,6 +69,7 @@ export class SelectComponent implements ControlValueAccessor {
    */
   @Input() set id(value: string) {
     this._id.set(value);
+    this._labelId.set(`label_${value}`);
   }
   get id() {
     return this._id();
@@ -120,6 +121,11 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   /**
+   * Input para añadir un aria-describedby al campo
+   */
+  @Input('aria-describedby') ariaDescribedBy!: string;
+
+  /**
    * Evento que se emite cuando el valor del select cambia
    */
   @Output() readonly change = new EventEmitter<any>();
@@ -141,6 +147,7 @@ export class SelectComponent implements ControlValueAccessor {
   scrollStrategy: ScrollStrategy;
 
   _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
   private _disabled: WritableSignal<boolean> = signal(false);
   private _value: WritableSignal<any> = signal(null);
 
@@ -169,8 +176,10 @@ export class SelectComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this._id() && this.label && this.label !== '')
-      this._id.set(this._inputsUtilsService.createUniqueId(this.label));
+    if (!this.id) {
+      this._id.set(this._inputsUtilsService.createUniqueId(this.label || this.title || 'select'));
+      this._labelId.set(`label_${this._id()}`);
+    }
   }
 
   /**

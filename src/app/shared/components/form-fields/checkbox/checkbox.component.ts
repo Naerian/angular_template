@@ -40,6 +40,17 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Output() readonly change: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   /**
+   * Input para crear un id único para el campo
+   */
+  @Input() set id(value: string) {
+    this._id.set(value);
+    this._labelId.set(`label_${value}`);
+  }
+  get id() {
+    return this._id();
+  }
+
+  /**
    * Input para marcar el checkbox como seleccionado
    */
   @Input() set checked(status: boolean) {
@@ -76,12 +87,18 @@ export class CheckboxComponent implements ControlValueAccessor {
     return this._disabled();
   }
 
+  /**
+   * Input para añadir un aria-describedby al campo
+   */
+  @Input('aria-describedby') ariaDescribedBy!: string;
+
   _indeterminate: WritableSignal<boolean> = signal(false);
   _checked: WritableSignal<boolean> = signal(false);
   _disabled: WritableSignal<boolean> = signal(false);
 
   _title: WritableSignal<string> = signal('');
   _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
 
   constructor(
     private readonly _inputsUtilsService: InputsUtilsService
@@ -104,8 +121,10 @@ export class CheckboxComponent implements ControlValueAccessor {
    * Función para crear un ID único a partir del nombre
    */
   createUniqueId(): void {
-    if (!this._id())
+    if (!this.id) {
       this._id.set(this._inputsUtilsService.createUniqueId('neo_checkbox'));
+      this._labelId.set(`label_${this._id()}`);
+    }
   }
 
   /**

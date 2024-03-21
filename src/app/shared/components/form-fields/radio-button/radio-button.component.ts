@@ -49,6 +49,7 @@ export class RadioButtonComponent {
   }
   set id(value: string) {
     this._id.set(value);
+    this._labelId.set(`label_${value}`);
   }
 
   /**
@@ -127,6 +128,11 @@ export class RadioButtonComponent {
   }
 
   /**
+   * Input para añadir un aria-describedby al campo
+   */
+  @Input('aria-describedby') ariaDescribedBy!: string;
+
+  /**
    * Evento emitido cuando cambia el estado marcado del radio button.
    * Los eventos `change` solo se emiten cuando el valor cambia debido a la interacción del usuario con
    * el radio button (el mismo comportamiento que `<input type="radio">`).
@@ -142,6 +148,7 @@ export class RadioButtonComponent {
   _title: WritableSignal<string> = signal('');
   _name: WritableSignal<string> = signal('');
   _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
 
   // Nos servirá para desuscribirnos del _radioDispatcher
   private _removeUniqueSelectionListener: () => void = () => { };
@@ -214,8 +221,9 @@ export class RadioButtonComponent {
    * Función para crear un ID único a partir del nombre
    */
   createUniqueId(): void {
-    if (!this._id()) {
+    if (!this.id) {
       this._id.set(this._inputsUtilsService.createUniqueId('neo_radiobutton'));
+      this._labelId.set(`label_${this._id()}`);
     }
   }
 
