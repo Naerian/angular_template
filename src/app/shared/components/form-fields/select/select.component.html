@@ -25,16 +25,14 @@
     [class.neo-select__field--disabled]="disabled"
     [class.neo-select__field--transparent]="transparent"
     [attr.aria-labelledby]="_labelId()"
+    [attr.aria-describedby]="ariaDescribedBy"
     [attr.aria-owns]="_labelId()"
-    [attr.aria-controls]="_labelId()"
-    [attr.aria-label]="title || label || placeholder || ''"
     [attr.aria-required]="required"
     [attr.aria-expanded]="isDropdownOpened()"
     [attr.aria-haspopup]="true"
     [attr.aria-disabled]="disabled"
     [attr.aria-invalid]="hasErrors() || _hasErrors()"
     [attr.aria-multiselectable]="multiple"
-    [attr.aria-describedby]="ariaDescribedBy || title || label || placeholder || ''"
     [attr.id]="_id()"
     cdkOverlayOrigin
   >

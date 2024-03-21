@@ -10,9 +10,9 @@
       [attr.name]="name"
       [attr.value]="value"
       [tabIndex]="disabled ? -1 : 0"
-      [attr.aria-label]="_title()"
-      [attr.aria-describedby]="ariaDescribedBy || _title()"
-      [attr.aria-labelledby]="_id()"
+      [attr.aria-describedby]="ariaDescribedBy"
+      [attr.aria-labelledby]="_labelId()"
+      [attr.aria-disabled]="disabled"
       (change)="onChangeRadioButton($event)"
     />
     <div
@@ -23,6 +23,7 @@
       class="neo-radiobutton__control__label size-{{ inputSize }}"
       [for]="_id()"
       [title]="_title()"
+      [attr.id]="_labelId()"
       #radioButtonContent
     >
       <ng-content></ng-content>
