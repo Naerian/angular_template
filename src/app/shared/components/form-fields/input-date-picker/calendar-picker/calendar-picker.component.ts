@@ -61,7 +61,7 @@ export class CalendarPickerComponent implements OnInit {
   allYears: WritableSignal<string[]> = signal([]); // Array que se rellenará con los años, en un intervalo de 10 años hacia arriba o abajo
 
   // Array que guardará los días del mes por semana
-  calendarWeeks: WritableSignal<Array<any>> = signal([]);
+  daysInMonth: WritableSignal<Array<any>> = signal([]);
 
   // Variable para saber en que calendario estamos cuándo nos movemos por los meses
   currentCalendar: WritableSignal<string> = signal(moment().format(DEFAULT_FORMAT));
@@ -114,11 +114,9 @@ export class CalendarPickerComponent implements OnInit {
    */
   setCalendar() {
 
-    let _calendarWeeks: Array<any> = [];
-    this.calendarWeeks.set(_calendarWeeks);
-
-    // Obtenemos el año y el mes de la fecha seleccionada
-    const currentMonth = moment(new Date(this.currentCalendar())).month();
+    // Array que guardará los días del mes por semana
+    const _daysInMonth: Array<any> = [];
+    this.daysInMonth.set([]);
 
     // Obtenemos el primer día del mes seleccionado
     const firstDayOfMonth = moment(new Date(this.currentCalendar())).startOf('month');
@@ -136,28 +134,47 @@ export class CalendarPickerComponent implements OnInit {
 
       // Recorremos los días (7) de la semana y formamos el objeto para la fecha
       for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-
         // Vamos sumando un día a partir del primer día de la semana
         const date = firstDayOfWeek.clone().add(dayOfWeek, 'day');
-
-        if (!_calendarWeeks[week])
-          _calendarWeeks[week] = [];
-
-        if (_calendarWeeks[week] && !_calendarWeeks[week][dayOfWeek])
-          _calendarWeeks[week][dayOfWeek] = [];
-
-        // Creamos el objeto con la semana y el día de la misma como claves, y los datos de la fecha
-        _calendarWeeks[week][dayOfWeek] = {
-          date: date,
-          isCurrentMonth: date.month() === currentMonth
-        };
-
+        _daysInMonth.push(date);
       }
 
     }
 
     // Asignamos el array de semanas a la signal
-    this.calendarWeeks.set(_calendarWeeks);
+    this.daysInMonth.set(_daysInMonth);
+  }
+
+  /**
+   * Función para comprobar si la fecha actual es igual al día pasado
+   * @param {moment.Moment} date
+   * @returns {boolean}
+   */
+  isCurrentMonth(date: moment.Moment): boolean {
+    return date.month() === moment(new Date(this.currentCalendar())).month();
+  }
+
+  /**
+   * Función para seleccionar un día, semana o rango de fechas
+   * @param {moment.Moment} date
+   * @param {Event} event
+   */
+  selectItem(date: moment.Moment, event: Event) {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Si la fecha no es del mes actual, no hacemos nada
+    if (!this.isCurrentMonth(date)) return;
+
+    // Si el tipo es día, semana o rango, establecemos la fecha
+    if (this.type === "day") {
+      this.setDay(date);
+    } else if (this.type === "week") {
+      this.setWeekDate(date);
+    } else if (this.type === "range") {
+      this.setRangeDate(date);
+    }
   }
 
   /**
@@ -182,17 +199,14 @@ export class CalendarPickerComponent implements OnInit {
    * @param {number} weekIdx
    * @param {Event} event
    */
-  setWeekDate(weekIdx: number, event?: Event) {
+  setWeekDate(date: moment.Moment, event?: Event) {
 
     event?.preventDefault();
     event?.stopPropagation();
 
-    // Obtener los siete días de la semana en base al índice de la semana
-    const weekDays = this.calendarWeeks()[weekIdx].map((day: any) => day.date.format(DEFAULT_FORMAT));
-
     // Obtenemos el primer y último día de la semana
-    const firstDay = moment(weekDays[0]);
-    const lastDay = moment(weekDays[weekDays.length - 1]);
+    const firstDay = date.clone().startOf('isoWeek');
+    const lastDay = date.clone().endOf('isoWeek');
 
     // Asignamos el rango de fechas
     this._startDate.set(firstDay.format(DEFAULT_FORMAT));

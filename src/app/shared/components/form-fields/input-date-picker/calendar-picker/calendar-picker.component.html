@@ -3,9 +3,11 @@
     <div class="calendar-picker__default">
       <div class="calendar-picker__header">
         <div
-          clickable
           class="calendar-picker__header__btn"
+          tabindex="0"
           (click)="prevMonth()"
+          (keydown.enter)="prevMonth()"
+          (keydown.space)="prevMonth()"
           [title]="'calendar.prevMonth' | translate"
         >
           <i class="ri-arrow-left-s-line"></i>
@@ -13,8 +15,10 @@
         <div class="calendar-picker__header__actions">
           <span
             class="calendar-picker__header__actions--selector"
-            clickable
+            tabindex="0"
             (click)="chageViewMode('months', $event)"
+            (keydown.enter)="chageViewMode('months', $event)"
+            (keydown.space)="chageViewMode('months', $event)"
             [title]="'calendar.changeMonth' | translate"
           >
             {{
@@ -25,8 +29,10 @@
           </span>
           <span
             class="calendar-picker__header__actions--selector"
-            clickable
+            tabindex="0"
             (click)="chageViewMode('years', $event)"
+            (keydown.enter)="chageViewMode('years', $event)"
+            (keydown.space)="chageViewMode('years', $event)"
             [title]="'calendar.changeYear' | translate"
           >
             {{ currentCalendar() | date: "yyyy" }}
@@ -34,76 +40,54 @@
           </span>
         </div>
         <div
-          clickable
+          tabindex="0"
           class="calendar-picker__header__btn"
           (click)="nextMonth()"
+          (keydown.enter)="nextMonth()"
+          (keydown.space)="nextMonth()"
           [title]="'calendar.nextMonth' | translate"
         >
           <i class="ri-arrow-right-s-line"></i>
         </div>
       </div>
-      <table class="calendar-picker__content calendar-picker__days">
-        <thead>
-          <tr class="calendar-picker__days__weekDays">
-            <th scope="col">
-              {{ "date.calendar.monday.short" | translate }}
-            </th>
-            <th scope="col">
-              {{ "date.calendar.tuesday.short" | translate }}
-            </th>
-            <th scope="col">
-              {{ "date.calendar.wednesday.short" | translate }}
-            </th>
-            <th scope="col">
-              {{ "date.calendar.thursday.short" | translate }}
-            </th>
-            <th scope="col">
-              {{ "date.calendar.friday.short" | translate }}
-            </th>
-            <th scope="col">
-              {{ "date.calendar.saturday.short" | translate }}
-            </th>
-            <th scope="col">
-              {{ "date.calendar.sunday.short" | translate }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let week of calendarWeeks(); let weekIdx = index">
-            <td
-              *ngFor="let day of week"
-              class="calendar-picker__days__item"
-              [ngClass]="{
-                selected: isSameSelectedDay(day.date) || isRangeDate(day.date),
-                today: isToday(day.date)
-              }"
+      <div class="calendar-picker__content calendar-picker__days">
+        <div class="calendar-picker__days__header">
+          <span>{{ "date.calendar.monday.short" | translate }}</span>
+          <span>{{ "date.calendar.tuesday.short" | translate }}</span>
+          <span>{{ "date.calendar.wednesday.short" | translate }}</span>
+          <span>{{ "date.calendar.thursday.short" | translate }}</span>
+          <span>{{ "date.calendar.friday.short" | translate }}</span>
+          <span>{{ "date.calendar.saturday.short" | translate }}</span>
+          <span>{{ "date.calendar.sunday.short" | translate }}</span>
+        </div>
+        <div class="calendar-picker__days__month">
+          @for (day of daysInMonth(); track day) {
+            <span
+              tabindex="0"
+              #dayItem
+              (click)="selectItem(day, $event); dayItem.focus()"
+              (keydown.enter)="selectItem(day, $event)"
+              (keydown.space)="selectItem(day, $event)"
+              class="calendar-picker__days__month__day"
+              [class.calendar-picker__days__month__day--disabled]="
+                !isCurrentMonth(day)
+              "
+              [class.calendar-picker__days__month__day--selected]="
+                isSameSelectedDay(day) || isRangeDate(day)
+              "
+              [class.calendar-picker__days__month__day--today]="isToday(day)"
+              [title]="
+                (day | date: 'dd') +
+                '/' +
+                (day | date: 'MM') +
+                '/' +
+                (day | date: 'yyyy')
+              "
+              >{{ day | date: "dd" }}</span
             >
-              <span *ngIf="!day.isCurrentMonth" class="no-day">{{
-                day.date | date: "dd"
-              }}</span>
-              <span
-                *ngIf="day.isCurrentMonth"
-                (click)="
-                  type === 'day'
-                    ? setDay(day.date, $event)
-                    : type === 'week'
-                      ? setWeekDate(weekIdx, $event)
-                      : setRangeDate(day.date, $event)
-                "
-                clickable
-                [title]="
-                  (day.date | date: 'dd') +
-                  '/' +
-                  (day.date | date: 'MM') +
-                  '/' +
-                  (day.date | date: 'yyyy')
-                "
-                >{{ day.date | date: "dd" }}</span
-              >
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          }
+        </div>
+      </div>
     </div>
   } @else if (viewMode() === "months") {
     <div
@@ -112,10 +96,12 @@
       [cdkTrapFocusAutoCapture]="true"
     >
       <div class="calendar-picker__header">
-        <span>{{ "calendar.month" | translate }}</span>
+        <span class="calendar-picker__header__title">{{
+          "calendar.month" | translate
+        }}</span>
       </div>
       <div class="calendar-picker__content calendar-picker__months__content">
-        <ng-container *ngFor="let month of allMonths(); let idxMonth = index">
+        @for (month of allMonths(); track month) {
           <div
             class="calendar-picker__months__item"
             [ngClass]="{
@@ -123,13 +109,15 @@
             }"
           >
             <span
-              (click)="changeMonth(idxMonth, $event)"
-              clickable
+              tabindex="0"
+              (click)="changeMonth($index, $event)"
+              (keydown.enter)="changeMonth($index, $event)"
+              (keydown.space)="changeMonth($index, $event)"
               [title]="'date.month.' + month | lowercase | translate"
               >{{ "date.month." + month | lowercase | translate }}</span
             >
           </div>
-        </ng-container>
+        }
       </div>
     </div>
   } @else {
@@ -140,36 +128,47 @@
     >
       <div class="calendar-picker__header">
         <div
-          clickable
+          tabindex="0"
           class="calendar-picker__header__btn"
           (click)="prevYears()"
+          (keydown.enter)="prevYears()"
+          (keydown.space)="prevYears()"
           [title]="'app.anterior' | translate"
         >
           <i class="ri-arrow-left-s-line"></i>
         </div>
-        <span>{{ "date.year" | translate }}</span>
+        <span class="calendar-picker__header__title">{{
+          "date.year" | translate
+        }}</span>
         <div
-          clickable
+          tabindex="0"
           class="calendar-picker__header__btn"
           (click)="nextYears()"
+          (keydown.enter)="nextYears()"
+          (keydown.space)="nextYears()"
           [title]="'app.siguiente' | translate"
         >
           <i class="ri-arrow-right-s-line"></i>
         </div>
       </div>
       <div class="calendar-picker__content calendar-picker__years__content">
-        <ng-container *ngFor="let year of allYears()">
+        @for (year of allYears(); track year) {
           <div
             class="calendar-picker__years__item"
             [ngClass]="{
               selected: (currentCalendar() | date: 'yyyy') === year
             }"
           >
-            <span (click)="changeYear(year, $event)" clickable [title]="year">{{
-              year
-            }}</span>
+            <span
+              tabindex="0"
+              (click)="changeYear(year, $event)"
+              (keydown.enter)="changeYear(year, $event)"
+              (keydown.space)="changeYear(year, $event)"
+              [title]="year"
+              >{{ year }}</span
+            >
           </div>
-        </ng-container>
+        }
       </div>
     </div>
   }
