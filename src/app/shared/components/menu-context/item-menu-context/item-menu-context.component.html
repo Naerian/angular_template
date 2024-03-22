@@ -1,8 +1,10 @@
 <div
   #itemMenuContent
   class="item-menu-context"
+  tabindex="0"
   (click)="onClickItem($event)"
-  clickable
+  (keydown.enter)="onClickItem($event)"
+  (keydown.space)="onClickItem($event)"
   [title]="_title()"
 >
   @if (!label) {

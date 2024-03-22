@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, WritableSignal, forwardRef, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputSize } from '../models/form-field.entity';
-import { ClickableDirective } from '@shared/directives/clickable.directive';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 
 /**

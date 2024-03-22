@@ -192,6 +192,10 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   toogleCalendar(event: Event) {
     event?.preventDefault();
     event?.stopPropagation();
+
+    if (this.disabled)
+      return;
+
     this.isDatePickerOpened.set(!this.isDatePickerOpened());
   }
 

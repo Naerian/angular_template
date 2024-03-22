@@ -15,8 +15,10 @@
   }
   <div class="neo-input-date-picker__wrapper">
     <input
+      tabindex="0"
       (click)="toogleCalendar($event)"
-      clickable
+      (keydown.enter)="toogleCalendar($event)"
+      (keydown.space)="toogleCalendar($event)"
       cdkOverlayOrigin
       #datePicker="cdkOverlayOrigin"
       #datePickerInput="ngModel"
@@ -52,10 +54,10 @@
       <div
         class="neo-input-date-picker__wrapper__icon-calendar"
         [class.disabled]="_disabled()"
-        (click)="
-          !_disabled() ? toogleCalendar($event) : $event.preventDefault()
-        "
-        clickable
+        [tabindex]="!_disabled() ? 0 : -1"
+        (click)="toogleCalendar($event)"
+        (keydown.enter)="toogleCalendar($event)"
+        (keydown.space)="toogleCalendar($event)"
         cdkOverlayOrigin
         #datePicker="cdkOverlayOrigin"
       >
