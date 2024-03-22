@@ -6,8 +6,13 @@
           <li
             class="paginator__pagination__page"
             (click)="pageSelected(1, $event)"
-            clickable
+            role="button"
+            tabindex="0"
+            (keydown.enter)="pageSelected(1, $event)"
+            (keydown.space)="pageSelected(1, $event)"
             [class.disabled]="currentPage() === 1"
+            [attr.aria-label]="'pagination.first_page' | translate"
+            [attr.aria-disabled]="currentPage() === 1"
             [title]="'pagination.first_page' | translate"
           >
             <span class="paginator__pagination__page--link">
@@ -17,10 +22,15 @@
         }
         <li
           class="paginator__pagination__page"
+          role="button"
+          tabindex="0"
           (click)="pageSelected(currentPage() - 1, $event)"
-          clickable
+          (keydown.enter)="pageSelected(currentPage() - 1, $event)"
+          (keydown.space)="pageSelected(currentPage() - 1, $event)"
           [class.disabled]="currentPage() === 1"
           [title]="'app.anterior' | translate"
+          [attr.aria-label]="'app.anterior' | translate"
+          [attr.aria-disabled]="currentPage() === 1"
         >
           <span class="paginator__pagination__page--link"
             ><i class="ri-arrow-left-s-line"></i
@@ -41,9 +51,16 @@
             @if (page !== currentPage()) {
               <span
                 class="paginator__pagination__page--link"
+                role="button"
+                tabindex="0"
                 (click)="pageSelected(page, $event)"
-                clickable
+                (keydown.enter)="pageSelected(page, $event)"
+                (keydown.space)="pageSelected(page, $event)"
                 [title]="'pagination.page' | translate: { page: page }"
+                [attr.aria-label]="
+                  'pagination.page' | translate: { page: page }
+                "
+                [attr.aria-selected]="false"
               >
                 {{ page }}
               </span>
@@ -53,6 +70,10 @@
               <span
                 class="paginator__pagination__page--link"
                 [title]="'pagination.page' | translate: { page: page }"
+                [attr.aria-label]="
+                  'pagination.page' | translate: { page: page }
+                "
+                [attr.aria-selected]="true"
                 >{{ page }}</span
               >
             }
@@ -72,10 +93,15 @@
 
         <li
           class="paginator__pagination__page"
+          role="button"
+          tabindex="0"
           (click)="pageSelected(currentPage() + 1, $event)"
-          clickable
+          (keydown.enter)="pageSelected(currentPage() + 1, $event)"
+          (keydown.space)="pageSelected(currentPage() + 1, $event)"
           [class.disabled]="currentPage() === totalPages()"
           [title]="'app.siguiente' | translate"
+          [attr.aria-label]="'app.siguiente' | translate"
+          [attr.aria-disabled]="currentPage() === totalPages()"
         >
           <span class="paginator__pagination__page--link"
             ><i class="ri-arrow-right-s-line"></i
@@ -85,10 +111,15 @@
         @if (showLastFirstBtns) {
           <li
             class="paginator__pagination__page"
+            role="button"
+            tabindex="0"
             (click)="pageSelected(totalPages(), $event)"
-            clickable
+            (keydown.enter)="pageSelected(totalPages(), $event)"
+            (keydown.space)="pageSelected(totalPages(), $event)"
             [class.disabled]="currentPage() === totalPages()"
             [title]="'pagination.last_page' | translate"
+            [attr.aria-label]="'pagination.last_page' | translate"
+            [attr.aria-disabled]="currentPage() === totalPages()"
           >
             <span class="paginator__pagination__page--link">
               <i class="ri-skip-right-line"></i>
@@ -103,10 +134,15 @@
         @if (showLastFirstBtns) {
           <li
             class="paginator__pagination__page"
+            role="button"
+            tabindex="0"
             (click)="pageSelected(1, $event)"
-            clickable
+            (keydown.enter)="pageSelected(1, $event)"
+            (keydown.space)="pageSelected(1, $event)"
             [class.disabled]="currentPage() === 1"
             [title]="'pagination.first_page' | translate"
+            [attr.aria-label]="'pagination.first_page' | translate"
+            [attr.aria-disabled]="currentPage() === 1"
           >
             <span class="paginator__pagination__page--link">
               <i class="ri-skip-left-line"></i>
@@ -116,10 +152,15 @@
 
         <li
           class="paginator__pagination__page"
+          role="button"
+          tabindex="0"
           (click)="pageSelected(currentPage() - 1, $event)"
-          clickable
+          (keydown.enter)="pageSelected(currentPage() - 1, $event)"
+          (keydown.space)="pageSelected(currentPage() - 1, $event)"
           [class.disabled]="currentPage() === 1"
           [title]="'app.anterior' | translate"
+          [attr.aria-label]="'app.anterior' | translate"
+          [attr.aria-disabled]="currentPage() === 1"
         >
           <span class="paginator__pagination__page--link"
             ><i class="ri-arrow-left-s-line"></i
@@ -127,27 +168,37 @@
         </li>
 
         @if (type === "dividenumber") {
-          <li class="paginator__pagination__dividenumber">
+          <li
+            class="paginator__pagination__dividenumber"
+            [title]="
+              'pagination.page_to_of_total'
+                | translate: { page: currentPage(), total: totalPages() }
+            "
+            [attr.aria-label]="
+              'pagination.page_to_of_total'
+                | translate: { page: currentPage(), total: totalPages() }
+            "
+          >
             <span class="paginator__pagination__dividenumber--current">{{
               currentPage()
             }}</span
-            >/<span
-              class="paginator__pagination__dividenumber--total"
-              [title]="
-                'pagination.page_to_of_total'
-                  | translate: { page: currentPage(), total: totalPages }
-              "
-              >{{ totalPages() }}</span
-            >
+            >/<span class="paginator__pagination__dividenumber--total">{{
+              totalPages()
+            }}</span>
           </li>
         }
 
         <li
           class="paginator__pagination__page"
+          role="button"
+          tabindex="0"
           (click)="pageSelected(currentPage() + 1, $event)"
-          clickable
+          (keydown.enter)="pageSelected(currentPage() + 1, $event)"
+          (keydown.space)="pageSelected(currentPage() + 1, $event)"
           [class.disabled]="currentPage() === totalPages()"
           [title]="'app.siguiente' | translate"
+          [attr.aria-label]="'app.siguiente' | translate"
+          [attr.aria-disabled]="currentPage() === totalPages()"
         >
           <span class="paginator__pagination__page--link"
             ><i class="ri-arrow-right-s-line"></i
@@ -157,10 +208,15 @@
         @if (showLastFirstBtns) {
           <li
             class="paginator__pagination__page"
+            role="button"
+            tabindex="0"
             (click)="pageSelected(totalPages(), $event)"
-            clickable
+            (keydown.enter)="pageSelected(totalPages(), $event)"
+            (keydown.space)="pageSelected(totalPages(), $event)"
             [class.disabled]="currentPage() === totalPages()"
             [title]="'pagination.last_page' | translate"
+            [attr.aria-label]="'pagination.last_page' | translate"
+            [attr.aria-disabled]="currentPage() === totalPages()"
           >
             <span class="paginator__pagination__page--link">
               <i class="ri-skip-right-line"></i>
@@ -174,6 +230,14 @@
     <div
       class="paginator__total_results"
       [title]="
+        'pagination.total_label'
+          | translate
+            : {
+                totalPageResults: totalResults(),
+                totalResults: total
+              }
+      "
+      [attr.aria-label]="
         'pagination.total_label'
           | translate
             : {

@@ -25,7 +25,7 @@
 
   &:hover,
   &:focus,
-  &.active {
+  &--active {
     border-radius: 5px;
     background-color: var(--menu-item-hover-active-color) !important;
     color: var(--menu-item-hover-active-text) !important;
@@ -51,20 +51,20 @@
     height: 0;
     overflow: hidden;
 
-    &.opened {
+    &--opened {
       height: auto;
       overflow: visible;
     }
 
-    &.level_0 {
+    &--level_0 {
       padding-left: 10px;
     }
 
-    &.level_1 {
+    &--level_1 {
       padding-left: 20px;
     }
 
-    &.level_2 {
+    &--level_2 {
       padding-left: 30px;
     }
   }

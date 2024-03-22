@@ -1,22 +1,33 @@
 @if (itemMenu.route) {
   <a
     class="item-menu"
-    [class.active]="itemMenu.active"
+    tabindex="0"
+    (click)="activeItemMenu(itemMenu)"
+    (keydown.enter)="activeItemMenu(itemMenu)"
+    (keydown.space)="activeItemMenu(itemMenu)"
     [title]="itemMenu.label | translate"
+    [class.item-menu--active]="itemMenu.active"
+    #routerLink="routerLinkActive"
     [routerLink]="[itemMenu.route]"
     [routerLinkActiveOptions]="{ exact: true }"
     [routerLinkActive]="['active']"
-    (click)="activeItemMenu(itemMenu)"
+    [attr.aria-selected]="itemMenu.active || routerLink.isActive"
+    [attr.aria-label]="itemMenu.label | translate"
   >
     <span class="item-menu__label">{{ itemMenu.label | translate }}</span>
   </a>
 } @else {
   <div
-    clickable
     class="item-menu"
-    [title]="itemMenu.label | translate"
-    [class.active]="itemMenu.active"
+    tabindex="0"
     (click)="handleClick(itemMenu)"
+    (keydown.enter)="handleClick(itemMenu)"
+    (keydown.space)="handleClick(itemMenu)"
+    [title]="itemMenu.label | translate"
+    [class.item-menu--active]="itemMenu.active"
+    [attr.aria-expanded]="itemMenu.expanded"
+    [attr.aria-selected]="itemMenu.active"
+    [attr.aria-label]="itemMenu.label | translate"
   >
     <div class="item-menu__wrapper">
       <span class="item-menu__label">{{ itemMenu.label | translate }}</span>
@@ -33,8 +44,11 @@
     </div>
   </div>
   <div
-    class="item-menu__childrens {{ 'level_' + depthLevel }}"
-    [ngClass]="{ opened: itemMenu.expanded }"
+    class="item-menu__childrens {{
+      'item-menu__childrens--level_' + depthLevel
+    }}"
+    [class.item-menu__childrens--opened]="itemMenu.expanded"
+    [attr.aria-expanded]="itemMenu.expanded"
   >
     @for (itemChildren of itemMenu.childrens; track itemChildren) {
       <neo-side-menu-item

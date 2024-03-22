@@ -7,9 +7,12 @@
     @if (data.canBeClosed) {
       <button
         class="modal-box__close"
+        tabindex="0"
         [title]="'app.cerrar' | translate"
+        [attr.aria-label]="'app.cerrar' | translate"
         (click)="cancel()"
-        clickable
+        (keydown.enter)="cancel()"
+        (keydown.space)="cancel()"
         autofocus
       >
         <i class="ri-close-fill"></i>

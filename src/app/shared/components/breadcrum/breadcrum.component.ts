@@ -4,7 +4,6 @@ import { BreadCrumbEntity } from './models/breadcrum.entity';
 import { filter, distinctUntilChanged } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { ClickableDirective } from '@shared/directives/clickable.directive';
 
 /**
  * @name
@@ -17,7 +16,7 @@ import { ClickableDirective } from '@shared/directives/clickable.directive';
 @Component({
   selector: 'neo-breadcrum',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule, ClickableDirective],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './breadcrum.component.html',
   styleUrl: './breadcrum.component.scss'
 })

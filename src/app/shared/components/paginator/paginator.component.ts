@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, WritableSignal, signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ClickableDirective } from '@shared/directives/clickable.directive';
 import { PaginationType, PaginatorPosition } from './models/paginator.entity';
 
 /**
@@ -16,7 +15,7 @@ import { PaginationType, PaginatorPosition } from './models/paginator.entity';
   selector: 'neo-paginator',
   templateUrl: './paginator.component.html',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ClickableDirective],
+  imports: [CommonModule, TranslateModule],
   styleUrls: ['./paginator.component.scss']
 })
 export class PaginatorComponent {

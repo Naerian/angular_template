@@ -29,12 +29,12 @@ export class SideMenuComponent {
   RIGHT_MENU_POSITION = SideMenuPosition.RIGHT;
 
   /**
-   * Variable para mantener abiertos varios elementos desplegables del menú a la vez.
+   * Input para mantener abiertos varios elementos desplegables del menú a la vez.
    */
   @Input() keepMultipleOpen: boolean = false;
 
   /**
-   * Variable para establecer la posición del menú lateral de la aplicación. Por defecto es `SideMenuPosition.LEFT`.
+   * Input para establecer la posición del menú lateral de la aplicación. Por defecto es `SideMenuPosition.LEFT`.
    */
   @Input() position: SideMenuPosition = DEFAULT_MENU_POSITION;
 

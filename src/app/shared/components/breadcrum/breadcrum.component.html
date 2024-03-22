@@ -1,25 +1,29 @@
 <div class="breadcrumb">
-  <div
+  <a
     class="breadcrumb__item"
-    clickable
+    tabindex="0"
+    #routerLink="routerLinkActive"
     [title]="'app.home' | translate"
     [routerLink]="['/']"
     [routerLinkActiveOptions]="{ exact: true }"
+    [attr.aria-current]="routerLink.isActive ? 'page' : null"
     routerLinkActive="breadcrumb__item--active"
   >
     {{ "app.home" | translate }}
-  </div>
+  </a>
   @for (breadcrumb of breadcrumbs; track breadcrumb; let isLast = $last) {
     <i class="breadcrumb__separator ri-arrow-right-s-line"></i>
-    <div
+    <a
       class="breadcrumb__item"
-      clickable
+      tabindex="0"
+      #routerLink="routerLinkActive"
       [title]="breadcrumb.label | translate"
       [routerLink]="[breadcrumb.url]"
       [routerLinkActiveOptions]="{ exact: true }"
+      [attr.aria-current]="routerLink.isActive ? 'page' : null"
       routerLinkActive="breadcrumb__item--active"
     >
       {{ breadcrumb.label | translate }}
-    </div>
+    </a>
   }
 </div>

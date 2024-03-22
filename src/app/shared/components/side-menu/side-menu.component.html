@@ -4,6 +4,7 @@
     [class.neo-main-menu--left]="position === LEFT_MENU_POSITION"
     [class.neo-main-menu--right]="position === RIGHT_MENU_POSITION"
     role="navigation"
+    [attr.aria-hidden]="!isMenuOpened()"
     [@slideByPosition]="position"
     [ngClass]="{
       open: isMenuOpened(),
