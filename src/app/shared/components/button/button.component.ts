@@ -13,6 +13,7 @@ import { ButtonColor, ButtonMode, ButtonSize, ButtonType } from './models/button
   selector: 'neo-button',
   host: {
     '[class.disabled]': 'disabled',
+    '[class.all-width]': 'allWidth'
   },
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
@@ -80,11 +81,11 @@ export class ButtonComponent {
    */
   @Output() onClick: EventEmitter<Event> = new EventEmitter();
 
-  _title: WritableSignal<string> = signal('');
+  private _title: WritableSignal<string> = signal('');
 
   ngAfterViewInit(): void {
-    if (this._title() === '')
-      this._title.set(this.btnContent?.nativeElement?.innerHTML.replace(/(<([^>]+)>)/gi, "") || '');
+    if (this.getTitle() === '')
+      this._title.set(this.btnContent?.nativeElement?.innerHTML.replace(/(<([^>]+)>)/gi, "").trim() || '');
   }
 
   /**
@@ -97,5 +98,26 @@ export class ButtonComponent {
       return;
 
     this.onClick.emit(event);
+  }
+
+  /**
+   * Función para añadir el foco al botón
+   */
+  focusButton() {
+    this.btnContent.nativeElement.focus();
+  }
+
+  /**
+   * Función para quitar el foco al botón
+   */
+  blurButton() {
+    this.btnContent.nativeElement.blur();
+  }
+
+  /**
+   * Función para obtener el título del botón
+   */
+  getTitle(): string {
+    return this._title();
   }
 }

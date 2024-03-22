@@ -1,4 +1,4 @@
-import { Component, ComponentRef, OnInit, ViewChild, ViewContainerRef, ViewEncapsulation, WritableSignal, signal } from "@angular/core";
+import { Component, ComponentRef, HostListener, OnInit, ViewChild, ViewContainerRef, ViewEncapsulation, WritableSignal, signal } from "@angular/core";
 import { DEFAULT_POSITION, DEFAULT_SIZE, SidebarbarPanelEntity, SidebarbarPanelPosition, SidebarbarPanelSize } from "./models/sidebar-panel.entity";
 import { SidebarPanelService } from "./services/sidebar-panel.service";
 import { A11yModule } from "@angular/cdk/a11y";
@@ -23,7 +23,7 @@ import { SLIDE_BY_POSITION } from "./animations/slide-by-position.animation";
   styleUrls: ["./sidebar-panel.component.scss"],
   animations: [FADE_IN_OUT_PANEL, SLIDE_BY_POSITION],
   standalone: true,
-  imports: [CommonModule, A11yModule, TranslateModule, EscapeKeyDirective, CdkScrollable],
+  imports: [CommonModule, A11yModule, TranslateModule, CdkScrollable],
   encapsulation: ViewEncapsulation.None
 })
 export class SidebarPanelComponent implements OnInit {
@@ -40,6 +40,16 @@ export class SidebarPanelComponent implements OnInit {
   public position: WritableSignal<SidebarbarPanelPosition> = signal(DEFAULT_POSITION);
   public title: WritableSignal<string> = signal('');
   public classes: WritableSignal<string[]> = signal([]); // Para poder añadir clases extras al panel
+
+  /**
+   * Método para cerrar el panel al pulsar la tecla "Escape"
+   */
+  @HostListener('keydown', ['$event'])
+  _onKeydownHandler(event: KeyboardEvent) {
+    const keyCode = event.key;
+    if (keyCode === 'Escape')
+      this.close();
+  }
 
   constructor(
     private _sidebarPanelService: SidebarPanelService

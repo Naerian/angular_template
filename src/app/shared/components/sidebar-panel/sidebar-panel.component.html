@@ -9,16 +9,18 @@
     [cdkTrapFocus]="isPanelVisible()"
     [cdkTrapFocusAutoCapture]="isPanelVisible()"
     [@slideByPosition]="position()"
-    (escapeKey)="close()"
   >
     <div class="sidebar-panel__header">
       <div class="sidebar-panel__header__wrapper">
         <h1 [innerHTML]="title() || ''"></h1>
         <button
           class="sidebar-panel__header__close"
+          tabindex="0"
           [title]="'app.cerrar' | translate"
           (click)="close()"
-          clickable
+          (keydown.enter)="close()"
+          (keydown.space)="close()"
+          [attr.aria-label]="'app.cerrar' | translate"
           autofocus
         >
           <i class="ri-close-fill"></i>

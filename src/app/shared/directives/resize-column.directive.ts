@@ -3,12 +3,12 @@ import { IColumnsFormat } from "@entities/table.entity";
 import { TranslateService } from "@ngx-translate/core";
 
 @Directive({
-  selector: "[resizeColumn]",
+  selector: "[resizable-column]",
   standalone: true
 })
 export class ResizeColumnDirective implements OnInit {
 
-  @Input("resizeColumn") resizable: boolean = true;
+  @Input("resizable-column") resizable: boolean = true;
   @Input() index!: number;
   @Input() column!: IColumnsFormat;
 
@@ -27,7 +27,7 @@ export class ResizeColumnDirective implements OnInit {
   }
 
   ngAfterContentChecked(): void {
-    if (this.column.width)
+    if (this.column && this.column.width)
       this.setColumnSize(this.column.width);
   }
 
