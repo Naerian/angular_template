@@ -1,5 +1,5 @@
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
-import { Component, EventEmitter, forwardRef, Input, Output, signal, WritableSignal, input, InputSignal, ViewEncapsulation, booleanAttribute } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, Output, signal, WritableSignal, input, InputSignal, ViewEncapsulation, booleanAttribute, HostListener } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DEFAULT_FORMAT, DatePickerType, DateSelected } from './models/date-picker.entity';
 import { CalendarService } from './services/calendar.service';
@@ -95,6 +95,16 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   defaultDate: WritableSignal<moment.Moment> = signal(moment(new Date()));
   currentDate: WritableSignal<string | string[]> = signal('');
   scrollStrategy: ScrollStrategy;
+
+  /**
+   * Método para cerrar el panel al pulsar la tecla "Escape"
+   */
+  @HostListener('keydown', ['$event'])
+  _onKeydownHandler(event: KeyboardEvent) {
+    const keyCode = event.key;
+    if (keyCode === 'Escape')
+      this.closeCalendar();
+  }
 
   constructor(
     private readonly _calendarService: CalendarService,

@@ -1,5 +1,5 @@
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
-import { Component, Input, WritableSignal, signal } from '@angular/core';
+import { Component, HostListener, Input, WritableSignal, signal } from '@angular/core';
 import { ButtonColor, ButtonSize } from '../button/models/button.entity';
 
 /**
@@ -47,6 +47,16 @@ export class MenuContextComponent {
 
   isMenuContextOpened: WritableSignal<boolean> = signal(false);
   scrollStrategy: ScrollStrategy;
+
+  /**
+   * Método para cerrar el panel al pulsar la tecla "Escape"
+   */
+  @HostListener('keydown', ['$event'])
+  _onKeydownHandler(event: KeyboardEvent) {
+    const keyCode = event.key;
+    if (keyCode === 'Escape')
+      this.close();
+  }
 
   constructor(
     scrollStrategyOptions: ScrollStrategyOptions

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ClickableDirective } from '@shared/directives/clickable.directive';
 import { TabsItemComponent } from './tabs-item/tabs-item.component';
 import { TabsComponent } from './tabs.component';
 import { TabLabelDirective } from './directives/tab-label.directive';
@@ -19,7 +18,6 @@ import { TabsFooterDirective } from './tabs-item/tabs-footer/tabs-footer.directi
   imports: [
     CommonModule,
     RouterModule,
-    ClickableDirective,
     TabItemDirective,
     TabsHeaderDirective,
     TabsBodyDirective,

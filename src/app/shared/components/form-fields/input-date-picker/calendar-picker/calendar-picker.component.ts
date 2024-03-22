@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { A11yModule } from '@angular/cdk/a11y';
 import moment from 'moment';
-import { ClickableDirective } from '@shared/directives/clickable.directive';
 
 /**
  * @name
@@ -21,7 +20,7 @@ import { ClickableDirective } from '@shared/directives/clickable.directive';
   templateUrl: './calendar-picker.component.html',
   styleUrls: ['./calendar-picker.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, A11yModule, ClickableDirective],
+  imports: [CommonModule, FormsModule, TranslateModule, A11yModule],
   encapsulation: ViewEncapsulation.None
 })
 export class CalendarPickerComponent implements OnInit {
