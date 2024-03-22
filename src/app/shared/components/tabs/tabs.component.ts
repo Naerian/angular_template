@@ -27,20 +27,29 @@ export class TabsComponent implements AfterContentInit {
 
   @ContentChildren(forwardRef(() => TabsItemComponent), { descendants: true }) tabs!: QueryList<TabsItemComponent>;
 
+  /**
+   * Input para establecer el tipo de tab que se va a utilizar (tab o router-tab)
+   */
   @Input() type: TabType = 'tab';
+
+  /**
+   * Input para establecer la orientación de los tabs (vertical u horizontal)
+   */
   @Input() orientation: TabOrientation = 'v';
 
+  /**
+   * Output para emitir el índice de la tab seleccionada
+   */
   @Output() tabSelectedIdx = new EventEmitter<number>();
 
-  constructor() { }
 
   ngAfterContentInit() {
 
-    // Obtenemos las tabs activas, si las hay, mediante un loop con "filter"
-    const activeTabs = this.tabs.filter((tab: TabsItemComponent) => tab.isActive);
+    // Obtenemos la tab activa si la hay
+    const activeTab = this.tabs.find((tab: TabsItemComponent) => tab.isActiveTab());
 
     // Si no hubiese ninguna activa, activamos la primera por defecto
-    if (activeTabs.length === 0) {
+    if (!activeTab) {
 
       // Si es de tipo "tab", marcamos como una pestaña normal
       // --
@@ -66,14 +75,14 @@ export class TabsComponent implements AfterContentInit {
   selected(tab: TabsItemComponent, tabIdx: number) {
     if (tab) {
 
+      // Desactivamos todas las tabs
+      this.tabs.forEach((tabItem: TabsItemComponent) => tabItem.deactivateTab());
+
+      // Activamos la tab actual
+      tab.activateTab();
+
       // Emitimos el índice de la tab seleccionada
       this.setIndex(tabIdx);
-
-      // Desactivamos todas las tabs, recorriéndolas
-      this.tabs.forEach((tabItem: TabsItemComponent) => tabItem.isActive = false);
-
-      // Activamos la tab actual, la llamada en la función
-      tab.isActive = true;
     }
   }
 }

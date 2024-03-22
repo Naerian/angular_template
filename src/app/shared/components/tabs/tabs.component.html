@@ -6,37 +6,72 @@
   @if (tabs && tabs.length > 1) {
     <div
       class="tabs__nav type-{{ type }}"
+      role="tablist"
       [class.tabs__nav--vertical]="orientation === 'v'"
       [class.tabs__nav--horizontal]="orientation === 'h'"
     >
       @for (tab of tabs; track $index; let isLast = $last) {
-        <div
-          class="tabs__nav__item"
-          (click)="selected(tab, $index)"
-          clickable
-          [class.tabs__nav__item--active]="tab.isActive"
-          [title]="tab._title"
-          [routerLinkActiveOptions]="{ exact: true }"
-          [routerLink]="tab.route ? [tab.route] : []"
-          [routerLinkActive]="tab.route ? ['tabs__nav__item--active'] : []"
-        >
-          @if (!tab.tabLabel) {
-            @if (tab.icon) {
-              <span class="tabs__nav__item__icon"
-                ><i [class]="tab.icon"></i
-              ></span>
-            }
-            <span class="tabs__nav__item__label">{{ tab._title }}</span>
-          } @else {
+        @if (type === "router-tab") {
+          <!-- SI ES DE TIPO ROUTER-TAB SE AGREGARÁN LOS ATRIBUTOS DE ROUTER -->
+          <div
+            class="tabs__nav__item"
+            tabindex="0"
+            [id]="tab.getId()"
+            (click)="selected(tab, $index)"
+            (keydown.enter)="selected(tab, $index)"
+            (keydown.space)="selected(tab, $index)"
+            [class.tabs__nav__item--active]="tab.isActiveTab()"
+            [title]="tab.getTitle()"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="tab.route ? [tab.getRoute()] : []"
+            [routerLinkActive]="
+              tab.getRoute() ? ['tabs__nav__item--active'] : []
+            "
+            [attr.aria-selected]="tab.isActiveTab()"
+            [attr.aria-controls]="tab.getContentId()"
+          >
             <ng-container
-              *ngTemplateOutlet="tab.tabLabel.templateRef"
+              *ngTemplateOutlet="tabLabel; context: { $implicit: tab }"
             ></ng-container>
-          }
-        </div>
+          </div>
+        } @else {
+          <!-- SI ES DE TIPO TAB SOLO AÑADIMOS LO NECESARIO -->
+          <div
+            class="tabs__nav__item"
+            tabindex="0"
+            [id]="tab.getId()"
+            (click)="selected(tab, $index)"
+            (keydown.enter)="selected(tab, $index)"
+            (keydown.space)="selected(tab, $index)"
+            [class.tabs__nav__item--active]="tab.isActiveTab()"
+            [title]="tab.getTitle()"
+            [attr.aria-selected]="tab.isActiveTab()"
+            [attr.aria-controls]="tab.getContentId()"
+          >
+            <ng-container
+              *ngTemplateOutlet="tabLabel; context: { $implicit: tab }"
+            ></ng-container>
+          </div>
+        }
       }
     </div>
   }
 
+  <!-- LABEL DE LA TAB -->
+  <ng-template #tabLabel let-tab>
+    @if (!tab.tabLabel) {
+      @if (tab.icon) {
+        <span class="tabs__nav__item__icon"
+          ><i [class]="tab.getIcon()"></i
+        ></span>
+      }
+      <span class="tabs__nav__item__label">{{ tab.getTitle() }}</span>
+    } @else {
+      <ng-container *ngTemplateOutlet="tab.tabLabel.templateRef"></ng-container>
+    }
+  </ng-template>
+
+  <!-- CONTENIDO DE LA TAB -->
   <div class="tabs__content">
     @if (type === "tab") {
       <ng-content select="neo-tabs-item"></ng-content>

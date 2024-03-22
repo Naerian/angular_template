@@ -1,18 +1,28 @@
-@if (isActive) {
-  @if (!tabBody && !tabHeader && !tabFooter) {
-    <div class="tabs__content__item">
-      <ng-content></ng-content>
-    </div>
-  } @else {
-    <div
-      class="tabs__content__item"
-      [class.tabs__content__item--no_header]="!tabHeader"
-    >
-      <ng-content select="neo-tabs-header"></ng-content>
+@if (!tabBody && !tabHeader && !tabFooter) {
+  <div
+    class="tabs__content__item"
+    role="tabpanel"
+    [id]="getContentId()"
+    [attr.aria-selected]="isActiveTab()"
+    [attr.aria-labelledby]="getId()"
+    [attr.aria-hidden]="!isActiveTab()"
+  >
+    <ng-content></ng-content>
+  </div>
+} @else {
+  <div
+    class="tabs__content__item"
+    role="tabpanel"
+    [id]="getContentId()"
+    [attr.aria-selected]="isActiveTab()"
+    [attr.aria-labelledby]="getId()"
+    [attr.aria-hidden]="!isActiveTab()"
+    [class.tabs__content__item--no_header]="!tabHeader"
+  >
+    <ng-content select="neo-tabs-header"></ng-content>
 
-      <ng-content select="neo-tabs-body"></ng-content>
+    <ng-content select="neo-tabs-body"></ng-content>
 
-      <ng-content select="neo-tabs-footer"></ng-content>
-    </div>
-  }
+    <ng-content select="neo-tabs-footer"></ng-content>
+  </div>
 }

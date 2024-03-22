@@ -30,7 +30,7 @@ describe('TabsItemComponent', () => {
 
   it('should have a active Input', () => {
     expect(component.active).toBe(false);
-    expect(component.isActive).toBe(false);
+    expect(component.isActiveTab()).toBe(false);
   });
 
   it('should have a label Input', () => {
@@ -38,6 +38,6 @@ describe('TabsItemComponent', () => {
   });
 
   it('should have a isActive property', () => {
-    expect(component.isActive).toBe(false);
+    expect(component.isActiveTab()).toBe(false);
   });
 });
