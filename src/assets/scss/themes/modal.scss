@@ -14,8 +14,6 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  max-width: 600px;
-  min-width: 350px;
   padding: 1.2rem;
   align-items: flex-start;
   justify-content: center;
@@ -75,6 +73,6 @@
     margin-bottom: 0px !important;
     width: 100% !important;
     gap: 20px !important;
-    min-height: 35px !important;
+    min-height: 45px !important;
   }
 }

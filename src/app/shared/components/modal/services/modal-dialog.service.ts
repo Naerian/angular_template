@@ -27,10 +27,14 @@ export class ModalDialogService {
   open(options: ModalOptionsEntity | null = null, component?: ComponentType<any>): MatDialogRef<any> {
 
     const componentOrDialog = component ? component : ModalDialogComponent;
-    let data = null;
+    let data = {} as any;
 
     if (component) {
-      data = options?.data || null;
+      if (options?.data)
+        data = { ...data, ...options.data };
+      data.title = options?.title || '';
+      data.iconTitle =  options?.iconTitle || '';
+      data.canBeClosed = options?.canBeClosed || true;
     } else {
       data = {
         title: options?.title || '',
