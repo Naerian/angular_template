@@ -33,6 +33,7 @@ import { TabsFooterDirective } from './tabs-footer/tabs-footer.directive';
   templateUrl: './tabs-item.component.html',
   styleUrls: ['./tabs-item.component.scss'],
   host: {
+    '[class.tabs-item-host]': 'true',
     '[class.active]': 'isActiveTab()',
     '[hidden]': '!isActiveTab()',
   },
