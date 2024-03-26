@@ -24,6 +24,7 @@
     font-weight: 500;
     box-sizing: border-box;
     padding: 10px 10px;
+    padding-right: 25px;
     cursor: pointer;
     flex-direction: row;
     display: flex;
@@ -49,6 +50,8 @@
     &__arrow-dropdown {
       position: absolute;
       right: 5px;
+      font-size: 1rem !important;
+      line-height: 1rem !important;
 
       &.open {
         transform: rotate(180deg);

@@ -18,7 +18,7 @@
     (click)="toggleDropdown($event)"
     (keydown.enter)="toggleDropdown($event)"
     (keydown.space)="toggleDropdown($event)"
-    [title]="title || label"
+    [title]="getTitleOptionsSelected() || title || label"
     [class.neo-select__field--empty]="options.length === 0"
     [class.neo-select__field--multiple]="multiple"
     [class.neo-select__field--error]="hasErrors() || _hasErrors()"
@@ -62,7 +62,7 @@
       }
     </div>
     <i
-      class="ri-arrow-down-s-line neo-select__field__arrow-dropdown"
+      class="ri-arrow-down-s-fill neo-select__field__arrow-dropdown"
       [ngClass]="{ open: isDropdownOpened() }"
     ></i>
   </div>
@@ -95,7 +95,7 @@
             [placeholder]="placeholderSearch || ('app.buscar' | translate)"
             (input)="searchOption(searchInput.value)"
           />
-          <i class="ri-search-line neo-select__dropdown__search__icon"></i>
+          <i class="ri-search-2-line neo-select__dropdown__search__icon"></i>
         </div>
       }
       <div

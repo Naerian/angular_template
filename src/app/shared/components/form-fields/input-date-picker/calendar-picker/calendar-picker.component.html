@@ -10,7 +10,7 @@
           (keydown.space)="prevMonth()"
           [title]="'calendar.prevMonth' | translate"
         >
-          <i class="ri-arrow-left-s-line"></i>
+          <i class="ri-arrow-left-s-fill"></i>
         </div>
         <div class="calendar-picker__header__actions">
           <span
@@ -25,7 +25,7 @@
               "date.month." + (currentCalendar() | date: "MMMM" | lowercase)
                 | translate
             }}
-            <i class="ri-arrow-down-s-line arrow-dropdown"></i>
+            <i class="ri-arrow-down-s-fill arrow-dropdown"></i>
           </span>
           <span
             class="calendar-picker__header__actions--selector"
@@ -36,7 +36,7 @@
             [title]="'calendar.changeYear' | translate"
           >
             {{ currentCalendar() | date: "yyyy" }}
-            <i class="ri-arrow-down-s-line arrow-dropdown"></i>
+            <i class="ri-arrow-down-s-fill arrow-dropdown"></i>
           </span>
         </div>
         <div
@@ -47,7 +47,7 @@
           (keydown.space)="nextMonth()"
           [title]="'calendar.nextMonth' | translate"
         >
-          <i class="ri-arrow-right-s-line"></i>
+          <i class="ri-arrow-right-s-fill"></i>
         </div>
       </div>
       <div class="calendar-picker__content calendar-picker__days">
@@ -135,7 +135,7 @@
           (keydown.space)="prevYears()"
           [title]="'app.anterior' | translate"
         >
-          <i class="ri-arrow-left-s-line"></i>
+          <i class="ri-arrow-left-s-fill"></i>
         </div>
         <span class="calendar-picker__header__title">{{
           "date.year" | translate
@@ -148,7 +148,7 @@
           (keydown.space)="nextYears()"
           [title]="'app.siguiente' | translate"
         >
-          <i class="ri-arrow-right-s-line"></i>
+          <i class="ri-arrow-right-s-fill"></i>
         </div>
       </div>
       <div class="calendar-picker__content calendar-picker__years__content">

@@ -20,6 +20,8 @@
   }
 
   &__icon {
+    font-size: 0.85rem;
+    font-weight: normal;
     i::before {
       color: var(--icon-btn-primary-transparent-color) !important;
     }

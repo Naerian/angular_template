@@ -444,6 +444,27 @@ export class SelectComponent implements ControlValueAccessor {
       selectedOption?.getElementRef().nativeElement.focus();
   }
 
+  /**
+   * Función para devolver el nombre de la opción u opciones seleccionadas
+   * y usarlas en el `title` de la vista
+   */
+  getTitleOptionsSelected(): string | null {
+
+    // Si no hay valores seleccionados, devolvemos el valor vacío
+    if (this._optionsSelected.isEmpty())
+      return null;
+
+    // Si no es de selección múltiple, devolvemos el primero
+    // Si es de selección múltiple obtenemos todas las seleccionadas y las unimos por un coma (,)
+    if (!this.multiple)
+      return this._optionsSelected.selected[0].getLabelText();
+    else {
+      const titlesOptions: string[] = this._optionsSelected.selected.map(option => option.getLabelText());
+      return titlesOptions.join(', ');
+    }
+
+  }
+
   // Funciones de control de eventos
   onChange: any = () => { };
   onTouched: any = () => { };
