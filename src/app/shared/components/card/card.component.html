@@ -91,6 +91,8 @@
 <div
   class="neo-card__content"
   [class.neo-card__content--collapsed]="_isCollapsed()"
+  [class.neo-card__content--has-header]="neoCardHeader"
+  [class.neo-card__content--has-footer]="neoCardFooter"
 >
   <ng-content></ng-content>
 </div>
