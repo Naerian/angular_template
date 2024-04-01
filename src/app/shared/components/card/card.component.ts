@@ -1,6 +1,7 @@
-import { Component, ContentChild, HostBinding, Input, WritableSignal, signal, Output, EventEmitter } from '@angular/core';
+import { Component, ContentChild, HostBinding, Input, WritableSignal, signal, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { ButtonSize } from '../button/models/button.entity';
 import { CardHeaderDirective } from './card-header/card-header.directive';
+import { CardFooterDirective } from './card-footer/card-footer.directive';
 
 /**
  * Componente para crear una tarjeta e incluir contenido dentro de ella
@@ -16,6 +17,12 @@ import { CardHeaderDirective } from './card-header/card-header.directive';
   selector: 'neo-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
+  host: {
+    'class': 'neo-card',
+    '[class.neo-card--collapsed-label]': '_isCollapsed() && (iconCollpased || labelCollpased) && !neoCardHeader',
+    '[class.neo-card--has-structure]': 'neoCardFooter || neoCardHeader',
+  },
+  encapsulation: ViewEncapsulation.None
 })
 export class CardComponent {
 
@@ -23,6 +30,11 @@ export class CardComponent {
    * Contenido del header de la tarjeta (si lo hubiera) mediante el componente `neo-card-header`
    */
   @ContentChild(CardHeaderDirective) neoCardHeader!: CardHeaderDirective;
+
+  /**
+   * Contenido del footer de la tarjeta (si lo hubiera) mediante el componente `neo-card-footer`
+   */
+  @ContentChild(CardFooterDirective) neoCardFooter!: CardFooterDirective;
 
   /**
    * Título de la tarjeta (si lo hubiera) que se muestra en el header de la tarjeta

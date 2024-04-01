@@ -35,7 +35,7 @@ import { TabsFooterDirective } from './tabs-footer/tabs-footer.directive';
   host: {
     '[class.tabs-item-host]': 'true',
     '[class.active]': 'isActiveTab()',
-    '[hidden]': '!isActiveTab()',
+    '[class.hidden]': '!isActiveTab()',
   },
   encapsulation: ViewEncapsulation.None
 })

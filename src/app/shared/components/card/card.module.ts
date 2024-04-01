@@ -4,6 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../button/button.component';
 import { CardComponent } from './card.component';
 import { CardHeaderDirective } from './card-header/card-header.directive';
+import { CardFooterDirective } from './card-footer/card-footer.directive';
 
 @NgModule({
   declarations: [
@@ -13,11 +14,13 @@ import { CardHeaderDirective } from './card-header/card-header.directive';
     CommonModule,
     ButtonComponent,
     CardHeaderDirective,
+    CardFooterDirective,
     TranslateModule
   ],
   exports: [
     CardComponent,
-    CardHeaderDirective
+    CardHeaderDirective,
+    CardFooterDirective
   ]
 })
 export class CardModule { }

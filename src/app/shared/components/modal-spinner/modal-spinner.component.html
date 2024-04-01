@@ -1,22 +1,25 @@
 <div class="modal-box modal-spinner">
+  @if (data.canBeClosed) {
+    <button
+      class="modal-box__close"
+      tabindex="0"
+      [title]="'app.cerrar' | translate"
+      [attr.aria-label]="'app.cerrar' | translate"
+      (click)="close()"
+      (keydown.enter)="close()"
+      (keydown.space)="close()"
+      autofocus
+    >
+      <i class="ri-close-fill"></i>
+    </button>
+  }
   <div mat-dialog-title class="modal-box__title">
     @if (data.title) {
-      <neo-section-title [icon]="data.iconTitle || 'ri-loop-left-fill'" [title]="data.title">
-      </neo-section-title>
-    }
-    @if (data.canBeClosed) {
-      <button
-        class="modal-box__close"
-        tabindex="0"
-        [title]="'app.cerrar' | translate"
-        [attr.aria-label]="'app.cerrar' | translate"
-        (click)="close()"
-        (keydown.enter)="close()"
-        (keydown.space)="close()"
-        autofocus
+      <neo-section-title
+        [icon]="data.iconTitle || 'ri-loop-left-fill'"
+        [title]="data.title"
       >
-        <i class="ri-close-fill"></i>
-      </button>
+      </neo-section-title>
     }
   </div>
   <div mat-dialog-content class="modal-box__body modal-spinner__body">
