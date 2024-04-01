@@ -6,8 +6,6 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  font-size: 0.85rem;
-  line-height: 0.85rem;
 
   &--dir_right {
     flex-direction: row-reverse;
@@ -23,6 +21,7 @@
     margin-bottom: 0;
     margin-top: 0;
     gap: 5px;
+    font-size: 0.85rem;
 
     &__page {
 
@@ -42,8 +41,12 @@
         cursor: pointer;
         color: var(--text-color) !important;
 
-        i::before {
-          color: var(--text-color) !important;
+        i {
+          font-size: 1rem;
+
+          &::before {
+            color: var(--text-color) !important;
+          }
         }
       }
 

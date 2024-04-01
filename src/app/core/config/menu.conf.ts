@@ -6,6 +6,7 @@ import { MenuEntity } from "@shared/components/side-menu/model/menu.entity";
 const MENU_ITEMS: MenuEntity[] = [
   {
     label: 'app.home',
+    icon: 'ri-home-3-fill',
     route: '/test',
     shortcut: false
   },

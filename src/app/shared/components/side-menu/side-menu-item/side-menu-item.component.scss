@@ -10,30 +10,12 @@
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  font-size: 12px;
   cursor: pointer;
   padding: 10px 15px;
   margin: 2px 0;
   flex-wrap: nowrap;
   text-decoration: none;
   background-color: var(--bg-menu-color);
-  color: var(--text-color);
-
-  i::before {
-    color: var(--text-color);
-  }
-
-  &:hover,
-  &:focus,
-  &--active {
-    border-radius: 5px;
-    background-color: var(--menu-item-hover-active-color) !important;
-    color: var(--menu-item-hover-active-text) !important;
-
-    i::before {
-      color: var(--menu-item-hover-active-text) !important;
-    }
-  }
 
   &__wrapper {
     display: flex;
@@ -41,10 +23,53 @@
     justify-content: space-between;
     flex-direction: row;
     width: 100%;
+
+    &__label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-direction: row;
+      gap: 10px;
+
+      &__icon {
+        font-size: 1rem;
+
+        &::before {
+          color: var(--bg-menu-item-color);
+        }
+      }
+
+      &__text {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+    }
+
+    &__toggle {
+      font-size: 1rem;
+
+      &::before {
+        color: var(--text-color);
+      }
+    }
   }
 
-  &__icon {
-    margin-right: 10px;
+  &:hover,
+  &:focus,
+  &--active {
+    background-color: var(--bg-menu-item-color);
+
+    .item-menu__wrapper__label__text {
+      color: var(--menu-item-active-text-color);
+    }
+
+    .item-menu__wrapper__label__icon,
+    .item-menu__wrapper__toggle {
+      &::before {
+        color: var(--menu-item-active-text-color);
+      }
+    }
   }
 
   &__childrens {
