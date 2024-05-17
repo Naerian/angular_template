@@ -1,0 +1,35 @@
+<div
+  class="neo-input-file size-{{ inputSize }}"
+  [title]="
+    title ||
+    label ||
+    (multiple ? 'Seleccionar ficheros' : 'Seleccionar fichero')
+  "
+  [class.neo-input-file--disabled]="_disabled()"
+>
+  <input
+    #fileInputFile
+    hidden
+    type="file"
+    id="file"
+    name="file"
+    (change)="onFileChange($event)"
+    [disabled]="disabled"
+    [multiple]="multiple"
+    [accept]="extensions"
+    [attr.id]="_id()"
+    [attr.aria-disabled]="_disabled()"
+    [attr.aria-labelledby]="_labelId()"
+    [attr.aria-owns]="_labelId()"
+    [attr.aria-describedby]="ariaDescribedBy"
+    [disabled]="_disabled()"
+    [required]="required"
+    [attr.aria-required]="required"
+    [attr.name]="name"
+  />
+  <div class="neo-input-file__wrapper" (click)="fileInputFile.click()">
+    <span class="neo-input-file__wrapper__label size-{{ inputSize }}">{{
+      label || (multiple ? "Seleccionar ficheros" : "Seleccionar fichero")
+    }}</span>
+  </div>
+</div>

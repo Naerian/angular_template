@@ -26,9 +26,9 @@ export class LogoComponent {
   @Input() size: LogoSize = 'm';
 
   /**
-   * Enlace al que redirige el logo
+   * Texto alternativo del logo
    */
-  @Input() link: string = '/';
+  @Input() alt: string = 'logo';
 
   logo: string = LOGO;
   logoSmall: string = LOGO_SMALL;
@@ -46,6 +46,7 @@ export class LogoComponent {
 
     // Cuando el tema cambie, cambiamos el logo
     effect(() => {
+
       switch (this.theme()) {
         case LIGHT_THEME:
           this.logo = LOGO;

@@ -28,8 +28,8 @@
       border: 0.5px solid var(--border-pagination-page-color) !important;
       border-radius: 2px;
 
-      &--link,
-      &--range {
+      &__link,
+      &__range {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -48,6 +48,7 @@
             color: var(--text-color) !important;
           }
         }
+
       }
 
       &--range {
@@ -64,12 +65,13 @@
       }
 
       &:hover,
+      &:focus,
       &.active {
+        outline: 0;
         border: 0.5px solid var(--bg-pagination-active-color) !important;
         background-color: var(--bg-pagination-active-color) !important;
-        border-radius: 2px;
 
-        .paginator__pagination__page--link {
+        .paginator__pagination__page__link {
           color: var(--text-pagination-active-color) !important;
         }
       }

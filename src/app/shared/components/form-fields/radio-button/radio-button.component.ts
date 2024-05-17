@@ -32,34 +32,34 @@ export class RadioButtonComponent {
   /**
    * Input para asignar el tamaño del radio button
    */
-  @Input()
+  _inputSize: WritableSignal<InputSize> = signal('m');
+  @Input() set inputSize(value: InputSize) {
+    this._inputSize.set(value || 'm');
+  }
+
   get inputSize() {
     return this._inputSize();
-  }
-  set inputSize(value: InputSize) {
-    this._inputSize.set(value || 'm');
   }
 
   /**
    * Input para asignar el ID del radio button
    */
-  @Input()
-  get id() {
-    return this._id();
-  }
-  set id(value: string) {
+  @Input() set id(value: string) {
     this._id.set(value);
     this._labelId.set(`label_${value}`);
+  }
+  _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
+
+  get id() {
+    return this._id();
   }
 
   /**
    * Input para asignar el valor del radio button y asignar el valor al grupo de radio buttons
    */
-  @Input()
-  get value(): any {
-    return this._value;
-  }
-  set value(value: any) {
+  _value: any = null;
+  @Input() set value(value: any) {
     if (this._value !== value) {
       this._value = value;
       if (this.radioGroup !== null) {
@@ -75,26 +75,29 @@ export class RadioButtonComponent {
     }
   }
 
+  get value(): any {
+    return this._value;
+  }
+
+
   /**
    * Input para asignar el estado deshabilitado del radio button
    */
-  @Input({ transform: booleanAttribute })
-  get disabled(): boolean {
-    return this._disabled() || (this.radioGroup !== null && this.radioGroup.disabled);
-  }
-  set disabled(value: boolean) {
+  _disabled: WritableSignal<boolean> = signal(false);
+
+  @Input({ transform: booleanAttribute }) set disabled(value: boolean) {
     if (this._disabled() !== value)
       this._disabled.set(value);
+  }
+
+  get disabled(): boolean {
+    return this._disabled() || (this.radioGroup !== null && this.radioGroup.disabled);
   }
 
   /**
    * Input para asignar el nombre del radio buttons
    */
-  @Input()
-  get name() {
-    return this._name();
-  }
-  set name(value: string) {
+  @Input() set name(value: string) {
 
     this._name.set(value);
 
@@ -102,14 +105,16 @@ export class RadioButtonComponent {
     this.createUniqueId();
   };
 
+  _name: WritableSignal<string> = signal('');
+  get name() {
+    return this._name();
+  }
+
   /**
    * Input para asignar el estado marcado del radio button
    */
-  @Input({ transform: booleanAttribute })
-  get checked(): boolean {
-    return this._checked();
-  }
-  set checked(value: boolean) {
+  _checked: WritableSignal<boolean> = signal(false);
+  @Input({ transform: booleanAttribute }) set checked(value: boolean) {
     if (this.checked !== value) {
 
       this._checked.set(value);
@@ -127,6 +132,10 @@ export class RadioButtonComponent {
     }
   }
 
+  get checked(): boolean {
+    return this._checked();
+  }
+
   /**
    * Input para añadir un aria-describedby al campo
    */
@@ -141,14 +150,7 @@ export class RadioButtonComponent {
 
   radioGroup: RadioButtonGroupComponent | null = null;
 
-  _value: any = null;
-  _inputSize: WritableSignal<InputSize> = signal('m');
-  _disabled: WritableSignal<boolean> = signal(false);
-  _checked: WritableSignal<boolean> = signal(false);
   _title: WritableSignal<string> = signal('');
-  _name: WritableSignal<string> = signal('');
-  _id: WritableSignal<string> = signal('');
-  _labelId: WritableSignal<string> = signal('');
 
   // Nos servirá para desuscribirnos del _radioDispatcher
   private _removeUniqueSelectionListener: () => void = () => { };
@@ -230,7 +232,7 @@ export class RadioButtonComponent {
   /**
    * Función para emitir el evento de cambio del radio button con el valor actual
    */
-  private _emitChangeEvent(): void {
+  _emitChangeEvent(): void {
     this.change.emit(this._value);
   }
 

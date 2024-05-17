@@ -64,8 +64,6 @@ export class SidebarPanelComponent implements OnInit {
       .subscribe(
         (isVisible: boolean) => {
           this.isPanelVisible.set(isVisible);
-          if (isVisible)
-            this.setPanelContent();
         }
       );
 
@@ -76,7 +74,7 @@ export class SidebarPanelComponent implements OnInit {
       .subscribe(
         (data: SidebarbarPanelEntity | null) => {
           if (this.isPanelVisible())
-            this.setPanelContent();
+            this.setPanelContent(data);
         }
       );
   }
@@ -91,42 +89,41 @@ export class SidebarPanelComponent implements OnInit {
   /**
    * Método para establecer el contenido del panel
    */
-  private setPanelContent() {
+  private setPanelContent(content: SidebarbarPanelEntity | null = null) {
 
-    setTimeout(() => {
+    // Si no hay contenido, intentamos obtenerlo del servicio
+    if (!content || content === null)
+      content = this._sidebarPanelService.getPanelContent();
 
-      const content: SidebarbarPanelEntity | null = this._sidebarPanelService.getPanelContent();
+    // Si no hay contenido aún así, limpiamos el panel y salimos
+    if (!content || content === null) {
+      this.size.set(DEFAULT_SIZE);
+      this.position.set(DEFAULT_POSITION);
+      this.title.set('');
+      this.classes.set([]);
+      this.panelContentRef?.clear();
+      return;
+    }
 
-      // Si no hay contenido, limpiamos el panel y salimos
-      if (!content || content === null) {
-        this.size.set(DEFAULT_SIZE);
-        this.position.set(DEFAULT_POSITION);
-        this.title.set('');
-        this.classes.set([]);
-        this.panelContentRef?.clear();
-        return;
+    // Establecemos las opciones del sidebar, si es que lleva alguna
+    this.size.set(content.size || DEFAULT_SIZE);
+    this.position.set(content.position || DEFAULT_POSITION);
+    this.title.set(content.title || '');
+    this.classes.set(content.classes || []);
+
+    // Si hay componente asignado, lo mostramos en el panel y aplicamos las opciones que tenga
+    if (content?.component) {
+
+      this.panelContentRef?.clear();
+      const componentCreated: ComponentRef<any> = this.panelContentRef?.createComponent(content.component);
+      componentCreated?.location?.nativeElement?.classList.add('sidebar-panel__host');
+
+      if (content?.inputs && content.inputs.length > 0) {
+        content?.inputs.forEach((input) => {
+          componentCreated.instance[input.name] = input.value;
+        });
       }
-
-      // Establecemos las opciones del sidebar, si es que lleva alguna
-      this.size.set(content.size || DEFAULT_SIZE);
-      this.position.set(content.position || DEFAULT_POSITION);
-      this.title.set(content.title || '');
-      this.classes.set(content.classes || []);
-
-      // Si hay componente asignado, lo mostramos en el panel y aplicamos las opciones que tenga
-      if (content?.component) {
-
-        this.panelContentRef?.clear();
-        const componentCreated: ComponentRef<any> = this.panelContentRef?.createComponent(content.component);
-        componentCreated.location.nativeElement.classList.add('sidebar-panel__host');
-
-        if (content?.inputs && content.inputs.length > 0) {
-          content?.inputs.forEach((input) => {
-            componentCreated.instance[input.name] = input.value;
-          });
-        }
-      }
-    }, 0);
+    }
 
   }
 

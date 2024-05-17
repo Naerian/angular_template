@@ -81,7 +81,7 @@ export class ButtonComponent {
    */
   @Output() onClick: EventEmitter<Event> = new EventEmitter();
 
-  private _title: WritableSignal<string> = signal('');
+  _title: WritableSignal<string> = signal('');
 
   ngAfterViewInit(): void {
     if (this.getTitle() === '')

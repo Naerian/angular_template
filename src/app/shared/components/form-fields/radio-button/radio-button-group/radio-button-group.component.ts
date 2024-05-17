@@ -160,7 +160,7 @@ export class RadioButtonGroupComponent implements ControlValueAccessor {
 
     this.createTitle();
 
-    if (!this._name()) {
+    if (!this._name() || this._name() === '' || this._name() === null || this._name() === undefined) {
       this._name.set(this._inputsUtilsService.createUniqueId(this.label || 'neo_group_radio'));
       this.updateRadioButtonsName();
     }
@@ -174,7 +174,7 @@ export class RadioButtonGroupComponent implements ControlValueAccessor {
   /**
    * Actualiza el radio button seleccionado
    */
-  private checkSelectedRadioButton() {
+  checkSelectedRadioButton() {
     if (this._selected && !this._selected.checked) {
       this._selected.checked = true;
     }
@@ -183,7 +183,7 @@ export class RadioButtonGroupComponent implements ControlValueAccessor {
   /**
    * Actualiza el radio button seleccionado a partir del valor
    */
-  private updateSelectedRadioFromValue(): void {
+  updateSelectedRadioFromValue(): void {
 
     // Si el valor es null, no seleccionamos ningún radio button
     const isAlreadySelected = this._selected !== null && this._selected.value === this._value;
@@ -203,7 +203,7 @@ export class RadioButtonGroupComponent implements ControlValueAccessor {
   /**
    * Actualiza el inputSize de cada radio button del grupo
    */
-  private updateInputSizeRadioButtons(): void {
+  updateInputSizeRadioButtons(): void {
     if (!this.radioButtons) return;
     this.radioButtons.forEach(radioButton => radioButton.inputSize = this._inputSize || 'm');
   }
@@ -211,7 +211,7 @@ export class RadioButtonGroupComponent implements ControlValueAccessor {
   /**
    * Actualiza el nombre de cada radio button del grupo
    */
-  private updateRadioButtonsName(): void {
+  updateRadioButtonsName(): void {
     if (!this.radioButtons) return;
     this.radioButtons.forEach(radioButton => radioButton.name = this._name());
   }
@@ -219,7 +219,7 @@ export class RadioButtonGroupComponent implements ControlValueAccessor {
   /**
    * Función para deshabilitar cada radio button del grupo
    */
-  private disableRadioButtons(): void {
+  disableRadioButtons(): void {
     if (!this.radioButtons) return;
     this.radioButtons.forEach(radioButton => radioButton.disabled = this._disabled());
   }

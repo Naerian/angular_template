@@ -45,6 +45,8 @@ export class TextAreaComponent {
   /**
   * Input para crear un id único para el campo
   */
+  _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
   @Input() set id(value: string) {
     this._id.set(value);
     this._labelId.set(`label_${value}`);
@@ -56,6 +58,7 @@ export class TextAreaComponent {
   /**
    * Input para marcar el campo como deshabilitado
    */
+  _disabled: WritableSignal<boolean> = signal(false);
   @Input() set disabled(status: boolean) {
     this._disabled.set(status);
   }
@@ -67,23 +70,19 @@ export class TextAreaComponent {
   /**
    * Input para introducir el valor del campo
    */
+  _value: string = '';
   @Input() set value(value: string) {
-    this._value.set(value);
+    this._value = value;
   }
 
   get value(): string | null {
-    return this._value();
+    return this._value;
   }
 
   /**
    * Input para añadir un aria-describedby al campo
    */
   @Input('aria-describedby') ariaDescribedBy!: string;
-
-  _id: WritableSignal<string> = signal('');
-  _labelId: WritableSignal<string> = signal('');
-  _value: WritableSignal<string | null> = signal('');
-  _disabled: WritableSignal<boolean> = signal(false);
 
   constructor(
     private readonly _inputsUtilsService: InputsUtilsService,
@@ -97,7 +96,7 @@ export class TextAreaComponent {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id) {
+    if (!this.id || this.id === '' || this.id === null || this.id === undefined) {
       this._id.set(this._inputsUtilsService.createUniqueId(this.label || 'textarea'));
       this._labelId.set(`label_${this._id()}`);
     }
@@ -108,7 +107,7 @@ export class TextAreaComponent {
    * @param {string} value
    */
   onInput(value: string) {
-    this._value.set(value);
+    this._value = value;
     this.onChange(value);
     this.onTouched();
     this.change.emit(value);

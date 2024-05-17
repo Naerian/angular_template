@@ -1,4 +1,4 @@
-import { Component, ContentChildren, ElementRef, EventEmitter, InjectionToken, Input, InputSignal, Output, QueryList, ViewChild, ViewEncapsulation, WritableSignal, booleanAttribute, forwardRef, input, signal } from '@angular/core';
+import { Component, ContentChildren, ElementRef, EventEmitter, HostListener, InjectionToken, Input, InputSignal, Output, QueryList, ViewChild, ViewEncapsulation, WritableSignal, booleanAttribute, forwardRef, input, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputSize } from '../models/form-field.entity';
 import { OptionComponent } from './option/option.component';
@@ -7,6 +7,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { CdkConnectedOverlay, ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { InputsUtilsService } from '../services/inputs-utils.service';
 import { take } from 'rxjs';
+import { FocusKeyManager } from '@angular/cdk/a11y';
 
 /**
  * Permite inyectar el componente SelectComponent en el componente OptionComponent y OptionGroupComponent
@@ -87,7 +88,7 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   /**
-   * Input para asignar el valor del grupo de radio buttons
+   * Input para asignar el valor del selector
    */
   @Input()
   get value(): any {
@@ -143,6 +144,9 @@ export class SelectComponent implements ControlValueAccessor {
   // Variables para controlar el estado del dropdown e indicar si está abierto o cerrado
   isDropdownOpened: WritableSignal<boolean> = signal(false);
 
+  // Variable para controlar si el selector está en modo de carga de datos
+  isLoading: InputSignal<boolean> = input<boolean>(false);
+
   // Estrategia de scroll para el overlay
   scrollStrategy: ScrollStrategy;
 
@@ -150,6 +154,9 @@ export class SelectComponent implements ControlValueAccessor {
   _labelId: WritableSignal<string> = signal('');
   private _disabled: WritableSignal<boolean> = signal(false);
   private _value: WritableSignal<any> = signal(null);
+
+  // Manager para el control de teclas en las opciones
+  private keyManager!: FocusKeyManager<OptionComponent>;
 
   constructor(
     private readonly _inputsUtilsService: InputsUtilsService,
@@ -170,6 +177,14 @@ export class SelectComponent implements ControlValueAccessor {
     // Inicializamos la selección de opciones cuándo el contenido ya ha sido inicializado
     // para asegurarnos de que las opciones de `OptionComponent` ya han sido renderizadas
     this.initSelection();
+
+    // Inicialización del manager de teclas para las opciones
+    this.keyManager = new FocusKeyManager(this.options).withWrap();
+  }
+
+  // Evento para controlar cuando se pulsa una tecla
+  onKeyDown(event: KeyboardEvent) {
+    this.keyManager.onKeydown(event);
   }
 
   /**
@@ -207,12 +222,15 @@ export class SelectComponent implements ControlValueAccessor {
   private setValue(newValue: any | any[]): boolean {
 
     if (newValue !== this._value() || (this.multiple && Array.isArray(newValue))) {
+      setTimeout(() => {
 
-      if (this.options)
-        this.setOptionSelectedByValue(newValue);
+        // Si hay opciones, seleccionamos las opciones que coincidan con el valor pasado por parámetro
+        if (this.options)
+          this.setOptionSelectedByValue(newValue);
 
-      this._value.set(newValue);
-      return true;
+        this._value.set(newValue);
+        return true;
+      }, 100);
     }
     return false;
   }
@@ -235,7 +253,7 @@ export class SelectComponent implements ControlValueAccessor {
   /**
    * Método para establecer el foco en el input de búsqueda si el select es buscable y está abierto
    */
-  private setFocusToSearch() {
+  setFocusToSearch() {
     if (this.searchable && this.isDropdownOpened() && this.searchInput?.nativeElement)
       setTimeout(() => this.searchInput.nativeElement.focus(), 0);
   }
@@ -260,7 +278,7 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   /**
-   * Encuentra y selecciona una opción basada en el valo pasado por parámetro mediante el Input `value`
+   * Encuentra y selecciona una opción basada en el valor pasado por parámetro mediante el Input `value`
    * @returns {OptionComponent | undefined} Opción seleccionada
    */
   private selectOptionByValue(value: any): OptionComponent | undefined {
@@ -304,7 +322,8 @@ export class SelectComponent implements ControlValueAccessor {
       this._value.set(this._optionsSelected.selected.map(option => option.value));
     } else {
 
-      this._optionsSelected?.clear();
+      if (!this._optionsSelected.isEmpty())
+        this._optionsSelected?.clear();
 
       if (option.isSelected()) {
         this._optionsSelected?.select(option);

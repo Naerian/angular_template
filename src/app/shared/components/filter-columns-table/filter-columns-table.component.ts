@@ -35,9 +35,14 @@ export class FilterColumnsTableComponent {
   }
 
   /**
-   * Input que recibe el tamaño del icono del filtro
+   * Input que recibe un label para el filtro
    */
   @Input() label: string = '';
+
+  /**
+   * Input que recibe un title para el filtro
+   */
+  @Input() title: string = '';
 
   /**
    * Input que recibe el tamaño del icono del filtro, por defecto es 'xm'

@@ -19,7 +19,7 @@
         false
       "
       [ngClass]="{ 'no-resize': !resize }"
-      [(ngModel)]="value"
+      [(ngModel)]="_value"
       (input)="onInput(textArea.value)"
       (blur)="onBlur()"
       [attr.id]="_id()"

@@ -17,3 +17,6 @@
     </div>
   }
 </div>
+@if(overlay && backdrop) {
+  <div class="spinner__backdrop" [ngStyle]="{'backgroundColor': backdropColor}"></div>
+}

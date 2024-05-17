@@ -34,7 +34,7 @@ export class ThemeToggleComponent {
     this.currentTheme = computed(() => this._themesService.getCurrentTheme());
   }
 
-  toggleTheme(event: Event) {
+  toggleTheme(event?: Event) {
     event?.preventDefault();
     event?.stopPropagation();
     if (this._themesService.getCurrentTheme() === LIGHT_THEME)

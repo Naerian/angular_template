@@ -1,6 +1,6 @@
 <neo-button
   [mode]="label ? 'button' : 'icon'"
-  [title]="label"
+  [title]="title || label"
   [size]="size"
   [transparent]="transparent"
   [disabled]="_columns().length === 0"
@@ -34,9 +34,9 @@
     <div class="filter-columns-table--select_all">
       <neo-checkbox
         [title]="'app.select_all2' | translate"
+        [inputSize]="'xm'"
         [checked]="isSomeColumnsSelected() && isAllColumnsSelected()"
         [indeterminate]="isSomeColumnsSelected() && !isAllColumnsSelected()"
-        class="size-s"
         (click)="$event.stopPropagation()"
         (change)="changeVisibilityAllColumns($event)"
       >
@@ -47,7 +47,7 @@
       @for (column of _columns(); track column) {
         <neo-checkbox
           [title]="column.label | snakeTextToString"
-          class="size-s"
+          [inputSize]="'xm'"
           [checked]="column?.visible || false"
           (click)="$event.stopPropagation()"
           (change)="changeVisibilityColumn($event, $index)"

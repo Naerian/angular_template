@@ -35,12 +35,12 @@ export class CalendarService {
    */
   buildValidMomentDate(value: any) {
     switch (true) {
-      case (typeof value === 'object' && value?.isValid()): // Es de tipo "momentjs"
-        return value;
-      case (typeof value === 'string' && moment(new Date(value)).isValid()): // Es de tipo "string" y se comprueba que sea fecha
-        return moment(new Date(value));
       case (value instanceof Date && moment(value).isValid()): // Es de tipo "Date" y se comprueba si es válida
         return moment(value);
+      case (typeof value === 'string' && moment(new Date(value)).isValid()): // Es de tipo "string" y se comprueba que sea fecha
+        return moment(new Date(value));
+      case ((moment.isMoment(value) || typeof value === 'object') && value?.isValid()): // Es de tipo "momentjs"
+        return value;
       default:
         return '';
     }

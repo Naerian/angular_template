@@ -36,9 +36,9 @@
     (keydown.enter)="handleClick(itemMenu)"
     (keydown.space)="handleClick(itemMenu)"
     [title]="itemMenu.label | translate"
-    [class.item-menu--active]="itemMenu.active"
+    [class.item-menu--active]="itemMenu.expanded"
     [attr.aria-expanded]="itemMenu.expanded"
-    [attr.aria-selected]="itemMenu.active"
+    [attr.aria-selected]="itemMenu.expanded"
     [attr.aria-label]="itemMenu.label | translate"
   >
     <div class="item-menu__wrapper">

@@ -46,6 +46,8 @@ export class InputPasswordComponent implements ControlValueAccessor {
   /**
    * Input para crear un id único para el campo
    */
+  _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
   @Input() set id(value: string) {
     this._id.set(value);
     this._labelId.set(`label_${value}`);
@@ -57,6 +59,7 @@ export class InputPasswordComponent implements ControlValueAccessor {
   /**
    * Input para marcar el campo como deshabilitado
    */
+  _disabled: WritableSignal<boolean> = signal(false);
   @Input() set disabled(status: boolean) {
     this._disabled.set(status);
   }
@@ -68,6 +71,7 @@ export class InputPasswordComponent implements ControlValueAccessor {
   /**
    * Input para introducir el valor del campo
    */
+  _value: WritableSignal<string | null> = signal('');
   @Input() set value(value: string) {
     this._value.set(value);
   }
@@ -83,10 +87,6 @@ export class InputPasswordComponent implements ControlValueAccessor {
 
   @Output() change = new EventEmitter<string>();
 
-  _id: WritableSignal<string> = signal('');
-  _labelId: WritableSignal<string> = signal('');
-  _value: WritableSignal<string | null> = signal('');
-  _disabled: WritableSignal<boolean> = signal(false);
   show: WritableSignal<boolean> = signal(false);
 
   constructor(

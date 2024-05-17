@@ -82,7 +82,7 @@ export class SideMenuComponent {
   shrinkItems(item: MenuEntity): void {
     if (!this.keepMultipleOpen) {
       for (let modelItem of this.menu) {
-        if (item !== modelItem && modelItem.expanded) {
+        if (item.label !== modelItem.label && modelItem.expanded) {
           modelItem.expanded = false;
           modelItem.active = false;
         }

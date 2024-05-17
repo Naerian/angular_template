@@ -55,6 +55,7 @@
       &--active,
       &:hover,
       &:focus {
+        outline: 0;
         border-bottom: 2px solid;
         border-bottom-color: var(--bg-btn-primary-color);
         background-color: var(--hover-bg-btn-primary-transparent-color);

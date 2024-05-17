@@ -2,6 +2,7 @@ import { Component, ElementRef, Inject, Input, Optional, ViewChild, ViewEncapsul
 import { NEO_OPTION_GROUPS, OptionGroupsComponent } from '../option-groups/option-groups.component';
 import { NEO_SELECT, SelectComponent } from '../select.component';
 import { InputsUtilsService } from '../../services/inputs-utils.service';
+import { FocusableOption } from '@angular/cdk/a11y';
 
 /**
  * @name
@@ -16,12 +17,14 @@ import { InputsUtilsService } from '../../services/inputs-utils.service';
   templateUrl: './option.component.html',
   styleUrl: './option.component.scss',
   host: {
+    'role': 'option',
+    '[id]': 'getId()',
     '[class.neo-select__dropdown__options__option]': 'true',
     '[class.neo-select__dropdown__options__option--hidden]': 'isHideBySearch()',
     '[class.neo-select__dropdown__options__option--selected]': 'selected',
     '[class.neo-select__dropdown__options__option--disabled]': 'disabled',
     '[attr.aria-selected]': 'isSelected()', // Atributo para indicar si la opción está seleccionada
-    '[attr.aria-disabled]': 'disabled', // Atributo para indicar si la opción está deshabilitada
+    '[attr.aria-disabled]': 'disabled.toString()', // Atributo para indicar si la opción está deshabilitada
     '[attr.aria-hidden]': 'isHideBySearch()', // Atributo para indicar si la opción está oculta por la búsqueda
     '[attr.aria-label]': 'getLabelText()', // Atributo para indicar el texto de la opción
     '(click)': 'toggleSelectOption()', // Evento para seleccionar o deseleccionar la opción
@@ -31,7 +34,7 @@ import { InputsUtilsService } from '../../services/inputs-utils.service';
   },
   encapsulation: ViewEncapsulation.None
 })
-export class OptionComponent {
+export class OptionComponent implements FocusableOption {
 
   /**
    * Referencia al elemento que contiene el texto de la opción
@@ -58,6 +61,9 @@ export class OptionComponent {
   }
   set selected(value: boolean) {
     this._selected.set(value);
+
+    if (this.selectParent && value)
+      setTimeout(() => this.selectParent.updateValue(this), 0);
   }
 
   @Input() value!: any;
@@ -82,8 +88,8 @@ export class OptionComponent {
   ngAfterContentInit(): void {
     // Obtenemos el contenido para asignarlo a la propiedad label
     setTimeout(() => {
-      this._labelHtml = this.optionLabel?.nativeElement.innerHTML || '';
-      this._labelText = this.optionLabel?.nativeElement.textContent || '';
+      this.setLabelHtml(this.optionLabel?.nativeElement.innerHTML || '');
+      this.setLabelText(this.optionLabel?.nativeElement.textContent || '');
       this.createUniqueId();
     }, 0);
   }
@@ -92,7 +98,7 @@ export class OptionComponent {
    * Método para generar un identificador único para la opción
    */
   createUniqueId(): void {
-    this._id = this._inputsUtilsService.createUniqueId(this._labelText);
+    this._id = `neo-option-${this._inputsUtilsService.createUniqueId(this.getLabelText())}`;
   }
 
   /**
@@ -169,10 +175,18 @@ export class OptionComponent {
 
   /**
    * Método para obtener el texto de la opción sin etiquetas HTML
-   * @returns string
+   * @returns {string}
    */
   getLabelText(): string {
     return this._labelText;
+  }
+
+  /**
+   * Método para establecer el texto de la opción sin etiquetas HTML
+   * @param {string} text
+   */
+  setLabelText(text: string): void {
+    this._labelText = text;
   }
 
   /**
@@ -181,6 +195,13 @@ export class OptionComponent {
    */
   getLabelHtml(): string {
     return this._labelHtml;
+  }
+
+  /**
+   * Método para establecer el texto de la opción con etiquetas HTML
+   */
+  setLabelHtml(html: string): void {
+    this._labelHtml = html;
   }
 
   /**
@@ -197,6 +218,15 @@ export class OptionComponent {
    */
   getId(): string {
     return this._id;
+  }
+
+  /**
+   * Método para enfocar la opción. Este método es necesario para implementar la interfaz `FocusableOption`
+   * en la clase. Se enfoca el elemento nativo de la opción para poder seleccionarla las flechas
+   * del teclado gracias al uso de `FocusKeyManager` en el componente `neo-select`.
+   */
+  focus() {
+    this._elementRef.nativeElement.focus();
   }
 
 }

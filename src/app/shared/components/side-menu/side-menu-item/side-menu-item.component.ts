@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuEntity } from '../model/menu.entity';
 import { MenuService } from '../services/menu.service';
@@ -45,13 +45,17 @@ export class SideMenuItemComponent {
 
   constructor(
     private readonly _menuService: MenuService,
-    private readonly router: Router,
+    private readonly router: Router
   ) { }
 
   ngOnInit() {
     setTimeout(() => {
       if (this.router.url === this.itemMenu.route)
         this.activeItemMenu(this.itemMenu);
+      else {
+        this.itemMenu.active = false;
+        this.itemMenu.expanded = false;
+      }
     });
   }
 
@@ -86,6 +90,7 @@ export class SideMenuItemComponent {
       this.setActive.emit();
     else
       this.shrinkItems(item);
+
   }
 
   /**
@@ -95,7 +100,7 @@ export class SideMenuItemComponent {
    */
   deactivateItemsMenu(items: MenuEntity[], currentItem: MenuEntity): void {
     for (let modelItem of items || []) {
-      if (currentItem !== modelItem && modelItem.active) {
+      if (currentItem.label !== modelItem.label && modelItem.active) {
         modelItem.active = false;
         if (modelItem.childrens && modelItem.childrens.length > 0)
           this.deactivateItemsMenu(modelItem.childrens, currentItem);
@@ -118,7 +123,7 @@ export class SideMenuItemComponent {
         menu = this.itemMenu.childrens || [];
 
       for (let modelItem of menu || []) {
-        if (item !== modelItem && modelItem.expanded) {
+        if (item.label !== modelItem.label && modelItem.expanded) {
           modelItem.expanded = false;
           modelItem.active = false;
         }

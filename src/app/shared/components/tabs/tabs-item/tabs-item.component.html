@@ -3,7 +3,6 @@
     class="tabs__content__item"
     role="tabpanel"
     [id]="getContentId()"
-    [attr.aria-selected]="isActiveTab()"
     [attr.aria-labelledby]="getId()"
     [attr.aria-hidden]="!isActiveTab()"
   >
@@ -14,7 +13,6 @@
     class="tabs__content__item"
     role="tabpanel"
     [id]="getContentId()"
-    [attr.aria-selected]="isActiveTab()"
     [attr.aria-labelledby]="getId()"
     [attr.aria-hidden]="!isActiveTab()"
     [class.tabs__content__item--no_header]="!tabHeader"

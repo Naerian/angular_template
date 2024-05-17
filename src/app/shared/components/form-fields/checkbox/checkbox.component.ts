@@ -41,6 +41,8 @@ export class CheckboxComponent implements ControlValueAccessor {
   /**
    * Input para crear un id único para el campo
    */
+  _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
   @Input() set id(value: string) {
     this._id.set(value);
     this._labelId.set(`label_${value}`);
@@ -52,6 +54,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   /**
    * Input para marcar el checkbox como seleccionado
    */
+  _checked: WritableSignal<boolean> = signal(false);
   @Input() set checked(status: boolean) {
     this._checked.set(status);
   }
@@ -62,6 +65,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   /**
    * Input para marcar el checkbox como indeterminado
    */
+  _indeterminate: WritableSignal<boolean> = signal(false);
   @Input() set indeterminate(status: boolean) {
     this._indeterminate.set(status);
     if (status) {
@@ -79,6 +83,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   /**
    * Input para marcar el checkbox como deshabilitado
    */
+  _disabled: WritableSignal<boolean> = signal(false);
   @Input() set disabled(status: boolean) {
     this._disabled.set(status);
   }
@@ -91,13 +96,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    */
   @Input('aria-describedby') ariaDescribedBy!: string;
 
-  _indeterminate: WritableSignal<boolean> = signal(false);
-  _checked: WritableSignal<boolean> = signal(false);
-  _disabled: WritableSignal<boolean> = signal(false);
-
   _title: WritableSignal<string> = signal('');
-  _id: WritableSignal<string> = signal('');
-  _labelId: WritableSignal<string> = signal('');
 
   constructor(
     private readonly _inputsUtilsService: InputsUtilsService

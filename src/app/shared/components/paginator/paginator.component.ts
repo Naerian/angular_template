@@ -29,17 +29,25 @@ export class PaginatorComponent {
   @Input() showTotal: boolean = false;
   @Output() pageChange: EventEmitter<any> = new EventEmitter<any>();
 
-  currentPage: WritableSignal<number> = signal(1);
-  currentsResults: WritableSignal<number> = signal(0);
-  totalPages: WritableSignal<number> = signal(0);
-  totalResults: WritableSignal<number> = signal(0);
-  pages: WritableSignal<number[]> = signal([]);
+  currentPage: number = 1;
+  currentsResults: number = 0;
+  totalPages: number = 0;
+  totalResults: number = 0;
+  pages: number[] = [];
 
   constructor() { }
 
+  ngOnInit() {
+    this.currentPage = 1;
+    this.currentsResults = 0;
+    this.totalPages = 0;
+    this.totalResults = 0;
+    this.pages = [];
+  }
+
   ngAfterContentInit(): void {
     this.setPagination();
-    this.totalResults.set(this.getTotalPageResults());
+    this.totalResults = this.getTotalPageResults();
   }
 
   /**
@@ -57,7 +65,7 @@ export class PaginatorComponent {
    * @returns {number}
    */
   public getLastPage(): number {
-    return this.totalPages();
+    return this.totalPages;
   }
 
   /**
@@ -65,16 +73,16 @@ export class PaginatorComponent {
    * @param {number} page
    */
   public setCurrentPage(page: number) {
-    this.currentPage.set(page);
+    this.currentPage = page;
   }
 
   /**
    * Establece el número de páginas a mostrar y actualiza el paginador, estableciendo la página actual a la primera
    */
   private setPagination() {
-    this.totalPages.set(this.getTotalPages(this.total, this.pageSize));
-    this.pages.set(this.pagesArray(this.totalPages()));
-    if (this.currentPage() > this.pages().length) this.pageSelected(this.pages.length);
+    this.totalPages = this.getTotalPages(this.total, this.pageSize);
+    this.pages = this.pagesArray(this.totalPages);
+    if (this.currentPage > this.pages.length) this.pageSelected(this.pages.length);
   }
 
   /**
@@ -86,11 +94,11 @@ export class PaginatorComponent {
     const pageArray = [];
 
     let initPages = 1;
-    let finishPages = this.totalPages();
+    let finishPages = this.totalPages;
 
     if (this.type === "rangenumber") {
-      initPages = this.currentPage() - this.range || 1;
-      finishPages = (this.currentPage() + this.range) - 1 || this.totalPages();
+      initPages = this.currentPage - this.range || 1;
+      finishPages = (this.currentPage + this.range) - 1 || this.totalPages;
     }
 
     if (pageCount > 0) {
@@ -120,12 +128,12 @@ export class PaginatorComponent {
    */
   pageSelected(page: number, event?: Event) {
     event?.preventDefault();
-    if (this.isValidPage(page, this.totalPages())) {
-      this.currentPage.set(page);
-      this.pages.set(this.pagesArray(this.totalPages()));
+    if (this.isValidPage(page, this.totalPages)) {
+      this.currentPage = page;
+      this.pages = this.pagesArray(this.totalPages);
       this.pageChange.emit(page);
     }
-    this.totalResults.set(this.getTotalPageResults());
+    this.totalResults = this.getTotalPageResults();
   }
 
   /**
@@ -133,6 +141,6 @@ export class PaginatorComponent {
    * @returns {number}
    */
   getTotalPageResults(): number {
-    return (this.pageSize * this.currentPage() > this.total ? this.total : this.pageSize * this.currentPage()) || 0;
+    return (this.pageSize * this.currentPage > this.total ? this.total : this.pageSize * this.currentPage) || 0;
   }
 }

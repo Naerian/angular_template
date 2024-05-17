@@ -1,229 +1,225 @@
 <nav class="paginator" class="{{ 'paginator--dir_' + position }}">
   @if (type === "fullnumber" || type === "rangenumber") {
     @if (total !== 0 && total > pageSize) {
-      <ul class="paginator__pagination">
+      <div class="paginator__pagination">
         @if (showLastFirstBtns) {
-          <li
+          <div
             class="paginator__pagination__page"
             (click)="pageSelected(1, $event)"
             role="button"
             tabindex="0"
             (keydown.enter)="pageSelected(1, $event)"
             (keydown.space)="pageSelected(1, $event)"
-            [class.disabled]="currentPage() === 1"
+            [class.disabled]="currentPage === 1"
             [attr.aria-label]="'pagination.first_page' | translate"
-            [attr.aria-disabled]="currentPage() === 1"
+            [attr.aria-disabled]="currentPage === 1"
             [title]="'pagination.first_page' | translate"
           >
-            <span class="paginator__pagination__page--link">
+            <span class="paginator__pagination__page__link">
               <i class="ri-skip-left-fill"></i>
             </span>
-          </li>
+          </div>
         }
-        <li
+        <div
           class="paginator__pagination__page"
           role="button"
           tabindex="0"
-          (click)="pageSelected(currentPage() - 1, $event)"
-          (keydown.enter)="pageSelected(currentPage() - 1, $event)"
-          (keydown.space)="pageSelected(currentPage() - 1, $event)"
-          [class.disabled]="currentPage() === 1"
+          (click)="pageSelected(currentPage - 1, $event)"
+          (keydown.enter)="pageSelected(currentPage - 1, $event)"
+          (keydown.space)="pageSelected(currentPage - 1, $event)"
+          [class.disabled]="currentPage === 1"
           [title]="'app.anterior' | translate"
           [attr.aria-label]="'app.anterior' | translate"
-          [attr.aria-disabled]="currentPage() === 1"
+          [attr.aria-disabled]="currentPage === 1"
         >
-          <span class="paginator__pagination__page--link"
+          <span class="paginator__pagination__page__link"
             ><i class="ri-arrow-left-s-fill"></i
           ></span>
-        </li>
+        </div>
 
-        @if (type === "rangenumber" && currentPage() - range > 1) {
-          <li class="disabled paginator__pagination__page">
-            <span class="paginator__pagination__page--range">...</span>
-          </li>
+        @if (type === "rangenumber" && currentPage - range > 1) {
+          <div class="disabled paginator__pagination__page">
+            <span class="paginator__pagination__page__range">...</span>
+          </div>
         }
 
-        @for (page of pages(); track page) {
-          <li
+        @for (page of pages; track page) {
+          <div
             class="paginator__pagination__page"
-            [class.active]="page === currentPage()"
+            [class.active]="page === currentPage"
+            role="button"
+            tabindex="0"
+            (click)="pageSelected(page, $event)"
+            (keydown.enter)="pageSelected(page, $event)"
+            (keydown.space)="pageSelected(page, $event)"
           >
-            @if (page !== currentPage()) {
+            @if (page !== currentPage) {
               <span
-                class="paginator__pagination__page--link"
-                role="button"
-                tabindex="0"
-                (click)="pageSelected(page, $event)"
-                (keydown.enter)="pageSelected(page, $event)"
-                (keydown.space)="pageSelected(page, $event)"
+                class="paginator__pagination__page__link"
                 [title]="'pagination.page' | translate: { page: page }"
                 [attr.aria-label]="
                   'pagination.page' | translate: { page: page }
                 "
-                [attr.aria-selected]="false"
               >
                 {{ page }}
               </span>
             }
 
-            @if (page === currentPage()) {
+            @if (page === currentPage) {
               <span
-                class="paginator__pagination__page--link"
+                class="paginator__pagination__page__link"
                 [title]="'pagination.page' | translate: { page: page }"
                 [attr.aria-label]="
                   'pagination.page' | translate: { page: page }
                 "
-                [attr.aria-selected]="true"
                 >{{ page }}</span
               >
             }
-          </li>
+          </div>
         }
 
-        @if (
-          type === "rangenumber" && currentPage() + range - 1 < totalPages()
-        ) {
-          <li
+        @if (type === "rangenumber" && currentPage + range - 1 < totalPages) {
+          <div
             class="paginator__pagination__page"
             class="disabled paginator__pagination__page"
           >
-            <span class="paginator__pagination__page--range">...</span>
-          </li>
+            <span class="paginator__pagination__page__range">...</span>
+          </div>
         }
 
-        <li
+        <div
           class="paginator__pagination__page"
           role="button"
           tabindex="0"
-          (click)="pageSelected(currentPage() + 1, $event)"
-          (keydown.enter)="pageSelected(currentPage() + 1, $event)"
-          (keydown.space)="pageSelected(currentPage() + 1, $event)"
-          [class.disabled]="currentPage() === totalPages()"
+          (click)="pageSelected(currentPage + 1, $event)"
+          (keydown.enter)="pageSelected(currentPage + 1, $event)"
+          (keydown.space)="pageSelected(currentPage + 1, $event)"
+          [class.disabled]="currentPage === totalPages"
           [title]="'app.siguiente' | translate"
           [attr.aria-label]="'app.siguiente' | translate"
-          [attr.aria-disabled]="currentPage() === totalPages()"
+          [attr.aria-disabled]="currentPage === totalPages"
         >
-          <span class="paginator__pagination__page--link"
+          <span class="paginator__pagination__page__link"
             ><i class="ri-arrow-right-s-fill"></i
           ></span>
-        </li>
+        </div>
 
         @if (showLastFirstBtns) {
-          <li
+          <div
             class="paginator__pagination__page"
             role="button"
             tabindex="0"
-            (click)="pageSelected(totalPages(), $event)"
-            (keydown.enter)="pageSelected(totalPages(), $event)"
-            (keydown.space)="pageSelected(totalPages(), $event)"
-            [class.disabled]="currentPage() === totalPages()"
+            (click)="pageSelected(totalPages, $event)"
+            (keydown.enter)="pageSelected(totalPages, $event)"
+            (keydown.space)="pageSelected(totalPages, $event)"
+            [class.disabled]="currentPage === totalPages"
             [title]="'pagination.last_page' | translate"
             [attr.aria-label]="'pagination.last_page' | translate"
-            [attr.aria-disabled]="currentPage() === totalPages()"
+            [attr.aria-disabled]="currentPage === totalPages"
           >
-            <span class="paginator__pagination__page--link">
+            <span class="paginator__pagination__page__link">
               <i class="ri-skip-right-fill"></i>
             </span>
-          </li>
+          </div>
         }
-      </ul>
+      </div>
     }
   } @else if (type === "nonumber" || type === "dividenumber") {
     @if (total !== 0) {
-      <ul class="paginator__pagination">
+      <div class="paginator__pagination">
         @if (showLastFirstBtns) {
-          <li
+          <div
             class="paginator__pagination__page"
             role="button"
             tabindex="0"
             (click)="pageSelected(1, $event)"
             (keydown.enter)="pageSelected(1, $event)"
             (keydown.space)="pageSelected(1, $event)"
-            [class.disabled]="currentPage() === 1"
+            [class.disabled]="currentPage === 1"
             [title]="'pagination.first_page' | translate"
             [attr.aria-label]="'pagination.first_page' | translate"
-            [attr.aria-disabled]="currentPage() === 1"
+            [attr.aria-disabled]="currentPage === 1"
           >
-            <span class="paginator__pagination__page--link">
+            <span class="paginator__pagination__page__link">
               <i class="ri-skip-left-fill"></i>
             </span>
-          </li>
+          </div>
         }
 
-        <li
+        <div
           class="paginator__pagination__page"
           role="button"
           tabindex="0"
-          (click)="pageSelected(currentPage() - 1, $event)"
-          (keydown.enter)="pageSelected(currentPage() - 1, $event)"
-          (keydown.space)="pageSelected(currentPage() - 1, $event)"
-          [class.disabled]="currentPage() === 1"
+          (click)="pageSelected(currentPage - 1, $event)"
+          (keydown.enter)="pageSelected(currentPage - 1, $event)"
+          (keydown.space)="pageSelected(currentPage - 1, $event)"
+          [class.disabled]="currentPage === 1"
           [title]="'app.anterior' | translate"
           [attr.aria-label]="'app.anterior' | translate"
-          [attr.aria-disabled]="currentPage() === 1"
+          [attr.aria-disabled]="currentPage === 1"
         >
-          <span class="paginator__pagination__page--link"
+          <span class="paginator__pagination__page__link"
             ><i class="ri-arrow-left-s-fill"></i
           ></span>
-        </li>
+        </div>
 
         @if (type === "dividenumber") {
-          <li
+          <div
             class="paginator__pagination__dividenumber"
             [title]="
               'pagination.page_to_of_total'
-                | translate: { page: currentPage(), total: totalPages() }
+                | translate: { page: currentPage, total: totalPages }
             "
             [attr.aria-label]="
               'pagination.page_to_of_total'
-                | translate: { page: currentPage(), total: totalPages() }
+                | translate: { page: currentPage, total: totalPages }
             "
           >
             <span class="paginator__pagination__dividenumber--current">{{
-              currentPage()
+              currentPage
             }}</span
             >/<span class="paginator__pagination__dividenumber--total">{{
-              totalPages()
+              totalPages
             }}</span>
-          </li>
+          </div>
         }
 
-        <li
+        <div
           class="paginator__pagination__page"
           role="button"
           tabindex="0"
-          (click)="pageSelected(currentPage() + 1, $event)"
-          (keydown.enter)="pageSelected(currentPage() + 1, $event)"
-          (keydown.space)="pageSelected(currentPage() + 1, $event)"
-          [class.disabled]="currentPage() === totalPages()"
+          (click)="pageSelected(currentPage + 1, $event)"
+          (keydown.enter)="pageSelected(currentPage + 1, $event)"
+          (keydown.space)="pageSelected(currentPage + 1, $event)"
+          [class.disabled]="currentPage === totalPages"
           [title]="'app.siguiente' | translate"
           [attr.aria-label]="'app.siguiente' | translate"
-          [attr.aria-disabled]="currentPage() === totalPages()"
+          [attr.aria-disabled]="currentPage === totalPages"
         >
-          <span class="paginator__pagination__page--link"
+          <span class="paginator__pagination__page__link"
             ><i class="ri-arrow-right-s-fill"></i
           ></span>
-        </li>
+        </div>
 
         @if (showLastFirstBtns) {
-          <li
+          <div
             class="paginator__pagination__page"
             role="button"
             tabindex="0"
-            (click)="pageSelected(totalPages(), $event)"
-            (keydown.enter)="pageSelected(totalPages(), $event)"
-            (keydown.space)="pageSelected(totalPages(), $event)"
-            [class.disabled]="currentPage() === totalPages()"
+            (click)="pageSelected(totalPages, $event)"
+            (keydown.enter)="pageSelected(totalPages, $event)"
+            (keydown.space)="pageSelected(totalPages, $event)"
+            [class.disabled]="currentPage === totalPages"
             [title]="'pagination.last_page' | translate"
             [attr.aria-label]="'pagination.last_page' | translate"
-            [attr.aria-disabled]="currentPage() === totalPages()"
+            [attr.aria-disabled]="currentPage === totalPages"
           >
-            <span class="paginator__pagination__page--link">
+            <span class="paginator__pagination__page__link">
               <i class="ri-skip-right-fill"></i>
             </span>
-          </li>
+          </div>
         }
-      </ul>
+      </div>
     }
   }
   @if (showTotal && total > 0) {
@@ -233,7 +229,7 @@
         'pagination.total_label'
           | translate
             : {
-                totalPageResults: totalResults(),
+                totalPageResults: totalResults,
                 totalResults: total
               }
       "
@@ -241,13 +237,13 @@
         'pagination.total_label'
           | translate
             : {
-                totalPageResults: totalResults(),
+                totalPageResults: totalResults,
                 totalResults: total
               }
       "
     >
       <span class="paginator__total_results--currents">
-        {{ totalResults() }}</span
+        {{ totalResults }}</span
       >
       /
       <span class="paginator__total_results--total">{{ total }}</span>

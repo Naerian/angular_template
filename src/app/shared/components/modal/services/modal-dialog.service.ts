@@ -31,7 +31,7 @@ export class ModalDialogService {
 
     if (component) {
       if (options?.data)
-        data = { ...data, ...options.data };
+        data.data = { ...data, ...options.data };
       data.title = options?.title || '';
       data.iconTitle =  options?.iconTitle || '';
       data.canBeClosed = options?.canBeClosed || true;

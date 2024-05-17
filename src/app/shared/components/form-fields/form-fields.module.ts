@@ -9,6 +9,7 @@ import { CheckboxComponent } from './checkbox/checkbox.component';
 import { RadioButtonModule } from './radio-button/radio-button.module';
 import { SelectModule } from './select/select.module';
 import { FormFieldComponent } from './form-field/form-field.component';
+import { InputFileComponent } from './input-file/input-file.component';
 
 @NgModule({
   declarations: [],
@@ -22,7 +23,8 @@ import { FormFieldComponent } from './form-field/form-field.component';
     CalendarDatePickerModule,
     RadioButtonModule,
     SelectModule,
-    FormFieldComponent
+    FormFieldComponent,
+    InputFileComponent
   ],
   exports: [
     InputComponent,
@@ -33,7 +35,8 @@ import { FormFieldComponent } from './form-field/form-field.component';
     CalendarDatePickerModule,
     RadioButtonModule,
     SelectModule,
-    FormFieldComponent
+    FormFieldComponent,
+    InputFileComponent
   ]
 })
 export class FormFields { }

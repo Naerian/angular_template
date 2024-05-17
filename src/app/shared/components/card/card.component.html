@@ -1,9 +1,10 @@
 <ng-template #collapseButton>
   <neo-button
+    class="neo-card__toggle-collapse"
     [size]="'s'"
     color="primary"
     mode="icon"
-    [title]="'app.expandir' | translate"
+    [title]="'app.colapsar' | translate"
     [transparent]="true"
     (onClick)="collapse($event)"
   >
@@ -18,6 +19,7 @@
   let-iconSize="iconSize"
 >
   <neo-button
+    class="neo-card__toggle-expand"
     [size]="iconSize || 's'"
     color="primary"
     [mode]="!label ? 'icon' : 'button'"
@@ -37,7 +39,7 @@
     class="neo-card__header"
     [class.neo-card__header--collapsed]="_isCollapsed()"
   >
-    <div class="neo-card__header__title">
+    <div class="neo-card__header__content">
       <ng-content select="neo-card-header"></ng-content>
     </div>
     <div class="neo-card__header__actions">

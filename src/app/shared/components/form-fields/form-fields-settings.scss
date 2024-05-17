@@ -20,36 +20,37 @@
 .neo-checkbox__control,
 .neo-checkbox__control__label,
 .neo-radiobutton__control,
-.neo-radiobutton__control__label {
+.neo-radiobutton__control__label,
+.neo-input-file__wrapper__label {
 
   &.size-xs {
     font-size: 0.6rem;
-    line-height: 0.6rem;
+    line-height: 0.8rem;
   }
 
   &.size-s {
     font-size: 0.7rem;
-    line-height: 0.7rem;
+    line-height: 0.85rem;
   }
 
   &.size-xm {
     font-size: 0.75rem;
-    line-height: 0.75rem;
+    line-height: 0.90rem;
   }
 
   &.size-m {
     font-size: 0.8rem;
-    line-height: 0.8rem;
+    line-height: 0.95rem;;
   }
 
   &.size-l {
     font-size: 0.85rem;
-    line-height: 0.85rem;
+    line-height: 1rem;
   }
 
   &.size-xl {
     font-size: 0.9rem;
-    line-height: 0.9rem;
+    line-height: 1rem;
   }
 }
 
@@ -58,7 +59,8 @@
 .neo-input-password__wrapper__field,
 .neo-input-date-picker__wrapper__field,
 .neo-checkbox__control,
-.neo-radiobutton__control {
+.neo-radiobutton__control,
+.neo-input-file {
   &.size-xs {
     height: 25px;
   }

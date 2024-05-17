@@ -17,5 +17,7 @@ export class SpinnerComponent {
   @Input() labelSize: string = '0.8rem';
   @Input() labelColor: string = '';
   @Input() label: string = '';
+  @Input() backdrop: boolean = false;
+  @Input() backdropColor: string = '#ffffff87';
 
 }

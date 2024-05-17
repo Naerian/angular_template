@@ -1,10 +1,10 @@
 <div class="logo">
   @switch (size) {
     @case ("m") {
-      <img [src]="logo" alt="logo" />
+      <img [src]="logo" [alt]="alt" />
     }
     @default {
-      <img [src]="logoSmall" alt="logo" />
+      <img [src]="logoSmall" [alt]="alt" />
     }
   }
 </div>

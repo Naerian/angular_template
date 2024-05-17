@@ -57,9 +57,9 @@ export class SidebarPanelService {
 
   /**
    * Método para establecer el contenido del panel
-   * @param {SidebarbarPanelEntity} data
+   * @param {SidebarbarPanelEntity | null} data
    */
-  private setPanelContent(data: SidebarbarPanelEntity): void {
+  private setPanelContent(data: SidebarbarPanelEntity | null): void {
     this._sidebarPanelContent.next(data);
   }
 
@@ -69,22 +69,22 @@ export class SidebarPanelService {
    */
   public open(data?: SidebarbarPanelEntity): void {
 
-    if (data && Object.keys(data).length > 0)
-      this.setPanelContent(data);
+    this.setPanelVisibility(true);
+    this.document.body.classList.remove('sidebar-opened');
+    this.document.body.classList.add('sidebar-opened');
 
-    if (!this.isPanelVisibleValue()) {
-      this.setPanelVisibility(true);
-      this.document.body.classList.add('sidebar-opened');
-    }
-
+    setTimeout(() => {
+      if (data && Object.keys(data).length > 0)
+        this.setPanelContent(data);
+    }, 0);
   }
 
   /**
    * Método para cerrar el panel
    */
   public close(): void {
-    this._isPanelVisible.next(false);
-    this._sidebarPanelContent.next(null);
+    this.setPanelVisibility(false);
+    this.setPanelContent(null);
     this.document.body.classList.remove('sidebar-opened');
   }
 

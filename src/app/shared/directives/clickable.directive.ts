@@ -24,7 +24,9 @@ export class ClickableDirective {
 
   @HostListener('keydown.enter', ["$event"])
   @HostListener('keydown.space', ["$event"])
-  public onClickElement(): void {
+  public onClickElement(event: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
     this.eleRef.nativeElement.click();
   }
 

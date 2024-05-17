@@ -106,4 +106,12 @@ export class CardComponent {
     this._isCollapsed.set(false);
     this.collapsed.emit(false);
   }
+
+  /**
+   * Función para saber si la card está o no colapsada
+   * @returns {boolean}
+   */
+  isCollapsed(): boolean {
+    return this._isCollapsed();
+  }
 }

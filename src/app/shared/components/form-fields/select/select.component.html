@@ -14,7 +14,7 @@
     #selectField
     #selectDropdown="cdkOverlayOrigin"
     class="neo-select__field size-{{ inputSize }}"
-    tabindex="0"
+    role="combobox"
     (click)="toggleDropdown($event)"
     (keydown.enter)="toggleDropdown($event)"
     (keydown.space)="toggleDropdown($event)"
@@ -24,18 +24,24 @@
     [class.neo-select__field--error]="hasErrors() || _hasErrors()"
     [class.neo-select__field--disabled]="disabled"
     [class.neo-select__field--transparent]="transparent"
+    [attr.tabindex]="disabled ? -1 : 0"
+    [attr.aria-controls]="isDropdownOpened() ? 'panel_' + _id() : null"
     [attr.aria-labelledby]="_labelId()"
     [attr.aria-describedby]="ariaDescribedBy"
-    [attr.aria-owns]="_labelId()"
     [attr.aria-required]="required"
     [attr.aria-expanded]="isDropdownOpened()"
-    [attr.aria-haspopup]="true"
+    [attr.aria-haspopup]="'listbox'"
     [attr.aria-disabled]="disabled"
     [attr.aria-invalid]="hasErrors() || _hasErrors()"
-    [attr.aria-multiselectable]="multiple"
+    [attr.aria-autocomplete]="'none'"
     [attr.id]="_id()"
     cdkOverlayOrigin
   >
+    @if (isLoading()) {
+      <div class="neo-select__loading">
+        <div class="neo-select__loading__spinner"></div>
+      </div>
+    }
     <div class="neo-select__field__value">
       @if (!multiple && getSelectedOptions().length > 0) {
         <span
@@ -81,8 +87,6 @@
     <div
       class="neo-select__dropdown"
       [ngStyle]="{ 'min-width': selectField.offsetWidth + 'px' }"
-      role="listbox"
-      tabindex="-1"
       [cdkTrapFocus]="true"
       [cdkTrapFocusAutoCapture]="true"
     >
@@ -93,14 +97,29 @@
             class="neo-select__dropdown__search__input"
             type="text"
             [placeholder]="placeholderSearch || ('app.buscar' | translate)"
+            [attr.id]="'listbox_search_' + _id()"
+            [disabled]="isLoading()"
+            [attr.aria-disabled]="isLoading()"
+            [attr.aria-busy]="isLoading()"
+            [attr.autocomplete]="'off'"
+            [attr.autocapitalize]="'off'"
             (input)="searchOption(searchInput.value)"
           />
           <i class="ri-search-line neo-select__dropdown__search__icon"></i>
         </div>
       }
       <div
+        #listboxSelect
         class="neo-select__dropdown__options"
         [class.neo-select__dropdown__options--empty]="options.length === 0"
+        role="listbox"
+        tabindex="-1"
+        [attr.id]="'panel_' + _id()"
+        [attr.aria-busy]="isLoading()"
+        [attr.aria-label]="label"
+        [attr.aria-labelledby]="_labelId()"
+        [attr.aria-multiselectable]="multiple"
+        (keydown)="onKeyDown($event)"
       >
         <ng-content select="neo-option, neo-option-groups"></ng-content>
       </div>

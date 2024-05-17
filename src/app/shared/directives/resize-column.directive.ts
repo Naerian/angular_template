@@ -38,12 +38,18 @@ export class ResizeColumnDirective implements OnInit {
       const thead = this.renderer.parentNode(row);
       this.table = this.renderer.parentNode(thead);
 
-      const resizer = this.renderer.createElement("span");
-      resizer.setAttribute("title", this._translateService.instant("app.redimensionar_columna"));
-      this.renderer.addClass(resizer, "resize-holder");
-      this.renderer.appendChild(this.columnElement, resizer);
-      this.renderer.listen(resizer, "click", this.onClick);
-      this.renderer.listen(resizer, "mousedown", this.onMouseDown);
+      // Creamos el resizer y lo añadimos al DOM
+      const resizer_holder = this.renderer.createElement("div");
+      const resizer_hover = this.renderer.createElement("div");
+      resizer_holder.appendChild(resizer_hover);
+      resizer_holder.setAttribute("title", this._translateService.instant("app.redimensionar_columna"));
+      this.renderer.addClass(resizer_holder, "resizer");
+      this.renderer.addClass(resizer_hover, "resizer-hover");
+      this.renderer.appendChild(this.columnElement, resizer_holder);
+
+      // Le agregamos los eventos para redimensionar la columna
+      this.renderer.listen(resizer_holder, "click", this.onClick);
+      this.renderer.listen(resizer_holder, "mousedown", this.onMouseDown);
       this.renderer.listen(this.table, "mousemove", this.onMouseMove);
       this.renderer.listen("document", "mouseup", this.onMouseUp);
     }
