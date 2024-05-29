@@ -22,13 +22,15 @@
   background-color: var(--bg-menu-color);
 
   &__childrens {
-    height: 0;
+    max-height: 0;
     overflow: hidden;
     position: relative;
     padding: .5em 0 0 1rem;
+    transition: max-height 0.3s ease-out;
 
     &--opened {
-      height: auto;
+      max-height: 500px;
+      transition: max-height 0.5s ease-in;
       overflow: visible;
     }
 
