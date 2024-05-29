@@ -62,27 +62,27 @@
 .neo-radiobutton__control,
 .neo-input-file {
   &.size-xs {
-    height: 25px;
-  }
-
-  &.size-s {
     height: 28px;
   }
 
+  &.size-s {
+    height: 30px;
+  }
+
   &.size-xm {
-    height: 32px;
+    height: 34px;
   }
 
   &.size-m {
-    height: 35px;
+    height: 38px;
   }
 
   &.size-l {
-    height: 40px;
+    height: 42px;
   }
 
   &.size-xl {
-    height: 45px;
+    height: 47px;
   }
 }
 

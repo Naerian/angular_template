@@ -1,3 +1,4 @@
+import { BreadcrumComponent } from './../../shared/components/breadcrum/breadcrum.component';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { Component, type OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
@@ -27,7 +28,7 @@ import { CalendarPickerComponent } from '@shared/components/form-fields/input-da
 @Component({
   selector: 'neo-test',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, SpinnerComponent, ProgressBarComponent, CardModule, TranslateModule, ThemeToggleModule, TabsModule, RouterOutlet, JsonPipe, PaginatorComponent, MenuContextModule, FilterColumnsTableComponent, MatTableModule, MatSortModule, CalendarDatePickerModule, ButtonComponent, FormFields],
+  imports: [CommonModule, ReactiveFormsModule, BreadcrumComponent, FormsModule, SpinnerComponent, ProgressBarComponent, CardModule, TranslateModule, ThemeToggleModule, TabsModule, RouterOutlet, JsonPipe, PaginatorComponent, MenuContextModule, FilterColumnsTableComponent, MatTableModule, MatSortModule, CalendarDatePickerModule, ButtonComponent, FormFields],
   templateUrl: './test.component.html',
   styleUrl: './test.component.css'
 })

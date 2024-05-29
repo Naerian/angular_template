@@ -7,13 +7,13 @@
   top: 0;
   height: 100vh;
   overflow-y: auto;
-  z-index: 1001;
+  z-index: 1002;
   transition: left 0.3s;
   width: 255px;
-  margin-top: 45px;
-  padding-bottom: 45px;
+  margin-top: 55px;
+  padding-bottom: 55px;
   background-color: var(--bg-menu-color);
-  box-shadow: var(--shadow-box);
+  box-shadow: var(--shadow-box-sidebar-menu);
 
   &--right {
     right: 0;

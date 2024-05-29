@@ -8,7 +8,7 @@
     [transparent]="true"
     (onClick)="collapse($event)"
   >
-    <i class="ri-arrow-up-wide-fill"></i>
+    <i class="ri-arrow-up-wide-line"></i>
   </neo-button>
 </ng-template>
 
@@ -27,7 +27,7 @@
     [transparent]="true"
     (onClick)="expand($event)"
   >
-    <i [class]="!label && !icon ? 'ri-arrow-down-wide-fill' : icon"></i>
+    <i [class]="!label && !icon ? 'ri-arrow-down-wide-line' : icon"></i>
     @if (label) {
       <span>{{ label }}</span>
     }
@@ -68,7 +68,7 @@
             <ng-container
               *ngTemplateOutlet="
                 expandButton;
-                context: { icon: iconCollpased || 'ri-arrow-down-wide-fill' }
+                context: { icon: iconCollpased || 'ri-arrow-down-wide-line' }
               "
             ></ng-container>
           </div>

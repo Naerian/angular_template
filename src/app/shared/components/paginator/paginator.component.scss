@@ -16,17 +16,28 @@
     display: flex;
     align-items: center;
     list-style: none;
-    border-radius: 5px;
+    border-radius: .25rem;
     text-decoration: none;
     margin-bottom: 0;
     margin-top: 0;
-    gap: 5px;
+    gap: 0px;
     font-size: 0.85rem;
 
     &__page {
 
       border: 0.5px solid var(--border-pagination-page-color) !important;
-      border-radius: 2px;
+      border-radius: 0rem;
+      margin-left: -1px;
+
+      &:first-child {
+        border-top-left-radius: .25rem;
+        border-bottom-left-radius: .25rem;
+      }
+
+      &:last-child {
+        border-top-right-radius: .25rem;
+        border-bottom-right-radius: .25rem;
+      }
 
       &__link,
       &__range {
@@ -35,8 +46,8 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
         padding: 5px;
         cursor: pointer;
         color: var(--text-color) !important;
@@ -93,6 +104,7 @@
       flex-direction: row;
       gap: 5px;
       color: var(--text-color) !important;
+      margin: 0 10px;
 
       &--current,
       &--total {
@@ -103,7 +115,7 @@
 
   &__total_results {
     min-width: 65px;
-    height: 25px;
+    height: 30px;
     display: flex;
     align-items: center;
     flex-direction: row;
@@ -112,6 +124,6 @@
     padding: 5px 10px;
     color: var(--text-color) !important;
     border: 0.5px solid var(--border-pagination-page-color) !important;
-    border-radius: 2px;
+    border-radius: .25rem;
   }
 }

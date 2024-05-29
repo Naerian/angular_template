@@ -9,7 +9,7 @@
           (click)="prevMonth()"
           [title]="'calendar.prevMonth' | translate"
         >
-          <i class="ri-arrow-left-s-fill"></i>
+          <i class="ri-arrow-left-s-line"></i>
         </button>
         <div class="calendar-picker__header__actions">
           <button
@@ -23,7 +23,7 @@
               "date.month." + (currentCalendar() | date: "MMMM" | lowercase)
                 | translate
             }}
-            <i class="ri-arrow-down-s-fill arrow-dropdown"></i>
+            <i class="ri-arrow-down-s-line arrow-dropdown"></i>
           </button>
           <button
             class="calendar-picker__header__actions--selector"
@@ -33,7 +33,7 @@
             [title]="'calendar.changeYear' | translate"
           >
             {{ currentCalendar() | date: "yyyy" }}
-            <i class="ri-arrow-down-s-fill arrow-dropdown"></i>
+            <i class="ri-arrow-down-s-line arrow-dropdown"></i>
           </button>
         </div>
         <button
@@ -43,7 +43,7 @@
           (click)="nextMonth()"
           [title]="'calendar.nextMonth' | translate"
         >
-          <i class="ri-arrow-right-s-fill"></i>
+          <i class="ri-arrow-right-s-line"></i>
         </button>
       </div>
       <div class="calendar-picker__content calendar-picker__days">
@@ -137,7 +137,7 @@
           (click)="prevYears()"
           [title]="'app.anterior' | translate"
         >
-          <i class="ri-arrow-left-s-fill"></i>
+          <i class="ri-arrow-left-s-line"></i>
         </button>
         <span class="calendar-picker__header__title">{{
           "date.year" | translate
@@ -149,7 +149,7 @@
           (click)="nextYears()"
           [title]="'app.siguiente' | translate"
         >
-          <i class="ri-arrow-right-s-fill"></i>
+          <i class="ri-arrow-right-s-line"></i>
         </button>
       </div>
       <div class="calendar-picker__content calendar-picker__years__content">

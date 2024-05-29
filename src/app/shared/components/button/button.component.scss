@@ -17,7 +17,7 @@
   text-overflow: ellipsis;
   cursor: pointer;
   display: flex;
-  border-radius: 5px;
+  border-radius: .25rem;
   font-weight: normal;
   font-stretch: normal;
   font-style: normal;
@@ -60,7 +60,7 @@
   &.neo-btn-xs {
     padding: 3px 10px;
     font-size: 0.6rem;
-    font-weight: 600;
+    font-weight: 500;
     height: 25px;
 
     &.neo-btn-transparent:not(.neo-btn-icon) {
@@ -73,7 +73,7 @@
   &.neo-btn-s {
     padding: 5px 10px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 500;
     height: 28px;
 
     &.neo-btn-transparent:not(.neo-btn-icon) {
@@ -86,14 +86,14 @@
   &.neo-btn-xm {
     padding: 10px 15px;
     font-size: 0.80rem;
-    font-weight: 700;
+    font-weight: 500;
     height: 32px;
   }
 
   &.neo-btn-m {
     padding: 10px 15px;
     font-size: 0.9rem;
-    font-weight: 700;
+    font-weight: 500;
     height: 35px;
 
     &.neo-btn-transparent:not(.neo-btn-icon) {
@@ -106,7 +106,7 @@
   &.neo-btn-l {
     padding: 15px 20px;
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: 600;
     height: 40px;
 
     &.neo-btn-transparent:not(.neo-btn-icon) {
@@ -119,7 +119,7 @@
   &.neo-btn-xl {
     padding: 20px 25px;
     font-size: 1.2rem;
-    font-weight: 700;
+    font-weight: 600;
     height: 45px;
 
     &.neo-btn-transparent:not(.neo-btn-icon) {
@@ -167,7 +167,7 @@
     align-items: center;
     justify-content: center;
     padding: 5px;
-    border-radius: 5px;
+    border-radius: .25rem;
 
     &.neo-btn-xs {
       font-size: 0.75rem;

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, model } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuEntity } from '../model/menu.entity';
 import { MenuService } from '../services/menu.service';
@@ -68,10 +68,16 @@ export class SideMenuItemComponent {
     this.shrinkItems(item);
     item.expanded = !item.expanded;
 
-    if (this.depthLevel === 0)
-      this.closeMainItemsMenu.emit(true);
-    else
-      this.activeItemMenu(item);
+    if (item.expanded) {
+      if (this.depthLevel === 0) {
+        this.closeMainItemsMenu.emit(true);
+        this.deactivateItemsMenu(this._menuService.getMenu(), item);
+      }
+      else
+        this.activeItemMenu(item);
+    } else {
+      this.deactivateChildrens(item);
+    }
   }
 
   /**
@@ -102,8 +108,24 @@ export class SideMenuItemComponent {
     for (let modelItem of items || []) {
       if (currentItem.label !== modelItem.label && modelItem.active) {
         modelItem.active = false;
+        modelItem.expanded = false;
         if (modelItem.childrens && modelItem.childrens.length > 0)
           this.deactivateItemsMenu(modelItem.childrens, currentItem);
+      }
+    }
+  }
+
+  /**
+   * Método para desactivar los elementos hijos de un item del menú
+   * @param {MenuEntity} item
+   */
+  deactivateChildrens(item: MenuEntity): void {
+    if (item.childrens && item.childrens.length > 0) {
+      for (let modelItem of item.childrens || []) {
+        modelItem.expanded = false;
+        modelItem.active = false;
+        if (modelItem.childrens && modelItem.childrens.length > 0)
+          this.deactivateChildrens(modelItem);
       }
     }
   }

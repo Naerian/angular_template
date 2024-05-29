@@ -10,7 +10,8 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 45px;
+    height: 55px;
+    box-shadow: var(--shadow-box);
 
     &__left {
       display: flex;
@@ -31,8 +32,8 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-		
-		&:hover,
+
+        &:hover,
         &:focus {
           background-color: var(--menu-item-hover-active-color) !important;
           color: var(--menu-item-hover-active-text) !important;

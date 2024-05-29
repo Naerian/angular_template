@@ -30,7 +30,7 @@
   </a>
 } @else {
   <div
-    class="item-menu"
+    class="item-menu item-menu--has-children"
     tabindex="0"
     (click)="handleClick(itemMenu)"
     (keydown.enter)="handleClick(itemMenu)"
@@ -55,14 +55,15 @@
       </div>
       @if (itemMenu.childrens && itemMenu.childrens.length > 0) {
         @if (itemMenu.expanded) {
-          <i class="item-menu__wrapper__toggle ri-arrow-up-s-fill"></i>
+          <i class="item-menu__wrapper__toggle ri-arrow-up-s-line"></i>
         } @else {
-          <i class="item-menu__wrapper__toggle ri-arrow-down-s-fill"></i>
+          <i class="item-menu__wrapper__toggle ri-arrow-down-s-line"></i>
         }
       }
     </div>
   </div>
   <div
+    [hidden]="!itemMenu.expanded"
     class="item-menu__childrens {{
       'item-menu__childrens--level_' + depthLevel
     }}"
