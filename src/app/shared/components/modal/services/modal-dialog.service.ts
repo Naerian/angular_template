@@ -33,8 +33,8 @@ export class ModalDialogService {
       if (options?.data)
         data.data = { ...data, ...options.data };
       data.title = options?.title || '';
-      data.iconTitle =  options?.iconTitle || '';
-      data.canBeClosed = options?.canBeClosed || true;
+      data.iconTitle = options?.iconTitle || '';
+      data.canBeClosed = options?.canBeClosed !== undefined ? options?.canBeClosed : true;
     } else {
       data = {
         title: options?.title || '',
@@ -42,7 +42,7 @@ export class ModalDialogService {
         message: options?.message || '',
         cancelText: options?.cancelText || '',
         confirmText: options?.confirmText || '',
-        canBeClosed: options?.canBeClosed || true,
+        canBeClosed: options?.canBeClosed !== undefined ? options?.canBeClosed : true,
       }
     }
 
@@ -52,9 +52,11 @@ export class ModalDialogService {
       width: options?.width || 'auto', // Ancho del modal
       minHeight: options?.minHeight, // Altura mínima del modal
       minWidth: options?.minWidth, // Ancho mínimo del modal
+      maxHeight: options?.maxHeight || 'auto', // Altura máxima del modal
+      maxWidth: options?.maxWidth || 'auto', // Ancho máximo del modal
       position: options?.position, // Posición del modal (top, bottom, left, right)
       id: options?.id || null, // Id del modal
-      disableClose: options?.disableClose, // Deshabilita el cierre del modal al hacer click fuera
+      disableClose: options?.disableClose !== undefined ? options?.disableClose : true, // Deshabilita el cierre del modal al hacer click fuera
       data: data, // Datos que se pasan al modal (título, mensaje, texto de los botones, un objeto concreto, etc)
     } as MatDialogConfig);
   }

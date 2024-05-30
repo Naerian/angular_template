@@ -19,7 +19,7 @@ export class ModalSpinnerComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: ModalSpinnerEntity,
     private readonly matDilogRef: MatDialogRef<ModalSpinnerComponent>,
-  ) {}
+  ) { }
 
   /**
    * Función para cerrar el modal

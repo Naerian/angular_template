@@ -17,16 +17,14 @@ export class ThemesService {
 
   /**
    * Función para detectar si el navegador admite `prefers-color-scheme` y establecer el tema en consecuencia
-   * - Si el navegador admite `prefers-color-scheme`, establecemos el tema en función del sistema operativo o del navegador
+   * - Si el navegador admite `prefers-color-scheme`, establecemos el tema en función del tema del sistema operativo o del navegador
    * - Si el navegador no admite `prefers-color-scheme`, establecer el tema claro por defecto
    */
   private _detectPrefersColorScheme() {
-    // Primero detectamos si el navegador admite `prefers-color-scheme`
-    if (window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
-      this.colorScheme.set(window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_THEME : LIGHT_THEME);
-    } else {
-      this.colorScheme.set(LIGHT_THEME);
-    }
+    if (window.matchMedia('(prefers-color-scheme)').media !== 'not all')
+      this.setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_THEME : LIGHT_THEME);
+    else
+      this.setTheme(LIGHT_THEME);
   }
 
   /**

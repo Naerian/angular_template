@@ -13,10 +13,14 @@
       <i class="ri-close-fill"></i>
     </button>
   }
-  <div mat-dialog-title class="modal-box__title">
+  <div
+    mat-dialog-title
+    class="modal-box__title"
+    [class.no-close]="!data.canBeClosed || data.disableClose"
+  >
     @if (data.title) {
       <neo-section-title
-        [icon]="data.iconTitle || 'ri-loop-left-fill'"
+        [icon]="data.data?.iconTitle || 'ri-loop-left-fill'"
         [title]="data.title"
       >
       </neo-section-title>
@@ -25,7 +29,7 @@
   <div mat-dialog-content class="modal-box__body modal-spinner__body">
     <neo-spinner
       size="xm"
-      [label]="data.label || data.title || ''"
+      [label]="data.data?.label || data.title || ''"
     ></neo-spinner>
   </div>
   @if (data.canBeClosed) {

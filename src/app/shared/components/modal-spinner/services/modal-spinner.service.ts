@@ -19,19 +19,17 @@ export class ModalSpinnerService {
   */
   openSpinnerModal(data?: ModalSpinnerEntity): MatDialogRef<ModalSpinnerComponent> {
 
-    // Creando objeto de datos para el modal de spinner
-    const dataSpinner = data as ModalSpinnerEntity;
-    dataSpinner.title = data?.title || ''; // Título del modal de spinner
-    dataSpinner.label = data?.label || ''; // Etiqueta del modal de spinner
-    dataSpinner.iconTitle = data?.iconTitle || ''; // Icono del título del modal de spinner
-    dataSpinner.canBeClosed = data?.canBeClosed || true; // Por defecto se puede cerrar el modal de spinner pulsando el botón de Cancelar o Cerrar
-    dataSpinner.disableClose = data?.disableClose || true; // Por defecto no se puede cerrar el modal de spinner usando el backdrop o la tecla "ESC"
-
     // Creando objeto de opciones para el modal de spinner
-    const options: ModalOptionsEntity = {
-      disableClose: dataSpinner.disableClose,
-      canBeClosed: dataSpinner.canBeClosed,
-      data: dataSpinner
+    const options: ModalSpinnerEntity = {
+      title: data?.title,
+      disableClose: data?.disableClose !== undefined ? data?.disableClose : true,
+      canBeClosed: data?.canBeClosed !== undefined ? data?.canBeClosed : true,
+      width: data?.width || 'auto',
+      height: data?.height || 'auto',
+      data: {
+        label: data?.label || '',
+        iconTitle: data?.iconTitle || '',
+      }
     };
 
     // Abriendo modal de spinner para mostrar que se está generando el PDF

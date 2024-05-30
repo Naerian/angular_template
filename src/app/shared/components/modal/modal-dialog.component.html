@@ -1,22 +1,26 @@
 <div class="modal-box">
-  <div mat-dialog-title class="modal-box__title">
+  @if (data.canBeClosed) {
+    <button
+      class="modal-box__close"
+      tabindex="0"
+      [title]="'app.cerrar' | translate"
+      [attr.aria-label]="'app.cerrar' | translate"
+      (click)="cancel()"
+      (keydown.enter)="cancel()"
+      (keydown.space)="cancel()"
+      autofocus
+    >
+      <i class="ri-close-fill"></i>
+    </button>
+  }
+  <div
+    mat-dialog-title
+    class="modal-box__title"
+    [class.no-close]="!data.canBeClosed || data.disableClose"
+  >
     @if (data.title) {
       <neo-section-title [icon]="data.iconTitle || ''" [title]="data.title">
       </neo-section-title>
-    }
-    @if (data.canBeClosed) {
-      <button
-        class="modal-box__close"
-        tabindex="0"
-        [title]="'app.cerrar' | translate"
-        [attr.aria-label]="'app.cerrar' | translate"
-        (click)="cancel()"
-        (keydown.enter)="cancel()"
-        (keydown.space)="cancel()"
-        autofocus
-      >
-        <i class="ri-close-fill"></i>
-      </button>
     }
   </div>
   @if (data.message) {
