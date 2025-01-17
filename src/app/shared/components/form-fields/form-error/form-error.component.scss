@@ -1,11 +1,17 @@
 @import 'base';
 
 .neo-form-error {
-  font-size: 0.75rem;
-  line-height: 0.75rem;
-  letter-spacing: 0.5px;
-  font-style: italic;
-  small {
-    color: var(--danger-color);
+  &__errors {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    small {
+      font-size: 0.75rem;
+      line-height: 0.75rem;
+      letter-spacing: 0.5px;
+      font-style: italic;
+      color: var(--danger-color);
+    }
   }
 }

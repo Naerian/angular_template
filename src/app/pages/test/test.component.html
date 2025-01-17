@@ -298,11 +298,7 @@
         [required]="true"
         #neoInput="ngModel"
       ></neo-input>
-      @if (neoInput.invalid && (neoInput.dirty || neoInput.touched)) {
-        @if (neoInput.errors?.["required"]) {
-          <neo-form-error>Campo requerido</neo-form-error>
-        }
-      }
+      <neo-form-error [ngModelControl]="neoInput"></neo-form-error>
       <br />
       <neo-input
         label="Input normal deshabilitado"
@@ -432,7 +428,6 @@
           label="Input normal dentro de un neo-form-field"
           (change)="inputChange($event)"
         ></neo-input>
-        <neo-form-error>Campo requerido</neo-form-error>
       </neo-form-field>
     </div>
   </div>
