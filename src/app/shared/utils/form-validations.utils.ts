@@ -18,7 +18,11 @@ export function matchValidator(field: string): ValidatorFn {
 
       if (controlValue === fieldMatchedValue) return null;
 
-      return { invalidMatch: true };
+      return {
+        matchField: {
+          fieldMatched: field,
+        },
+      };
     }
     return null;
   };
@@ -30,7 +34,7 @@ export function matchValidator(field: string): ValidatorFn {
  * @example field => 'end_date' (Campo con el que quieres comparar)
  * @returns {ValidatorFn}
  */
-export function lessThanDateValidator(field: string): ValidatorFn {
+export function isBeforeDateValidator(field: string): ValidatorFn {
   return (control: AbstractControl) => {
     if (control?.parent) {
       const controlValue = control.value;
@@ -44,7 +48,12 @@ export function lessThanDateValidator(field: string): ValidatorFn {
         if (controlValueDate.getTime() > fieldMatchedValueDate.getTime())
           return null;
 
-        return { dateLessThanField: true, initDate: fieldMatchedValue };
+        return {
+          isBeforeDate: {
+            date: fieldMatchedValue,
+            fieldMatched: field,
+          },
+        };
       }
 
       return null;
@@ -60,7 +69,7 @@ export function lessThanDateValidator(field: string): ValidatorFn {
  * @example field => 'end_date' (Campo con el que quieres comparar)
  * @returns {ValidatorFn}
  */
-export function lessThanDateYearValidator(
+export function yearsDifferenceValidator(
   field: string,
   yearsDiff = 1,
 ): ValidatorFn {
@@ -83,7 +92,11 @@ export function lessThanDateYearValidator(
 
         if (yearsDiffBetweenDates >= yearsDiff) return null;
 
-        return { lessThanDateYear: true, requiredValue: yearsDiff };
+        return {
+          yearsDifference: {
+            diff: yearsDiff,
+          },
+        };
       }
 
       return null;
@@ -101,6 +114,10 @@ export function lessThanDateYearValidator(
 export function minLengthArray(min: number): ValidatorFn | null {
   return (control: AbstractControl) => {
     if (control?.value?.length >= min) return null;
-    return { invalidMinLengthArray: true };
+    return {
+      invalidMinLengthArray: {
+        min: min,
+      },
+    };
   };
 }
