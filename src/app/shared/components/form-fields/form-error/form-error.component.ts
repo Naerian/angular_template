@@ -1,15 +1,8 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  inject,
-  Input,
-  signal,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, Input, signal, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, NgModel } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
-import { FormValidationsService } from './form-validations/form-validations.service';
 
 /**
  * @name
@@ -38,8 +31,6 @@ export class FormErrorComponent {
 
   errors = signal<{ message: string; params?: any }[]>([]);
   KEY_TRANSLATION_PREFIX = 'VALIDATION'; // Prefijo de las claves de traducción. Ejemplo: VALIDATION.REQUIRED
-
-  _validationService = inject(FormValidationsService);
 
   private readonly ngUnsubscribe$: Subject<void> = new Subject<void>();
 
