@@ -1,6 +1,11 @@
 @import 'base';
 
 .neo-form-error {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 5px;
+
   &__errors {
     display: flex;
     align-items: center;

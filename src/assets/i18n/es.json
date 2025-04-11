@@ -88,5 +88,26 @@
   "app.redimensionar_columna": "Redimensionar columna",
   "app.buscar": "Buscar",
   "app.borrar": "Borrar",
-  "app.home": "Inicio"
+  "app.home": "Inicio",
+  "app.validation": {
+    "required": "Este campo es obligatorio.",
+    "minlength": "El valor debe tener al menos {{ requiredLength }} caracteres.",
+    "maxlength": "El valor no puede exceder {{ requiredLength }} caracteres.",
+    "match_field": "Los campos no coinciden.",
+    "is_before_date": "La fecha debe ser menor a {{ date }}.",
+    "is_after_date": "La fecha debe ser mayor a {{ date }}.",
+    "invalid_date": "La fecha no es válida.",
+    "years_difference": "La fecha debe estar dentro de los últimos {{ diff }} años.",
+    "max": "El valor no puede ser mayor a {{ max }}.",
+    "min": "El valor no puede ser menor a {{ min }}.",
+    "pattern": "El valor debe cumplir con el patrón {{ requiredPattern }}.",
+    "start_date_range_invalid": "La fecha {{ formattedStartDate }} es mayor a {{ formattedEndDate }}.",
+    "end_date_range_invalid": "La fecha {{ formattedEndDate }} es menor a {{ formattedStartDate }}.",
+    "start_numeric_range_invalid": "El valor {{ fromValue }} es mayor a {{ toValue }}.",
+    "end_numeric_range_invalid": "El valor {{ toValue }} es menor a {{ fromValue }}.",
+    "alphabetical_range_to": "El valor debe ser alfabéticamente menor a {{ from }}.",
+    "alphabetical_range_from": "El valor debe ser alfabéticamente mayor a {{ to }}.",
+    "aplhanumeric_range_to": "El valor debe ser alfanuméricamente menor a {{ from }}.",
+    "aplhanumeric_range_from": "El valor debe ser alfanuméricamente mayor a {{ to }}."
+  }
 }
