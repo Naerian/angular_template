@@ -177,7 +177,8 @@ export function minLengthArray(min: number): ValidatorFn | null {
 }
 
 /**
- * Función para comprobar que un campo sea requerido pero que admita el valor 0 como válido
+ * Función para comprobar que un campo sea requerido pero que admita el valor 0 como válido,
+ * Muy útil para campos numéricos donde 0 es un valor válido.
  * @returns {ValidatorFn | null}
  */
 export function requiredWithZero(): ValidatorFn | null {
@@ -187,61 +188,6 @@ export function requiredWithZero(): ValidatorFn | null {
       control.value !== ''
       ? null
       : { required: true };
-  };
-}
-
-/**
- * Función para comprobar que si el tipo de ingreso es banco, el numero de cuenta este relleno
- * @returns {ValidatorFn | null}
- */
-export function tipoIngresoBancoValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const formaPago = control.get('formaPago')?.value;
-    const numeroCuenta = control.get('IBAN')?.value; // Siempre comprobar el valor, incluso si está deshabilitado
-
-    // Comprobar si formaPago es 'B' y si numeroCuenta está vacío
-    if (formaPago === 'B' && (!numeroCuenta || numeroCuenta.trim() === '')) {
-      return { required: true }; // Retorna un error si la validación falla
-    }
-
-    return null; // Retorna null si la validación pasa
-  };
-}
-
-/**
- * Función para comprobar que si el tipo de ingreso es tarjeta, el numero de cuenta y el de tarjeta este relleno
- * @returns {ValidatorFn | null}
- */
-export function tipoIngresoTarjetaValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const formaPago = control.get('formaPago')?.value;
-    const numeroCuenta = control.get('IBAN')?.value;
-    const numeroTarjeta = control.get('numeroTarjeta')?.value;
-
-    // Comprobar si formaPago es 'T' y si numeroCuenta o codigoTarjeta está vacío
-    if (formaPago === 'T' && (!numeroCuenta || !numeroTarjeta)) {
-      return { required: true }; // Retorna un error si la validación falla
-    }
-
-    return null;
-  };
-}
-
-/**
- * Función para comprobar que si el tipo de ingreso es giro, el numero de giro este relleno
- * @returns {ValidatorFn | null}
- */
-export function tipoIngresoGiroValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const formaPago = control.get('formaPago')?.value;
-    const numeroGiro = control.get('numeroGiro')?.value; // Siempre comprobar el valor, incluso si está deshabilitado
-
-    // Comprobar si formaPago es 'G' y si numeroGiro está vacío
-    if (formaPago === 'G' && (!numeroGiro || numeroGiro.trim() === '')) {
-      return { required: true }; // Retorna un error si la validación falla
-    }
-
-    return null; // Retorna null si la validación pasa
   };
 }
 
