@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, signal, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, NgModel } from '@angular/forms';
+import { AbstractControl, FormGroup, NgModel } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -16,6 +16,8 @@ import { Subject, takeUntil } from 'rxjs';
  * <!-- Uso con Template-Driven Forms -->
  * <input [(ngModel)]="campo" name="campo" #campoNgModel="ngModel" />
  * <neo-form-error [ngModelControl]="campoNgModel"></neo-form-error>
+ * <!-- Uso con FormGroup para validaciones grupales (pj: "dateRangeValidator", donde se comparan dos campos) -->
+ * <neo-form-error [control]="form.get('nombreCampo')" [formGroup]="formGroup" controlName="campo"></neo-form-error>
  */
 @Component({
   selector: 'neo-form-error',
@@ -27,10 +29,12 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class FormErrorComponent {
   @Input() control!: AbstractControl | null;
+  @Input() controlName!: string; // Nombre del campo asociado, por ejemplo 'fechaInicio'
+  @Input() formGroup!: FormGroup | null;
   @Input() ngModelControl!: NgModel | null;
 
   errors = signal<{ message: string; params?: any }[]>([]);
-  KEY_TRANSLATION_PREFIX = 'VALIDATION'; // Prefijo de las claves de traducción. Ejemplo: VALIDATION.REQUIRED
+  KEY_TRANSLATION_PREFIX = 'APP.VALIDATION';
 
   private readonly ngUnsubscribe$: Subject<void> = new Subject<void>();
 
@@ -50,30 +54,65 @@ export class FormErrorComponent {
           this.errorMessagesFromNgModel();
         });
     }
-  }
 
-  /**
-   * Obtiene los mensajes de error de un control de formulario reactivo.
-   */
-  errorMessagesFromControl() {
-    if (this.control?.errors) {
-      this.errors.set(this.getErrorMessages(this.control.errors));
-    } else {
-      this.errors.set([]);
+    // También nos suscribimos a cambios del formGroup (por validaciones cruzadas)
+    if (this.formGroup) {
+      this.formGroup.statusChanges
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe(() => {
+          this.errorMessagesFromFormGroup();
+        });
     }
   }
 
+  ngOnDestroy(): void {
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.complete();
+  }
+
   /**
-   * Obtiene los mensajes de error de un control `NgModel`.
+   * Función para convertir un mensaje de error en una cadena de traducción.
    */
-  errorMessagesFromNgModel() {
-    if (this.ngModelControl?.control?.errors) {
-      this.errors.set(
-        this.getErrorMessages(this.ngModelControl.control.errors),
-      );
-    } else {
-      this.errors.set([]);
-    }
+  private convertToTranslationKey(errorKey: string): string {
+    return errorKey
+      .replace(/([a-z])([A-Z])/g, '$1_$2') // Agregar un guion bajo entre letras minúsculas y mayúsculas
+      .toUpperCase(); // Convertir toda la cadena a mayúsculas
+  }
+
+  /**
+   * Errores del control individual.
+   */
+  private errorMessagesFromControl() {
+    const controlErrors = this.control?.errors ?? {};
+    this.errors.set(this.getErrorMessages(controlErrors));
+  }
+
+  /**
+   * Errores de un control NgModel (template-driven forms).
+   */
+  private errorMessagesFromNgModel() {
+    const modelErrors = this.ngModelControl?.control?.errors ?? {};
+    this.errors.set(this.getErrorMessages(modelErrors));
+  }
+
+  /**
+   * Errores que provienen del FormGroup (validaciones cruzadas).
+   */
+  private errorMessagesFromFormGroup() {
+    if (!this.formGroup || !this.controlName) return;
+
+    const groupErrors = this.formGroup.errors ?? {};
+    const relatedErrors: Record<string, any> = {};
+
+    Object.entries(groupErrors).forEach(([errorKey, errorValue]) => {
+      if (typeof errorValue === 'object' && errorKey === this.controlName)
+        relatedErrors[errorKey] = errorValue;
+    });
+
+    const controlErrors = this.control?.errors ?? {};
+    this.errors.set(
+      this.getErrorMessages({ ...controlErrors, ...relatedErrors }),
+    );
   }
 
   /**
@@ -82,24 +121,19 @@ export class FormErrorComponent {
   private getErrorMessages(
     errors: Record<string, any>,
   ): { message: string; params?: any }[] {
-    return Object.keys(errors).map((validatorName) => {
-      const errorMessage = this.convertToTranslationKey(validatorName);
-      const params = errors[validatorName]; // Obtén los parámetros del error
-      return { message: errorMessage, params };
+    return Object.keys(errors).map((errorKey) => {
+      const error = errors[errorKey];
+
+      // Si el error es un objeto con un mensaje (como en los validadores grupales)
+      if (error?.message)
+        return {
+          message: this.convertToTranslationKey(error.message),
+          params: error,
+        };
+
+      // Si no tiene 'message', entonces es un error más simple (ejemplo: required, minLength, etc.)
+      const translatedKey = this.convertToTranslationKey(errorKey);
+      return { message: translatedKey, params: error };
     });
-  }
-
-  /**
-   * Función para convertir un mensaje de error en una cadena de traducción.
-   */
-  convertToTranslationKey(errorKey: string): string {
-    return errorKey
-      .replace(/([a-z])([A-Z])/g, '$1_$2') // Agregar un guion bajo entre letras minúsculas y mayúsculas
-      .toUpperCase(); // Convertir toda la cadena a mayúsculas
-  }
-
-  ngOnDestroy(): void {
-    this.ngUnsubscribe$.next();
-    this.ngUnsubscribe$.complete();
   }
 }
