@@ -405,3 +405,65 @@ export function alphanumericRangeValidator(
     return Object.keys(errors).length ? errors : null;
   };
 }
+
+/**
+ * Validador que comprueba si al menos uno de los checkboxes especificados está seleccionado.
+ * @param {string[]} fields - Array de nombres de campos que deben ser verificados
+ * @param {string} [errorKey='checkboxGroup'] - Clave del error que se asignará si no hay checkboxes seleccionados
+ * @returns {ValidatorFn}
+ * @example atLeastOneCheckboxChecked(['checkbox1', 'checkbox2'])
+ */
+export function atLeastOneCheckboxChecked(
+  fields: string[],
+  errorKey = 'checkboxGroup',
+): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const algunoMarcado = fields.some((f) => group.get(f)?.value === true);
+    return algunoMarcado
+      ? null
+      : {
+          [errorKey]: true,
+        };
+  };
+}
+
+/**
+ * Validador que comprueba si una combinación de campos ya existe en una lista de objetos.
+ * Asigna errores directamente a los campos implicados.
+ * @param {T[]} existingItems Lista de objetos existentes
+ * @param {Record<string, keyof T>} fieldMapping Mapeo de nombre del campo del formulario al nombre del atributo del objeto
+ */
+export function duplicateComboValidator<T>(
+  existingItems: T[],
+  fieldMapping: Record<string, keyof T>,
+  customMessage?: string,
+): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    if (!existingItems?.length) return null;
+
+    const fields = Object.keys(fieldMapping);
+    const currentValues = fields.map(
+      (formField) => group.get(formField)?.value,
+    );
+
+    const isDuplicate = existingItems.some((item) => {
+      return fields.every((formField, index) => {
+        const itemKey = fieldMapping[formField];
+        return item[itemKey] === currentValues[index];
+      });
+    });
+
+    if (!isDuplicate) return null;
+
+    const errors: Record<string, any> = {};
+    fields.forEach((formField) => {
+      errors[formField] = {
+        message: customMessage ? customMessage : 'duplicateComboError',
+        fields: currentValues,
+        isCustomMessage: !!customMessage,
+      };
+    });
+
+    return errors;
+  };
+}
