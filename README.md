@@ -8,17 +8,17 @@ Proyecto desarrollado en [Angular](https://github.com/angular/angular-cli), junt
 
 ## Documentación técnica
 
-> Para generar una documetnación técnica del proyecto **UEM** deberemos lanzar el siguiente comando, que nos generará una documentación en la ruta **documentation**
+> Para generar una documetnación técnica del proyecto deberemos lanzar el siguiente comando, que nos generará una documentación en la ruta **documentation**
 
 ```sh
 npm run compodoc
 ```
 
 ## Ver componentes compartidos
+
 **DEMO:** http://localhost:4200/test
 
 ## Despliegues / Compilaciones
-
 
 ###### **WEB LOCAL**
 
@@ -52,4 +52,4 @@ Para más información, revisa la documentación oficial de [Angular CLI](https:
 
 Ejecutar `ng test` para lanzar los test unitarios vía [Karma](https://karma-runner.github.io) / Jasmine .
 
-###### &copy; NEORIS - ÁNGEL JIMÉNEZ
+###### &copy; ÁNGEL JIMÉNEZ
