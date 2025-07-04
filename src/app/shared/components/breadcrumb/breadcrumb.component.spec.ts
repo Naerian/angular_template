@@ -1,32 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BreadcrumComponent } from './breadcrum.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { toHaveNoViolations, axe } from 'jasmine-axe';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { axe, toHaveNoViolations } from 'jasmine-axe';
 import { of } from 'rxjs';
-import { BreadCrumbEntity } from './models/breadcrum.entity';
+import { BreadcrumbComponent } from './breadcrumb.component';
 
-describe('BreadcrumComponent', () => {
-  let component: BreadcrumComponent;
-  let fixture: ComponentFixture<BreadcrumComponent>;
+describe('BreadcrumbComponent', () => {
+  let component: BreadcrumbComponent;
+  let fixture: ComponentFixture<BreadcrumbComponent>;
   let router: Router;
   let activatedRoute: ActivatedRoute;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        BreadcrumComponent,
+        BreadcrumbComponent,
         TranslateModule.forRoot(),
         HttpClientModule,
-        RouterTestingModule
-      ]
-    })
-    .compileComponents();
+        RouterTestingModule,
+      ],
+    }).compileComponents();
     jasmine.addMatchers(toHaveNoViolations);
-    fixture = TestBed.createComponent(BreadcrumComponent);
+    fixture = TestBed.createComponent(BreadcrumbComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     activatedRoute = TestBed.inject(ActivatedRoute);
@@ -38,14 +36,16 @@ describe('BreadcrumComponent', () => {
   });
 
   it('should handle navigation events', () => {
-    spyOn(router.events, 'pipe').and.returnValue(of(new NavigationEnd(0, '/home/child', '/home/child')));
+    spyOn(router.events, 'pipe').and.returnValue(
+      of(new NavigationEnd(0, '/home/child', '/home/child')),
+    );
     spyOn(component, 'buildBreadCrumb').and.callThrough();
     component.ngOnInit();
     expect(component.buildBreadCrumb).toHaveBeenCalled();
   });
 
-  it("should pass BreadCrum accessibility test", async () => {
-    const fixture = TestBed.createComponent(BreadcrumComponent);
+  it('should pass BreadCrum accessibility test', async () => {
+    const fixture = TestBed.createComponent(BreadcrumbComponent);
     fixture.detectChanges();
     expect(await axe(fixture.nativeElement)).toHaveNoViolations();
   });

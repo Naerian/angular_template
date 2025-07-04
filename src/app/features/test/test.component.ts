@@ -1,61 +1,90 @@
-import { BreadcrumComponent } from './../../shared/components/breadcrum/breadcrum.component';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { Component, type OnInit } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterOutlet } from '@angular/router';
 import { IColumnsFormat } from '@entities/table.entity';
 import { TranslateModule } from '@ngx-translate/core';
+import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
-import { FilterColumnsTableComponent } from '@shared/components/filter-columns-table/filter-columns-table.component';
-import { SidebarbarPanelEntity, SidebarbarPanelSize } from '@shared/components/sidebar-panel/models/sidebar-panel.entity';
-import { SidebarPanelService } from '@shared/components/sidebar-panel/services/sidebar-panel.service';
-import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { ModalDialogService } from '@shared/components/modal/services/modal-dialog.service';
-import { ModalOptionsEntity } from '@shared/components/modal/models/modal.entity';
-import { MatSortModule } from '@angular/material/sort';
-import { PaginatorComponent } from '@shared/components/paginator/paginator.component';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
-import { ProgressBarComponent } from '@shared/components/progress-bar/progress-bar.component';
-import { ToastrService } from 'ngx-toastr';
-import { MenuContextModule } from '@shared/components/menu-context/menu-context.module';
-import { TabsModule } from '@shared/components/tabs/tabs.module';
-import { ThemeToggleModule } from '@shared/components/theme-toggle/theme-toggle.module';
 import { CardModule } from '@shared/components/card/card.module';
+import { FilterColumnsTableComponent } from '@shared/components/filter-columns-table/filter-columns-table.component';
 import { FormFields } from '@shared/components/form-fields/form-fields.module';
 import { CalendarDatePickerModule } from '@shared/components/form-fields/input-date-picker/calendar-date-picker.module';
 import { CalendarPickerComponent } from '@shared/components/form-fields/input-date-picker/calendar-picker/calendar-picker.component';
+import { MenuContextModule } from '@shared/components/menu-context/menu-context.module';
+import { ModalOptionsEntity } from '@shared/components/modal/models/modal.entity';
+import { ModalDialogService } from '@shared/components/modal/services/modal-dialog.service';
+import { PaginatorComponent } from '@shared/components/paginator/paginator.component';
+import { ProgressBarComponent } from '@shared/components/progress-bar/progress-bar.component';
+import {
+  SidebarbarPanelEntity,
+  SidebarbarPanelSize,
+} from '@shared/components/sidebar-panel/models/sidebar-panel.entity';
+import { SidebarPanelService } from '@shared/components/sidebar-panel/services/sidebar-panel.service';
+import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
+import { TabsModule } from '@shared/components/tabs/tabs.module';
+import { ThemeToggleModule } from '@shared/components/theme-toggle/theme-toggle.module';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'neo-test',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BreadcrumComponent, FormsModule, SpinnerComponent, ProgressBarComponent, CardModule, TranslateModule, ThemeToggleModule, TabsModule, RouterOutlet, JsonPipe, PaginatorComponent, MenuContextModule, FilterColumnsTableComponent, MatTableModule, MatSortModule, CalendarDatePickerModule, ButtonComponent, FormFields],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    BreadcrumbComponent,
+    FormsModule,
+    SpinnerComponent,
+    ProgressBarComponent,
+    CardModule,
+    TranslateModule,
+    ThemeToggleModule,
+    TabsModule,
+    RouterOutlet,
+    JsonPipe,
+    PaginatorComponent,
+    MenuContextModule,
+    FilterColumnsTableComponent,
+    MatTableModule,
+    MatSortModule,
+    CalendarDatePickerModule,
+    ButtonComponent,
+    FormFields,
+  ],
   templateUrl: './test.component.html',
-  styleUrl: './test.component.css'
+  styleUrl: './test.component.css',
 })
 export class TestComponent implements OnInit {
-
   // Columnas de ejemplo
   columnDefinitions = [
     {
-      def: "id",
-      label: "ID",
-      visible: true
+      def: 'id',
+      label: 'ID',
+      visible: true,
     },
     {
-      def: "name",
-      label: "Name",
-      visible: true
+      def: 'name',
+      label: 'Name',
+      visible: true,
     },
     {
-      def: "description",
-      label: "Description",
-      visible: true
+      def: 'description',
+      label: 'Description',
+      visible: true,
     },
     {
-      def: "price",
-      label: "Price",
-      visible: false
-    }
+      def: 'price',
+      label: 'Price',
+      visible: false,
+    },
   ];
 
   showInfoTable: boolean = false;
@@ -72,18 +101,18 @@ export class TestComponent implements OnInit {
   selectValueWithDefaultMultipleValue: string[] = [];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([
-    { id: "1", name: "One name", description: "One", price: 1 },
-    { id: "2", name: "Two name", description: "Two", price: 2 },
-    { id: "3", name: "Three name", description: "Three", price: 2 },
-    { id: "1", name: "One name", description: "One", price: 3 },
-    { id: "2", name: "Two name", description: "Two", price: 5 },
-    { id: "3", name: "Three name", description: "Three", price: 5 },
-    { id: "1", name: "One name", description: "One", price: 6 },
-    { id: "2", name: "Two name", description: "Two", price: 5 },
-    { id: "3", name: "Three name", description: "Three", price: 45 },
-    { id: "1", name: "One name", description: "One", price: 7 },
-    { id: "2", name: "Two name", description: "Two", price: 45 },
-    { id: "3", name: "Three name", description: "Three", price: 44 }
+    { id: '1', name: 'One name', description: 'One', price: 1 },
+    { id: '2', name: 'Two name', description: 'Two', price: 2 },
+    { id: '3', name: 'Three name', description: 'Three', price: 2 },
+    { id: '1', name: 'One name', description: 'One', price: 3 },
+    { id: '2', name: 'Two name', description: 'Two', price: 5 },
+    { id: '3', name: 'Three name', description: 'Three', price: 5 },
+    { id: '1', name: 'One name', description: 'One', price: 6 },
+    { id: '2', name: 'Two name', description: 'Two', price: 5 },
+    { id: '3', name: 'Three name', description: 'Three', price: 45 },
+    { id: '1', name: 'One name', description: 'One', price: 7 },
+    { id: '2', name: 'Two name', description: 'Two', price: 45 },
+    { id: '3', name: 'Three name', description: 'Three', price: 44 },
   ]);
 
   public readonly testForm = new FormGroup({
@@ -93,18 +122,19 @@ export class TestComponent implements OnInit {
   constructor(
     private readonly _sidebarPanelService: SidebarPanelService,
     private readonly _modalDialogService: ModalDialogService,
-    private readonly _toastrService: ToastrService
-  ) { }
+    private readonly _toastrService: ToastrService,
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   columnsChanged(columns: IColumnsFormat[]) {
     this.columnDefinitions = columns;
   }
 
   getDisplayedColumns(): string[] {
-    return this.columnDefinitions.filter(cd => cd.visible).map(cd => cd.def);
+    return this.columnDefinitions
+      .filter((cd) => cd.visible)
+      .map((cd) => cd.def);
   }
 
   buttonClicked() {
@@ -192,64 +222,62 @@ export class TestComponent implements OnInit {
       sophisticated in-browser navigational capabilities.</p>`,
       cancelText: 'Cancelar',
       confirmText: 'Aceptar',
-      canBeClosed: true
+      canBeClosed: true,
     };
 
     this._modalDialogService.open(options);
-    this._modalDialogService.afterClosed()
-      .subscribe((confirmed) => {
-        if (confirmed)
-          alert('Modal aceptado');
-        else
-          alert('Modal cancelado');
-      });
+    this._modalDialogService.afterClosed().subscribe((confirmed) => {
+      if (confirmed) alert('Modal aceptado');
+      else alert('Modal cancelado');
+    });
   }
 
   checkboxChange(status: any) {
-    console.log("onChangeCheckBox: ", status);
+    console.log('onChangeCheckBox: ', status);
   }
 
   checkboxChangeNM() {
-    console.log("checkboxChangeNM: ", this.checkboxValue);
+    console.log('checkboxChangeNM: ', this.checkboxValue);
   }
 
   selectChangeNM() {
-    console.log("selectChangeNM: ", this.selectValue);
+    console.log('selectChangeNM: ', this.selectValue);
   }
 
   selectMultipleChangeNM() {
-    console.log("selectMultipleChangeNM: ", this.selectMultipleValue);
+    console.log('selectMultipleChangeNM: ', this.selectMultipleValue);
   }
 
   selectWithDefaultValue(value: any) {
     this.selectValueWithDefaultValue = value;
-    console.log("selectWithDefaultValue: ", this.selectValueWithDefaultValue);
+    console.log('selectWithDefaultValue: ', this.selectValueWithDefaultValue);
   }
 
   selectWithDefaultMultipleValue(value: any) {
     this.selectValueWithDefaultMultipleValue = value;
-    console.log("selectWithDefaultValue: ", this.selectValueWithDefaultMultipleValue);
+    console.log(
+      'selectWithDefaultValue: ',
+      this.selectValueWithDefaultMultipleValue,
+    );
   }
 
   inputChange(value: string) {
-    console.log("inputChange: ", value);
+    console.log('inputChange: ', value);
   }
 
   radioChange(value: any) {
-    console.log("radioChange: ", value);
+    console.log('radioChange: ', value);
   }
 
   radioChangeNG() {
-    console.log("radioChangeNG: ", this.radioButtonValue);
+    console.log('radioChangeNG: ', this.radioButtonValue);
   }
 
   openModalComponent() {
-
     const options: ModalOptionsEntity = {
-      canBeClosed: true
+      canBeClosed: true,
     };
 
     this._modalDialogService.open(options, CalendarPickerComponent);
   }
-
 }

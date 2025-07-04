@@ -48,49 +48,43 @@
       </div>
       <div class="calendar-picker__content calendar-picker__days">
         <div class="calendar-picker__days__header">
-          <span>{{ "CALENDAR.SHORT.MONDAY" | translate }}</span>
-          <span>{{ "CALENDAR.SHORT.TUESDAY" | translate }}</span>
-          <span>{{ "CALENDAR.SHORT.WEDNESDAY" | translate }}</span>
-          <span>{{ "CALENDAR.SHORT.THURSDAY" | translate }}</span>
-          <span>{{ "CALENDAR.SHORT.FRIDAY" | translate }}</span>
-          <span>{{ "CALENDAR.SHORT.SATURDAY" | translate }}</span>
-          <span>{{ "CALENDAR.SHORT.SUNDAY" | translate }}</span>
+          @for (dayKey of WEEK_DAYS; track dayKey) {
+            <span>{{ dayKey | translate }}</span>
+          }
         </div>
-        <div class="calendar-picker__days__month">
-          @for (day of daysInMonth(); track day) {
-            <button
-              type="button"
-              #dayButton
-              [tabindex]="!isCurrentMonth(day) ? -1 : 0"
-              (click)="selectItem(day, $event); dayButton.focus()"
-              class="calendar-picker__days__month__day"
-              [class.calendar-picker__days__month__day--disabled]="
-                !isCurrentMonth(day)
-              "
-              [attr.aria-label]="
-                (day | date: 'dd') +
-                '/' +
-                (day | date: 'MM') +
-                '/' +
-                (day | date: 'yyyy')
-              "
-              [attr.aria-pressed]="isSameSelectedDay(day) || isRangeDate(day)"
-              [attr.aria-disabled]="!isCurrentMonth(day)"
-              [attr.aria-current]="isToday(day)"
-              [class.calendar-picker__days__month__day--selected]="
-                isSameSelectedDay(day) || isRangeDate(day)
-              "
-              [class.calendar-picker__days__month__day--today]="isToday(day)"
-              [title]="
-                (day | date: 'dd') +
-                '/' +
-                (day | date: 'MM') +
-                '/' +
-                (day | date: 'yyyy')
-              "
-            >
-              {{ day | date: "dd" }}
-            </button>
+        <div
+          class="calendar-picker__days__weeks"
+          role="grid"
+          [attr.aria-label]="currentCalendar() | date: 'dd/MM/yyyy'"
+        >
+          @for (week of daysInMonth(); track week[0].date.valueOf()) {
+            <div class="calendar-picker__days__weeks__week" role="row">
+              @for (day of week; track day.date.valueOf()) {
+                <button
+                  type="button"
+                  role="gridcell"
+                  [tabindex]="!day.isCurrentMonth ? -1 : 0"
+                  (click)="selectItem(day, $event)"
+                  class="calendar-picker__days__weeks__week__day"
+                  [class.calendar-picker__days__weeks__week__day--disabled]="
+                    !day.isCurrentMonth
+                  "
+                  [attr.aria-label]="day.date.toDate() | date: 'dd/MM/yyyy'"
+                  [attr.aria-selected]="day.isSelected || null"
+                  [attr.aria-disabled]="!day.isCurrentMonth"
+                  [attr.aria-current]="day.isToday"
+                  [class.calendar-picker__days__weeks__week__day--selected]="
+                    day.isSelected
+                  "
+                  [class.calendar-picker__days__weeks__week__day--today]="
+                    day.isToday
+                  "
+                  [title]="day.date.toDate() | date: 'dd/MM/yyyy'"
+                >
+                  {{ day.date.toDate() | date: "dd" }}
+                </button>
+              }
+            </div>
           }
         </div>
       </div>
@@ -107,7 +101,7 @@
         }}</span>
       </div>
       <div class="calendar-picker__content calendar-picker__months__content">
-        @for (month of allMonths(); track month) {
+        @for (month of allMonths; track month) {
           <button
             type="button"
             tabindex="0"
@@ -145,7 +139,7 @@
           type="button"
           tabindex="0"
           class="calendar-picker__header__btn"
-          (click)="prevYears()"
+          (click)="loadPastYears()"
           [title]="'APP.PREVIOUS' | translate"
         >
           <i class="ri-arrow-left-s-line"></i>
@@ -157,14 +151,14 @@
           type="button"
           tabindex="0"
           class="calendar-picker__header__btn"
-          (click)="nextYears()"
+          (click)="loadFutureYears()"
           [title]="'APP.NEXT' | translate"
         >
           <i class="ri-arrow-right-s-line"></i>
         </button>
       </div>
       <div class="calendar-picker__content calendar-picker__years__content">
-        @for (year of allYears(); track year) {
+        @for (year of allYears; track year) {
           <button
             tabindex="0"
             type="button"

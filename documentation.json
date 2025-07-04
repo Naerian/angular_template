@@ -276,7 +276,7 @@
     {
       "name": "BreadCrumbEntity",
       "id": "interface-BreadCrumbEntity-aa0dae4c3093c1e09dfa211cce91a1d9eb03b50247f81d1d70963b4ae9fd1fca20f836fc3d7940414a0f81148eb00e4f793746a58c96c8e59454aa3df1a857fc",
-      "file": "src/app/shared/components/breadcrum/models/breadcrum.entity.ts",
+      "file": "src/app/shared/components/breadcrumb/models/breadcrum.entity.ts",
       "deprecated": false,
       "deprecationMessage": "",
       "type": "interface",
@@ -3759,15 +3759,15 @@
   ],
   "components": [
     {
-      "name": "BreadcrumComponent",
-      "id": "component-BreadcrumComponent-ac0e8e71b4550029a24f8f4d83946334d55321d5232860ad27e0a8f1a0fda679f6366ccc4330c68eb0d24342e187f2c9f9318620cacd8d4e22a998c6b4061db2",
-      "file": "src/app/shared/components/breadcrum/breadcrum.component.ts",
+      "name": "BreadcrumbComponent",
+      "id": "component-BreadcrumbComponent-ac0e8e71b4550029a24f8f4d83946334d55321d5232860ad27e0a8f1a0fda679f6366ccc4330c68eb0d24342e187f2c9f9318620cacd8d4e22a998c6b4061db2",
+      "file": "src/app/shared/components/breadcrumb/breadcrumb.component.ts",
       "encapsulation": [],
       "entryComponents": [],
       "inputs": [],
       "outputs": [],
       "providers": [],
-      "selector": "neo-breadcrum",
+      "selector": "neo-breadcrumb",
       "styleUrls": [],
       "styles": [],
       "templateUrl": ["./breadcrum.component.html"],
@@ -4008,10 +4008,10 @@
           "type": "directive"
         }
       ],
-      "description": "<p>neo-breadcrum\nComponente para la creación de un <code>breadcrumb</code> a partir de las rutas de la aplicación</p>\n<b>Example :</b><div><pre class=\"line-numbers\"><code class=\"language-html\">&lt;neo-breadcrum&gt;&lt;/neo-breadcrum&gt;</code></pre></div>",
-      "rawdescription": "\n\nneo-breadcrum\nComponente para la creación de un `breadcrumb` a partir de las rutas de la aplicación\n```html\n<neo-breadcrum></neo-breadcrum>\n```",
+      "description": "<p>neo-breadcrumb\nComponente para la creación de un <code>breadcrumb</code> a partir de las rutas de la aplicación</p>\n<b>Example :</b><div><pre class=\"line-numbers\"><code class=\"language-html\">&lt;neo-breadcrumb&gt;&lt;/neo-breadcrumb&gt;</code></pre></div>",
+      "rawdescription": "\n\nneo-breadcrumb\nComponente para la creación de un `breadcrumb` a partir de las rutas de la aplicación\n```html\n<neo-breadcrumb></neo-breadcrumb>\n```",
       "type": "component",
-      "sourceCode": "import { Component } from '@angular/core';\r\nimport { Router, ActivatedRoute, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';\r\nimport { BreadCrumbEntity } from './models/breadcrum.entity';\r\nimport { filter, distinctUntilChanged } from 'rxjs';\r\nimport { CommonModule } from '@angular/common';\r\nimport { TranslateModule } from '@ngx-translate/core';\r\nimport { ClickableDirective } from '@shared/directives/clickable.directive';\r\n\r\n/**\r\n * @name\r\n * neo-breadcrum\r\n * @description\r\n * Componente para la creación de un `breadcrumb` a partir de las rutas de la aplicación\r\n * @example\r\n * <neo-breadcrum></neo-breadcrum>\r\n */\r\n@Component({\r\n  selector: 'neo-breadcrum',\r\n  standalone: true,\r\n  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule, ClickableDirective],\r\n  templateUrl: './breadcrum.component.html',\r\n  styleUrl: './breadcrum.component.scss'\r\n})\r\nexport class BreadcrumComponent {\r\n\r\n  /**\r\n   * Array de `breadcrumbs` que almacenará las rutas de la aplicación en las que se encuentre el usuario\r\n   */\r\n  public breadcrumbs: BreadCrumbEntity[]\r\n\r\n  constructor(\r\n    private router: Router,\r\n    private activatedRoute: ActivatedRoute,\r\n  ) {\r\n    this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.root);\r\n  }\r\n\r\n  ngOnInit() {\r\n    this.router.events.pipe(\r\n      filter((event) => event instanceof NavigationEnd),\r\n      distinctUntilChanged(),\r\n    ).subscribe(() => {\r\n      this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.root);\r\n    });\r\n  }\r\n\r\n  /**\r\n   * Función para construir un `breadcrumb` a partir de las rutas de la aplicación en las que se encuentre el usuario\r\n   * @param {ActivatedRoute} route\r\n   * @param {string} url\r\n   * @param {BreadCrumbEntity[]} breadcrumbs\r\n   */\r\n  buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: BreadCrumbEntity[] = []): BreadCrumbEntity[] {\r\n\r\n    // Si no hay `routeConfig` disponible, significa que estamos en la ruta inicial\r\n    let label = route.routeConfig && route.routeConfig.data ? route.routeConfig.data['breadcrumb'] : '';\r\n    let path = route.routeConfig && route.routeConfig.data ? route.routeConfig.path : '';\r\n\r\n    // Si la ruta es una ruta dinámica como ':id', la eliminamos\r\n    const lastRoutePart = path?.split('/').pop() || '';\r\n    const isDynamicRoute = lastRoutePart?.startsWith(':');\r\n    if (isDynamicRoute && !!route.snapshot) {\r\n      const paramName = lastRoutePart?.split(':')[1];\r\n      path = path?.replace(lastRoutePart, route.snapshot.params[paramName]);\r\n      label = route.snapshot.params[paramName];\r\n    }\r\n\r\n    // En `routeConfig` la ruta completa no está disponible, por lo que la reconstruimos cada vez\r\n    const nextUrl = path ? `${url}/${path}` : url;\r\n\r\n    const breadcrumb: BreadCrumbEntity = {\r\n      label: label,\r\n      url: nextUrl,\r\n    };\r\n\r\n    // Solo añadiremos rutas cuya etiqueta no esté vacía\r\n    const newBreadcrumbs = breadcrumb.label ? [...breadcrumbs, breadcrumb] : [...breadcrumbs];\r\n    if (route.firstChild) {\r\n      // Si el siguiente es un hijo, seguimos construyendo el breadcrumb\r\n      return this.buildBreadCrumb(route.firstChild, nextUrl, newBreadcrumbs);\r\n    }\r\n    return newBreadcrumbs;\r\n  }\r\n\r\n}\r\n",
+      "sourceCode": "import { Component } from '@angular/core';\r\nimport { Router, ActivatedRoute, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';\r\nimport { BreadCrumbEntity } from './models/breadcrum.entity';\r\nimport { filter, distinctUntilChanged } from 'rxjs';\r\nimport { CommonModule } from '@angular/common';\r\nimport { TranslateModule } from '@ngx-translate/core';\r\nimport { ClickableDirective } from '@shared/directives/clickable.directive';\r\n\r\n/**\r\n * @name\r\n * neo-breadcrumb\r\n * @description\r\n * Componente para la creación de un `breadcrumb` a partir de las rutas de la aplicación\r\n * @example\r\n * <neo-breadcrumb></neo-breadcrumb>\r\n */\r\n@Component({\r\n  selector: 'neo-breadcrumb',\r\n  standalone: true,\r\n  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule, ClickableDirective],\r\n  templateUrl: './breadcrum.component.html',\r\n  styleUrl: './breadcrum.component.scss'\r\n})\r\nexport class BreadcrumbComponent {\r\n\r\n  /**\r\n   * Array de `breadcrumbs` que almacenará las rutas de la aplicación en las que se encuentre el usuario\r\n   */\r\n  public breadcrumbs: BreadCrumbEntity[]\r\n\r\n  constructor(\r\n    private router: Router,\r\n    private activatedRoute: ActivatedRoute,\r\n  ) {\r\n    this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.root);\r\n  }\r\n\r\n  ngOnInit() {\r\n    this.router.events.pipe(\r\n      filter((event) => event instanceof NavigationEnd),\r\n      distinctUntilChanged(),\r\n    ).subscribe(() => {\r\n      this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.root);\r\n    });\r\n  }\r\n\r\n  /**\r\n   * Función para construir un `breadcrumb` a partir de las rutas de la aplicación en las que se encuentre el usuario\r\n   * @param {ActivatedRoute} route\r\n   * @param {string} url\r\n   * @param {BreadCrumbEntity[]} breadcrumbs\r\n   */\r\n  buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: BreadCrumbEntity[] = []): BreadCrumbEntity[] {\r\n\r\n    // Si no hay `routeConfig` disponible, significa que estamos en la ruta inicial\r\n    let label = route.routeConfig && route.routeConfig.data ? route.routeConfig.data['breadcrumb'] : '';\r\n    let path = route.routeConfig && route.routeConfig.data ? route.routeConfig.path : '';\r\n\r\n    // Si la ruta es una ruta dinámica como ':id', la eliminamos\r\n    const lastRoutePart = path?.split('/').pop() || '';\r\n    const isDynamicRoute = lastRoutePart?.startsWith(':');\r\n    if (isDynamicRoute && !!route.snapshot) {\r\n      const paramName = lastRoutePart?.split(':')[1];\r\n      path = path?.replace(lastRoutePart, route.snapshot.params[paramName]);\r\n      label = route.snapshot.params[paramName];\r\n    }\r\n\r\n    // En `routeConfig` la ruta completa no está disponible, por lo que la reconstruimos cada vez\r\n    const nextUrl = path ? `${url}/${path}` : url;\r\n\r\n    const breadcrumb: BreadCrumbEntity = {\r\n      label: label,\r\n      url: nextUrl,\r\n    };\r\n\r\n    // Solo añadiremos rutas cuya etiqueta no esté vacía\r\n    const newBreadcrumbs = breadcrumb.label ? [...breadcrumbs, breadcrumb] : [...breadcrumbs];\r\n    if (route.firstChild) {\r\n      // Si el siguiente es un hijo, seguimos construyendo el breadcrumb\r\n      return this.buildBreadCrumb(route.firstChild, nextUrl, newBreadcrumbs);\r\n    }\r\n    return newBreadcrumbs;\r\n  }\r\n\r\n}\r\n",
       "styleUrl": "./breadcrum.component.scss",
       "assetsDirs": [],
       "styleUrlsData": "",
@@ -18052,7 +18052,7 @@
         "name": "BreadCrum",
         "ctype": "miscellaneous",
         "subtype": "variable",
-        "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+        "file": "src/app/shared/components/breadcrumb/breadcrumb.stories.ts",
         "deprecated": false,
         "deprecationMessage": "",
         "type": "Story",
@@ -18236,11 +18236,11 @@
         "name": "meta",
         "ctype": "miscellaneous",
         "subtype": "variable",
-        "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+        "file": "src/app/shared/components/breadcrumb/breadcrumb.stories.ts",
         "deprecated": false,
         "deprecationMessage": "",
-        "type": "Meta<BreadcrumComponent>",
-        "defaultValue": "{\r\n  title: 'BreadCrum',\r\n  component: BreadcrumComponent,\r\n  decorators: [\r\n    moduleMetadata({\r\n      imports: [\r\n        TranslateModule.forRoot(),\r\n        RouterTestingModule\r\n      ],\r\n      providers: []\r\n    }),\r\n  ],\r\n  render: (args) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n  }),\r\n  argTypes: {\r\n    ngOnInit: {\r\n      control: { type: null }\r\n    },\r\n  },\r\n}"
+        "type": "Meta<BreadcrumbComponent>",
+        "defaultValue": "{\r\n  title: 'BreadCrum',\r\n  component: BreadcrumbComponent,\r\n  decorators: [\r\n    moduleMetadata({\r\n      imports: [\r\n        TranslateModule.forRoot(),\r\n        RouterTestingModule\r\n      ],\r\n      providers: []\r\n    }),\r\n  ],\r\n  render: (args) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n  }),\r\n  argTypes: {\r\n    ngOnInit: {\r\n      control: { type: null }\r\n    },\r\n  },\r\n}"
       },
       {
         "name": "meta",
@@ -18560,8 +18560,8 @@
         "name": "Story",
         "ctype": "miscellaneous",
         "subtype": "typealias",
-        "rawtype": "StoryObj<BreadcrumComponent>",
-        "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+        "rawtype": "StoryObj<BreadcrumbComponent>",
+        "file": "src/app/shared/components/breadcrumb/breadcrumb.stories.ts",
         "deprecated": false,
         "deprecationMessage": "",
         "description": "",
@@ -18741,12 +18741,12 @@
       }
     ],
     "groupedVariables": {
-      "src/app/shared/components/breadcrum/breadcrum.stories.ts": [
+      "src/app/shared/components/breadcrumb/breadcrumb.stories.ts": [
         {
           "name": "BreadCrum",
           "ctype": "miscellaneous",
           "subtype": "variable",
-          "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+          "file": "src/app/shared/components/breadcrumb/breadcrumb.stories.ts",
           "deprecated": false,
           "deprecationMessage": "",
           "type": "Story",
@@ -18756,11 +18756,11 @@
           "name": "meta",
           "ctype": "miscellaneous",
           "subtype": "variable",
-          "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+          "file": "src/app/shared/components/breadcrumb/breadcrumb.stories.ts",
           "deprecated": false,
           "deprecationMessage": "",
-          "type": "Meta<BreadcrumComponent>",
-          "defaultValue": "{\r\n  title: 'BreadCrum',\r\n  component: BreadcrumComponent,\r\n  decorators: [\r\n    moduleMetadata({\r\n      imports: [\r\n        TranslateModule.forRoot(),\r\n        RouterTestingModule\r\n      ],\r\n      providers: []\r\n    }),\r\n  ],\r\n  render: (args) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n  }),\r\n  argTypes: {\r\n    ngOnInit: {\r\n      control: { type: null }\r\n    },\r\n  },\r\n}"
+          "type": "Meta<BreadcrumbComponent>",
+          "defaultValue": "{\r\n  title: 'BreadCrum',\r\n  component: BreadcrumbComponent,\r\n  decorators: [\r\n    moduleMetadata({\r\n      imports: [\r\n        TranslateModule.forRoot(),\r\n        RouterTestingModule\r\n      ],\r\n      providers: []\r\n    }),\r\n  ],\r\n  render: (args) => ({\r\n    props: {\r\n      ...args,\r\n    },\r\n  }),\r\n  argTypes: {\r\n    ngOnInit: {\r\n      control: { type: null }\r\n    },\r\n  },\r\n}"
         }
       ],
       "src/app/shared/components/button/button.stories.ts": [
@@ -19417,13 +19417,13 @@
           "kind": 192
         }
       ],
-      "src/app/shared/components/breadcrum/breadcrum.stories.ts": [
+      "src/app/shared/components/breadcrumb/breadcrumb.stories.ts": [
         {
           "name": "Story",
           "ctype": "miscellaneous",
           "subtype": "typealias",
-          "rawtype": "StoryObj<BreadcrumComponent>",
-          "file": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+          "rawtype": "StoryObj<BreadcrumbComponent>",
+          "file": "src/app/shared/components/breadcrumb/breadcrumb.stories.ts",
           "deprecated": false,
           "deprecationMessage": "",
           "description": "",
@@ -19572,16 +19572,16 @@
         "status": "very-good"
       },
       {
-        "filePath": "src/app/shared/components/breadcrum/breadcrum.component.ts",
+        "filePath": "src/app/shared/components/breadcrumb/breadcrumb.component.ts",
         "type": "component",
         "linktype": "component",
-        "name": "BreadcrumComponent",
+        "name": "BreadcrumbComponent",
         "coveragePercent": 60,
         "coverageCount": "3/5",
         "status": "good"
       },
       {
-        "filePath": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+        "filePath": "src/app/shared/components/breadcrumb/breadcrumb.stories.ts",
         "type": "variable",
         "linktype": "miscellaneous",
         "linksubtype": "variable",
@@ -19591,7 +19591,7 @@
         "status": "low"
       },
       {
-        "filePath": "src/app/shared/components/breadcrum/breadcrum.stories.ts",
+        "filePath": "src/app/shared/components/breadcrumb/breadcrumb.stories.ts",
         "type": "variable",
         "linktype": "miscellaneous",
         "linksubtype": "variable",
@@ -19601,7 +19601,7 @@
         "status": "low"
       },
       {
-        "filePath": "src/app/shared/components/breadcrum/models/breadcrum.entity.ts",
+        "filePath": "src/app/shared/components/breadcrumb/models/breadcrum.entity.ts",
         "type": "interface",
         "linktype": "interface",
         "name": "BreadCrumbEntity",

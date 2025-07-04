@@ -1,11 +1,27 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation, WritableSignal, signal } from '@angular/core';
-import { CalendarType, DEFAULT_FORMAT, DateSelected, ViewMode } from '../models/date-picker.entity';
-import { CalendarService } from '../services/calendar.service';
+import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewEncapsulation,
+  WritableSignal,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { A11yModule } from '@angular/cdk/a11y';
 import moment from 'moment';
+import {
+  CalendarDay,
+  CalendarType,
+  DEFAULT_FORMAT,
+  DateSelected,
+  ViewMode,
+  WEEK_DAYS,
+} from '../models/date-picker.entity';
+import { CalendarService } from '../services/calendar.service';
 
 /**
  * @name
@@ -21,14 +37,15 @@ import moment from 'moment';
   styleUrls: ['./calendar-picker.component.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule, A11yModule],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class CalendarPickerComponent implements OnInit {
-
   @Input() type: CalendarType = 'day'; // Tipo: Día (day), Semana (week) o Rango (range), para marcarlo de una forma u otra segúna una fecha
   @Output() dateSelected = new EventEmitter<DateSelected>();
 
-  _defaultDate: WritableSignal<string> = signal(moment().format(DEFAULT_FORMAT)); // Por defecto, la fecha actual
+  _defaultDate: WritableSignal<string> = signal(
+    moment().format(DEFAULT_FORMAT),
+  ); // Por defecto, la fecha actual
   get defaultDate(): string {
     return this._defaultDate();
   }
@@ -56,35 +73,37 @@ export class CalendarPickerComponent implements OnInit {
 
   // Tipo de vista (Calendario normal, selección de año o de mes)
   viewMode: WritableSignal<ViewMode> = signal('default');
-  allMonths: WritableSignal<string[]> = signal([]); // Array que se rellenará con todos los meses (usando momentjs)
-  allYears: WritableSignal<string[]> = signal([]); // Array que se rellenará con los años, en un intervalo de 10 años hacia arriba o abajo
+
+  // Array de datos para años y meses
+  allYears: string[] = [];
+  allMonths: string[] = [];
 
   // Array que guardará los días del mes por semana
-  daysInMonth: WritableSignal<Array<any>> = signal([]);
+  daysInMonth: WritableSignal<CalendarDay[][]> = signal([]);
 
   // Variable para saber en que calendario estamos cuándo nos movemos por los meses
-  currentCalendar: WritableSignal<string> = signal(moment().format(DEFAULT_FORMAT));
+  currentCalendar: WritableSignal<string> = signal(
+    moment().format(DEFAULT_FORMAT),
+  );
 
-  constructor(
-    private readonly _calendarService: CalendarService,
-  ) { }
+  // Días de la semana para la vista
+  WEEK_DAYS: string[] = WEEK_DAYS;
+
+  constructor(private readonly _calendarService: CalendarService) {}
 
   ngOnInit(): void {
-    this.initCalendar();
+    queueMicrotask(() => this.initCalendar());
   }
 
   /**
    * Función para inicializar el calendario
    */
   initCalendar() {
-    setTimeout(() => {
+    this.checkCurrentCalendarDate(this.currentCalendar());
 
-      this.checkCurrentCalendarDate(this.currentCalendar());
-
-      // Establecemos los meses del calendario
-      this.allMonths.set(moment.months());
-      this.setCalendar();
-    });
+    // Establecemos los meses del calendario
+    this.allMonths = moment.months();
+    this.setCalendar();
   }
 
   /**
@@ -92,87 +111,106 @@ export class CalendarPickerComponent implements OnInit {
    * @param {string | moment.Moment} date
    */
   checkCurrentCalendarDate(date: string | moment.Moment) {
-
     // Comprobamos si la fecha es un string o un objeto Moment
-    if (date instanceof moment)
-      date = (date).format(DEFAULT_FORMAT);
+    if (date instanceof moment) date = date.format(DEFAULT_FORMAT);
 
     // Comprobamos si la fecha no es válida asignamos la fecha de hoy,
     // en caso contrario, asignamos la fecha indicada
     if (!moment(date).isValid())
       this._defaultDate.set(moment().format(DEFAULT_FORMAT));
-    else
-      this._defaultDate.set(moment(date).format(DEFAULT_FORMAT));
+    else this._defaultDate.set(moment(date).format(DEFAULT_FORMAT));
 
     this.currentCalendar.set(this._defaultDate());
-
   }
 
   /**
    * Función para construir el calendario según una fecha dada
    */
   setCalendar() {
+    const firstDayOfMonth = moment(this.currentCalendar()).startOf('month');
+    const firstCell = firstDayOfMonth.clone().startOf('isoWeek'); // lunes de la 1.ª fila
+    const weeks: CalendarDay[][] = [];
 
-    // Array que guardará los días del mes por semana
-    const _daysInMonth: Array<any> = [];
-    this.daysInMonth.set([]);
+    for (let w = 0; w < 6; w++) {
+      // 6 filas máx.
+      const week: CalendarDay[] = [];
 
-    // Obtenemos el primer día del mes seleccionado
-    const firstDayOfMonth = moment(new Date(this.currentCalendar())).startOf('month');
+      for (let d = 0; d < 7; d++) {
+        // 7 columnas
+        const date = firstCell.clone().add(w, 'week').add(d, 'day');
 
-    // Obtenemos el primer día de la semana del mes (por si compartimos días con el mes antarior)
-    const dayFirstWeek = firstDayOfMonth.clone().startOf('isoWeek');
-
-    // Recorremos cada semana y obtenemos los días de cada una de ellas hasta un máximo de 6 semanas
-    // para que siempre se muestren 42 días (6 semanas * 7 días) e incluso si el mes no empieza en lunes
-    // para que se muestren los primeros días del mes siguiente. De esta forma el calendario siempre estará completo
-    for (let week = 0; week < 6; week++) {
-
-      // Sumamos la cantidad de semanas con respescto al primer día del mes
-      const firstDayOfWeek = dayFirstWeek.clone().add(week, 'week');
-
-      // Recorremos los días (7) de la semana y formamos el objeto para la fecha
-      for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-        // Vamos sumando un día a partir del primer día de la semana
-        const date = firstDayOfWeek.clone().add(dayOfWeek, 'day');
-        _daysInMonth.push(date);
+        week.push({
+          date,
+          isCurrentMonth: date.month() === firstDayOfMonth.month(),
+          isToday: date.isSame(moment(), 'day'),
+          isSelected: this.checkIfSelected(date),
+          isInRange: this.checkIfInRange(date),
+        });
       }
 
+      weeks.push(week);
     }
 
-    // Asignamos el array de semanas a la signal
-    this.daysInMonth.set(_daysInMonth);
+    this.daysInMonth.set(weeks);
   }
 
   /**
-   * Función para comprobar si la fecha actual es igual al día pasado
+   * Función para comprobar si la fecha está dentro del rango de fechas
    * @param {moment.Moment} date
    * @returns {boolean}
    */
-  isCurrentMonth(date: moment.Moment): boolean {
-    return date.month() === moment(new Date(this.currentCalendar())).month();
+  checkIfSelected(date: moment.Moment): boolean {
+    // Si no hay fecha por defecto, no hay selección
+    if (!this._defaultDate() || !date) return false;
+
+    if (this.type === 'day') {
+      // Selección por día exacto
+      return date?.isSame(moment(this._defaultDate()), 'day');
+    } else if (this.type === 'week') {
+      // Selección por semana: el rango _startDate a _endDate
+      return this.checkIfInRange(date);
+    } else if (this.type === 'range') {
+      // Selección por rango: el rango _startDate a _endDate
+      return this.checkIfInRange(date);
+    }
+    return false;
+  }
+
+  /**
+   * Función para comprobar si la fecha está dentro del rango de fechas
+   * @param {moment.Moment} date
+   * @returns {boolean}
+   */
+  checkIfInRange(date: moment.Moment): boolean {
+    return this._calendarService.isRangeDate(
+      date,
+      this._startDate(),
+      this._endDate(),
+    );
   }
 
   /**
    * Función para seleccionar un día, semana o rango de fechas
-   * @param {moment.Moment} date
+   * @param {CalendarDay} day
    * @param {Event} event
    */
-  selectItem(date: moment.Moment, event: Event) {
-
+  selectItem(day: CalendarDay, event: Event) {
     event.preventDefault();
     event.stopPropagation();
 
+    // Si el día no tiene fecha, no hacemos nada
+    if (!day || !day.date) return;
+
     // Si la fecha no es del mes actual, no hacemos nada
-    if (!this.isCurrentMonth(date)) return;
+    if (!day.isCurrentMonth) return;
 
     // Si el tipo es día, semana o rango, establecemos la fecha
-    if (this.type === "day") {
-      this.setDay(date);
-    } else if (this.type === "week") {
-      this.setWeekDate(date);
-    } else if (this.type === "range") {
-      this.setRangeDate(date);
+    if (this.type === 'day') {
+      this.setDay(day.date);
+    } else if (this.type === 'week') {
+      this.setWeekDate(day.date);
+    } else if (this.type === 'range') {
+      this.setRangeDate(day.date);
     }
   }
 
@@ -182,8 +220,11 @@ export class CalendarPickerComponent implements OnInit {
    * @param {Event} event
    * @param {boolean} closePickerSelector
    */
-  setDay(date: moment.Moment, event?: Event, closePickerSelector: boolean = true) {
-
+  setDay(
+    date: moment.Moment,
+    event?: Event,
+    closePickerSelector: boolean = true,
+  ) {
     event?.preventDefault();
     event?.stopPropagation();
 
@@ -199,7 +240,6 @@ export class CalendarPickerComponent implements OnInit {
    * @param {Event} event
    */
   setWeekDate(date: moment.Moment, event?: Event) {
-
     event?.preventDefault();
     event?.stopPropagation();
 
@@ -213,12 +253,16 @@ export class CalendarPickerComponent implements OnInit {
 
     // Si ya tenemos las dos fechas, emitimos el rango de fechas
     if (this._startDate() !== '' && this._endDate() !== '') {
-      const rangeDate: string | string[] = this._startDate() !== '' && this._endDate() !== '' ? [this._startDate(), this._endDate()] : '';
-      this.currentCalendar.set(moment(this._startDate()).format(DEFAULT_FORMAT));
+      const rangeDate: string | string[] =
+        this._startDate() !== '' && this._endDate() !== ''
+          ? [this._startDate(), this._endDate()]
+          : '';
+      this.currentCalendar.set(
+        moment(this._startDate()).format(DEFAULT_FORMAT),
+      );
       this.setCalendar();
       this.emitDateSelected(rangeDate, true);
     }
-
   }
 
   /**
@@ -228,23 +272,29 @@ export class CalendarPickerComponent implements OnInit {
    * @param {boolean} cleanDates
    */
   setRangeDate(date: moment.Moment, event?: Event, cleanDates: boolean = true) {
-
     event?.preventDefault();
     event?.stopPropagation();
 
-    if (cleanDates && (this._startDate() !== '' && this._endDate() !== '')) {
+    if (cleanDates && this._startDate() !== '' && this._endDate() !== '') {
       this._startDate.set('');
       this._endDate.set('');
     }
 
-    if (this._startDate() === '') // Si no hay fecha de inicio, la establecemos
+    if (this._startDate() === '')
+      // Si no hay fecha de inicio, la establecemos
       this._startDate.set(date.format(DEFAULT_FORMAT));
-    else if (this._endDate() === '' && date.isAfter(moment(this._startDate()))) // Si no hay fecha de fin, la establecemos
+    else if (this._endDate() === '' && date.isAfter(moment(this._startDate())))
+      // Si no hay fecha de fin, la establecemos
       this._endDate.set(date.format(DEFAULT_FORMAT));
-    else if (moment(this._startDate()).format(DEFAULT_FORMAT) === date.format(DEFAULT_FORMAT)) { // Si la fecha de inicio es igual a la de fin, la establecemos
+    else if (
+      moment(this._startDate()).format(DEFAULT_FORMAT) ===
+      date.format(DEFAULT_FORMAT)
+    ) {
+      // Si la fecha de inicio es igual a la de fin, la establecemos
       this._startDate.set(date.format(DEFAULT_FORMAT));
       this._endDate.set(date.format(DEFAULT_FORMAT));
-    } else if (moment(this._startDate()).isAfter(moment(date))) { // Si la fecha de inicio es mayor que la de fin, las intercambiamos
+    } else if (moment(this._startDate()).isAfter(moment(date))) {
+      // Si la fecha de inicio es mayor que la de fin, las intercambiamos
       const dateStart = moment(new Date(this._startDate()));
       this._startDate.set(date.format(DEFAULT_FORMAT));
       this._endDate.set(dateStart.format(DEFAULT_FORMAT));
@@ -252,12 +302,14 @@ export class CalendarPickerComponent implements OnInit {
 
     // Si ya tenemos las dos fechas, emitimos el rango de fechas
     if (this._startDate() !== '' && this._endDate() !== '') {
-      const rangeDate: string | string[] = this._startDate() !== '' && this._endDate() !== '' ? [this._startDate(), this._endDate()] : '';
+      const rangeDate: string | string[] =
+        this._startDate() !== '' && this._endDate() !== ''
+          ? [this._startDate(), this._endDate()]
+          : '';
       this.currentCalendar.set(moment(this._endDate()).format(DEFAULT_FORMAT));
       this.setCalendar();
       this.emitDateSelected(rangeDate, true);
     }
-
   }
 
   /**
@@ -265,42 +317,14 @@ export class CalendarPickerComponent implements OnInit {
    * @param {string | string[]} date
    * @param {boolean} closePickerSelector
    */
-  emitDateSelected(date: string | string[], closePickerSelector: boolean = true) {
+  emitDateSelected(
+    date: string | string[],
+    closePickerSelector: boolean = true,
+  ) {
     this.dateSelected.emit({
       date: date,
-      closePicker: closePickerSelector
+      closePicker: closePickerSelector,
     });
-  }
-
-  /**
-   * Función para comprobar si la fecha actual es igual al día pasado
-   * @param {moment.Moment} day
-   * @returns {boolean}
-   */
-  isSameSelectedDay(day: moment.Moment): boolean {
-    if (this.type !== "day")
-      return false;
-    return (day.format('DD-MM-YYYY') === moment(new Date(this._defaultDate())).format('DD-MM-YYYY'));
-  }
-
-  /**
-   * Función para comprobar si la fecha se encuentra en el rango de fechas
-   * @param {moment.Moment} day
-   * @returns {boolean}
-   */
-  isRangeDate(day: moment.Moment): boolean {
-    if (this.type !== "week" && this.type !== "range")
-      return false;
-    return this._calendarService.isRangeDate(day, this._startDate(), this._endDate());
-  }
-
-  /**
-   * Función para comprobar si la fecha es la actual
-   * @param {moment.Moment} day
-   * @returns {boolean}
-   */
-  isToday(day: moment.Moment): boolean {
-    return this._calendarService.isToday(day);
   }
 
   /**
@@ -309,13 +333,14 @@ export class CalendarPickerComponent implements OnInit {
    * @param {Event} event
    */
   chageViewMode(viewMode: ViewMode, event?: Event) {
-
     event?.preventDefault();
     event?.stopPropagation();
 
     // Si la vista es la de años, creamos los años según el año de la fecha actual
-    if (viewMode === "years")
-      this.nextYears(moment(new Date(this.currentCalendar())).format('YYYY'));
+    if (viewMode === 'years')
+      this.loadFutureYears(
+        moment(new Date(this.currentCalendar())).format('YYYY'),
+      );
 
     this.viewMode.set(viewMode);
   }
@@ -326,12 +351,15 @@ export class CalendarPickerComponent implements OnInit {
    * @param {Event} event
    */
   changeMonth(month: number, event?: Event) {
-
     event?.preventDefault();
     event?.stopPropagation();
 
-    this.viewMode.set("default");
-    this.currentCalendar.set(moment(new Date(this.currentCalendar())).set('month', month).format(DEFAULT_FORMAT));
+    this.viewMode.set('default');
+    this.currentCalendar.set(
+      moment(new Date(this.currentCalendar()))
+        .set('month', month)
+        .format(DEFAULT_FORMAT),
+    );
     this.setCalendar();
   }
 
@@ -339,7 +367,11 @@ export class CalendarPickerComponent implements OnInit {
    * Función para cambiar al mes anterior
    */
   prevMonth() {
-    this.currentCalendar.set(moment(new Date(this.currentCalendar())).subtract("1", "month").format(DEFAULT_FORMAT));
+    this.currentCalendar.set(
+      moment(new Date(this.currentCalendar()))
+        .subtract('1', 'month')
+        .format(DEFAULT_FORMAT),
+    );
     this.setCalendar();
   }
 
@@ -347,7 +379,11 @@ export class CalendarPickerComponent implements OnInit {
    * Función para cambiar al mes siguiente
    */
   nextMonth() {
-    this.currentCalendar.set(moment(new Date(this.currentCalendar())).add("1", "month").format(DEFAULT_FORMAT));
+    this.currentCalendar.set(
+      moment(new Date(this.currentCalendar()))
+        .add('1', 'month')
+        .format(DEFAULT_FORMAT),
+    );
     this.setCalendar();
   }
 
@@ -357,29 +393,44 @@ export class CalendarPickerComponent implements OnInit {
    * @param {Event} event
    */
   changeYear(year: string, event?: Event) {
-
     event?.preventDefault();
     event?.stopPropagation();
 
-    this.viewMode.set("default");
-    this.currentCalendar.set(moment(new Date(this._defaultDate())).set('year', Number(year)).format(DEFAULT_FORMAT));
+    this.viewMode.set('default');
+    this.currentCalendar.set(
+      moment(new Date(this._defaultDate()))
+        .set('year', Number(year))
+        .format(DEFAULT_FORMAT),
+    );
     this.setCalendar();
   }
 
   /**
-   * Función para cambiar al año anterior, lo que obtendrá los próximos 30 años con respescto al último del array de años
-   * @param {string} lastYear
+   * Función para cargar los años pasados, lo que obtendrá los últimos 20 años con respescto al primer año del array de años
    */
-  nextYears(lastYear: string = this.allYears()[this.allYears().length - 1]) {
-    this.allYears.set(new Array(20).fill(null).map((_, year) => (moment(lastYear).add(year, 'year').format('YYYY'))));
-    this.allYears().sort();
+  loadPastYears() {
+    // Creamos un array de 20 años a partir del primer año del array de años
+    this.allYears = new Array(20)
+      .fill(null)
+      .map((_, year) =>
+        moment(this.allYears[0]).subtract(year, 'year').format('YYYY'),
+      );
+
+    // Ordenamos los años
+    this.allYears.sort();
   }
 
   /**
-  * Función para cambiar al año siguiente, lo que obtendrá los anteriores 30 años con respescto al último del array de años
-  */
-  prevYears() {
-    this.allYears.set(new Array(20).fill(null).map((_, year) => (moment(this.allYears()[0]).subtract(year, 'year').format('YYYY'))));
-    this.allYears().sort();
+   * Función para cargar los años futuros, lo que obtendrá los próximos 20 años con respescto al último año del array de años
+   * @param {string} lastYear
+   */
+  loadFutureYears(lastYear: string = this.allYears[this.allYears.length - 1]) {
+    // Creamos un array de 20 años a partir del último año del array de años
+    this.allYears = new Array(20)
+      .fill(null)
+      .map((_, year) => moment(lastYear).add(year, 'year').format('YYYY'));
+
+    // Ordenamos los años
+    this.allYears.sort();
   }
 }

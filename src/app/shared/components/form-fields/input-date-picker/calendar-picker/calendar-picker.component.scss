@@ -154,7 +154,6 @@
   }
 
   &__days {
-
     &__header {
       display: grid;
       width: 100%;
@@ -170,62 +169,68 @@
       }
     }
 
-    &__month {
-      display: grid;
+    &__weeks {
+      display: flex;
       width: 100%;
-      grid-gap: 5px;
-      grid-template-columns: repeat(7, 35px);
-      border-radius: .25rem;
+      border-radius: 0.25rem;
       justify-items: center;
       align-items: center;
+      flex-direction: column;
+      gap: 5px;
 
-      &__day {
-        cursor: pointer;
+      &__week {
         display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: center;
-        align-items: center;
-        border: none;
-        border-radius: .25rem;
-        font-size: 0.8rem;
-        width: 35px;
-        height: 35px;
-        background-color: transparent !important;
+        width: 100%;
+        gap: 5px;
 
-        &:hover,
-        &:focus,
-        &:active {
-          color: var(--text-color);
-          background-color: var(--background-color) !important;
+        &__day {
+          cursor: pointer;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          justify-content: center;
+          align-items: center;
+          border: none;
           border-radius: .25rem;
-        }
+          font-size: 0.8rem;
+          width: 35px;
+          height: 35px;
+          background-color: transparent !important;
 
-        &--disabled {
-          cursor: default;
-          filter: opacity(0.5);
-
-          &:hover {
-            background: none;
-            border: none;
-            color: inherit;
+          &:hover,
+          &:focus,
+          &:active {
+            color: var(--text-color);
+            background-color: var(--background-color) !important;
+            border-radius: .25rem;
           }
-        }
 
-        &--selected,
-        &--selected:hover {
-          border: 1px solid #CCC;
-          color: var(--text-color);
-          background-color: var(--background-color) !important;
-          border-radius: .25rem;
-        }
+          &--disabled {
+            cursor: default;
+            filter: opacity(0.5);
 
-        &--today {
-          color: var(--primary-color);
-          font-weight: 700;
+            &:hover {
+              background: none;
+              border: none;
+              color: inherit;
+            }
+          }
 
-          &:hover {
+          &--selected,
+          &--selected:hover {
+            border: 1px solid #CCC;
+            color: var(--text-color);
+            background-color: var(--background-color) !important;
+            border-radius: .25rem;
+          }
+
+          &--today {
             color: var(--primary-color);
+            font-weight: 700;
+
+            &:hover {
+              color: var(--primary-color);
+            }
           }
         }
       }

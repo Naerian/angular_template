@@ -1,31 +1,36 @@
-import { Component } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
-import { BreadCrumbEntity } from './models/breadcrum.entity';
-import { filter, distinctUntilChanged } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { distinctUntilChanged, filter } from 'rxjs';
+import { BreadCrumbEntity } from './models/breadcrumb.entity';
 
 /**
  * @name
- * neo-breadcrum
+ * neo-breadcrumb
  * @description
  * Componente para la creación de un `breadcrumb` a partir de las rutas de la aplicación
  * @example
- * <neo-breadcrum></neo-breadcrum>
+ * <neo-breadcrumb></neo-breadcrumb>
  */
 @Component({
-  selector: 'neo-breadcrum',
+  selector: 'neo-breadcrumb',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
-  templateUrl: './breadcrum.component.html',
-  styleUrl: './breadcrum.component.scss'
+  templateUrl: './breadcrumb.component.html',
+  styleUrl: './breadcrumb.component.scss',
 })
-export class BreadcrumComponent {
-
+export class BreadcrumbComponent {
   /**
    * Array de `breadcrumbs` que almacenará las rutas de la aplicación en las que se encuentre el usuario
    */
-  public breadcrumbs: BreadCrumbEntity[]
+  public breadcrumbs: BreadCrumbEntity[];
 
   constructor(
     private router: Router,
@@ -35,12 +40,14 @@ export class BreadcrumComponent {
   }
 
   ngOnInit() {
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      distinctUntilChanged(),
-    ).subscribe(() => {
-      this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.root);
-    });
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        distinctUntilChanged(),
+      )
+      .subscribe(() => {
+        this.breadcrumbs = this.buildBreadCrumb(this.activatedRoute.root);
+      });
   }
 
   /**
@@ -49,11 +56,18 @@ export class BreadcrumComponent {
    * @param {string} url
    * @param {BreadCrumbEntity[]} breadcrumbs
    */
-  buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: BreadCrumbEntity[] = []): BreadCrumbEntity[] {
-
+  buildBreadCrumb(
+    route: ActivatedRoute,
+    url: string = '',
+    breadcrumbs: BreadCrumbEntity[] = [],
+  ): BreadCrumbEntity[] {
     // Si no hay `routeConfig` disponible, significa que estamos en la ruta inicial
-    let label = route.routeConfig && route.routeConfig.data ? route.routeConfig.data['breadcrumb'] : '';
-    let path = route.routeConfig && route.routeConfig.data ? route.routeConfig.path : '';
+    let label =
+      route.routeConfig && route.routeConfig.data
+        ? route.routeConfig.data['breadcrumb']
+        : '';
+    let path =
+      route.routeConfig && route.routeConfig.data ? route.routeConfig.path : '';
 
     // Si la ruta es una ruta dinámica como ':id', la eliminamos
     const lastRoutePart = path?.split('/').pop() || '';
@@ -73,12 +87,13 @@ export class BreadcrumComponent {
     };
 
     // Solo añadiremos rutas cuya etiqueta no esté vacía
-    const newBreadcrumbs = breadcrumb.label ? [...breadcrumbs, breadcrumb] : [...breadcrumbs];
+    const newBreadcrumbs = breadcrumb.label
+      ? [...breadcrumbs, breadcrumb]
+      : [...breadcrumbs];
     if (route.firstChild) {
       // Si el siguiente es un hijo, seguimos construyendo el breadcrumb
       return this.buildBreadCrumb(route.firstChild, nextUrl, newBreadcrumbs);
     }
     return newBreadcrumbs;
   }
-
 }
