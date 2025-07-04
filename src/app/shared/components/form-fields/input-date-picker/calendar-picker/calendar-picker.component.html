@@ -47,15 +47,15 @@
         </button>
       </div>
 
-      <div class="calendar-picker__content calendar-picker__days">
-        <div class="calendar-picker__days__header">
+      <div class="calendar-picker__content">
+        <div class="calendar-picker__days">
           @for (dayKey of WEEK_DAYS; track dayKey) {
             <span>{{ dayKey | translate }}</span>
           }
         </div>
 
         <div
-          class="calendar-picker__days__weeks"
+          class="calendar-picker__weeks"
           role="grid"
           [attr.aria-label]="getAriaLabelForCalendar()"
         >

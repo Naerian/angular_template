@@ -34,18 +34,35 @@ export class CalendarService {
    * @param {any} value
    * @returns
    */
-  buildValidMomentDate(value: any) {
-    switch (true) {
-      case value instanceof Date && moment(value).isValid(): // Es de tipo "Date" y se comprueba si es válida
-        return moment(value);
-      case typeof value === 'string' && moment(new Date(value)).isValid(): // Es de tipo "string" y se comprueba que sea fecha
-        return moment(new Date(value));
-      case (moment.isMoment(value) || typeof value === 'object') &&
-        value?.isValid(): // Es de tipo "momentjs"
-        return value;
-      default:
-        return '';
+  /**
+   * Convierte un valor en un objeto Moment válido o devuelve null si no es posible
+   * @param {Date | string | moment.Moment | null | undefined} value - Valor a convertir
+   * @returns {moment.Moment | null} - Objeto Moment válido o null si no es válido
+   */
+  buildValidMomentDate(
+    value: Date | string | moment.Moment | null | undefined,
+  ): moment.Moment | null {
+    // Si el valor es null o undefined, devolvemos null
+    if (value === null || value === undefined) return null;
+
+    // Si el valor ya es un objeto Moment válido, lo clonamos y devolvemos
+    if (moment.isMoment(value)) return value.isValid() ? value.clone() : null;
+
+    // Si el valor es una instancia de Date, lo convertimos a Moment
+    if (value instanceof Date) {
+      const m = moment(value);
+      return m.isValid() ? m : null;
     }
+
+    // Si el valor es una cadena, intentamos parsearlo con el formato por defecto
+    if (typeof value === 'string') {
+      // Aquí asumimos el formato por defecto, cambiar si usas uno específico.
+      // El 'true' en `moment(value, format, strict)` fuerza validación estricta de formato
+      const momentDate = moment(value, DEFAULT_FORMAT, true);
+      return momentDate.isValid() ? momentDate : null;
+    }
+
+    return null;
   }
 
   /**

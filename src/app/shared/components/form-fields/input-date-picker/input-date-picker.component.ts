@@ -311,19 +311,17 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * Write form value to the DOM element (model => view)
    */
   writeValue(value: string | string[] | null) {
-    if (value && value !== '') {
-      const formatted = this.formatDate(this.format, value) || '';
-      this._value.set(formatted);
-
-      // Si es de tipo rango, se guarda el array de fechas
-      // Si es de tipo fecha única, se guarda la fecha formateada y se actualiza defaultDate
-      if (Array.isArray(value) && this.isRangeType())
-        this.rangeDates.set(value);
-      else
-        this.defaultDate.set(this._calendarService.buildValidMomentDate(value));
+    if (value) {
+      const firstDate = Array.isArray(value) ? value[0] : value;
+      const momentDate = this._calendarService.buildValidMomentDate(firstDate);
+      if (momentDate) {
+        this.defaultDate.set(momentDate);
+        this._value.set(this.formatDate(this.format, value) || '');
+      } else {
+        this._value.set('');
+      }
     } else {
       this._value.set('');
-      this.rangeDates.set('');
     }
   }
 

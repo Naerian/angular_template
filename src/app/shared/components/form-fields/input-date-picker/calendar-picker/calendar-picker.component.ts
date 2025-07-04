@@ -6,7 +6,6 @@ import {
   Input,
   OnInit,
   Output,
-  ViewEncapsulation,
   WritableSignal,
   inject,
   signal,
@@ -17,9 +16,7 @@ import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import {
   CalendarDay,
-  CalendarType,
   DEFAULT_FORMAT,
-  DateSelected,
   ViewMode,
   WEEK_DAYS,
 } from '../models/calendar-picker.model';
@@ -37,47 +34,29 @@ import { CalendarService } from '../services/calendar.service';
   selector: 'neo-calendar',
   templateUrl: './calendar-picker.component.html',
   styleUrls: ['./calendar-picker.component.scss'],
-  standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule, A11yModule],
-  encapsulation: ViewEncapsulation.None,
+  standalone: true,
 })
 export class CalendarPickerComponent implements OnInit {
-  @Input() type: CalendarType = 'day'; // Tipo: Día (day), Semana (week) o Rango (range), para marcarlo de una forma u otra segúna una fecha
-  @Output() dateSelected = new EventEmitter<DateSelected>();
-
-  _defaultDate: WritableSignal<string> = signal(
-    moment().format(DEFAULT_FORMAT),
-  ); // Por defecto, la fecha actual
-  get defaultDate(): string {
-    return this._defaultDate();
-  }
-  @Input() set defaultDate(value: string | moment.Moment) {
-    this._defaultDate.set(this._calendarService.buildValidMomentDate(value));
-    this.currentViewDate.set(this._defaultDate());
-  }
-
-  _startDate: WritableSignal<string> = signal(moment().format(DEFAULT_FORMAT)); // Por defecto, la fecha actual
-  get startDate(): string {
-    return this._startDate();
-  }
-  @Input() set startDate(value: string | moment.Moment) {
-    this._startDate.set(this._calendarService.buildValidMomentDate(value));
-    this.currentViewDate.set(this._startDate());
-  }
-
-  _endDate: WritableSignal<string> = signal(moment().format(DEFAULT_FORMAT)); // Por defecto, la fecha actual
-  get endDate(): string {
-    return this._endDate();
-  }
-  @Input() set endDate(value: string | moment.Moment) {
-    this._endDate.set(this._calendarService.buildValidMomentDate(value));
-  }
+  // Tipo de selección: día, semana o rango
+  @Input() type: 'day' | 'week' | 'range' = 'day';
 
   // Fechas deshabilitadas, que no se pueden seleccionar
   @Input() disabledDates: (string | moment.Moment)[] | undefined = undefined;
 
   // Si se quiere bloquear el rango de fechas (range / week) si hay fechas deshabilitadas o no
   @Input() blockDisabledRanges: boolean | undefined = undefined;
+
+  // Señales privadas que almacenan fechas como moment o null
+  private _defaultDate: WritableSignal<moment.Moment | null> = signal(moment());
+  private _startDate: WritableSignal<moment.Moment | null> = signal(moment());
+  private _endDate: WritableSignal<moment.Moment | null> = signal(moment());
+
+  // Evento que emite la fecha o rango seleccionado
+  @Output() dateSelected = new EventEmitter<{
+    date: string | string[];
+    closePicker: boolean;
+  }>();
 
   // Tipo de vista (Calendario normal, selección de año o de mes)
   viewMode: WritableSignal<ViewMode> = signal('default');
@@ -92,7 +71,7 @@ export class CalendarPickerComponent implements OnInit {
   // Array que guardará los días del mes por semana
   daysInMonth: WritableSignal<CalendarDay[][]> = signal([]);
 
-  // Variable para saber en que calendario estamos cuándo nos movemos por los meses
+  // Variable para saber en qué calendario estamos cuando nos movemos por los meses (formato string)
   currentViewDate: WritableSignal<string> = signal(
     moment().format(DEFAULT_FORMAT),
   );
@@ -109,12 +88,50 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
+   * Input para establecer la fecha por defecto del calendario
+   */
+  @Input()
+  set defaultDate(value: string | moment.Moment) {
+    const parsedDate = this._calendarService.buildValidMomentDate(value);
+    this._defaultDate.set(parsedDate ?? moment());
+    this.currentViewDate.set(this._defaultDate()!.format(DEFAULT_FORMAT));
+  }
+  get defaultDate(): string {
+    return this._defaultDate()
+      ? this._defaultDate()!.format(DEFAULT_FORMAT)
+      : '';
+  }
+
+  /**
+   * Input para establecer la fecha de inicio de rango
+   */
+  @Input()
+  set startDate(value: string | moment.Moment) {
+    const parsedDate = this._calendarService.buildValidMomentDate(value);
+    this._startDate.set(parsedDate ?? null);
+    if (parsedDate) this.currentViewDate.set(parsedDate.format(DEFAULT_FORMAT));
+  }
+  get startDate(): string {
+    return this._startDate() ? this._startDate()!.format(DEFAULT_FORMAT) : '';
+  }
+
+  /**
+   * Input para establecer la fecha de fin de rango
+   */
+  @Input()
+  set endDate(value: string | moment.Moment) {
+    const parsedDate = this._calendarService.buildValidMomentDate(value);
+    this._endDate.set(parsedDate ?? null);
+  }
+  get endDate(): string {
+    return this._endDate() ? this._endDate()!.format(DEFAULT_FORMAT) : '';
+  }
+
+  /**
    * Función para inicializar el calendario
    */
   initCalendar() {
     this.normalizeCurrentDate(this.currentViewDate());
-
-    // Establecemos los meses del calendario
     this.allMonths = moment.months();
     this.setCalendar();
   }
@@ -125,16 +142,10 @@ export class CalendarPickerComponent implements OnInit {
    * @param {string | moment.Moment} date
    */
   normalizeCurrentDate(date: string | moment.Moment) {
-    // Comprobamos si la fecha es un string o un objeto Moment
-    if (date instanceof moment) date = date.format(DEFAULT_FORMAT);
-
-    // Comprobamos si la fecha no es válida asignamos la fecha de hoy,
-    // en caso contrario, asignamos la fecha indicada
-    if (!moment(date).isValid())
-      this._defaultDate.set(moment().format(DEFAULT_FORMAT));
-    else this._defaultDate.set(moment(date).format(DEFAULT_FORMAT));
-
-    this.currentViewDate.set(this._defaultDate());
+    let mDate = moment.isMoment(date) ? date : moment(date);
+    if (!mDate.isValid()) mDate = moment();
+    this._defaultDate.set(mDate);
+    this.currentViewDate.set(mDate.format(DEFAULT_FORMAT));
   }
 
   /**
@@ -142,15 +153,13 @@ export class CalendarPickerComponent implements OnInit {
    */
   setCalendar() {
     const firstDayOfMonth = moment(this.currentViewDate()).startOf('month');
-    const firstCell = firstDayOfMonth.clone().startOf('isoWeek'); // lunes de la 1.ª fila
+    const firstCell = firstDayOfMonth.clone().startOf('isoWeek'); // lunes de la 1ª fila
     const weeks: CalendarDay[][] = [];
 
     for (let w = 0; w < 6; w++) {
-      // 6 filas máx.
       const week: CalendarDay[] = [];
 
       for (let d = 0; d < 7; d++) {
-        // 7 columnas
         const date = firstCell.clone().add(w, 'week').add(d, 'day');
 
         // Obtenemos las fechas deshabilitadas, si las hubiese
@@ -186,17 +195,16 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
-   * Función para comprobar si la fecha está dentro del rango de fechas
+   * Función para comprobar si la fecha está seleccionada según el tipo
    * @param {moment.Moment} date
    * @returns {boolean}
    */
   checkIfSelected(date: moment.Moment): boolean {
-    // Si no hay fecha por defecto, no hay selección
-    if (!this._defaultDate() || !date) return false;
+    if (!this._defaultDate()) return false;
 
     if (this.type === 'day') {
       // Selección por día exacto
-      return date?.isSame(moment(this._defaultDate()), 'day');
+      return date.isSame(this._defaultDate()!, 'day');
     } else if (this.type === 'week' || this.type === 'range') {
       // Selección por semana o rango: el rango _startDate a _endDate
       return this.checkIfInRange(date);
@@ -210,10 +218,12 @@ export class CalendarPickerComponent implements OnInit {
    * @returns {boolean}
    */
   checkIfInRange(date: moment.Moment): boolean {
+    if (!this._startDate() || !this._endDate()) return false;
+
     return this._calendarService.isRangeDate(
       date,
-      this._startDate(),
-      this._endDate(),
+      this._startDate()!,
+      this._endDate()!,
     );
   }
 
@@ -235,7 +245,7 @@ export class CalendarPickerComponent implements OnInit {
       endDate,
     );
 
-    // Filtramos las fechas deshabilitadas (puedes ajustar la comparación si disabledDates usa moment)
+    // Filtramos las fechas deshabilitadas (comparación con fechas formateadas)
     const disabledSet = new Set(
       this.disabledDates.map((d) => moment(d).format(DEFAULT_FORMAT)),
     );
@@ -253,7 +263,7 @@ export class CalendarPickerComponent implements OnInit {
     event.stopPropagation();
 
     // Si el día es inválido, si no hay fecha, si está deshabilitado o si no es del mes actual, no hacemos nada
-    if (!day || !day.date || day?.isDisabled || !day.isCurrentMonth) return;
+    if (!day || !day.date || day.isDisabled || !day.isCurrentMonth) return;
 
     // Si el tipo es día, semana o rango, establecemos la fecha
     if (this.type === 'day') {
@@ -279,143 +289,146 @@ export class CalendarPickerComponent implements OnInit {
     event?.preventDefault();
     event?.stopPropagation();
 
-    this._defaultDate.set(date.format(DEFAULT_FORMAT));
+    this._defaultDate.set(date);
     this.currentViewDate.set(date.format(DEFAULT_FORMAT));
     this.setCalendar();
-    this.emitDateSelected(this._defaultDate(), closePickerSelector);
+    this.emitDateSelected(date.format(DEFAULT_FORMAT), closePickerSelector);
   }
 
   /**
-   * Función para establecer la semana seleccionada
-   * @param {moment.Moment} date - Fecha de inicio de la semana
-   * @param {Event} event - Evento de clic
+   * Función para establecer la semana seleccionada y devolver
+   * el array de días válidos (filtrados o no)
+   * @param {moment.Moment} date - Fecha dentro de la semana seleccionada
+   * @param {Event} event - Evento (opcional)
    */
   setWeekDate(date: moment.Moment, event?: Event) {
     event?.preventDefault();
     event?.stopPropagation();
 
+    // Calculamos el primer y último día de la semana
     const firstDay = date.clone().startOf('isoWeek');
     const lastDay = date.clone().endOf('isoWeek');
 
-    // Todas las fechas dentro de la semana
+    // Obtenemos todas las fechas dentro del rango semanal
     const totalDatesInWeek = this._calendarService.getDatesBetween(
       firstDay.format(DEFAULT_FORMAT),
       lastDay.format(DEFAULT_FORMAT),
     );
 
+    // Creamos un set con las fechas deshabilitadas para fácil búsqueda
     const disabledSet = new Set(
       this.disabledDates?.map((d) => moment(d).format(DEFAULT_FORMAT)) ?? [],
     );
 
+    // Comprobamos si hay fechas deshabilitadas en el rango semanal
     const hasDisabledDates = totalDatesInWeek.some((dateStr) =>
       disabledSet.has(dateStr),
     );
 
-    // Si bloqueamos rangos con fechas deshabilitadas
+    // Si bloqueamos el rango cuando hay fechas deshabilitadas, limpiamos
+    // las fechas, mostramos un aviso y no emitimos nada
     if (this.blockDisabledRanges && hasDisabledDates) {
-      this._startDate.set('');
-      this._endDate.set('');
+      this._startDate.set(null);
+      this._endDate.set(null);
       this.showBlockedRangeToast();
       this.setCalendar();
       return;
     }
 
-    // Si no bloqueamos, filtramos las fechas válidas
+    // Si no bloqueamos, filtramos las fechas deshabilitadas antes de emitir
     const filteredDates = hasDisabledDates
       ? totalDatesInWeek.filter((dateStr) => !disabledSet.has(dateStr))
       : totalDatesInWeek;
 
-    // Si hay fechas deshabilitadas y no bloqueamos el rango, mostramos un aviso
-    if (!this.blockDisabledRanges && hasDisabledDates)
+    // Si hay fechas deshabilitadas y no bloqueamos, mostramos toast informativo
+    if (!this.blockDisabledRanges && hasDisabledDates) {
       this.showDisabledDatesToast();
+    }
 
-    // Usamos la primera y última fecha del array filtrado
-    this._startDate.set(filteredDates[0]);
-    this._endDate.set(filteredDates[filteredDates.length - 1]);
+    // Asignamos la primera y última fecha del array filtrado
+    this._startDate.set(moment(filteredDates[0], DEFAULT_FORMAT));
+    this._endDate.set(
+      moment(filteredDates[filteredDates.length - 1], DEFAULT_FORMAT),
+    );
 
+    // Actualizamos la fecha de vista actual al primer día válido
     this.currentViewDate.set(filteredDates[0]);
     this.setCalendar();
     this.emitDateSelected(filteredDates, true);
   }
 
   /**
-   * Función para establecer un rango de fechas
-   * @param {moment.Moment} date
-   * @param {Event} event
-   * @param {boolean} cleanDates
+   * Función para establecer un rango de fechas seleccionado
+   * @param {moment.Moment} date - Fecha seleccionada
+   * @param {Event} event - Evento (opcional)
+   * @param {boolean} cleanDates - Si limpiar rango anterior
    */
   setRangeDate(date: moment.Moment, event?: Event, cleanDates: boolean = true) {
     event?.preventDefault();
     event?.stopPropagation();
 
-    if (cleanDates && this._startDate() !== '' && this._endDate() !== '') {
-      this._startDate.set('');
-      this._endDate.set('');
+    // Limpiamos las fechas si procede
+    if (cleanDates && this._startDate() && this._endDate()) {
+      this._startDate.set(null);
+      this._endDate.set(null);
     }
 
-    if (this._startDate() === '') {
-      this._startDate.set(date.format(DEFAULT_FORMAT));
-    } else if (
-      this._endDate() === '' &&
-      date.isAfter(moment(this._startDate()))
-    ) {
-      this._endDate.set(date.format(DEFAULT_FORMAT));
-    } else if (
-      moment(this._startDate()).format(DEFAULT_FORMAT) ===
-      date.format(DEFAULT_FORMAT)
-    ) {
-      this._startDate.set(date.format(DEFAULT_FORMAT));
-      this._endDate.set(date.format(DEFAULT_FORMAT));
-    } else if (moment(this._startDate()).isAfter(moment(date))) {
-      const dateStart = moment(new Date(this._startDate()));
-      this._startDate.set(date.format(DEFAULT_FORMAT));
-      this._endDate.set(dateStart.format(DEFAULT_FORMAT));
+    // Lógica para establecer el inicio o fin del rango
+    if (!this._startDate()) {
+      this._startDate.set(date);
+    } else if (!this._endDate() && date.isAfter(this._startDate()!)) {
+      this._endDate.set(date);
+    } else if (this._startDate()!.isSame(date)) {
+      this._startDate.set(date);
+      this._endDate.set(date);
+    } else if (this._startDate()!.isAfter(date)) {
+      const dateStart = this._startDate()!;
+      this._startDate.set(date);
+      this._endDate.set(dateStart);
     }
 
-    // Si ya tenemos un rango de fechas establecido, comprobamos si hay fechas deshabilitadas
-    // y actuamos según la configuración de bloqueo de rangos
-    if (this._startDate() !== '' && this._endDate() !== '') {
+    // Si ya hay rango establecido, comprobamos fechas deshabilitadas y actuamos según configuración
+    if (this._startDate() && this._endDate()) {
       const totalDatesInRange = this._calendarService.getDatesBetween(
-        this._startDate(),
-        this._endDate(),
+        this._startDate()!.format(DEFAULT_FORMAT),
+        this._endDate()!.format(DEFAULT_FORMAT),
       );
+
       const disabledSet = new Set(
         this.disabledDates?.map((d) => moment(d).format(DEFAULT_FORMAT)) ?? [],
       );
+
       const hasDisabledDates = totalDatesInRange.some((date) =>
         disabledSet.has(date),
       );
 
-      // Si bloqueamos el rango cuando hay fechas deshabilitadas, limpiamos
-      // las fechas, mostramos un aviso y no emitimos nada
+      // Bloqueamos el rango si hay fechas deshabilitadas y está configurado así
       if (this.blockDisabledRanges && hasDisabledDates) {
-        this._startDate.set('');
-        this._endDate.set('');
+        this._startDate.set(null);
+        this._endDate.set(null);
         this.showBlockedRangeToast();
         this.setCalendar();
         return;
       }
 
-      // Si no bloqueamos, filtramos las fechas deshabilitadas antes de emitir
+      // Filtramos fechas válidas y emitimos
       const filteredDates = this.filterEnabledDatesInRange(
-        this._startDate(),
-        this._endDate(),
+        this._startDate()!.format(DEFAULT_FORMAT),
+        this._endDate()!.format(DEFAULT_FORMAT),
       );
 
-      // Si hay fechas deshabilitadas y no bloqueamos el rango, mostramos un aviso
-      // pero seguimos emitiendo las fechas filtradas
-      if (!this.blockDisabledRanges && hasDisabledDates)
+      if (!this.blockDisabledRanges && hasDisabledDates) {
         this.showDisabledDatesToast();
+      }
 
-      // Asignamos las fechas filtradas y actualizamos la vista
-      this.currentViewDate.set(moment(this._endDate()).format(DEFAULT_FORMAT));
+      this.currentViewDate.set(this._endDate()!.format(DEFAULT_FORMAT));
       this.setCalendar();
       this.emitDateSelected(filteredDates, true);
     }
   }
 
   /**
-   * Muestra un mensaje de aviso cuando se bloquea el rango por fechas deshabilitadas
+   * Mostrar toast de error cuando se bloquea la selección por fechas deshabilitadas
    */
   showBlockedRangeToast() {
     this._toastService.error(
@@ -430,7 +443,7 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
-   * Muestra un mensaje de aviso cuando hay fechas deshabilitadas en el rango
+   * Mostrar toast de advertencia cuando hay fechas deshabilitadas en el rango pero no se bloquea
    */
   showDisabledDatesToast() {
     this._toastService.warning(
@@ -443,30 +456,30 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
-   * Función para emitir el valor seleccionado
-   * @param {string | string[]} date
-   * @param {boolean} closePickerSelector
+   * Emitir la fecha o rango seleccionado para notificar al componente padre
+   * @param date string o string[] con las fechas
+   * @param closePickerSelector boolean para cerrar el selector si procede
    */
   emitDateSelected(
     date: string | string[],
     closePickerSelector: boolean = true,
   ) {
     this.dateSelected.emit({
-      date: date,
+      date,
       closePicker: closePickerSelector,
     });
   }
 
   /**
-   * Función para cambiar la vista del calendario (días, meses o años)
-   * @param {ViewMode} mode
-   * @param {Event} event
+   * Cambiar el modo de vista del calendario: default, years, months
+   * @param mode ViewMode
+   * @param event Evento (opcional)
    */
   chageViewMode(mode: ViewMode, event?: Event) {
     event?.preventDefault();
     event?.stopPropagation();
 
-    // Si la vista es la de años, creamos los años según el año de la fecha actual
+    // Si se cambia a vista años, cargamos rango de años
     if (mode === 'years') {
       const year =
         moment(new Date(this.currentViewDate())).year() ?? moment().year();
@@ -477,9 +490,9 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
-   * Función para cambiar el mes
-   * @param {number} month
-   * @param {Event} event
+   * Cambiar el mes seleccionado en la vista de calendario
+   * @param month número de mes (0-11)
+   * @param event Evento (opcional)
    */
   changeMonth(month: number, event?: Event) {
     event?.preventDefault();
@@ -495,33 +508,33 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
-   * Función para cambiar al mes anterior
+   * Ir al mes anterior
    */
   prevMonth() {
     this.currentViewDate.set(
       moment(new Date(this.currentViewDate()))
-        .subtract('1', 'month')
+        .subtract(1, 'month')
         .format(DEFAULT_FORMAT),
     );
     this.setCalendar();
   }
 
   /**
-   * Función para cambiar al mes siguiente
+   * Ir al mes siguiente
    */
   nextMonth() {
     this.currentViewDate.set(
       moment(new Date(this.currentViewDate()))
-        .add('1', 'month')
+        .add(1, 'month')
         .format(DEFAULT_FORMAT),
     );
     this.setCalendar();
   }
 
   /**
-   * Función para cambiar el año
-   * @param {string} year
-   * @param {Event} event
+   * Cambiar el año seleccionado en la vista de calendario
+   * @param year string con el año seleccionado
+   * @param event Evento (opcional)
    */
   changeYear(year: string, event?: Event) {
     event?.preventDefault();
@@ -529,7 +542,8 @@ export class CalendarPickerComponent implements OnInit {
 
     this.viewMode.set('default');
     this.currentViewDate.set(
-      moment(new Date(this._defaultDate()))
+      (this._defaultDate() ?? moment())
+        .clone()
         .set('year', Number(year))
         .format(DEFAULT_FORMAT),
     );
@@ -537,13 +551,11 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
-   * Función para obtener la etiqueta ARIA según el tipo de calendario
-   * y el día seleccionado. De esta forma se proporcionará una mejor accesibilidad
-   * @returns {string}
+   * Devuelve la etiqueta aria para el calendario según el tipo de selección
    */
   getAriaLabelForCalendar(): string {
-    const start = moment(this._startDate()).format('LL');
-    const end = moment(this._endDate()).format('LL');
+    const start = this._startDate() ? this._startDate()!.format('LL') : '';
+    const end = this._endDate() ? this._endDate()!.format('LL') : '';
     const current = moment(this.currentViewDate()).format('LL');
 
     switch (this.type) {
@@ -558,8 +570,8 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
-   * Carga el bloque de 20 años donde está incluido el año actual
-   * @param {number} centerYear - Año central para calcular el bloque de 20 años
+   * Carga el rango de años para la vista de selección de años
+   * @param centerYear año central para cargar la década (default: año actual)
    */
   loadYearRange(centerYear: number = moment().year()) {
     const startYear = Math.floor(centerYear / 20) * 20;
@@ -568,18 +580,18 @@ export class CalendarPickerComponent implements OnInit {
         .year(startYear + i)
         .format('YYYY'),
     );
-    this.yearsBlockStart = startYear; // Para usar luego en prev/next
+    this.yearsBlockStart = startYear;
   }
 
   /**
-   * Carga los 20 años anteriores al primer año mostrado actualmente
+   * Cargar rango de años anterior (20 años atrás)
    */
   loadPastYears() {
     this.loadYearRange(this.yearsBlockStart - 20);
   }
 
   /**
-   * Carga los 20 años siguientes al último año mostrado actualmente
+   * Cargar rango de años siguiente (20 años adelante)
    */
   loadFutureYears() {
     this.loadYearRange(this.yearsBlockStart + 20);
