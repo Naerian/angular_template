@@ -51,7 +51,7 @@ export class CalendarPickerComponent implements OnInit {
   }
   @Input() set defaultDate(value: string | moment.Moment) {
     this._defaultDate.set(this._calendarService.buildValidMomentDate(value));
-    this.currentCalendar.set(this._defaultDate());
+    this.currentViewDate.set(this._defaultDate());
   }
 
   _startDate: WritableSignal<string> = signal(moment().format(DEFAULT_FORMAT)); // Por defecto, la fecha actual
@@ -60,7 +60,7 @@ export class CalendarPickerComponent implements OnInit {
   }
   @Input() set startDate(value: string | moment.Moment) {
     this._startDate.set(this._calendarService.buildValidMomentDate(value));
-    this.currentCalendar.set(this._startDate());
+    this.currentViewDate.set(this._startDate());
   }
 
   _endDate: WritableSignal<string> = signal(moment().format(DEFAULT_FORMAT)); // Por defecto, la fecha actual
@@ -82,7 +82,7 @@ export class CalendarPickerComponent implements OnInit {
   daysInMonth: WritableSignal<CalendarDay[][]> = signal([]);
 
   // Variable para saber en que calendario estamos cuándo nos movemos por los meses
-  currentCalendar: WritableSignal<string> = signal(
+  currentViewDate: WritableSignal<string> = signal(
     moment().format(DEFAULT_FORMAT),
   );
 
@@ -99,7 +99,7 @@ export class CalendarPickerComponent implements OnInit {
    * Función para inicializar el calendario
    */
   initCalendar() {
-    this.checkCurrentCalendarDate(this.currentCalendar());
+    this.checkcurrentViewDateDate(this.currentViewDate());
 
     // Establecemos los meses del calendario
     this.allMonths = moment.months();
@@ -110,7 +110,7 @@ export class CalendarPickerComponent implements OnInit {
    * Función para establecer la "defaultDate" a hoy si no es válida
    * @param {string | moment.Moment} date
    */
-  checkCurrentCalendarDate(date: string | moment.Moment) {
+  checkcurrentViewDateDate(date: string | moment.Moment) {
     // Comprobamos si la fecha es un string o un objeto Moment
     if (date instanceof moment) date = date.format(DEFAULT_FORMAT);
 
@@ -120,14 +120,14 @@ export class CalendarPickerComponent implements OnInit {
       this._defaultDate.set(moment().format(DEFAULT_FORMAT));
     else this._defaultDate.set(moment(date).format(DEFAULT_FORMAT));
 
-    this.currentCalendar.set(this._defaultDate());
+    this.currentViewDate.set(this._defaultDate());
   }
 
   /**
    * Función para construir el calendario según una fecha dada
    */
   setCalendar() {
-    const firstDayOfMonth = moment(this.currentCalendar()).startOf('month');
+    const firstDayOfMonth = moment(this.currentViewDate()).startOf('month');
     const firstCell = firstDayOfMonth.clone().startOf('isoWeek'); // lunes de la 1.ª fila
     const weeks: CalendarDay[][] = [];
 
@@ -229,7 +229,7 @@ export class CalendarPickerComponent implements OnInit {
     event?.stopPropagation();
 
     this._defaultDate.set(date.format(DEFAULT_FORMAT));
-    this.currentCalendar.set(date.format(DEFAULT_FORMAT));
+    this.currentViewDate.set(date.format(DEFAULT_FORMAT));
     this.setCalendar();
     this.emitDateSelected(this._defaultDate(), closePickerSelector);
   }
@@ -257,7 +257,7 @@ export class CalendarPickerComponent implements OnInit {
         this._startDate() !== '' && this._endDate() !== ''
           ? [this._startDate(), this._endDate()]
           : '';
-      this.currentCalendar.set(
+      this.currentViewDate.set(
         moment(this._startDate()).format(DEFAULT_FORMAT),
       );
       this.setCalendar();
@@ -306,7 +306,7 @@ export class CalendarPickerComponent implements OnInit {
         this._startDate() !== '' && this._endDate() !== ''
           ? [this._startDate(), this._endDate()]
           : '';
-      this.currentCalendar.set(moment(this._endDate()).format(DEFAULT_FORMAT));
+      this.currentViewDate.set(moment(this._endDate()).format(DEFAULT_FORMAT));
       this.setCalendar();
       this.emitDateSelected(rangeDate, true);
     }
@@ -339,7 +339,7 @@ export class CalendarPickerComponent implements OnInit {
     // Si la vista es la de años, creamos los años según el año de la fecha actual
     if (viewMode === 'years')
       this.loadFutureYears(
-        moment(new Date(this.currentCalendar())).format('YYYY'),
+        moment(new Date(this.currentViewDate())).format('YYYY'),
       );
 
     this.viewMode.set(viewMode);
@@ -355,8 +355,8 @@ export class CalendarPickerComponent implements OnInit {
     event?.stopPropagation();
 
     this.viewMode.set('default');
-    this.currentCalendar.set(
-      moment(new Date(this.currentCalendar()))
+    this.currentViewDate.set(
+      moment(new Date(this.currentViewDate()))
         .set('month', month)
         .format(DEFAULT_FORMAT),
     );
@@ -367,8 +367,8 @@ export class CalendarPickerComponent implements OnInit {
    * Función para cambiar al mes anterior
    */
   prevMonth() {
-    this.currentCalendar.set(
-      moment(new Date(this.currentCalendar()))
+    this.currentViewDate.set(
+      moment(new Date(this.currentViewDate()))
         .subtract('1', 'month')
         .format(DEFAULT_FORMAT),
     );
@@ -379,8 +379,8 @@ export class CalendarPickerComponent implements OnInit {
    * Función para cambiar al mes siguiente
    */
   nextMonth() {
-    this.currentCalendar.set(
-      moment(new Date(this.currentCalendar()))
+    this.currentViewDate.set(
+      moment(new Date(this.currentViewDate()))
         .add('1', 'month')
         .format(DEFAULT_FORMAT),
     );
@@ -397,12 +397,30 @@ export class CalendarPickerComponent implements OnInit {
     event?.stopPropagation();
 
     this.viewMode.set('default');
-    this.currentCalendar.set(
+    this.currentViewDate.set(
       moment(new Date(this._defaultDate()))
         .set('year', Number(year))
         .format(DEFAULT_FORMAT),
     );
     this.setCalendar();
+  }
+
+  /**
+   * Función para obtener la etiqueta ARIA según el tipo de calendario
+   * y el día seleccionado. De esta forma se proporcionará una mejor accesibilidad
+   * @returns {string}
+   */
+  getAriaLabelForCalendar(): string {
+    switch (this.type) {
+      case 'day':
+        return `${this.currentViewDate()}`;
+      case 'range':
+        return `${this._startDate()} - ${this._endDate()}`;
+      case 'week':
+        return `${this._startDate()} - ${this._endDate()}`;
+      default:
+        return '';
+    }
   }
 
   /**

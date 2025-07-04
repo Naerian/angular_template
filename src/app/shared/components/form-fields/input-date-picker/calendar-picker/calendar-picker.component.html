@@ -20,7 +20,7 @@
             [title]="'CALENDAR.CHANGE_MONTH' | translate"
           >
             {{
-              "CALENDAR." + (currentCalendar() | date: "MMMM" | uppercase)
+              "CALENDAR." + (currentViewDate() | date: "MMMM" | uppercase)
                 | translate
             }}
             <i class="ri-arrow-down-s-line arrow-dropdown"></i>
@@ -32,7 +32,7 @@
             (click)="chageViewMode('years', $event)"
             [title]="'CALENDAR.CHANGE_YEAR' | translate"
           >
-            {{ currentCalendar() | date: "yyyy" }}
+            {{ currentViewDate() | date: "yyyy" }}
             <i class="ri-arrow-down-s-line arrow-dropdown"></i>
           </button>
         </div>
@@ -46,39 +46,36 @@
           <i class="ri-arrow-right-s-line"></i>
         </button>
       </div>
+
       <div class="calendar-picker__content calendar-picker__days">
         <div class="calendar-picker__days__header">
           @for (dayKey of WEEK_DAYS; track dayKey) {
             <span>{{ dayKey | translate }}</span>
           }
         </div>
+
         <div
           class="calendar-picker__days__weeks"
           role="grid"
-          [attr.aria-label]="currentCalendar() | date: 'dd/MM/yyyy'"
+          [attr.aria-label]="getAriaLabelForCalendar()"
         >
+          <!-- Loop through weeks of the month -->
           @for (week of daysInMonth(); track week[0].date.valueOf()) {
-            <div class="calendar-picker__days__weeks__week" role="row">
+            <div class="calendar-picker__week" role="row">
               @for (day of week; track day.date.valueOf()) {
                 <button
                   type="button"
                   role="gridcell"
-                  [tabindex]="!day.isCurrentMonth ? -1 : 0"
+                  tabindex="{{ !day.isCurrentMonth ? -1 : 0 }}"
                   (click)="selectItem(day, $event)"
-                  class="calendar-picker__days__weeks__week__day"
-                  [class.calendar-picker__days__weeks__week__day--disabled]="
-                    !day.isCurrentMonth
-                  "
+                  class="calendar-picker__day"
+                  [class.calendar-picker__day--disabled]="!day.isCurrentMonth"
                   [attr.aria-label]="day.date.toDate() | date: 'dd/MM/yyyy'"
                   [attr.aria-selected]="day.isSelected || null"
                   [attr.aria-disabled]="!day.isCurrentMonth"
                   [attr.aria-current]="day.isToday"
-                  [class.calendar-picker__days__weeks__week__day--selected]="
-                    day.isSelected
-                  "
-                  [class.calendar-picker__days__weeks__week__day--today]="
-                    day.isToday
-                  "
+                  [class.calendar-picker__day--selected]="day.isSelected"
+                  [class.calendar-picker__day--today]="day.isToday"
                   [title]="day.date.toDate() | date: 'dd/MM/yyyy'"
                 >
                   {{ day.date.toDate() | date: "dd" }}
@@ -96,19 +93,17 @@
       [cdkTrapFocusAutoCapture]="true"
     >
       <div class="calendar-picker__header">
-        <span class="calendar-picker__header__title">{{
-          "CALENDAR.MONTH" | translate
-        }}</span>
+        <span class="calendar-picker__header__title">
+          {{ "CALENDAR.MONTH" | translate }}
+        </span>
       </div>
       <div class="calendar-picker__content calendar-picker__months__content">
         @for (month of allMonths; track month) {
           <button
             type="button"
             tabindex="0"
-            class="calendar-picker__months__item"
-            [ngClass]="{
-              selected: (currentCalendar() | date: 'MMMM') === month
-            }"
+            class="calendar-picker__month"
+            [class.selected]="(currentViewDate() | date: 'MMMM') === month"
             (click)="changeMonth($index, $event)"
             [title]="'CALENDAR.' + month | uppercase | translate"
           >
@@ -144,9 +139,9 @@
         >
           <i class="ri-arrow-left-s-line"></i>
         </button>
-        <span class="calendar-picker__header__title">{{
-          "CALENDAR.YEAR" | translate
-        }}</span>
+        <span class="calendar-picker__header__title">
+          {{ "CALENDAR.YEAR" | translate }}
+        </span>
         <button
           type="button"
           tabindex="0"
@@ -162,10 +157,8 @@
           <button
             tabindex="0"
             type="button"
-            class="calendar-picker__years__item"
-            [ngClass]="{
-              selected: (currentCalendar() | date: 'yyyy') === year
-            }"
+            class="calendar-picker__year"
+            [class.selected]="(currentViewDate() | date: 'yyyy') === year"
             (click)="changeYear(year, $event)"
             [title]="year"
           >
