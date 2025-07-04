@@ -9,7 +9,6 @@ import {
 } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { RouterOutlet } from '@angular/router';
 import { IColumnsFormat } from '@entities/table.entity';
 import { TranslateModule } from '@ngx-translate/core';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
@@ -32,6 +31,7 @@ import { SidebarPanelService } from '@shared/components/sidebar-panel/services/s
 import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
 import { TabsModule } from '@shared/components/tabs/tabs.module';
 import { ThemeToggleModule } from '@shared/components/theme-toggle/theme-toggle.module';
+import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -48,7 +48,6 @@ import { ToastrService } from 'ngx-toastr';
     TranslateModule,
     ThemeToggleModule,
     TabsModule,
-    RouterOutlet,
     JsonPipe,
     PaginatorComponent,
     MenuContextModule,
@@ -91,6 +90,7 @@ export class TestComponent implements OnInit {
   dateInfo1: any;
   dateInfo2: any;
   dateInfo3: any;
+  dateInfo4: any;
 
   checkboxValue: boolean = false;
   radioButtonValue: string | null | number = null;
@@ -115,8 +115,22 @@ export class TestComponent implements OnInit {
     { id: '3', name: 'Three name', description: 'Three', price: 44 },
   ]);
 
+  disabledDates: (string | moment.Moment)[] = [];
+
   public readonly testForm = new FormGroup({
     name: new FormControl<string>('', [Validators.required]),
+  });
+
+  public readonly testFormDateWeek = new FormGroup({
+    dateWeek: new FormControl<string[]>([]),
+  });
+
+  public readonly testFormDateRange = new FormGroup({
+    dateRange: new FormControl<string[]>([]),
+  });
+
+  public readonly testFormDate = new FormGroup({
+    date: new FormControl<string>(''),
   });
 
   constructor(
@@ -125,7 +139,18 @@ export class TestComponent implements OnInit {
     private readonly _toastrService: ToastrService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Inicializamos las fechas deshabilitadas para el componente "neo-calendar"
+    this.setDisabledDates();
+  }
+
+  setDisabledDates() {
+    // Creamos un array de 4 fechas deshabilitadas para el mes actual de forma aleatoria
+    this.disabledDates = Array.from({ length: 4 }, () => {
+      const randomDay = Math.floor(Math.random() * 28) + 1; // Días del 1 al 28 para evitar problemas de mes
+      return moment().date(randomDay).format('YYYY-MM-DD');
+    });
+  }
 
   columnsChanged(columns: IColumnsFormat[]) {
     this.columnDefinitions = columns;
@@ -187,39 +212,7 @@ export class TestComponent implements OnInit {
       <p>Angular is a platform that makes it easy to build applications with the web. Angular
         combines declarative templates, dependency injection, end to end tooling, and integrated
         best practices to solve development challenges. Angular empowers developers to build
-        applications that live on the web, mobile, or the desktop</p>
-
-      <h3>Architecture overview</h3>
-
-      <p>Angular is a platform and framework for building client applications in HTML and TypeScript.
-      Angular is itself written in TypeScript. It implements core and optional functionality as a
-      set of TypeScript libraries that you import into your apps.</p>
-
-      <p>The basic building blocks of an Angular application are NgModules, which provide a compilation
-      context for components. NgModules collect related code into functional sets; an Angular app is
-      defined by a set of NgModules. An app always has at least a root module that enables
-      bootstrapping, and typically has many more feature modules.</p>
-
-      <p>Components define views, which are sets of screen elements that Angular can choose among and
-      modify according to your program logic and data. Every app has at least a root component.</p>
-
-      <p>Components use services, which provide specific functionality not directly related to views.
-      Service providers can be injected into components as dependencies, making your code modular,
-      reusable, and efficient.</p>
-
-      <p>Both components and services are simply classes, with decorators that mark their type and
-      provide metadata that tells Angular how to use them.</p>
-
-      <p>The metadata for a component class associates it with a template that defines a view. A
-      template combines ordinary HTML with Angular directives and binding markup that allow Angular
-      to modify the HTML before rendering it for display.</p>
-
-      <p>The metadata for a service class provides the information Angular needs to make it available
-      to components through Dependency Injection (DI).</p>
-
-      <p>An app's components typically define many views, arranged hierarchically. Angular provides
-      the Router service to help you define navigation paths among views. The router provides
-      sophisticated in-browser navigational capabilities.</p>`,
+        applications that live on the web, mobile, or the desktop</p>`,
       cancelText: 'Cancelar',
       confirmText: 'Aceptar',
       canBeClosed: true,

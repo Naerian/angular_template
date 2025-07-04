@@ -8,11 +8,13 @@ import {
   Output,
   ViewEncapsulation,
   WritableSignal,
+  inject,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
+import { ToastrService } from 'ngx-toastr';
 import {
   CalendarDay,
   CalendarType,
@@ -20,19 +22,19 @@ import {
   DateSelected,
   ViewMode,
   WEEK_DAYS,
-} from '../models/date-picker.entity';
+} from '../models/calendar-picker.model';
 import { CalendarService } from '../services/calendar.service';
 
 /**
  * @name
- * neo-calendar-picker
+ * neo-calendar
  * @description
  * Componente para crear un calendario
  * @example
- * <neo-calendar-picker [type]="'day'" [defaultDate]="'2021-12-31'" (dateSelected)="dateSelected($event)"></neo-calendar-picker>
+ * <neo-calendar [type]="'day'" [defaultDate]="'2021-12-31'" (dateSelected)="dateSelected($event)"></neo-calendar>
  */
 @Component({
-  selector: 'neo-calendar-picker',
+  selector: 'neo-calendar',
   templateUrl: './calendar-picker.component.html',
   styleUrls: ['./calendar-picker.component.scss'],
   standalone: true,
@@ -71,12 +73,21 @@ export class CalendarPickerComponent implements OnInit {
     this._endDate.set(this._calendarService.buildValidMomentDate(value));
   }
 
+  // Fechas deshabilitadas, que no se pueden seleccionar
+  @Input() disabledDates: (string | moment.Moment)[] | undefined = undefined;
+
+  // Si se quiere bloquear el rango de fechas (range / week) si hay fechas deshabilitadas o no
+  @Input() blockDisabledRanges: boolean | undefined = undefined;
+
   // Tipo de vista (Calendario normal, selección de año o de mes)
   viewMode: WritableSignal<ViewMode> = signal('default');
 
   // Array de datos para años y meses
   allYears: string[] = [];
   allMonths: string[] = [];
+
+  // Variable para el año actual, para poder navegar por décadas
+  yearsBlockStart = moment().year();
 
   // Array que guardará los días del mes por semana
   daysInMonth: WritableSignal<CalendarDay[][]> = signal([]);
@@ -89,7 +100,9 @@ export class CalendarPickerComponent implements OnInit {
   // Días de la semana para la vista
   WEEK_DAYS: string[] = WEEK_DAYS;
 
-  constructor(private readonly _calendarService: CalendarService) {}
+  private readonly _toastService = inject(ToastrService);
+  private readonly _calendarService = inject(CalendarService);
+  private readonly _translateService = inject(TranslateService);
 
   ngOnInit(): void {
     queueMicrotask(() => this.initCalendar());
@@ -99,7 +112,7 @@ export class CalendarPickerComponent implements OnInit {
    * Función para inicializar el calendario
    */
   initCalendar() {
-    this.checkcurrentViewDateDate(this.currentViewDate());
+    this.normalizeCurrentDate(this.currentViewDate());
 
     // Establecemos los meses del calendario
     this.allMonths = moment.months();
@@ -107,10 +120,11 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
-   * Función para establecer la "defaultDate" a hoy si no es válida
+   * Función para normalizar la fecha actual y establecerla
+   * como fecha por defecto del calendario.
    * @param {string | moment.Moment} date
    */
-  checkcurrentViewDateDate(date: string | moment.Moment) {
+  normalizeCurrentDate(date: string | moment.Moment) {
     // Comprobamos si la fecha es un string o un objeto Moment
     if (date instanceof moment) date = date.format(DEFAULT_FORMAT);
 
@@ -139,12 +153,16 @@ export class CalendarPickerComponent implements OnInit {
         // 7 columnas
         const date = firstCell.clone().add(w, 'week').add(d, 'day');
 
+        // Obtenemos las fechas deshabilitadas, si las hubiese
+        const disabledDates = this.getDisabledDates();
+
         week.push({
           date,
           isCurrentMonth: date.month() === firstDayOfMonth.month(),
           isToday: date.isSame(moment(), 'day'),
           isSelected: this.checkIfSelected(date),
           isInRange: this.checkIfInRange(date),
+          isDisabled: disabledDates.some((d) => d.isSame(date, 'day')),
         });
       }
 
@@ -152,6 +170,19 @@ export class CalendarPickerComponent implements OnInit {
     }
 
     this.daysInMonth.set(weeks);
+  }
+
+  /**
+   * Función para obtener las fechas deshabilitadas del calendario
+   * que hayan sido pasadas como parámetro a través de `disabledDates`
+   * @returns {moment.Moment[]}
+   */
+  getDisabledDates(): moment.Moment[] {
+    return (
+      this.disabledDates
+        ?.map((date) => moment(date))
+        .filter((m) => m.isValid()) ?? []
+    );
   }
 
   /**
@@ -166,11 +197,8 @@ export class CalendarPickerComponent implements OnInit {
     if (this.type === 'day') {
       // Selección por día exacto
       return date?.isSame(moment(this._defaultDate()), 'day');
-    } else if (this.type === 'week') {
-      // Selección por semana: el rango _startDate a _endDate
-      return this.checkIfInRange(date);
-    } else if (this.type === 'range') {
-      // Selección por rango: el rango _startDate a _endDate
+    } else if (this.type === 'week' || this.type === 'range') {
+      // Selección por semana o rango: el rango _startDate a _endDate
       return this.checkIfInRange(date);
     }
     return false;
@@ -190,6 +218,32 @@ export class CalendarPickerComponent implements OnInit {
   }
 
   /**
+   * Filtra las fechas deshabilitadas dentro de un rango
+   * @param startDate string en formato DEFAULT_FORMAT
+   * @param endDate string en formato DEFAULT_FORMAT
+   * @returns string[] con fechas válidas dentro del rango
+   */
+  filterEnabledDatesInRange(startDate: string, endDate: string): string[] {
+    if (!this.disabledDates || this.disabledDates.length === 0) {
+      // No hay fechas deshabilitadas, devolvemos todo el rango
+      return this._calendarService.getDatesBetween(startDate, endDate);
+    }
+
+    // Obtenemos todas las fechas del rango
+    const allDatesInRange = this._calendarService.getDatesBetween(
+      startDate,
+      endDate,
+    );
+
+    // Filtramos las fechas deshabilitadas (puedes ajustar la comparación si disabledDates usa moment)
+    const disabledSet = new Set(
+      this.disabledDates.map((d) => moment(d).format(DEFAULT_FORMAT)),
+    );
+
+    return allDatesInRange.filter((date) => !disabledSet.has(date));
+  }
+
+  /**
    * Función para seleccionar un día, semana o rango de fechas
    * @param {CalendarDay} day
    * @param {Event} event
@@ -198,11 +252,8 @@ export class CalendarPickerComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
-    // Si el día no tiene fecha, no hacemos nada
-    if (!day || !day.date) return;
-
-    // Si la fecha no es del mes actual, no hacemos nada
-    if (!day.isCurrentMonth) return;
+    // Si el día es inválido, si no hay fecha, si está deshabilitado o si no es del mes actual, no hacemos nada
+    if (!day || !day.date || day?.isDisabled || !day.isCurrentMonth) return;
 
     // Si el tipo es día, semana o rango, establecemos la fecha
     if (this.type === 'day') {
@@ -236,33 +287,55 @@ export class CalendarPickerComponent implements OnInit {
 
   /**
    * Función para establecer la semana seleccionada
-   * @param {number} weekIdx
-   * @param {Event} event
+   * @param {moment.Moment} date - Fecha de inicio de la semana
+   * @param {Event} event - Evento de clic
    */
   setWeekDate(date: moment.Moment, event?: Event) {
     event?.preventDefault();
     event?.stopPropagation();
 
-    // Obtenemos el primer y último día de la semana
     const firstDay = date.clone().startOf('isoWeek');
     const lastDay = date.clone().endOf('isoWeek');
 
-    // Asignamos el rango de fechas
-    this._startDate.set(firstDay.format(DEFAULT_FORMAT));
-    this._endDate.set(lastDay.format(DEFAULT_FORMAT));
+    // Todas las fechas dentro de la semana
+    const totalDatesInWeek = this._calendarService.getDatesBetween(
+      firstDay.format(DEFAULT_FORMAT),
+      lastDay.format(DEFAULT_FORMAT),
+    );
 
-    // Si ya tenemos las dos fechas, emitimos el rango de fechas
-    if (this._startDate() !== '' && this._endDate() !== '') {
-      const rangeDate: string | string[] =
-        this._startDate() !== '' && this._endDate() !== ''
-          ? [this._startDate(), this._endDate()]
-          : '';
-      this.currentViewDate.set(
-        moment(this._startDate()).format(DEFAULT_FORMAT),
-      );
+    const disabledSet = new Set(
+      this.disabledDates?.map((d) => moment(d).format(DEFAULT_FORMAT)) ?? [],
+    );
+
+    const hasDisabledDates = totalDatesInWeek.some((dateStr) =>
+      disabledSet.has(dateStr),
+    );
+
+    // Si bloqueamos rangos con fechas deshabilitadas
+    if (this.blockDisabledRanges && hasDisabledDates) {
+      this._startDate.set('');
+      this._endDate.set('');
+      this.showBlockedRangeToast();
       this.setCalendar();
-      this.emitDateSelected(rangeDate, true);
+      return;
     }
+
+    // Si no bloqueamos, filtramos las fechas válidas
+    const filteredDates = hasDisabledDates
+      ? totalDatesInWeek.filter((dateStr) => !disabledSet.has(dateStr))
+      : totalDatesInWeek;
+
+    // Si hay fechas deshabilitadas y no bloqueamos el rango, mostramos un aviso
+    if (!this.blockDisabledRanges && hasDisabledDates)
+      this.showDisabledDatesToast();
+
+    // Usamos la primera y última fecha del array filtrado
+    this._startDate.set(filteredDates[0]);
+    this._endDate.set(filteredDates[filteredDates.length - 1]);
+
+    this.currentViewDate.set(filteredDates[0]);
+    this.setCalendar();
+    this.emitDateSelected(filteredDates, true);
   }
 
   /**
@@ -280,36 +353,93 @@ export class CalendarPickerComponent implements OnInit {
       this._endDate.set('');
     }
 
-    if (this._startDate() === '')
-      // Si no hay fecha de inicio, la establecemos
+    if (this._startDate() === '') {
       this._startDate.set(date.format(DEFAULT_FORMAT));
-    else if (this._endDate() === '' && date.isAfter(moment(this._startDate())))
-      // Si no hay fecha de fin, la establecemos
+    } else if (
+      this._endDate() === '' &&
+      date.isAfter(moment(this._startDate()))
+    ) {
       this._endDate.set(date.format(DEFAULT_FORMAT));
-    else if (
+    } else if (
       moment(this._startDate()).format(DEFAULT_FORMAT) ===
       date.format(DEFAULT_FORMAT)
     ) {
-      // Si la fecha de inicio es igual a la de fin, la establecemos
       this._startDate.set(date.format(DEFAULT_FORMAT));
       this._endDate.set(date.format(DEFAULT_FORMAT));
     } else if (moment(this._startDate()).isAfter(moment(date))) {
-      // Si la fecha de inicio es mayor que la de fin, las intercambiamos
       const dateStart = moment(new Date(this._startDate()));
       this._startDate.set(date.format(DEFAULT_FORMAT));
       this._endDate.set(dateStart.format(DEFAULT_FORMAT));
     }
 
-    // Si ya tenemos las dos fechas, emitimos el rango de fechas
+    // Si ya tenemos un rango de fechas establecido, comprobamos si hay fechas deshabilitadas
+    // y actuamos según la configuración de bloqueo de rangos
     if (this._startDate() !== '' && this._endDate() !== '') {
-      const rangeDate: string | string[] =
-        this._startDate() !== '' && this._endDate() !== ''
-          ? [this._startDate(), this._endDate()]
-          : '';
+      const totalDatesInRange = this._calendarService.getDatesBetween(
+        this._startDate(),
+        this._endDate(),
+      );
+      const disabledSet = new Set(
+        this.disabledDates?.map((d) => moment(d).format(DEFAULT_FORMAT)) ?? [],
+      );
+      const hasDisabledDates = totalDatesInRange.some((date) =>
+        disabledSet.has(date),
+      );
+
+      // Si bloqueamos el rango cuando hay fechas deshabilitadas, limpiamos
+      // las fechas, mostramos un aviso y no emitimos nada
+      if (this.blockDisabledRanges && hasDisabledDates) {
+        this._startDate.set('');
+        this._endDate.set('');
+        this.showBlockedRangeToast();
+        this.setCalendar();
+        return;
+      }
+
+      // Si no bloqueamos, filtramos las fechas deshabilitadas antes de emitir
+      const filteredDates = this.filterEnabledDatesInRange(
+        this._startDate(),
+        this._endDate(),
+      );
+
+      // Si hay fechas deshabilitadas y no bloqueamos el rango, mostramos un aviso
+      // pero seguimos emitiendo las fechas filtradas
+      if (!this.blockDisabledRanges && hasDisabledDates)
+        this.showDisabledDatesToast();
+
+      // Asignamos las fechas filtradas y actualizamos la vista
       this.currentViewDate.set(moment(this._endDate()).format(DEFAULT_FORMAT));
       this.setCalendar();
-      this.emitDateSelected(rangeDate, true);
+      this.emitDateSelected(filteredDates, true);
     }
+  }
+
+  /**
+   * Muestra un mensaje de aviso cuando se bloquea el rango por fechas deshabilitadas
+   */
+  showBlockedRangeToast() {
+    this._toastService.error(
+      this._translateService.instant('CALENDAR.BLOCKED_BY_DISABLED_DATES'),
+      this._translateService.instant(
+        'CALENDAR.BLOCKED_BY_DISABLED_DATES_TITLE',
+      ),
+      {
+        timeOut: 5000,
+      },
+    );
+  }
+
+  /**
+   * Muestra un mensaje de aviso cuando hay fechas deshabilitadas en el rango
+   */
+  showDisabledDatesToast() {
+    this._toastService.warning(
+      this._translateService.instant('CALENDAR.DISABLED_DATES_WARNING'),
+      this._translateService.instant('CALENDAR.DISABLED_DATES_WARNING_TITLE'),
+      {
+        timeOut: 5000,
+      },
+    );
   }
 
   /**
@@ -329,20 +459,21 @@ export class CalendarPickerComponent implements OnInit {
 
   /**
    * Función para cambiar la vista del calendario (días, meses o años)
-   * @param {ViewMode} viewMode
+   * @param {ViewMode} mode
    * @param {Event} event
    */
-  chageViewMode(viewMode: ViewMode, event?: Event) {
+  chageViewMode(mode: ViewMode, event?: Event) {
     event?.preventDefault();
     event?.stopPropagation();
 
     // Si la vista es la de años, creamos los años según el año de la fecha actual
-    if (viewMode === 'years')
-      this.loadFutureYears(
-        moment(new Date(this.currentViewDate())).format('YYYY'),
-      );
+    if (mode === 'years') {
+      const year =
+        moment(new Date(this.currentViewDate())).year() ?? moment().year();
+      this.loadYearRange(year);
+    }
 
-    this.viewMode.set(viewMode);
+    this.viewMode.set(mode);
   }
 
   /**
@@ -411,44 +542,46 @@ export class CalendarPickerComponent implements OnInit {
    * @returns {string}
    */
   getAriaLabelForCalendar(): string {
+    const start = moment(this._startDate()).format('LL');
+    const end = moment(this._endDate()).format('LL');
+    const current = moment(this.currentViewDate()).format('LL');
+
     switch (this.type) {
       case 'day':
-        return `${this.currentViewDate()}`;
+        return current;
       case 'range':
-        return `${this._startDate()} - ${this._endDate()}`;
       case 'week':
-        return `${this._startDate()} - ${this._endDate()}`;
+        return `${start} - ${end}`;
       default:
         return '';
     }
   }
 
   /**
-   * Función para cargar los años pasados, lo que obtendrá los últimos 20 años con respescto al primer año del array de años
+   * Carga el bloque de 20 años donde está incluido el año actual
+   * @param {number} centerYear - Año central para calcular el bloque de 20 años
    */
-  loadPastYears() {
-    // Creamos un array de 20 años a partir del primer año del array de años
-    this.allYears = new Array(20)
-      .fill(null)
-      .map((_, year) =>
-        moment(this.allYears[0]).subtract(year, 'year').format('YYYY'),
-      );
-
-    // Ordenamos los años
-    this.allYears.sort();
+  loadYearRange(centerYear: number = moment().year()) {
+    const startYear = Math.floor(centerYear / 20) * 20;
+    this.allYears = Array.from({ length: 20 }, (_, i) =>
+      moment()
+        .year(startYear + i)
+        .format('YYYY'),
+    );
+    this.yearsBlockStart = startYear; // Para usar luego en prev/next
   }
 
   /**
-   * Función para cargar los años futuros, lo que obtendrá los próximos 20 años con respescto al último año del array de años
-   * @param {string} lastYear
+   * Carga los 20 años anteriores al primer año mostrado actualmente
    */
-  loadFutureYears(lastYear: string = this.allYears[this.allYears.length - 1]) {
-    // Creamos un array de 20 años a partir del último año del array de años
-    this.allYears = new Array(20)
-      .fill(null)
-      .map((_, year) => moment(lastYear).add(year, 'year').format('YYYY'));
+  loadPastYears() {
+    this.loadYearRange(this.yearsBlockStart - 20);
+  }
 
-    // Ordenamos los años
-    this.allYears.sort();
+  /**
+   * Carga los 20 años siguientes al último año mostrado actualmente
+   */
+  loadFutureYears() {
+    this.loadYearRange(this.yearsBlockStart + 20);
   }
 }

@@ -810,34 +810,44 @@
         <div>Calendarios</div>
       </neo-card-header>
       <div class="row">
-        <div class="col-4">
+        <div class="col-3">
           <label>Calendario normal</label>
           <small>Fecha: {{ dateInfo1?.date || "-" }}</small>
-          <neo-calendar-picker
-            (dateSelected)="dateInfo1 = $event"
-          ></neo-calendar-picker>
+          <neo-calendar (dateSelected)="dateInfo1 = $event"></neo-calendar>
         </div>
-        <div class="col-4">
+        <div class="col-3">
           <label>Calendario semana</label>
           <small
             >Fecha: {{ dateInfo2?.date[0] || "-" }} -
             {{ dateInfo2?.date[1] || "-" }}</small
           >
-          <neo-calendar-picker
+          <neo-calendar
             [type]="'week'"
             (dateSelected)="dateInfo2 = $event"
-          ></neo-calendar-picker>
+          ></neo-calendar>
         </div>
-        <div class="col-4">
+        <div class="col-3">
           <label>Calendario rango</label>
           <small
             >Fecha: {{ dateInfo3?.date[0] || "-" }} -
-            {{ dateInfo3?.date[1] || "-" }}</small
+            {{ dateInfo3?.date[dateInfo3.date.length - 1] || "-" }}</small
           >
-          <neo-calendar-picker
+          <neo-calendar
             [type]="'range'"
             (dateSelected)="dateInfo3 = $event"
-          ></neo-calendar-picker>
+          ></neo-calendar>
+        </div>
+        <div class="col-3">
+          <label>Calendario con fechas deshabilitadas</label>
+          <small
+            >Fecha: {{ dateInfo4?.date[0] || "-" }} -
+            {{ dateInfo4?.date[dateInfo4.date.length - 1] || "-" }}</small
+          >
+          <neo-calendar
+            [type]="'range'"
+            (dateSelected)="dateInfo4 = $event"
+            [disabledDates]="disabledDates"
+          ></neo-calendar>
         </div>
       </div>
     </neo-card>
@@ -868,6 +878,51 @@
         [type]="'week'"
         label="Date picker de semana"
       ></neo-input-date-picker>
+      <br />
+      <neo-input-date-picker
+        label="Date de rango picker con fechas deshabilitadas y bloqueadas"
+        [type]="'range'"
+        [disabledDates]="disabledDates"
+        [blockDisabledRanges]="true"
+      ></neo-input-date-picker>
+      <br />
+      <form [formGroup]="testFormDate">
+        <neo-input-date-picker
+          formControlName="date"
+          label="Date picker con ReactiveForm"
+        ></neo-input-date-picker>
+        @if (testFormDate.value.date !== "") {
+          <pre>
+            {{ testFormDate.value | json }}
+          </pre>
+        }
+      </form>
+      <br />
+      <form [formGroup]="testFormDateRange">
+        <neo-input-date-picker
+          [type]="'range'"
+          formControlName="dateRange"
+          label="Date picker de rango con ReactiveForm"
+        ></neo-input-date-picker>
+        @if ((testFormDateRange.value.dateRange?.length ?? 0) > 0) {
+          <pre>
+            {{ testFormDateRange.value | json }}
+          </pre>
+        }
+      </form>
+      <br />
+      <form [formGroup]="testFormDateWeek">
+        <neo-input-date-picker
+          [type]="'week'"
+          formControlName="dateWeek"
+          label="Date picker de semana con ReactiveForm"
+        ></neo-input-date-picker>
+        @if ((testFormDateWeek.value.dateWeek?.length ?? 0) > 0) {
+          <pre>
+            {{ testFormDateWeek.value | json }}
+          </pre>
+        }
+      </form>
     </neo-card>
   </div>
 </div>

@@ -1,11 +1,28 @@
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
-import { Component, EventEmitter, forwardRef, Input, Output, signal, WritableSignal, input, InputSignal, ViewEncapsulation, booleanAttribute, HostListener } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  EventEmitter,
+  forwardRef,
+  HostListener,
+  Input,
+  input,
+  InputSignal,
+  Output,
+  signal,
+  ViewEncapsulation,
+  WritableSignal,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DEFAULT_FORMAT, DatePickerType, DateSelected } from './models/date-picker.entity';
-import { CalendarService } from './services/calendar.service';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 import moment from 'moment';
 import { InputAutocomplete, InputSize } from '../models/form-field.entity';
+import {
+  DatePickerType,
+  DateSelected,
+  DEFAULT_FORMAT,
+} from './models/calendar-picker.model';
+import { CalendarService } from './services/calendar.service';
 
 /**
  * @name
@@ -18,31 +35,65 @@ import { InputAutocomplete, InputSize } from '../models/form-field.entity';
 @Component({
   selector: 'neo-input-date-picker',
   templateUrl: './input-date-picker.component.html',
-  styleUrls: ['./input-date-picker.component.scss', './../form-fields-settings.scss'],
+  styleUrls: [
+    './input-date-picker.component.scss',
+    './../form-fields-settings.scss',
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputDatePickerComponent),
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class InputDatePickerComponent implements ControlValueAccessor {
-
+  // Si el campo está deshabilitado, se añade el atributo "disabled" al input
   @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
+
+  // Si el campo es de solo lectura, se añade el atributo "readonly" al input
   @Input({ transform: booleanAttribute }) readonly?: boolean = false;
+
+  // Si el campo es obligatorio, se añade el atributo "required" al input
   @Input({ transform: booleanAttribute }) required: boolean = false;
+
+  // Título del campo, se usa para el label y el aria-label
   @Input() title?: string;
+
+  // Etiqueta del campo, se usa para el label y el aria-label
   @Input() label?: string;
+
+  // Nombre del campo, se usa para el aria-label y el aria-labelledby
   @Input() name?: string;
+
+  // Tipo de calendario (day, week, range)
   @Input() type: DatePickerType = 'day';
+
+  // Placeholder del input
   @Input() placeholder: string = 'aaaa-mm-dd';
+
+  // Icono del calendario
   @Input() icon?: string = 'ri-calendar-2-line';
+
+  // Tipo de autocompletado del input
   @Input() autocomplete: InputAutocomplete = 'off';
+
+  // Tamaño del input
   @Input() inputSize: InputSize = 'm';
+
+  // Si se quiere mostrar el icono del calendario o no
   @Input() showIconCalendar: boolean = true;
+
+  // Formato de fecha para mostrar en el campo
   @Input() format: string = DEFAULT_FORMAT;
+
+  // Fechas deshabilitadas, que no se pueden seleccionar
+  @Input() disabledDates: (string | moment.Moment)[] | undefined = undefined;
+
+  // Si se quiere bloquear el rango de fechas (range / week) si hay fechas deshabilitadas o no
+  @Input() blockDisabledRanges: boolean | undefined = undefined;
+
   hasErrors: InputSignal<boolean> = input<boolean>(false);
 
   /**
@@ -73,12 +124,12 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   /**
    * Input para introducir el valor del campo
    */
-  _value: WritableSignal<string> = signal('');
-  @Input() set value(value: string) {
+  _value: WritableSignal<string | string[] | null> = signal('');
+  @Input() set value(value: string | string[] | null) {
     this._value.set(value);
   }
 
-  get value(): string | null {
+  get value(): string | string[] | null {
     return this._value();
   }
 
@@ -87,12 +138,12 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    */
   @Input('aria-describedby') ariaDescribedBy!: string;
 
-  @Output() dateSelected = new EventEmitter<string>();
-  @Output() change = new EventEmitter<string>();
+  @Output() dateSelected = new EventEmitter<string | string[] | null>();
+  @Output() change = new EventEmitter<string | string[] | null>();
 
   isDatePickerOpened: WritableSignal<boolean> = signal(false);
   defaultDate: WritableSignal<moment.Moment> = signal(moment(new Date()));
-  currentDate: WritableSignal<string | string[]> = signal('');
+  rangeDates: WritableSignal<string | string[]> = signal('');
   scrollStrategy: ScrollStrategy;
 
   /**
@@ -101,14 +152,13 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   @HostListener('keydown', ['$event'])
   _onKeydownHandler(event: KeyboardEvent) {
     const keyCode = event.key;
-    if (keyCode === 'Escape')
-      this.closeCalendar();
+    if (keyCode === 'Escape') this.closeCalendar();
   }
 
   constructor(
     private readonly _calendarService: CalendarService,
     private readonly _inputsUtilsService: InputsUtilsService,
-    scrollStrategyOptions: ScrollStrategyOptions
+    scrollStrategyOptions: ScrollStrategyOptions,
   ) {
     this.scrollStrategy = scrollStrategyOptions.close();
   }
@@ -122,7 +172,11 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    */
   createUniqueId(): void {
     if (!this.id) {
-      this._id.set(this._inputsUtilsService.createUniqueId(this.label || this.title || 'input-date-picker'));
+      this._id.set(
+        this._inputsUtilsService.createUniqueId(
+          this.label || this.title || 'input-date-picker',
+        ),
+      );
       this._labelId.set(`label_${this._id()}`);
     }
   }
@@ -151,37 +205,80 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * @param {DateSelected} value
    */
   setCalendarValue(value: DateSelected) {
-    this._value?.set(this.formatDate(this.format, value.date)); // Valor mostrado en el campo
-    this.defaultDate.set(moment(value.date)); // Valor pasado al componente Calendar
-    this.onChange(this._value());
+    if (!value?.date) return;
+
+    // Mostrar en el input como string (aunque sea rango)
+    const formatted = this.formatDate(this.format, value.date);
+
+    // Si es de tipo rango, mostramos la primera y última fecha
+    // Si no es de tipo rango, mostramos la fecha única
+    if (Array.isArray(value.date)) {
+      const startDate = moment(value.date[0]).format(this.format);
+      const endDate = moment(value.date[value.date.length - 1]).format(
+        this.format,
+      );
+      this._value.set(`${startDate} - ${endDate}`); // Visual
+      this.rangeDates.set(value.date);
+    } else {
+      this._value.set(formatted); // Visual
+      this.defaultDate.set(moment(value.date));
+    }
+
+    this.onChange(value.date); // <- emitimos el valor REAL (string o string[])
     this.onTouched();
 
-    if (value?.closePicker)
-      this.closeCalendar();
+    if (value?.closePicker) this.closeCalendar();
 
-    this.dateSelected.emit(this._value());
-    this.change.emit(this._value());
+    this.dateSelected.emit(value.date); // <- emitimos el valor REAL
+    this.change.emit(value.date); // <- emitimos el valor REAL
   }
 
   /**
-   * Función para formatear una fecha
-   * @param {string} valueFormat
-   * @param {any} date
+   * Función para formatear una fecha o rango de fechas a un formato específico
+   * @param {string} format
+   * @param {string | string[]} date
    * @returns {string}
    */
-  formatDate(valueFormat: string, date: any): string {
-
-    this.currentDate.set(date);
-
-    if ((this.type === 'range' || this.type === 'week') && date?.length > 0)
-      return moment(new Date(date[0])).format(this.format) + ' - ' + moment(new Date(date[1])).format(this.format);
-
-    if (valueFormat !== "" && moment(new Date(date), valueFormat, true)) {
-      return moment(new Date(date)).format(valueFormat);
-    } else {
-      return moment(new Date(date)).format(this.format);
+  formatDate(
+    format: string = DEFAULT_FORMAT,
+    date: string | string[],
+  ): string | string[] | null {
+    // Si es un rango de fechas, se formatea cada fecha por separado
+    if (Array.isArray(date)) {
+      return date
+        .map((d) => moment(d).format(format))
+        .filter((d) => d !== 'Invalid date')
+        .join(' - ');
     }
 
+    // Si es una sola fecha, se formatea directamente
+    const formattedDate = moment(date).format(format);
+    return formattedDate !== 'Invalid date' ? formattedDate : null;
+  }
+
+  /**
+   * Función para comprobar si el tipo de calendario es de rango o semana
+   * @returns {boolean}
+   */
+  isRangeType(): boolean {
+    return this.type === 'range' || this.type === 'week';
+  }
+
+  /**
+   * Función para obtener la fecha de inicio y fin del rango seleccionado
+   * y usarla en la vista del calendario de forma más sencilla
+   */
+  get startRangeDate(): string {
+    return Array.isArray(this.rangeDates()) ? this.rangeDates()[0] : '';
+  }
+
+  /**
+   * Función para obtener la fecha de fin del rango seleccionado
+   * y usarla en la vista del calendario de forma más sencilla
+   */
+  get endRangeDate(): string {
+    const dates = this.rangeDates();
+    return Array.isArray(dates) ? dates[dates.length - 1] : '';
   }
 
   /**
@@ -192,8 +289,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
     event?.preventDefault();
     event?.stopPropagation();
 
-    if (this.disabled)
-      return;
+    if (this.disabled) return;
 
     this.isDatePickerOpened.set(!this.isDatePickerOpened());
   }
@@ -202,32 +298,38 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * Función para cerrar el calendario
    */
   closeCalendar() {
-    if (this.isDatePickerOpened())
-      this.isDatePickerOpened.set(false);
+    if (this.isDatePickerOpened()) this.isDatePickerOpened.set(false);
   }
 
   /**
    * Funciones de control de eventos
    */
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   /**
    * Write form value to the DOM element (model => view)
    */
-  writeValue(value: any) {
-
+  writeValue(value: string | string[] | null) {
     if (value && value !== '') {
-      this.defaultDate.set(this._calendarService.buildValidMomentDate(value));
-      this._value?.set(moment(this.defaultDate()).format(this.format) || '');
+      const formatted = this.formatDate(this.format, value) || '';
+      this._value.set(formatted);
+
+      // Si es de tipo rango, se guarda el array de fechas
+      // Si es de tipo fecha única, se guarda la fecha formateada y se actualiza defaultDate
+      if (Array.isArray(value) && this.isRangeType())
+        this.rangeDates.set(value);
+      else
+        this.defaultDate.set(this._calendarService.buildValidMomentDate(value));
     } else {
-      this._value?.set('');
+      this._value.set('');
+      this.rangeDates.set('');
     }
   }
 
   /**
-  * Update form when DOM element value changes (view => model)
-  */
+   * Update form when DOM element value changes (view => model)
+   */
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
@@ -245,5 +347,4 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   setDisabledState(isDisabled: boolean): void {
     this._disabled.set(isDisabled);
   }
-
 }

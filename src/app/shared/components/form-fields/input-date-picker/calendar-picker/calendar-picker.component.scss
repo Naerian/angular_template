@@ -7,7 +7,7 @@
 
 .calendar-picker {
   width: 285px;
-  height: 300px;
+  height: 325px;
   border-radius: 0.25rem;
   min-height: 265px;
   background-color: var(--bg-field-color);
@@ -170,6 +170,12 @@
   }
 
   /* SEMANAS */
+  &__weeks {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+  }
+
   &__week {
     display: flex;
     width: 100%;
@@ -199,7 +205,8 @@
       outline: none;
     }
 
-    &--disabled {
+    &--disabled,
+    &--no_current_month {
       cursor: default;
       opacity: 0.5;
       pointer-events: none;
@@ -211,6 +218,10 @@
         color: inherit;
         outline: none;
       }
+    }
+
+    &--disabled {
+      text-decoration: line-through;
     }
 
     &--selected {
@@ -236,7 +247,7 @@
   &__months__content {
     display: grid;
     width: 100%;
-    grid-gap: 15px 5px;
+    grid-gap: 10px;
     grid-template-columns: repeat(3, 85px);
     border-radius: 0.25rem;
     justify-items: center;
@@ -247,7 +258,7 @@
   &__years__content {
     display: grid;
     width: 100%;
-    grid-gap: 5px;
+    grid-gap: 10px;
     grid-template-columns: repeat(4, 65px);
     border-radius: 0.25rem;
     justify-items: center;

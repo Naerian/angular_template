@@ -77,21 +77,16 @@
   (detach)="closeCalendar()"
   (backdropClick)="closeCalendar()"
 >
-  <div
-    cdkTrapFocus
-    [cdkTrapFocusAutoCapture]="true"
-  >
-    <neo-calendar-picker
-      [defaultDate]="type !== 'range' && type !== 'week' ? defaultDate() : ''"
-      [startDate]="
-        type === 'range' || type === 'week' ? currentDate()[0] || '' : ''
-      "
-      [endDate]="
-        type === 'range' || type === 'week' ? currentDate()[1] || '' : ''
-      "
+  <div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    <neo-calendar
+      [defaultDate]="!isRangeType() ? defaultDate() : ''"
+      [startDate]="isRangeType() ? startRangeDate : ''"
+      [endDate]="isRangeType() ? endRangeDate : ''"
       [type]="type"
+      [disabledDates]="disabledDates || []"
+      [blockDisabledRanges]="blockDisabledRanges"
       (dateSelected)="setCalendarValue($event)"
       class="neo-input-date-picker__calendar"
-    ></neo-calendar-picker>
+    ></neo-calendar>
   </div>
 </ng-template>

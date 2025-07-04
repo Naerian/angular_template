@@ -1,5 +1,5 @@
 export interface DateSelected {
-  date?: string | string[];
+  date: string | string[];
   closePicker?: boolean;
 }
 
@@ -15,6 +15,7 @@ export interface CalendarDay {
   isToday: boolean; // Si es hoy
   isSelected: boolean; // Si está seleccionado según tipo (día, rango, semana)
   isInRange: boolean; // Si está dentro del rango seleccionado
+  isDisabled?: boolean; // Si está deshabilitado
 }
 
 export const WEEK_DAYS: string[] = [
