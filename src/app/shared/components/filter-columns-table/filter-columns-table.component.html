@@ -33,14 +33,14 @@
   >
     <div class="filter-columns-table--select_all">
       <neo-checkbox
-        [title]="'app.select_all2' | translate"
+        [title]="'DROPDOWN.SELECT_ALL' | translate"
         [inputSize]="'xm'"
         [checked]="isSomeColumnsSelected() && isAllColumnsSelected()"
         [indeterminate]="isSomeColumnsSelected() && !isAllColumnsSelected()"
         (click)="$event.stopPropagation()"
         (change)="changeVisibilityAllColumns($event)"
       >
-        {{ "app.select_all2" | translate }}
+        {{ "DROPDOWN.SELECT_ALL" | translate }}
       </neo-checkbox>
     </div>
     <div class="filter-columns-table--columns">

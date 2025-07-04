@@ -5,10 +5,8 @@
   (onClick)="toggleTheme($event)"
   [size]="size"
   [title]="
-    (currentTheme() === LIGHT_THEME
-      ? 'theme.dark_theme'
-      : 'theme.light_theme'
-    ) | translate
+    (currentTheme() === LIGHT_THEME ? 'THEME.DARK_THEME' : 'THEME.LIGHT_THEME')
+      | translate
   "
 >
   @if (currentTheme() === LIGHT_THEME) {

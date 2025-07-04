@@ -1,11 +1,11 @@
-import { MenuEntity } from "@shared/components/side-menu/model/menu.entity";
+import { MenuEntity } from '@shared/components/side-menu/model/menu.entity';
 
 /**
  * Array que contiene la estructura del menú de la aplicación.
  */
 const MENU_ITEMS: MenuEntity[] = [
   {
-    label: 'app.home',
+    label: 'APP.HOME',
     icon: 'ri-home-3-fill',
     shortcut: false,
     childrens: [
@@ -42,9 +42,9 @@ const MENU_ITEMS: MenuEntity[] = [
                 route: '/test5',
                 shortcut: false,
               },
-            ]
+            ],
           },
-        ]
+        ],
       },
     ],
   },

@@ -34,7 +34,7 @@ export class FormErrorComponent {
   @Input() ngModelControl!: NgModel | null;
 
   errors = signal<{ message: string; params?: any }[]>([]);
-  KEY_TRANSLATION_PREFIX = 'app.validation';
+  KEY_TRANSLATION_PREFIX = 'VALIDATOR';
 
   private readonly ngUnsubscribe$: Subject<void> = new Subject<void>();
 
@@ -74,7 +74,7 @@ export class FormErrorComponent {
    * Función para convertir un mensaje de error en una cadena de traducción.
    */
   private convertToTranslationKey(errorKey: string): string {
-    return errorKey.replace(/([a-z])([A-Z])/g, '$1_$2'); // Agregar un guion bajo entre letras minúsculas y mayúsculas
+    return errorKey.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase(); // Agregar un guion bajo entre letras minúsculas y mayúsculas
   }
 
   /**

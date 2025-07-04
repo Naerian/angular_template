@@ -55,15 +55,14 @@
           [innerHTML]="
             getSelectedOptions().length === 1
               ? (getSelectedOptions()[0].getLabelText() | safeHtml)
-              : getSelectedOptions().length +
-                ' ' +
-                ('select.multiple_choices' | translate)
+              : ('DROPDOWN.MULTIPLE_CHOICES'
+                | translate: { choices: getSelectedOptions().length })
           "
         ></span>
       }
       @if (getSelectedOptions().length === 0) {
         <span class="neo-select__field__value__label">{{
-          placeholder || "select.select_option" | translate
+          placeholder || "DROPDOWN.SELECT_OPTION" | translate
         }}</span>
       }
     </div>
@@ -96,7 +95,7 @@
             #searchInput
             class="neo-select__dropdown__search__input"
             type="text"
-            [placeholder]="placeholderSearch || ('app.buscar' | translate)"
+            [placeholder]="placeholderSearch || ('APP.SEARCH' | translate)"
             [attr.id]="'listbox_search_' + _id()"
             [disabled]="isLoading()"
             [attr.aria-disabled]="isLoading()"

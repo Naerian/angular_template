@@ -111,6 +111,39 @@
     }
   }
 
+  &__back {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 5px;
+
+    &__btn {
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
+      border: none;
+      border-radius: .25rem;
+      font-size: 1.3rem;
+      width: 40px;
+      height: 40px;
+      background-color: transparent !important;
+
+      &:hover,
+      &:focus,
+      &:active {
+        color: var(--text-color);
+        background-color: var(--background-color) !important;
+        border-radius: .25rem;
+      }
+    }
+  }
+
   &__content {
     padding: 5px;
     display: flex;

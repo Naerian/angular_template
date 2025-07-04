@@ -7,7 +7,7 @@
           tabindex="0"
           type="button"
           (click)="prevMonth()"
-          [title]="'calendar.prevMonth' | translate"
+          [title]="'CALENDAR.PREV_MONTH' | translate"
         >
           <i class="ri-arrow-left-s-line"></i>
         </button>
@@ -17,10 +17,10 @@
             tabindex="0"
             type="button"
             (click)="chageViewMode('months', $event)"
-            [title]="'calendar.changeMonth' | translate"
+            [title]="'CALENDAR.CHANGE_MONTH' | translate"
           >
             {{
-              "date.month." + (currentCalendar() | date: "MMMM" | lowercase)
+              "CALENDAR." + (currentCalendar() | date: "MMMM" | uppercase)
                 | translate
             }}
             <i class="ri-arrow-down-s-line arrow-dropdown"></i>
@@ -30,7 +30,7 @@
             tabindex="0"
             type="button"
             (click)="chageViewMode('years', $event)"
-            [title]="'calendar.changeYear' | translate"
+            [title]="'CALENDAR.CHANGE_YEAR' | translate"
           >
             {{ currentCalendar() | date: "yyyy" }}
             <i class="ri-arrow-down-s-line arrow-dropdown"></i>
@@ -41,20 +41,20 @@
           type="button"
           class="calendar-picker__header__btn"
           (click)="nextMonth()"
-          [title]="'calendar.nextMonth' | translate"
+          [title]="'CALENDAR.NEXT_MONTH' | translate"
         >
           <i class="ri-arrow-right-s-line"></i>
         </button>
       </div>
       <div class="calendar-picker__content calendar-picker__days">
         <div class="calendar-picker__days__header">
-          <span>{{ "date.calendar.monday.short" | translate }}</span>
-          <span>{{ "date.calendar.tuesday.short" | translate }}</span>
-          <span>{{ "date.calendar.wednesday.short" | translate }}</span>
-          <span>{{ "date.calendar.thursday.short" | translate }}</span>
-          <span>{{ "date.calendar.friday.short" | translate }}</span>
-          <span>{{ "date.calendar.saturday.short" | translate }}</span>
-          <span>{{ "date.calendar.sunday.short" | translate }}</span>
+          <span>{{ "CALENDAR.SHORT.MONDAY" | translate }}</span>
+          <span>{{ "CALENDAR.SHORT.TUESDAY" | translate }}</span>
+          <span>{{ "CALENDAR.SHORT.WEDNESDAY" | translate }}</span>
+          <span>{{ "CALENDAR.SHORT.THURSDAY" | translate }}</span>
+          <span>{{ "CALENDAR.SHORT.FRIDAY" | translate }}</span>
+          <span>{{ "CALENDAR.SHORT.SATURDAY" | translate }}</span>
+          <span>{{ "CALENDAR.SHORT.SUNDAY" | translate }}</span>
         </div>
         <div class="calendar-picker__days__month">
           @for (day of daysInMonth(); track day) {
@@ -103,7 +103,7 @@
     >
       <div class="calendar-picker__header">
         <span class="calendar-picker__header__title">{{
-          "calendar.month" | translate
+          "CALENDAR.MONTH" | translate
         }}</span>
       </div>
       <div class="calendar-picker__content calendar-picker__months__content">
@@ -116,11 +116,22 @@
               selected: (currentCalendar() | date: 'MMMM') === month
             }"
             (click)="changeMonth($index, $event)"
-            [title]="'date.month.' + month | lowercase | translate"
+            [title]="'CALENDAR.' + month | uppercase | translate"
           >
-            {{ "date.month." + month | lowercase | translate }}
+            {{ "CALENDAR." + month | uppercase | translate }}
           </button>
         }
+      </div>
+      <div class="calendar-picker__back">
+        <button
+          type="button"
+          class="calendar-picker__back__btn"
+          tabindex="0"
+          (click)="chageViewMode('default', $event)"
+          [title]="'APP.BACK' | translate"
+        >
+          <i class="ri-calendar-close-fill"></i>
+        </button>
       </div>
     </div>
   } @else {
@@ -135,19 +146,19 @@
           tabindex="0"
           class="calendar-picker__header__btn"
           (click)="prevYears()"
-          [title]="'app.anterior' | translate"
+          [title]="'APP.PREVIOUS' | translate"
         >
           <i class="ri-arrow-left-s-line"></i>
         </button>
         <span class="calendar-picker__header__title">{{
-          "date.year" | translate
+          "CALENDAR.YEAR" | translate
         }}</span>
         <button
           type="button"
           tabindex="0"
           class="calendar-picker__header__btn"
           (click)="nextYears()"
-          [title]="'app.siguiente' | translate"
+          [title]="'APP.NEXT' | translate"
         >
           <i class="ri-arrow-right-s-line"></i>
         </button>
@@ -167,6 +178,17 @@
             {{ year }}
           </button>
         }
+      </div>
+      <div class="calendar-picker__back">
+        <button
+          type="button"
+          class="calendar-picker__back__btn"
+          tabindex="0"
+          (click)="chageViewMode('default', $event)"
+          [title]="'APP.BACK' | translate"
+        >
+          <i class="ri-calendar-close-fill"></i>
+        </button>
       </div>
     </div>
   }

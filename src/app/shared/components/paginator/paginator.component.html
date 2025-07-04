@@ -11,9 +11,9 @@
             (keydown.enter)="pageSelected(1, $event)"
             (keydown.space)="pageSelected(1, $event)"
             [class.disabled]="currentPage === 1"
-            [attr.aria-label]="'pagination.first_page' | translate"
+            [attr.aria-label]="'PAGINATION.FIRST_PAGE' | translate"
             [attr.aria-disabled]="currentPage === 1"
-            [title]="'pagination.first_page' | translate"
+            [title]="'PAGINATION.FIRST_PAGE' | translate"
           >
             <span class="paginator__pagination__page__link">
               <i class="ri-skip-left-line"></i>
@@ -28,8 +28,8 @@
           (keydown.enter)="pageSelected(currentPage - 1, $event)"
           (keydown.space)="pageSelected(currentPage - 1, $event)"
           [class.disabled]="currentPage === 1"
-          [title]="'app.anterior' | translate"
-          [attr.aria-label]="'app.anterior' | translate"
+          [title]="'PAGINATION.PREVIOUS' | translate"
+          [attr.aria-label]="'PAGINATION.PREVIOUS' | translate"
           [attr.aria-disabled]="currentPage === 1"
         >
           <span class="paginator__pagination__page__link"
@@ -56,9 +56,9 @@
             @if (page !== currentPage) {
               <span
                 class="paginator__pagination__page__link"
-                [title]="'pagination.page' | translate: { page: page }"
+                [title]="'PAGINATION.PAGE' | translate: { page: page }"
                 [attr.aria-label]="
-                  'pagination.page' | translate: { page: page }
+                  'PAGINATION.PAGE' | translate: { page: page }
                 "
               >
                 {{ page }}
@@ -68,9 +68,9 @@
             @if (page === currentPage) {
               <span
                 class="paginator__pagination__page__link"
-                [title]="'pagination.page' | translate: { page: page }"
+                [title]="'PAGINATION.PAGE' | translate: { page: page }"
                 [attr.aria-label]="
-                  'pagination.page' | translate: { page: page }
+                  'PAGINATION.PAGE' | translate: { page: page }
                 "
                 >{{ page }}</span
               >
@@ -95,8 +95,8 @@
           (keydown.enter)="pageSelected(currentPage + 1, $event)"
           (keydown.space)="pageSelected(currentPage + 1, $event)"
           [class.disabled]="currentPage === totalPages"
-          [title]="'app.siguiente' | translate"
-          [attr.aria-label]="'app.siguiente' | translate"
+          [title]="'PAGINATION.NEXT' | translate"
+          [attr.aria-label]="'PAGINATION.NEXT' | translate"
           [attr.aria-disabled]="currentPage === totalPages"
         >
           <span class="paginator__pagination__page__link"
@@ -113,8 +113,8 @@
             (keydown.enter)="pageSelected(totalPages, $event)"
             (keydown.space)="pageSelected(totalPages, $event)"
             [class.disabled]="currentPage === totalPages"
-            [title]="'pagination.last_page' | translate"
-            [attr.aria-label]="'pagination.last_page' | translate"
+            [title]="'PAGINATION.LAST_PAGE' | translate"
+            [attr.aria-label]="'PAGINATION.LAST_PAGE' | translate"
             [attr.aria-disabled]="currentPage === totalPages"
           >
             <span class="paginator__pagination__page__link">
@@ -136,8 +136,8 @@
             (keydown.enter)="pageSelected(1, $event)"
             (keydown.space)="pageSelected(1, $event)"
             [class.disabled]="currentPage === 1"
-            [title]="'pagination.first_page' | translate"
-            [attr.aria-label]="'pagination.first_page' | translate"
+            [title]="'PAGINATION.FIRST_PAGE' | translate"
+            [attr.aria-label]="'PAGINATION.FIRST_PAGE' | translate"
             [attr.aria-disabled]="currentPage === 1"
           >
             <span class="paginator__pagination__page__link">
@@ -154,8 +154,8 @@
           (keydown.enter)="pageSelected(currentPage - 1, $event)"
           (keydown.space)="pageSelected(currentPage - 1, $event)"
           [class.disabled]="currentPage === 1"
-          [title]="'app.anterior' | translate"
-          [attr.aria-label]="'app.anterior' | translate"
+          [title]="'PAGINATION.PREVIOUS' | translate"
+          [attr.aria-label]="'PAGINATION.PREVIOUS' | translate"
           [attr.aria-disabled]="currentPage === 1"
         >
           <span class="paginator__pagination__page__link"
@@ -167,11 +167,11 @@
           <div
             class="paginator__pagination__dividenumber"
             [title]="
-              'pagination.page_to_of_total'
+              'PAGINATION.PAGE_TO_OF_TOTAL'
                 | translate: { page: currentPage, total: totalPages }
             "
             [attr.aria-label]="
-              'pagination.page_to_of_total'
+              'PAGINATION.PAGE_TO_OF_TOTAL'
                 | translate: { page: currentPage, total: totalPages }
             "
           >
@@ -192,8 +192,8 @@
           (keydown.enter)="pageSelected(currentPage + 1, $event)"
           (keydown.space)="pageSelected(currentPage + 1, $event)"
           [class.disabled]="currentPage === totalPages"
-          [title]="'app.siguiente' | translate"
-          [attr.aria-label]="'app.siguiente' | translate"
+          [title]="'PAGINATION.NEXT' | translate"
+          [attr.aria-label]="'PAGINATION.NEXT' | translate"
           [attr.aria-disabled]="currentPage === totalPages"
         >
           <span class="paginator__pagination__page__link"
@@ -210,8 +210,8 @@
             (keydown.enter)="pageSelected(totalPages, $event)"
             (keydown.space)="pageSelected(totalPages, $event)"
             [class.disabled]="currentPage === totalPages"
-            [title]="'pagination.last_page' | translate"
-            [attr.aria-label]="'pagination.last_page' | translate"
+            [title]="'PAGINATION.LAST_PAGE' | translate"
+            [attr.aria-label]="'PAGINATION.LAST_PAGE' | translate"
             [attr.aria-disabled]="currentPage === totalPages"
           >
             <span class="paginator__pagination__page__link">
@@ -226,7 +226,7 @@
     <div
       class="paginator__total_results"
       [title]="
-        'pagination.total_label'
+        'PAGINATION.TOTAL_ROWS'
           | translate
             : {
                 totalPageResults: totalResults,
@@ -234,7 +234,7 @@
               }
       "
       [attr.aria-label]="
-        'pagination.total_label'
+        'PAGINATION.TOTAL_ROWS'
           | translate
             : {
                 totalPageResults: totalResults,
