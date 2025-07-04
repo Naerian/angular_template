@@ -1,4 +1,10 @@
-import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { A11yModule } from '@angular/cdk/a11y';
+import {
+  OverlayModule,
+  ScrollStrategy,
+  ScrollStrategyOptions,
+} from '@angular/cdk/overlay';
+import { CommonModule } from '@angular/common';
 import {
   booleanAttribute,
   Component,
@@ -13,16 +19,21 @@ import {
   ViewEncapsulation,
   WritableSignal,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
+import { CalendarComponent } from '@shared/components/calendar/calendar.component';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 import moment from 'moment';
-import { InputAutocomplete, InputSize } from '../models/form-field.entity';
 import {
-  DatePickerType,
   DateSelected,
   DEFAULT_FORMAT,
-} from './models/calendar-picker.model';
-import { CalendarService } from './services/calendar.service';
+} from '../../calendar/models/calendar.model';
+import { CalendarService } from '../../calendar/services/calendar.service';
+import { InputAutocomplete, InputSize } from '../models/form-field.entity';
+import { DatePickerType } from './models/input-date-picker.model';
 
 /**
  * @name
@@ -38,6 +49,14 @@ import { CalendarService } from './services/calendar.service';
   styleUrls: [
     './input-date-picker.component.scss',
     './../form-fields-settings.scss',
+  ],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    OverlayModule,
+    A11yModule,
+    CalendarComponent,
   ],
   providers: [
     {

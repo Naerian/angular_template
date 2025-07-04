@@ -1,15 +1,15 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InputComponent } from './input/input.component';
-import { TextAreaComponent } from './text-area/text-area.component';
-import { InputPasswordComponent } from './input-password/input-password.component';
-import { CalendarDatePickerModule } from './input-date-picker/calendar-date-picker.module';
-import { FormErrorComponent } from './form-error/form-error.component';
+import { NgModule } from '@angular/core';
 import { CheckboxComponent } from './checkbox/checkbox.component';
+import { FormErrorComponent } from './form-error/form-error.component';
+import { FormFieldComponent } from './form-field/form-field.component';
+import { InputDatePickerComponent } from './input-date-picker/input-date-picker.component';
+import { InputFileComponent } from './input-file/input-file.component';
+import { InputPasswordComponent } from './input-password/input-password.component';
+import { InputComponent } from './input/input.component';
 import { RadioButtonModule } from './radio-button/radio-button.module';
 import { SelectModule } from './select/select.module';
-import { FormFieldComponent } from './form-field/form-field.component';
-import { InputFileComponent } from './input-file/input-file.component';
+import { TextAreaComponent } from './text-area/text-area.component';
 
 @NgModule({
   declarations: [],
@@ -20,11 +20,11 @@ import { InputFileComponent } from './input-file/input-file.component';
     InputPasswordComponent,
     CheckboxComponent,
     FormErrorComponent,
-    CalendarDatePickerModule,
     RadioButtonModule,
     SelectModule,
     FormFieldComponent,
-    InputFileComponent
+    InputFileComponent,
+    InputDatePickerComponent,
   ],
   exports: [
     InputComponent,
@@ -32,11 +32,11 @@ import { InputFileComponent } from './input-file/input-file.component';
     InputPasswordComponent,
     FormErrorComponent,
     CheckboxComponent,
-    CalendarDatePickerModule,
     RadioButtonModule,
     SelectModule,
     FormFieldComponent,
-    InputFileComponent
-  ]
+    InputFileComponent,
+    InputDatePickerComponent,
+  ],
 })
-export class FormFields { }
+export class FormFieldsModule {}

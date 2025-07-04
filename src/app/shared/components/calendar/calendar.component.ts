@@ -1,4 +1,5 @@
 import { A11yModule } from '@angular/cdk/a11y';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -6,7 +7,9 @@ import {
   Input,
   OnInit,
   Output,
+  Signal,
   WritableSignal,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -19,8 +22,8 @@ import {
   DEFAULT_FORMAT,
   ViewMode,
   WEEK_DAYS,
-} from '../models/calendar-picker.model';
-import { CalendarService } from '../services/calendar.service';
+} from './models/calendar.model';
+import { CalendarService } from './services/calendar.service';
 
 /**
  * @name
@@ -32,12 +35,18 @@ import { CalendarService } from '../services/calendar.service';
  */
 @Component({
   selector: 'neo-calendar',
-  templateUrl: './calendar-picker.component.html',
-  styleUrls: ['./calendar-picker.component.scss'],
-  imports: [CommonModule, FormsModule, TranslateModule, A11yModule],
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.scss'],
   standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    OverlayModule,
+    TranslateModule,
+    A11yModule,
+  ],
 })
-export class CalendarPickerComponent implements OnInit {
+export class CalendarComponent implements OnInit {
   // Tipo de selección: día, semana o rango
   @Input() type: 'day' | 'week' | 'range' = 'day';
 
@@ -51,41 +60,6 @@ export class CalendarPickerComponent implements OnInit {
   private _defaultDate: WritableSignal<moment.Moment | null> = signal(moment());
   private _startDate: WritableSignal<moment.Moment | null> = signal(moment());
   private _endDate: WritableSignal<moment.Moment | null> = signal(moment());
-
-  // Evento que emite la fecha o rango seleccionado
-  @Output() dateSelected = new EventEmitter<{
-    date: string | string[];
-    closePicker: boolean;
-  }>();
-
-  // Tipo de vista (Calendario normal, selección de año o de mes)
-  viewMode: WritableSignal<ViewMode> = signal('default');
-
-  // Array de datos para años y meses
-  allYears: string[] = [];
-  allMonths: string[] = [];
-
-  // Variable para el año actual, para poder navegar por décadas
-  yearsBlockStart = moment().year();
-
-  // Array que guardará los días del mes por semana
-  daysInMonth: WritableSignal<CalendarDay[][]> = signal([]);
-
-  // Variable para saber en qué calendario estamos cuando nos movemos por los meses (formato string)
-  currentViewDate: WritableSignal<string> = signal(
-    moment().format(DEFAULT_FORMAT),
-  );
-
-  // Días de la semana para la vista
-  WEEK_DAYS: string[] = WEEK_DAYS;
-
-  private readonly _toastService = inject(ToastrService);
-  private readonly _calendarService = inject(CalendarService);
-  private readonly _translateService = inject(TranslateService);
-
-  ngOnInit(): void {
-    queueMicrotask(() => this.initCalendar());
-  }
 
   /**
    * Input para establecer la fecha por defecto del calendario
@@ -125,6 +99,46 @@ export class CalendarPickerComponent implements OnInit {
   }
   get endDate(): string {
     return this._endDate() ? this._endDate()!.format(DEFAULT_FORMAT) : '';
+  }
+
+  // Evento que emite la fecha o rango seleccionado
+  @Output() dateSelected = new EventEmitter<{
+    date: string | string[];
+    closePicker: boolean;
+  }>();
+
+  // Tipo de vista (Calendario normal, selección de año o de mes)
+  viewMode: WritableSignal<ViewMode> = signal('default');
+
+  // Array de datos para años y meses
+  allYears: string[] = [];
+  allMonths: string[] = [];
+
+  // Variable para el año actual, para poder navegar por décadas
+  yearsBlockStart = moment().year();
+
+  // Array que guardará los días del mes por semana
+  daysInMonth: WritableSignal<CalendarDay[][]> = signal([]);
+
+  // Variable para saber en qué calendario estamos cuando nos movemos por los meses (formato string)
+  currentViewDate: WritableSignal<string> = signal(
+    moment().format(DEFAULT_FORMAT),
+  );
+
+  // Variable para el número del mes actual (0-11)
+  currentMonthNumber: Signal<number> = computed(() =>
+    moment(this.currentViewDate()).month(),
+  );
+
+  // Días de la semana para la vista
+  WEEK_DAYS: string[] = WEEK_DAYS;
+
+  private readonly _toastService = inject(ToastrService);
+  private readonly _calendarService = inject(CalendarService);
+  private readonly _translateService = inject(TranslateService);
+
+  ngOnInit(): void {
+    queueMicrotask(() => this.initCalendar());
   }
 
   /**

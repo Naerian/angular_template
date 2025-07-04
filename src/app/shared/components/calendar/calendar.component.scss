@@ -1,10 +1,5 @@
 @import 'base';
 
-:host {
-  display: flex;
-  flex-direction: column;
-}
-
 .calendar-picker {
   width: 285px;
   height: 325px;
@@ -199,8 +194,8 @@
     &:hover,
     &:focus,
     &:active {
-      color: var(--text-color);
-      background-color: var(--background-color) !important;
+      background-color: var(--bg-btn-primary-color) !important;
+      color: var(--text-btn-primary-color) !important;
       border-radius: 0.25rem;
       outline: none;
     }
@@ -225,10 +220,9 @@
     }
 
     &--selected {
-      border: 1px solid #CCC;
-      background-color: var(--background-color) !important;
+      background-color: var(--bg-btn-primary-color) !important;
+      color: var(--text-btn-primary-color) !important;
       border-radius: 0.25rem;
-      color: var(--text-color);
     }
 
     &--today {
@@ -237,7 +231,8 @@
 
       &:hover,
       &:focus {
-        color: var(--primary-color);
+        background-color: var(--bg-btn-primary-color) !important;
+        color: var(--text-btn-primary-color) !important;
         outline: none;
       }
     }
@@ -286,17 +281,16 @@
     &:hover,
     &:focus,
     &:active {
-      color: var(--text-color);
-      background-color: var(--background-color) !important;
+      background-color: var(--bg-btn-primary-color) !important;
+      color: var(--text-btn-primary-color) !important;
       border-radius: 0.25rem;
       outline: none;
     }
 
     &.selected {
-      border: 1px solid #CCC;
-      background-color: var(--background-color) !important;
+      background-color: var(--bg-btn-primary-color) !important;
+      color: var(--text-btn-primary-color) !important;
       border-radius: 0.25rem;
-      color: var(--text-color);
     }
   }
 

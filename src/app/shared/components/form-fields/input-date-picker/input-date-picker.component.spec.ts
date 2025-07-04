@@ -1,13 +1,13 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InputDatePickerComponent } from './input-date-picker.component';
-import { NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import moment from 'moment';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { TranslateModule } from '@ngx-translate/core';
-import { CalendarDatePickerModule } from './calendar-date-picker.module';
-import { toHaveNoViolations, axe } from 'jasmine-axe';
+import { axe, toHaveNoViolations } from 'jasmine-axe';
+import moment from 'moment';
+import { InputDatePickerComponent } from './input-date-picker.component';
+import { CalendarDatePickerModule } from './input-date-picker.module';
 
 describe('DatePickerComponent', () => {
   let component: InputDatePickerComponent;
@@ -22,7 +22,7 @@ describe('DatePickerComponent', () => {
         CalendarDatePickerModule,
         HttpClientModule,
         OverlayModule,
-        RouterTestingModule
+        RouterTestingModule,
       ],
     }).compileComponents();
     jasmine.addMatchers(toHaveNoViolations);
@@ -57,14 +57,18 @@ describe('DatePickerComponent', () => {
     spyOn(component.dateSelected, 'emit');
     const value = { date: moment(new Date()).format('YYYY-MM-DD') };
     component.setCalendarValue(value);
-    expect(component.dateSelected.emit).toHaveBeenCalledWith(component.formatDate(component.format, value.date));
+    expect(component.dateSelected.emit).toHaveBeenCalledWith(
+      component.formatDate(component.format, value.date),
+    );
   });
 
   it('should emit change event on setCalendarValue', () => {
     spyOn(component.change, 'emit');
     const value = { date: moment(new Date()).format('YYYY-MM-DD') };
     component.setCalendarValue(value);
-    expect(component.change.emit).toHaveBeenCalledWith(component.formatDate(component.format, value.date));
+    expect(component.change.emit).toHaveBeenCalledWith(
+      component.formatDate(component.format, value.date),
+    );
   });
 
   it('should call closeCalendar on _onKeydownHandler', () => {
@@ -90,13 +94,13 @@ describe('DatePickerComponent', () => {
   });
 
   it('should register on change', () => {
-    const fn = () => { };
+    const fn = () => {};
     component.registerOnChange(fn);
     expect(component.onChange).toBe(fn);
   });
 
   it('should register on touched', () => {
-    const fn = () => { };
+    const fn = () => {};
     component.registerOnTouched(fn);
     expect(component.onTouched).toBe(fn);
   });
@@ -106,7 +110,7 @@ describe('DatePickerComponent', () => {
     expect(component.disabled).toBeTrue();
   });
 
-  it("should pass InputDatePicker accessibility test", async () => {
+  it('should pass InputDatePicker accessibility test', async () => {
     const fixture = TestBed.createComponent(InputDatePickerComponent);
     fixture.componentInstance.label = 'test';
     fixture.componentInstance.placeholder = 'test';

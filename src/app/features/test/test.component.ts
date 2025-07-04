@@ -13,11 +13,11 @@ import { IColumnsFormat } from '@entities/table.entity';
 import { TranslateModule } from '@ngx-translate/core';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { CalendarComponent } from '@shared/components/calendar/calendar.component';
 import { CardModule } from '@shared/components/card/card.module';
 import { FilterColumnsTableComponent } from '@shared/components/filter-columns-table/filter-columns-table.component';
-import { FormFields } from '@shared/components/form-fields/form-fields.module';
-import { CalendarDatePickerModule } from '@shared/components/form-fields/input-date-picker/calendar-date-picker.module';
-import { CalendarPickerComponent } from '@shared/components/form-fields/input-date-picker/calendar-picker/calendar-picker.component';
+import { FormFieldsModule } from '@shared/components/form-fields/form-fields.module';
+import { InputDatePickerComponent } from '@shared/components/form-fields/input-date-picker/input-date-picker.component';
 import { MenuContextModule } from '@shared/components/menu-context/menu-context.module';
 import { ModalOptionsEntity } from '@shared/components/modal/models/modal.entity';
 import { ModalDialogService } from '@shared/components/modal/services/modal-dialog.service';
@@ -54,9 +54,10 @@ import { ToastrService } from 'ngx-toastr';
     FilterColumnsTableComponent,
     MatTableModule,
     MatSortModule,
-    CalendarDatePickerModule,
+    CalendarComponent,
+    InputDatePickerComponent,
     ButtonComponent,
-    FormFields,
+    FormFieldsModule,
   ],
   templateUrl: './test.component.html',
   styleUrl: './test.component.css',
@@ -271,6 +272,6 @@ export class TestComponent implements OnInit {
       canBeClosed: true,
     };
 
-    this._modalDialogService.open(options, CalendarPickerComponent);
+    this._modalDialogService.open(options, CalendarComponent);
   }
 }

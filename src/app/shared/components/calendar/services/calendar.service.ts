@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import moment from 'moment';
-import { DEFAULT_FORMAT } from '../models/calendar-picker.model';
+import { DEFAULT_FORMAT } from '../models/calendar.model';
 
 @Injectable({
   providedIn: 'root',

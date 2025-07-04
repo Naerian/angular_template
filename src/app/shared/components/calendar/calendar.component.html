@@ -19,10 +19,7 @@
             (click)="chageViewMode('months', $event)"
             [title]="'CALENDAR.CHANGE_MONTH' | translate"
           >
-            {{
-              "CALENDAR." + (currentViewDate() | date: "MMMM" | uppercase)
-                | translate
-            }}
+            {{ "CALENDAR.MONTH." + currentMonthNumber() | translate }}
             <i class="ri-arrow-down-s-line arrow-dropdown"></i>
           </button>
           <button
@@ -101,16 +98,16 @@
         </span>
       </div>
       <div class="calendar-picker__content calendar-picker__months__content">
-        @for (month of allMonths; track month) {
+        @for (month of allMonths; track $index) {
           <button
             type="button"
             tabindex="0"
             class="calendar-picker__month"
-            [class.selected]="(currentViewDate() | date: 'MMMM') === month"
+            [class.selected]="currentMonthNumber() === $index"
             (click)="changeMonth($index, $event)"
-            [title]="'CALENDAR.' + month | uppercase | translate"
+            [title]="'CALENDAR.MONTH.' + $index | translate"
           >
-            {{ "CALENDAR." + month | uppercase | translate }}
+            {{ "CALENDAR.MONTH." + $index | translate }}
           </button>
         }
       </div>
