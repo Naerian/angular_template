@@ -149,36 +149,28 @@
   }
 
   /* HEADER DE DÍAS DE LA SEMANA */
-  &__days {
-    display: grid;
-    width: 100%;
-    grid-gap: 5px;
-    grid-template-columns: repeat(7, 35px);
-    border-radius: 0.25rem;
-    justify-items: center;
-    align-items: center;
-
+  &__weekdays {
     span {
       font-weight: 600;
       font-size: 0.85rem;
     }
   }
 
-  /* SEMANAS */
-  &__weeks {
-    display: flex;
-    gap: 5px;
-    flex-direction: column;
-  }
-
-  &__week {
-    display: flex;
+  /* DÍAS DEL MES */
+  &__days,
+  &__weekdays {
+    display: grid;
     width: 100%;
-    gap: 5px;
+    grid-template-columns: repeat(7, 35px);
+    grid-gap: 5px;
+    border-radius: 0.25rem;
+    justify-items: center;
+    align-items: center;
   }
 
-  /* DÍAS */
-  &__day {
+  /* DÍA */
+  &__day,
+  &__no-day {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -243,7 +235,7 @@
     display: grid;
     width: 100%;
     grid-gap: 10px;
-    grid-template-columns: repeat(3, 85px);
+    grid-template-columns: repeat(3, 80px);
     border-radius: 0.25rem;
     justify-items: center;
     align-items: center;
@@ -254,7 +246,7 @@
     display: grid;
     width: 100%;
     grid-gap: 10px;
-    grid-template-columns: repeat(4, 65px);
+    grid-template-columns: repeat(4, 60px);
     border-radius: 0.25rem;
     justify-items: center;
     align-items: center;

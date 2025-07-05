@@ -3,11 +3,14 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
+  QueryList,
   Signal,
+  ViewChildren,
   WritableSignal,
   computed,
   inject,
@@ -47,6 +50,18 @@ import { CalendarService } from './services/calendar.service';
   ],
 })
 export class CalendarComponent implements OnInit {
+  @ViewChildren('monthButton') monthButtons!: QueryList<
+    ElementRef<HTMLButtonElement>
+  >;
+
+  @ViewChildren('yearButton') yearButtons!: QueryList<
+    ElementRef<HTMLButtonElement>
+  >;
+
+  @ViewChildren('dayButton') dayButtons!: QueryList<
+    ElementRef<HTMLButtonElement>
+  >;
+
   // Tipo de selección: día, semana o rango
   @Input() type: 'day' | 'week' | 'range' = 'day';
 
@@ -111,18 +126,23 @@ export class CalendarComponent implements OnInit {
   viewMode: WritableSignal<ViewMode> = signal('default');
 
   // Array de datos para años y meses
-  allYears: string[] = [];
+  allYears: number[] = [];
   allMonths: string[] = [];
 
   // Variable para el año actual, para poder navegar por décadas
   yearsBlockStart = moment().year();
 
   // Array que guardará los días del mes por semana
-  daysInMonth: WritableSignal<CalendarDay[][]> = signal([]);
+  daysInMonth: WritableSignal<CalendarDay[]> = signal([]);
 
   // Variable para saber en qué calendario estamos cuando nos movemos por los meses (formato string)
   currentViewDate: WritableSignal<string> = signal(
     moment().format(DEFAULT_FORMAT),
+  );
+
+  // Variable para el año actual (4 dígitos)
+  currentYear: Signal<number> = computed(() =>
+    moment(this.currentViewDate()).year(),
   );
 
   // Variable para el número del mes actual (0-11)
@@ -133,12 +153,23 @@ export class CalendarComponent implements OnInit {
   // Días de la semana para la vista
   WEEK_DAYS: string[] = WEEK_DAYS;
 
+  // ID único del calendario para evitar conflictos en el DOM
+  calendarId = crypto.randomUUID();
+
   private readonly _toastService = inject(ToastrService);
   private readonly _calendarService = inject(CalendarService);
   private readonly _translateService = inject(TranslateService);
 
   ngOnInit(): void {
     queueMicrotask(() => this.initCalendar());
+  }
+
+  /**
+   * Función para cambiar el modo de vista del calendario permitiendo
+   * volver a la vista normal si nos encontramos en la vista de años / meses
+   */
+  onEscapeKey(): void {
+    if (this.viewMode() !== 'default') this.chageViewMode('default');
   }
 
   /**
@@ -168,31 +199,30 @@ export class CalendarComponent implements OnInit {
   setCalendar() {
     const firstDayOfMonth = moment(this.currentViewDate()).startOf('month');
     const firstCell = firstDayOfMonth.clone().startOf('isoWeek'); // lunes de la 1ª fila
-    const weeks: CalendarDay[][] = [];
+    const totalDays = 6 * 7; // 6 filas x 7 columnas
+    const days: CalendarDay[] = [];
 
-    for (let w = 0; w < 6; w++) {
-      const week: CalendarDay[] = [];
+    const disabledDates = this.getDisabledDates();
 
-      for (let d = 0; d < 7; d++) {
-        const date = firstCell.clone().add(w, 'week').add(d, 'day');
+    for (let i = 0; i < totalDays; i++) {
+      const date = firstCell.clone().add(i, 'day');
 
-        // Obtenemos las fechas deshabilitadas, si las hubiese
-        const disabledDates = this.getDisabledDates();
+      const isDisabled = disabledDates.some((dd) => dd.isSame(date, 'day'));
 
-        week.push({
-          date,
-          isCurrentMonth: date.month() === firstDayOfMonth.month(),
-          isToday: date.isSame(moment(), 'day'),
-          isSelected: this.checkIfSelected(date),
-          isInRange: this.checkIfInRange(date),
-          isDisabled: disabledDates.some((d) => d.isSame(date, 'day')),
-        });
-      }
-
-      weeks.push(week);
+      days.push({
+        date,
+        isCurrentMonth: date.month() === firstDayOfMonth.month(),
+        isToday: date.isSame(moment(), 'day'),
+        isSelected: this.checkIfSelected(date),
+        isInRange: this.checkIfInRange(date),
+        isDisabled: isDisabled,
+      });
     }
 
-    this.daysInMonth.set(weeks);
+    this.daysInMonth.set(days);
+
+    // Enfocamos el primer botón seleccionado o el día de hoy
+    this.focusSelectedButton(this.dayButtons);
   }
 
   /**
@@ -485,6 +515,21 @@ export class CalendarComponent implements OnInit {
   }
 
   /**
+   * Función para enfocar el botón del mes, día o año seleccionado,
+   */
+  focusSelectedButton(
+    buttons: QueryList<ElementRef<HTMLButtonElement>>,
+    selectedClass: string = 'selected',
+  ) {
+    setTimeout(() => {
+      const selected = buttons.find((btn) =>
+        btn.nativeElement.classList.contains(selectedClass),
+      );
+      selected?.nativeElement.focus();
+    });
+  }
+
+  /**
    * Cambiar el modo de vista del calendario: default, years, months
    * @param mode ViewMode
    * @param event Evento (opcional)
@@ -498,9 +543,30 @@ export class CalendarComponent implements OnInit {
       const year =
         moment(new Date(this.currentViewDate())).year() ?? moment().year();
       this.loadYearRange(year);
+    } else if (mode === 'months') {
+      this.focusSelectedButton(this.monthButtons);
     }
 
     this.viewMode.set(mode);
+  }
+
+  /**
+   * Devuelve la etiqueta aria para el calendario según el tipo de selección
+   */
+  getAriaLabelForCalendar(): string {
+    const start = this._startDate() ? this._startDate()!.format('LL') : '';
+    const end = this._endDate() ? this._endDate()!.format('LL') : '';
+    const current = moment(this.currentViewDate()).format('LL');
+
+    switch (this.type) {
+      case 'day':
+        return current;
+      case 'range':
+      case 'week':
+        return `${start} - ${end}`;
+      default:
+        return '';
+    }
   }
 
   /**
@@ -547,10 +613,10 @@ export class CalendarComponent implements OnInit {
 
   /**
    * Cambiar el año seleccionado en la vista de calendario
-   * @param year string con el año seleccionado
-   * @param event Evento (opcional)
+   * @param {number} year Año a cambiar (4 dígitos)
+   * @param {Event} event Evento (opcional)
    */
-  changeYear(year: string, event?: Event) {
+  changeYear(year: number, event?: Event) {
     event?.preventDefault();
     event?.stopPropagation();
 
@@ -565,36 +631,22 @@ export class CalendarComponent implements OnInit {
   }
 
   /**
-   * Devuelve la etiqueta aria para el calendario según el tipo de selección
-   */
-  getAriaLabelForCalendar(): string {
-    const start = this._startDate() ? this._startDate()!.format('LL') : '';
-    const end = this._endDate() ? this._endDate()!.format('LL') : '';
-    const current = moment(this.currentViewDate()).format('LL');
-
-    switch (this.type) {
-      case 'day':
-        return current;
-      case 'range':
-      case 'week':
-        return `${start} - ${end}`;
-      default:
-        return '';
-    }
-  }
-
-  /**
    * Carga el rango de años para la vista de selección de años
    * @param centerYear año central para cargar la década (default: año actual)
    */
   loadYearRange(centerYear: number = moment().year()) {
     const startYear = Math.floor(centerYear / 20) * 20;
     this.allYears = Array.from({ length: 20 }, (_, i) =>
-      moment()
-        .year(startYear + i)
-        .format('YYYY'),
+      Number(
+        moment()
+          .year(startYear + i)
+          .format('YYYY'),
+      ),
     );
     this.yearsBlockStart = startYear;
+
+    // Hacemos focus en el año seleccionado
+    this.focusSelectedButton(this.yearButtons);
   }
 
   /**
