@@ -2,9 +2,11 @@
   class="calendar-picker"
   role="application"
   [attr.data-calendar-id]="calendarId"
+  cdkTrapFocus
+  [cdkTrapFocusAutoCapture]="true"
 >
-  @if (viewMode() === "default") {
-    <div class="calendar-picker__default" cdkTrapFocus>
+  @if (viewMode() === VIEW_MODE.DEFAULT) {
+    <div class="calendar-picker__default">
       <div class="calendar-picker__header">
         <button
           class="calendar-picker__header__btn"
@@ -19,7 +21,7 @@
           <button
             class="calendar-picker__header__actions--selector"
             type="button"
-            (click)="chageViewMode('months', $event)"
+            (click)="setMonthsView()"
             [title]="'CALENDAR.CHANGE_MONTH' | translate"
             [attr.aria-label]="'CALENDAR.CHANGE_MONTH' | translate"
           >
@@ -29,7 +31,7 @@
           <button
             class="calendar-picker__header__actions--selector"
             type="button"
-            (click)="chageViewMode('years', $event)"
+            (click)="setYearsView()"
             [title]="'CALENDAR.CHANGE_YEAR' | translate"
             [attr.aria-label]="'CALENDAR.CHANGE_YEAR' | translate"
           >
@@ -71,18 +73,27 @@
                 [class.calendar-picker__day--today]="day.isToday"
                 [attr.aria-selected]="day.isSelected"
                 [attr.aria-disabled]="true"
+                [attr.aria-current]="day.isToday"
+                [attr.aria-label]="day.date.toDate() | date: 'dd/MM/yyyy'"
+                [title]="day.date.toDate() | date: 'dd/MM/yyyy'"
                 >{{ day.date.date() }}</span
               >
             } @else {
               <button
+                #dayButton
                 type="button"
                 class="calendar-picker__day"
                 role="gridcell"
-                [attr.tabindex]="!day.isCurrentMonth ? -1 : 0"
+                [attr.tabindex]="-1"
                 [class.calendar-picker__day--selected]="day.isSelected"
                 [class.calendar-picker__day--today]="day.isToday"
                 [attr.aria-selected]="day.isSelected"
-                (click)="selectItem(day, $event)"
+                [attr.aria-disabled]="day.isDisabled"
+                [attr.aria-current]="day.isToday"
+                [attr.aria-label]="day.date.toDate() | date: 'dd/MM/yyyy'"
+                [attr.data-day]="day.date.toDate() | date: 'dd'"
+                [title]="day.date.toDate() | date: 'dd/MM/yyyy'"
+                (click)="selectDay(day, $event)"
               >
                 {{ day.date.date() }}
               </button>
@@ -91,11 +102,12 @@
         </div>
       </div>
     </div>
-  } @else if (viewMode() === "months") {
+  } @else if (viewMode() === VIEW_MODE.MONTHS) {
     <div
       class="calendar-picker__months"
       cdkTrapFocus
       [cdkTrapFocusAutoCapture]="true"
+      (keydown.escape)="setDefaultView()"
     >
       <div class="calendar-picker__header">
         <span class="calendar-picker__header__title">
@@ -104,7 +116,7 @@
       </div>
       <div
         class="calendar-picker__content calendar-picker__months__content"
-        role="listbox"
+        role="grid"
         [attr.aria-label]="'APP.MONTHS' | translate"
       >
         @for (month of allMonths; track $index) {
@@ -112,13 +124,15 @@
             #monthButton
             class="calendar-picker__month"
             type="button"
+            role="gridcell"
             [attr.tabindex]="currentMonthNumber() === $index ? 0 : -1"
-            [class.selected]="currentMonthNumber() === $index"
+            [class.calendar-picker__month--selected]="
+              currentMonthNumber() === $index
+            "
             [title]="'CALENDAR.MONTH.' + $index | translate"
-            [attr.role]="'option'"
             [attr.aria-selected]="currentMonthNumber() === $index"
             [attr.aria-label]="'CALENDAR.MONTH.' + $index | translate"
-            (click)="changeMonth($index, $event)"
+            (click)="selectMonth($index, $event)"
           >
             {{ "CALENDAR.MONTH." + $index | translate }}
           </button>
@@ -126,11 +140,12 @@
       </div>
       <ng-container *ngTemplateOutlet="backButton"></ng-container>
     </div>
-  } @else {
+  } @else if (viewMode() === VIEW_MODE.YEARS) {
     <div
       class="calendar-picker__years"
       cdkTrapFocus
       [cdkTrapFocusAutoCapture]="true"
+      (keydown.escape)="setDefaultView()"
     >
       <div class="calendar-picker__header">
         <button
@@ -157,20 +172,20 @@
       </div>
       <div
         class="calendar-picker__content calendar-picker__years__content"
-        role="listbox"
+        role="grid"
       >
         @for (year of allYears; track year) {
           <button
             #yearButton
             type="button"
+            role="gridcell"
             class="calendar-picker__year"
             [attr.tabindex]="currentYear() === year ? 0 : -1"
-            [class.selected]="currentYear() === year"
-            (click)="changeYear(year, $event)"
+            [class.calendar-picker__year--selected]="currentYear() === year"
+            (click)="selectYear(year, $event)"
             [title]="year"
             [attr.aria-selected]="currentYear() === year"
             [attr.aria-label]="year"
-            [attr.role]="'option'"
           >
             {{ year }}
           </button>
@@ -187,7 +202,7 @@
     <button
       type="button"
       class="calendar-picker__back__btn"
-      (click)="chageViewMode('default', $event)"
+      (click)="setDefaultView()"
       [title]="'APP.BACK' | translate"
       [attr.aria-label]="'APP.BACK' | translate"
     >

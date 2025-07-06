@@ -28,12 +28,12 @@ import { CalendarComponent } from '@shared/components/calendar/calendar.componen
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 import moment from 'moment';
 import {
-  DateSelected,
+  CalendarSelectionType,
   DEFAULT_FORMAT,
+  SelectionType,
 } from '../../calendar/models/calendar.model';
 import { CalendarService } from '../../calendar/services/calendar.service';
 import { InputAutocomplete, InputSize } from '../models/form-field.entity';
-import { DatePickerType } from './models/input-date-picker.model';
 
 /**
  * @name
@@ -87,7 +87,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   @Input() name?: string;
 
   // Tipo de calendario (day, week, range)
-  @Input() type: DatePickerType = 'day';
+  @Input() type: SelectionType = CalendarSelectionType.DAY;
 
   // Placeholder del input
   @Input() placeholder: string = 'aaaa-mm-dd';
@@ -221,35 +221,34 @@ export class InputDatePickerComponent implements ControlValueAccessor {
 
   /**
    * Función para seleccionar una fecha
-   * @param {DateSelected} value
+   * @param {string | string[]} value - Fecha o rango de fechas seleccionadas
    */
-  setCalendarValue(value: DateSelected) {
-    if (!value?.date) return;
+  setCalendarValue(value: string | string[]) {
+    if (!value) return;
 
     // Mostrar en el input como string (aunque sea rango)
-    const formatted = this.formatDate(this.format, value.date);
+    const formatted = this.formatDate(this.format, value);
 
     // Si es de tipo rango, mostramos la primera y última fecha
     // Si no es de tipo rango, mostramos la fecha única
-    if (Array.isArray(value.date)) {
-      const startDate = moment(value.date[0]).format(this.format);
-      const endDate = moment(value.date[value.date.length - 1]).format(
-        this.format,
-      );
+    if (Array.isArray(value)) {
+      const startDate = moment(value[0]).format(this.format);
+      const endDate = moment(value[value.length - 1]).format(this.format);
       this._value.set(`${startDate} - ${endDate}`); // Visual
-      this.rangeDates.set(value.date);
+      this.rangeDates.set(value);
     } else {
       this._value.set(formatted); // Visual
-      this.defaultDate.set(moment(value.date));
+      this.defaultDate.set(moment(value));
     }
 
-    this.onChange(value.date); // <- emitimos el valor REAL (string o string[])
+    this.onChange(value); // Emitimos el valor REAL (string o string[])
     this.onTouched();
 
-    if (value?.closePicker) this.closeCalendar();
+    // Cerramos el calendario
+    this.closeCalendar();
 
-    this.dateSelected.emit(value.date); // <- emitimos el valor REAL
-    this.change.emit(value.date); // <- emitimos el valor REAL
+    this.dateSelected.emit(value); // Emitimos el valor REAL
+    this.change.emit(value); // Emitimos el valor REAL
   }
 
   /**

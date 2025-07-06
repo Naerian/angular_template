@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   OnInit,
   Output,
@@ -22,7 +23,10 @@ import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import {
   CalendarDay,
+  CalendarSelectionType,
+  CalendarViewMode,
   DEFAULT_FORMAT,
+  SelectionType,
   ViewMode,
   WEEK_DAYS,
 } from './models/calendar.model';
@@ -63,7 +67,7 @@ export class CalendarComponent implements OnInit {
   >;
 
   // Tipo de selección: día, semana o rango
-  @Input() type: 'day' | 'week' | 'range' = 'day';
+  @Input() type: SelectionType = CalendarSelectionType.DAY;
 
   // Fechas deshabilitadas, que no se pueden seleccionar
   @Input() disabledDates: (string | moment.Moment)[] | undefined = undefined;
@@ -73,8 +77,8 @@ export class CalendarComponent implements OnInit {
 
   // Señales privadas que almacenan fechas como moment o null
   private _defaultDate: WritableSignal<moment.Moment | null> = signal(moment());
-  private _startDate: WritableSignal<moment.Moment | null> = signal(moment());
-  private _endDate: WritableSignal<moment.Moment | null> = signal(moment());
+  private _startDate: WritableSignal<moment.Moment | null> = signal(null);
+  private _endDate: WritableSignal<moment.Moment | null> = signal(null);
 
   /**
    * Input para establecer la fecha por defecto del calendario
@@ -117,13 +121,10 @@ export class CalendarComponent implements OnInit {
   }
 
   // Evento que emite la fecha o rango seleccionado
-  @Output() dateSelected = new EventEmitter<{
-    date: string | string[];
-    closePicker: boolean;
-  }>();
+  @Output() dateSelected = new EventEmitter<string | string[]>();
 
   // Tipo de vista (Calendario normal, selección de año o de mes)
-  viewMode: WritableSignal<ViewMode> = signal('default');
+  viewMode: WritableSignal<ViewMode> = signal(CalendarViewMode.DEFAULT);
 
   // Array de datos para años y meses
   allYears: number[] = [];
@@ -134,6 +135,10 @@ export class CalendarComponent implements OnInit {
 
   // Array que guardará los días del mes por semana
   daysInMonth: WritableSignal<CalendarDay[]> = signal([]);
+
+  // Usada en la vista para no hacer uso de `magic strings`
+  VIEW_MODE = CalendarViewMode;
+  SELECTION_TYPE = CalendarSelectionType;
 
   // Variable para saber en qué calendario estamos cuando nos movemos por los meses (formato string)
   currentViewDate: WritableSignal<string> = signal(
@@ -160,16 +165,324 @@ export class CalendarComponent implements OnInit {
   private readonly _calendarService = inject(CalendarService);
   private readonly _translateService = inject(TranslateService);
 
+  @HostListener('keydown', ['$event'])
+  handleKeydown(event: KeyboardEvent) {
+    if (this.viewMode() === CalendarViewMode.DEFAULT) {
+      this.navigateCalendarDay(event);
+    } else if (this.viewMode() === CalendarViewMode.MONTHS) {
+      this.navigateCalendarMonths(event);
+    } else if (this.viewMode() === CalendarViewMode.YEARS) {
+      this.navigateCalendarYears(event);
+    }
+  }
+
   ngOnInit(): void {
     queueMicrotask(() => this.initCalendar());
   }
 
   /**
-   * Función para cambiar el modo de vista del calendario permitiendo
-   * volver a la vista normal si nos encontramos en la vista de años / meses
+   * Función para navegar entre los días del calendario en la vista `default`
+   * @param {KeyboardEvent} event - Tecla pulsada (ArrowLeft, ArrowRight, ArrowUp, ArrowDown)
    */
-  onEscapeKey(): void {
-    if (this.viewMode() !== 'default') this.chageViewMode('default');
+  navigateCalendarDay(event: KeyboardEvent) {
+    if (this.viewMode() !== CalendarViewMode.DEFAULT) return;
+
+    const keys = [
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowUp',
+      'ArrowDown',
+      'Home',
+      'End',
+      'PageUp',
+      'PageDown',
+    ];
+    if (!keys.includes(event.key)) return;
+
+    event.preventDefault();
+
+    const buttons = this.dayButtons?.toArray() ?? [];
+    const activeEl = document.activeElement as HTMLElement;
+
+    const currentIndex = buttons.findIndex(
+      (btn) => btn.nativeElement === activeEl,
+    );
+
+    if (currentIndex === -1) return;
+
+    const cols = 7;
+    let nextIndex = currentIndex;
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        nextIndex = currentIndex - 1;
+        break;
+      case 'ArrowRight':
+        nextIndex = currentIndex + 1;
+        break;
+      case 'ArrowUp':
+        nextIndex = currentIndex - cols;
+        break;
+      case 'ArrowDown':
+        nextIndex = currentIndex + cols;
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = buttons.length - 1;
+        break;
+    }
+
+    // Salto al mes anterior
+    if (
+      (event.key === 'ArrowLeft' && currentIndex === 0) ||
+      event.key === 'PageUp'
+    ) {
+      this.prevMonth();
+
+      setTimeout(() => {
+        const updatedButtons = this.dayButtons?.toArray() ?? [];
+
+        // Si saltamos de mes con `PageUp`, buscamos el día actual
+        // pero si saltamos con la `ArrowLeft` buscamos el último día habilitado
+        if (event.key === 'PageUp') {
+          const currentDay = activeEl.dataset['day'];
+          const match = updatedButtons.find((btn) => {
+            const btnDay = btn.nativeElement.dataset['day'];
+            return btnDay === currentDay;
+          });
+          (
+            match ?? updatedButtons.find((btn) => !btn.nativeElement.disabled)
+          )?.nativeElement.focus();
+        } else {
+          const lastEnabled = [...updatedButtons]
+            .reverse()
+            .find((btn) => !btn.nativeElement.disabled);
+          lastEnabled?.nativeElement.focus();
+        }
+      }, 0);
+      return;
+    }
+
+    // Salto al mes siguiente
+    if (
+      (event.key === 'ArrowRight' && currentIndex === buttons.length - 1) ||
+      event.key === 'PageDown'
+    ) {
+      this.nextMonth();
+
+      setTimeout(() => {
+        const updatedButtons = this.dayButtons?.toArray() ?? [];
+
+        // Si saltamos de mes con `PageDown`, buscamos el día actual
+        // pero si saltamos con la `ArrowRight` buscamos el primer día habilitado
+        if (event.key === 'PageDown') {
+          const currentDay = activeEl.dataset['day'];
+          const match = updatedButtons.find((btn) => {
+            const btnDay = btn.nativeElement.dataset['day'];
+            return btnDay === currentDay;
+          });
+          (
+            match ?? updatedButtons.find((btn) => !btn.nativeElement.disabled)
+          )?.nativeElement.focus();
+        } else {
+          const firstEnabled = updatedButtons.find(
+            (btn) => !btn.nativeElement.disabled,
+          );
+          firstEnabled?.nativeElement.focus();
+        }
+      }, 0);
+      return;
+    }
+
+    // Si el siguiente índice está dentro del rango actual, hacemos focus en él
+    if (nextIndex >= 0 && nextIndex < buttons.length) {
+      buttons[nextIndex].nativeElement.focus();
+      return;
+    }
+  }
+
+  /**
+   * Función para cambiar a la vista de selección de meses
+   * @param {KeyboardEvent} event - Evento de teclado
+   */
+  navigateCalendarMonths(event: KeyboardEvent) {
+    if (this.viewMode() !== CalendarViewMode.MONTHS) return;
+
+    const keys = [
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowUp',
+      'ArrowDown',
+      'Home',
+      'End',
+    ];
+    if (!keys.includes(event.key)) return;
+
+    event.preventDefault();
+
+    const buttons = this.monthButtons?.toArray() ?? [];
+    const activeEl = document.activeElement as HTMLElement;
+
+    const currentIndex = buttons.findIndex(
+      (btn) => btn.nativeElement === activeEl,
+    );
+    if (currentIndex === -1) return;
+
+    const cols = 3;
+    let nextIndex = currentIndex;
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        nextIndex = currentIndex - 1;
+        break;
+      case 'ArrowRight':
+        nextIndex = currentIndex + 1;
+        break;
+      case 'ArrowUp':
+        nextIndex = currentIndex - cols;
+        break;
+      case 'ArrowDown':
+        nextIndex = currentIndex + cols;
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = buttons.length - 1;
+        break;
+    }
+
+    // Si el siguiente índice está dentro del rango actual, hacemos focus en él
+    if (nextIndex >= 0 && nextIndex < buttons.length)
+      buttons[nextIndex].nativeElement.focus();
+  }
+
+  /**
+   * Función para manejar la navegación por años en la vista de selección de años
+   * @param {KeyboardEvent} event - Evento de teclado
+   */
+  navigateCalendarYears(event: KeyboardEvent) {
+    if (this.viewMode() !== CalendarViewMode.YEARS) return;
+
+    const keys = [
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowUp',
+      'ArrowDown',
+      'Home',
+      'End',
+      'PageUp',
+      'PageDown',
+    ];
+    if (!keys.includes(event.key)) return;
+
+    event.preventDefault();
+
+    const buttons = this.yearButtons?.toArray() ?? [];
+    const activeEl = document.activeElement as HTMLElement;
+
+    const currentIndex = buttons.findIndex(
+      (btn) => btn.nativeElement === activeEl,
+    );
+    if (currentIndex === -1) return;
+
+    const cols = 4;
+    let nextIndex = currentIndex;
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        nextIndex = currentIndex - 1;
+        break;
+      case 'ArrowRight':
+        nextIndex = currentIndex + 1;
+        break;
+      case 'ArrowUp':
+        nextIndex = currentIndex - cols;
+        break;
+      case 'ArrowDown':
+        nextIndex = currentIndex + cols;
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = buttons.length - 1;
+        break;
+    }
+
+    // Saltar a años anteriores
+    if (
+      event.key === 'PageUp' ||
+      (['ArrowLeft', 'ArrowUp'].includes(event.key) && currentIndex === 0)
+    ) {
+      this.loadPastYears();
+      setTimeout(() => {
+        // Si saltamos a años pasados con `PageUp`, marcamos el primer año,
+        // pero si saltamos con la `ArrowLeft` buscamos el último año
+        if (event.key === 'PageUp') {
+          this.yearButtons?.first?.nativeElement.focus();
+        } else {
+          this.yearButtons?.last?.nativeElement.focus();
+        }
+      });
+      return;
+    }
+
+    // Saltar a años futuros
+    if (
+      event.key === 'PageDown' ||
+      (['ArrowRight', 'ArrowDown'].includes(event.key) &&
+        currentIndex === buttons.length - 1)
+    ) {
+      this.loadFutureYears();
+      setTimeout(() => {
+        // Si saltamos a años futuros con `PageDown` o con `ArrowRight` buscamos el primer año
+        this.yearButtons?.first?.nativeElement.focus();
+      });
+    }
+
+    if (nextIndex >= 0 && nextIndex < buttons.length) {
+      buttons[nextIndex].nativeElement.focus();
+      return;
+    }
+  }
+
+  /**
+   * Función para establecer el foco en el primer día del mes actual o en el día seleccionado
+   */
+  focusInitialDay() {
+    const buttons = this.dayButtons?.toArray() ?? [];
+
+    const selected = buttons.find((btn) =>
+      btn.nativeElement.classList.contains('calendar-picker__day--selected'),
+    );
+
+    const fallback = buttons.find((btn) => !btn.nativeElement.disabled);
+
+    const target = selected ?? fallback;
+
+    buttons.forEach((btn) => btn.nativeElement.setAttribute('tabindex', '-1'));
+
+    if (target) {
+      target.nativeElement.setAttribute('tabindex', '0');
+      target.nativeElement.focus();
+    }
+  }
+
+  /**
+   * Función para establecer el foco en el año seleccionado o el primer año habilitado
+   */
+  focusSelectedYear() {
+    setTimeout(() => {
+      const buttons = this.yearButtons?.toArray() ?? [];
+      const selected = buttons.find(
+        (btn) => btn.nativeElement.getAttribute('aria-selected') === 'true',
+      );
+
+      selected?.nativeElement.focus();
+    }, 0);
   }
 
   /**
@@ -178,7 +491,7 @@ export class CalendarComponent implements OnInit {
   initCalendar() {
     this.normalizeCurrentDate(this.currentViewDate());
     this.allMonths = moment.months();
-    this.setCalendar();
+    this.renderCalendarDays();
   }
 
   /**
@@ -196,7 +509,7 @@ export class CalendarComponent implements OnInit {
   /**
    * Función para construir el calendario según una fecha dada
    */
-  setCalendar() {
+  renderCalendarDays() {
     const firstDayOfMonth = moment(this.currentViewDate()).startOf('month');
     const firstCell = firstDayOfMonth.clone().startOf('isoWeek'); // lunes de la 1ª fila
     const totalDays = 6 * 7; // 6 filas x 7 columnas
@@ -221,8 +534,8 @@ export class CalendarComponent implements OnInit {
 
     this.daysInMonth.set(days);
 
-    // Enfocamos el primer botón seleccionado o el día de hoy
-    this.focusSelectedButton(this.dayButtons);
+    // Enfocar el primer día del mes o el día seleccionado
+    setTimeout(() => this.focusInitialDay());
   }
 
   /**
@@ -246,10 +559,13 @@ export class CalendarComponent implements OnInit {
   checkIfSelected(date: moment.Moment): boolean {
     if (!this._defaultDate()) return false;
 
-    if (this.type === 'day') {
+    if (this.type === CalendarSelectionType.DAY) {
       // Selección por día exacto
       return date.isSame(this._defaultDate()!, 'day');
-    } else if (this.type === 'week' || this.type === 'range') {
+    } else if (
+      this.type === CalendarSelectionType.WEEK ||
+      this.type === CalendarSelectionType.RANGE
+    ) {
       // Selección por semana o rango: el rango _startDate a _endDate
       return this.checkIfInRange(date);
     }
@@ -273,9 +589,9 @@ export class CalendarComponent implements OnInit {
 
   /**
    * Filtra las fechas deshabilitadas dentro de un rango
-   * @param startDate string en formato DEFAULT_FORMAT
-   * @param endDate string en formato DEFAULT_FORMAT
-   * @returns string[] con fechas válidas dentro del rango
+   * @param {string} startDate - Fecha de inicio en formato DEFAULT_FORMAT
+   * @param {string} endDate - Fecha de fin en formato DEFAULT_FORMAT
+   * @returns {string[]} - Array de fechas habilitadas en formato DEFAULT_FORMAT
    */
   filterEnabledDatesInRange(startDate: string, endDate: string): string[] {
     if (!this.disabledDates || this.disabledDates.length === 0) {
@@ -302,56 +618,59 @@ export class CalendarComponent implements OnInit {
    * @param {CalendarDay} day
    * @param {Event} event
    */
-  selectItem(day: CalendarDay, event: Event) {
+  selectDay(day: CalendarDay, event: Event) {
     event.preventDefault();
     event.stopPropagation();
 
     // Si el día es inválido, si no hay fecha, si está deshabilitado o si no es del mes actual, no hacemos nada
     if (!day || !day.date || day.isDisabled || !day.isCurrentMonth) return;
 
+    // Marcamos el día como seleccionado
+    day.isSelected = true;
+
     // Si el tipo es día, semana o rango, establecemos la fecha
-    if (this.type === 'day') {
-      this.setDay(day.date);
-    } else if (this.type === 'week') {
-      this.setWeekDate(day.date);
-    } else if (this.type === 'range') {
-      this.setRangeDate(day.date);
+    if (this.type === CalendarSelectionType.DAY) {
+      this.setDay(day);
+    } else if (this.type === CalendarSelectionType.WEEK) {
+      this.setWeek(day);
+    } else if (this.type === CalendarSelectionType.RANGE) {
+      this.setRange(day);
     }
   }
 
   /**
    * Función para establecer el día seleccionado
-   * @param {moment.Moment} date
-   * @param {Event} event
-   * @param {boolean} closePickerSelector
+   * @param {CalendarDay} day
    */
-  setDay(
-    date: moment.Moment,
-    event?: Event,
-    closePickerSelector: boolean = true,
-  ) {
-    event?.preventDefault();
-    event?.stopPropagation();
+  setDay(day: CalendarDay) {
+    // Si no hay fecha o no es de tipo `moment`, no hacemos nada
+    if (!day || !day.date || !moment.isMoment(day.date)) return;
 
-    this._defaultDate.set(date);
-    this.currentViewDate.set(date.format(DEFAULT_FORMAT));
-    this.setCalendar();
-    this.emitDateSelected(date.format(DEFAULT_FORMAT), closePickerSelector);
+    this._defaultDate.set(day.date);
+    this.currentViewDate.set(day.date.format(DEFAULT_FORMAT));
+    this.renderCalendarDays();
+    this.emitDateSelected(day.date.format(DEFAULT_FORMAT));
   }
 
   /**
    * Función para establecer la semana seleccionada y devolver
    * el array de días válidos (filtrados o no)
-   * @param {moment.Moment} date - Fecha dentro de la semana seleccionada
-   * @param {Event} event - Evento (opcional)
+   * @param {CalendarDay} day
    */
-  setWeekDate(date: moment.Moment, event?: Event) {
-    event?.preventDefault();
-    event?.stopPropagation();
+  setWeek(day: CalendarDay) {
+    // Limpiamos las fechas si ya hay un rango establecido, evitando conflictos
+    // con la selección de rango anterior
+    if (!!this._startDate() && !!this._endDate()) {
+      this._startDate.set(null);
+      this._endDate.set(null);
+    }
+
+    // Si no hay fecha o no es de tipo `moment`, no hacemos nada
+    if (!day || !day.date || !moment.isMoment(day.date)) return;
 
     // Calculamos el primer y último día de la semana
-    const firstDay = date.clone().startOf('isoWeek');
-    const lastDay = date.clone().endOf('isoWeek');
+    const firstDay = day.date.clone().startOf('isoWeek');
+    const lastDay = day.date.clone().endOf('isoWeek');
 
     // Obtenemos todas las fechas dentro del rango semanal
     const totalDatesInWeek = this._calendarService.getDatesBetween(
@@ -375,7 +694,7 @@ export class CalendarComponent implements OnInit {
       this._startDate.set(null);
       this._endDate.set(null);
       this.showBlockedRangeToast();
-      this.setCalendar();
+      this.renderCalendarDays();
       return;
     }
 
@@ -397,42 +716,37 @@ export class CalendarComponent implements OnInit {
 
     // Actualizamos la fecha de vista actual al primer día válido
     this.currentViewDate.set(filteredDates[0]);
-    this.setCalendar();
-    this.emitDateSelected(filteredDates, true);
+    this.emitDateSelected(filteredDates);
   }
 
   /**
    * Función para establecer un rango de fechas seleccionado
-   * @param {moment.Moment} date - Fecha seleccionada
-   * @param {Event} event - Evento (opcional)
-   * @param {boolean} cleanDates - Si limpiar rango anterior
+   * @param {CalendarDay} day
    */
-  setRangeDate(date: moment.Moment, event?: Event, cleanDates: boolean = true) {
-    event?.preventDefault();
-    event?.stopPropagation();
-
-    // Limpiamos las fechas si procede
-    if (cleanDates && this._startDate() && this._endDate()) {
+  setRange(day: CalendarDay) {
+    // Limpiamos las fechas si ya hay un rango establecido, evitando conflictos
+    // con la selección de rango anterior
+    if (!!this._startDate() && !!this._endDate()) {
       this._startDate.set(null);
       this._endDate.set(null);
     }
 
     // Lógica para establecer el inicio o fin del rango
     if (!this._startDate()) {
-      this._startDate.set(date);
-    } else if (!this._endDate() && date.isAfter(this._startDate()!)) {
-      this._endDate.set(date);
-    } else if (this._startDate()!.isSame(date)) {
-      this._startDate.set(date);
-      this._endDate.set(date);
-    } else if (this._startDate()!.isAfter(date)) {
+      this._startDate.set(day.date);
+    } else if (!this._endDate() && day.date.isAfter(this._startDate()!)) {
+      this._endDate.set(day.date);
+    } else if (this._startDate()!.isSame(day.date)) {
+      this._startDate.set(day.date);
+      this._endDate.set(day.date);
+    } else if (this._startDate()!.isAfter(day.date)) {
       const dateStart = this._startDate()!;
-      this._startDate.set(date);
+      this._startDate.set(day.date);
       this._endDate.set(dateStart);
     }
 
     // Si ya hay rango establecido, comprobamos fechas deshabilitadas y actuamos según configuración
-    if (this._startDate() && this._endDate()) {
+    if (!!this._startDate() && !!this._endDate()) {
       const totalDatesInRange = this._calendarService.getDatesBetween(
         this._startDate()!.format(DEFAULT_FORMAT),
         this._endDate()!.format(DEFAULT_FORMAT),
@@ -451,7 +765,7 @@ export class CalendarComponent implements OnInit {
         this._startDate.set(null);
         this._endDate.set(null);
         this.showBlockedRangeToast();
-        this.setCalendar();
+        this.renderCalendarDays();
         return;
       }
 
@@ -466,8 +780,7 @@ export class CalendarComponent implements OnInit {
       }
 
       this.currentViewDate.set(this._endDate()!.format(DEFAULT_FORMAT));
-      this.setCalendar();
-      this.emitDateSelected(filteredDates, true);
+      this.emitDateSelected(filteredDates);
     }
   }
 
@@ -504,87 +817,48 @@ export class CalendarComponent implements OnInit {
    * @param date string o string[] con las fechas
    * @param closePickerSelector boolean para cerrar el selector si procede
    */
-  emitDateSelected(
-    date: string | string[],
-    closePickerSelector: boolean = true,
-  ) {
-    this.dateSelected.emit({
-      date,
-      closePicker: closePickerSelector,
-    });
+  emitDateSelected(date: string | string[]) {
+    this.dateSelected.emit(date);
   }
 
   /**
-   * Función para enfocar el botón del mes, día o año seleccionado,
+   * Función para estabelcer la vista de días (default)
    */
-  focusSelectedButton(
-    buttons: QueryList<ElementRef<HTMLButtonElement>>,
-    selectedClass: string = 'selected',
-  ) {
+  setDefaultView() {
+    this.viewMode.set(CalendarViewMode.DEFAULT);
+    this.renderCalendarDays();
+
+    // Hacemos focus en el primer día del mes actual
+    const firstDayButton = this.dayButtons.first;
+    if (firstDayButton) firstDayButton.nativeElement.focus();
+  }
+
+  /**
+   * Función para establecer la vista de meses
+   */
+  setMonthsView() {
+    this.viewMode.set(CalendarViewMode.MONTHS);
+
+    // Pequeño delay para que se rendericen los botones y podamos hacer focus
     setTimeout(() => {
-      const selected = buttons.find((btn) =>
-        btn.nativeElement.classList.contains(selectedClass),
-      );
-      selected?.nativeElement.focus();
-    });
+      const monthIndex = this.currentMonthNumber();
+      const monthButton = this.monthButtons.toArray()[monthIndex];
+      if (monthButton) monthButton.nativeElement.focus();
+    }, 0);
   }
 
   /**
-   * Cambiar el modo de vista del calendario: default, years, months
-   * @param mode ViewMode
-   * @param event Evento (opcional)
+   * Función para establecer la vista de años
    */
-  chageViewMode(mode: ViewMode, event?: Event) {
-    event?.preventDefault();
-    event?.stopPropagation();
+  setYearsView() {
+    this.viewMode.set(CalendarViewMode.YEARS);
 
-    // Si se cambia a vista años, cargamos rango de años
-    if (mode === 'years') {
-      const year =
-        moment(new Date(this.currentViewDate())).year() ?? moment().year();
-      this.loadYearRange(year);
-    } else if (mode === 'months') {
-      this.focusSelectedButton(this.monthButtons);
-    }
+    // Cargamos el rango de años para la vista
+    const year = moment(new Date(this.currentViewDate())).year();
+    this.loadYearRange(year);
 
-    this.viewMode.set(mode);
-  }
-
-  /**
-   * Devuelve la etiqueta aria para el calendario según el tipo de selección
-   */
-  getAriaLabelForCalendar(): string {
-    const start = this._startDate() ? this._startDate()!.format('LL') : '';
-    const end = this._endDate() ? this._endDate()!.format('LL') : '';
-    const current = moment(this.currentViewDate()).format('LL');
-
-    switch (this.type) {
-      case 'day':
-        return current;
-      case 'range':
-      case 'week':
-        return `${start} - ${end}`;
-      default:
-        return '';
-    }
-  }
-
-  /**
-   * Cambiar el mes seleccionado en la vista de calendario
-   * @param month número de mes (0-11)
-   * @param event Evento (opcional)
-   */
-  changeMonth(month: number, event?: Event) {
-    event?.preventDefault();
-    event?.stopPropagation();
-
-    this.viewMode.set('default');
-    this.currentViewDate.set(
-      moment(new Date(this.currentViewDate()))
-        .set('month', month)
-        .format(DEFAULT_FORMAT),
-    );
-    this.setCalendar();
+    // Hacemos focus en el año actual
+    this.focusSelectedYear();
   }
 
   /**
@@ -596,7 +870,7 @@ export class CalendarComponent implements OnInit {
         .subtract(1, 'month')
         .format(DEFAULT_FORMAT),
     );
-    this.setCalendar();
+    this.renderCalendarDays();
   }
 
   /**
@@ -608,7 +882,27 @@ export class CalendarComponent implements OnInit {
         .add(1, 'month')
         .format(DEFAULT_FORMAT),
     );
-    this.setCalendar();
+    this.renderCalendarDays();
+  }
+
+  /**
+   * Cambiar el mes seleccionado en la vista de calendario
+   * @param month número de mes (0-11)
+   * @param event Evento (opcional)
+   */
+  selectMonth(month: number, event?: Event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    // Volvemos al a vista por defecto
+    this.setDefaultView();
+
+    this.currentViewDate.set(
+      moment(new Date(this.currentViewDate()))
+        .set('month', month)
+        .format(DEFAULT_FORMAT),
+    );
+    this.renderCalendarDays();
   }
 
   /**
@@ -616,18 +910,20 @@ export class CalendarComponent implements OnInit {
    * @param {number} year Año a cambiar (4 dígitos)
    * @param {Event} event Evento (opcional)
    */
-  changeYear(year: number, event?: Event) {
+  selectYear(year: number, event?: Event) {
     event?.preventDefault();
     event?.stopPropagation();
 
-    this.viewMode.set('default');
+    // Volvemos al a vista por defecto
+    this.setDefaultView();
+
     this.currentViewDate.set(
       (this._defaultDate() ?? moment())
         .clone()
         .set('year', Number(year))
         .format(DEFAULT_FORMAT),
     );
-    this.setCalendar();
+    this.renderCalendarDays();
   }
 
   /**
@@ -644,9 +940,6 @@ export class CalendarComponent implements OnInit {
       ),
     );
     this.yearsBlockStart = startYear;
-
-    // Hacemos focus en el año seleccionado
-    this.focusSelectedButton(this.yearButtons);
   }
 
   /**
@@ -661,5 +954,24 @@ export class CalendarComponent implements OnInit {
    */
   loadFutureYears() {
     this.loadYearRange(this.yearsBlockStart + 20);
+  }
+
+  /**
+   * Devuelve la etiqueta aria para el calendario según el tipo de selección
+   */
+  getAriaLabelForCalendar(): string {
+    const start = this._startDate() ? this._startDate()!.format('LL') : '';
+    const end = this._endDate() ? this._endDate()!.format('LL') : '';
+    const current = moment(this.currentViewDate()).format('LL');
+
+    switch (this.type) {
+      case CalendarSelectionType.DAY:
+        return current;
+      case CalendarSelectionType.RANGE:
+      case CalendarSelectionType.WEEK:
+        return `${start} - ${end}`;
+      default:
+        return '';
+    }
   }
 }

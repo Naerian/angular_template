@@ -1,12 +1,19 @@
-export interface DateSelected {
-  date: string | string[];
-  closePicker?: boolean;
-}
-
 export const DEFAULT_FORMAT = 'YYYY-MM-DD';
 
-export type ViewMode = 'years' | 'months' | 'default';
-export type CalendarType = 'week' | 'day' | 'range';
+export enum CalendarViewMode {
+  YEARS = 'years',
+  MONTHS = 'months',
+  DEFAULT = 'default',
+}
+
+export enum CalendarSelectionType {
+  DAY = 'day',
+  WEEK = 'week',
+  RANGE = 'range',
+}
+
+export type ViewMode = CalendarViewMode | `${CalendarViewMode}`;
+export type SelectionType = CalendarSelectionType | `${CalendarSelectionType}`;
 
 export interface CalendarDay {
   date: moment.Moment; // Día concreto

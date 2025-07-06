@@ -812,14 +812,14 @@
       <div class="row">
         <div class="col-3">
           <label>Calendario normal</label>
-          <small>Fecha: {{ dateInfo1?.date || "-" }}</small>
+          <small>Fecha: {{ dateInfo1 || "-" }}</small>
           <neo-calendar (dateSelected)="dateInfo1 = $event"></neo-calendar>
         </div>
         <div class="col-3">
           <label>Calendario semana</label>
           <small
-            >Fecha: {{ dateInfo2?.date[0] || "-" }} -
-            {{ dateInfo2?.date[1] || "-" }}</small
+            >Fecha: {{ dateInfo2?.[0] || "-" }} -
+            {{ dateInfo2?.[dateInfo2?.length - 1] || "-" }}</small
           >
           <neo-calendar
             [type]="'week'"
@@ -829,8 +829,8 @@
         <div class="col-3">
           <label>Calendario rango</label>
           <small
-            >Fecha: {{ dateInfo3?.date[0] || "-" }} -
-            {{ dateInfo3?.date[dateInfo3.date.length - 1] || "-" }}</small
+            >Fecha: {{ dateInfo3?.[0] || "-" }} -
+            {{ dateInfo3?.[dateInfo3?.length - 1] || "-" }}</small
           >
           <neo-calendar
             [type]="'range'"
@@ -840,8 +840,8 @@
         <div class="col-3">
           <label>Calendario con fechas deshabilitadas</label>
           <small
-            >Fecha: {{ dateInfo4?.date[0] || "-" }} -
-            {{ dateInfo4?.date[dateInfo4.date.length - 1] || "-" }}</small
+            >Fecha: {{ dateInfo4?.[0] || "-" }} -
+            {{ dateInfo4?.[dateInfo4?.length - 1] || "-" }}</small
           >
           <neo-calendar
             [type]="'range'"

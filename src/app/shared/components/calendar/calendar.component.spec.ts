@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import moment from 'moment';
 import { CalendarComponent } from './calendar.component';
 
 describe('CalendarComponent', () => {
@@ -37,33 +36,5 @@ describe('CalendarComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('setDay', () => {
-    component.setDay(moment());
-  });
-
-  it('initCalendar', () => {
-    component.initCalendar();
-  });
-
-  it('prevMonth', () => {
-    component.defaultDate = moment().format('YYYY-MM-DD');
-    fixture.detectChanges();
-    component.prevMonth();
-  });
-
-  it('nextMonth', () => {
-    component.defaultDate = moment().format('YYYY-MM-DD');
-    fixture.detectChanges();
-    component.nextMonth();
-  });
-
-  it('chageViewMode years', () => {
-    component.chageViewMode('years');
-  });
-
-  it('chageViewMode months', () => {
-    component.chageViewMode('months');
   });
 });

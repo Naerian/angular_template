@@ -79,6 +79,7 @@
 >
   <div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
     <neo-calendar
+      tabindex="0"
       [defaultDate]="!isRangeType() ? defaultDate() : ''"
       [startDate]="isRangeType() ? startRangeDate : ''"
       [endDate]="isRangeType() ? endRangeDate : ''"
