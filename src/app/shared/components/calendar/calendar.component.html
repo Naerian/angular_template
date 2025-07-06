@@ -2,8 +2,6 @@
   class="calendar-picker"
   role="application"
   [attr.data-calendar-id]="calendarId"
-  cdkTrapFocus
-  [cdkTrapFocusAutoCapture]="true"
 >
   @if (viewMode() === VIEW_MODE.DEFAULT) {
     <div class="calendar-picker__default">
@@ -56,11 +54,7 @@
             <span>{{ dayKey | translate }}</span>
           }
         </div>
-        <div
-          class="calendar-picker__grid calendar-picker__days"
-          role="grid"
-          [attr.aria-label]="getAriaLabelForCalendar()"
-        >
+        <div class="calendar-picker__grid calendar-picker__days" role="grid">
           @for (day of daysInMonth(); track day.date.valueOf()) {
             @if (day.isDisabled || !day.isCurrentMonth) {
               <span

@@ -6,29 +6,6 @@ import { DEFAULT_FORMAT } from '../models/calendar.model';
   providedIn: 'root',
 })
 export class CalendarService {
-  constructor() {}
-
-  /**
-   * Función para obtener las semanas de un mes en base a una fecha
-   * @param {string} date
-   * @returns {number}
-   */
-  weeksOfMonth(date: string): number {
-    const input = moment(new Date(date));
-
-    const startMonth = input.clone().startOf('month');
-    const startWeek = startMonth.clone().startOf('isoWeek');
-    const startOffset = startMonth.diff(startWeek, 'days');
-
-    const endMonth = input.clone().endOf('month');
-    const endWeek = endMonth.clone().endOf('isoWeek');
-    const endOffset = endWeek.diff(endMonth, 'days');
-
-    return Math.ceil(
-      (endMonth.diff(startMonth, 'days') + startOffset + endOffset) / 7,
-    );
-  }
-
   /**
    * Función para devolver la fecha en tipo "momentjs" según el tipo de valor que venga
    * @param {any} value
@@ -36,12 +13,10 @@ export class CalendarService {
    */
   /**
    * Convierte un valor en un objeto Moment válido o devuelve null si no es posible
-   * @param {Date | string | moment.Moment | null | undefined} value - Valor a convertir
-   * @returns {moment.Moment | null} - Objeto Moment válido o null si no es válido
+   * @param {Date | string | null} value
+   * @returns {moment.Moment | null}
    */
-  buildValidMomentDate(
-    value: Date | string | moment.Moment | null | undefined,
-  ): moment.Moment | null {
+  convertToMoment(value: Date | string | null): moment.Moment | null {
     // Si el valor es null o undefined, devolvemos null
     if (value === null || value === undefined) return null;
 
@@ -67,24 +42,18 @@ export class CalendarService {
 
   /**
    * Función para comprobar si la fecha se encuentra en el rango de fechas
-   * @param {moment.Moment | string} day
-   * @param {moment.Moment | string} startDate
-   * @param {moment.Moment | string} endDate
+   * @param {moment.Moment} date - Fecha a comprobar
+   * @param {string[] | moment.Moment[]} range - Rango de fechas
    * @returns {boolean}
    */
-  isRangeDate(
-    day: moment.Moment | string,
-    startDate: moment.Moment | string,
-    endDate: moment.Moment | string,
-  ): boolean {
-    const dateStart = moment(startDate);
-    const dateEnd = moment(endDate);
-    return moment(day).format('DD-MM-YYYY') ===
-      dateStart.format('DD-MM-YYYY') ||
-      moment(day).format('DD-MM-YYYY') === dateEnd.format('DD-MM-YYYY') ||
-      moment(day).isBetween(dateStart, dateEnd)
-      ? true
-      : false;
+  isRangeDate(date: moment.Moment, range: string[] | moment.Moment[]): boolean {
+    if (!Array.isArray(range) || range.length < 2) return false;
+
+    const startDate = moment(range[0]);
+    const endDate = moment(range[range.length - 1]);
+
+    // Comprobamos si la fecha está dentro del rango
+    return date.isBetween(startDate, endDate, 'day', '[]');
   }
 
   /**
@@ -99,18 +68,18 @@ export class CalendarService {
   }
 
   /**
-   * Función para obtener un array de fechas entre dos fechas
-   * @param {string} startDate - Fecha de inicio en formato 'YYYY-MM-DD'
-   * @param {string} endDate - Fecha de fin en formato 'YYYY-MM-DD
-   * @returns {string[]} - Array de fechas en formato 'YYYY-MM-DD'
+   * Función para obtener un array de fechas entre dos fechas dadas
+   * @param {moment.Moment} start - Fecha de inicio
+   * @param {moment.Moment} end - Fecha de fin
+   * @returns {moment.Moment[]} - Array de fechas
    */
-  getDatesBetween(startDate: string, endDate: string): string[] {
-    const start = moment(startDate, DEFAULT_FORMAT);
-    const end = moment(endDate, DEFAULT_FORMAT);
-    const dates = [];
+  getDatesBetween(start: moment.Moment, end: moment.Moment): moment.Moment[] {
+    const dates: moment.Moment[] = [];
+    let currentDate = start.clone();
 
-    for (let m = start.clone(); m.isSameOrBefore(end, 'day'); m.add(1, 'day')) {
-      dates.push(m.format(DEFAULT_FORMAT));
+    while (currentDate.isSameOrBefore(end)) {
+      dates.push(currentDate.clone());
+      currentDate.add(1, 'day');
     }
 
     return dates;

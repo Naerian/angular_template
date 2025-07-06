@@ -812,14 +812,16 @@
       <div class="row">
         <div class="col-3">
           <label>Calendario normal</label>
-          <small>Fecha: {{ dateInfo1 || "-" }}</small>
+          <small>Fecha: {{ (dateInfo1 | date: "YYYY/MM/dd") || "-" }}</small>
           <neo-calendar (dateSelected)="dateInfo1 = $event"></neo-calendar>
         </div>
         <div class="col-3">
           <label>Calendario semana</label>
           <small
-            >Fecha: {{ dateInfo2?.[0] || "-" }} -
-            {{ dateInfo2?.[dateInfo2?.length - 1] || "-" }}</small
+            >Fecha: {{ (dateInfo2?.[0] | date: "YYYY/MM/dd") || "-" }} -
+            {{
+              (dateInfo2?.[dateInfo2?.length - 1] | date: "YYYY/MM/dd") || "-"
+            }}</small
           >
           <neo-calendar
             [type]="'week'"
@@ -829,8 +831,10 @@
         <div class="col-3">
           <label>Calendario rango</label>
           <small
-            >Fecha: {{ dateInfo3?.[0] || "-" }} -
-            {{ dateInfo3?.[dateInfo3?.length - 1] || "-" }}</small
+            >Fecha: {{ (dateInfo3?.[0] | date: "YYYY/MM/dd") || "-" }} -
+            {{
+              (dateInfo3?.[dateInfo3?.length - 1] | date: "YYYY/MM/dd") || "-"
+            }}</small
           >
           <neo-calendar
             [type]="'range'"
@@ -840,8 +844,10 @@
         <div class="col-3">
           <label>Calendario con fechas deshabilitadas</label>
           <small
-            >Fecha: {{ dateInfo4?.[0] || "-" }} -
-            {{ dateInfo4?.[dateInfo4?.length - 1] || "-" }}</small
+            >Fecha: {{ (dateInfo4?.[0] | date: "YYYY/MM/dd") || "-" }} -
+            {{
+              (dateInfo4?.[dateInfo4?.length - 1] | date: "YYYY/MM/dd") || "-"
+            }}</small
           >
           <neo-calendar
             [type]="'range'"
@@ -893,7 +899,7 @@
         ></neo-input-date-picker>
         @if (testFormDate.value.date !== "") {
           <pre>
-            {{ testFormDate.value | json }}
+            {{ testFormDate.value.date }}
           </pre>
         }
       </form>
@@ -906,7 +912,9 @@
         ></neo-input-date-picker>
         @if ((testFormDateRange.value.dateRange?.length ?? 0) > 0) {
           <pre>
-            {{ testFormDateRange.value | json }}
+            @for (date of testFormDateRange.value.dateRange; track date) {
+              {{ date }}
+            }
           </pre>
         }
       </form>
@@ -919,7 +927,9 @@
         ></neo-input-date-picker>
         @if ((testFormDateWeek.value.dateWeek?.length ?? 0) > 0) {
           <pre>
-            {{ testFormDateWeek.value | json }}
+            @for (date of testFormDateWeek.value.dateWeek; track date) {
+              {{ date }}
+            }
           </pre>
         }
       </form>

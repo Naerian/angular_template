@@ -116,7 +116,17 @@ export class TestComponent implements OnInit {
     { id: '3', name: 'Three name', description: 'Three', price: 44 },
   ]);
 
-  disabledDates: (string | moment.Moment)[] = [];
+  // Fecha actual para el calendario
+  today = new Date();
+
+  // Fecha actual con dos días de diferencia para el calendario
+  todayPlusTwoDays = new Date('2025/07/08');
+
+  // Array de 5 fechas a partir de hoy para simular pasarle unas fechas predefinidas al calendario
+  customDates: Date[] = [];
+
+  // Array de fechas deshabilitadas para el calendario
+  disabledDates: (string | Date)[] = [];
 
   public readonly testForm = new FormGroup({
     name: new FormControl<string>('', [Validators.required]),
@@ -143,13 +153,26 @@ export class TestComponent implements OnInit {
   ngOnInit(): void {
     // Inicializamos las fechas deshabilitadas para el componente "neo-calendar"
     this.setDisabledDates();
+
+    // Inicializamos las fechas personalizadas para el componente "neo-calendar"
+    this.setCustomDates();
+  }
+
+  setCustomDates() {
+    const year = this.today.getFullYear();
+    const month = this.today.getMonth(); // 0-based: enero = 0
+    const startDay = 8; // o puedes usar today.getDate() si quieres empezar desde hoy
+    this.customDates = Array.from(
+      { length: 9 },
+      (_, i) => new Date(year, month, startDay + i),
+    );
   }
 
   setDisabledDates() {
     // Creamos un array de 4 fechas deshabilitadas para el mes actual de forma aleatoria
     this.disabledDates = Array.from({ length: 4 }, () => {
       const randomDay = Math.floor(Math.random() * 28) + 1; // Días del 1 al 28 para evitar problemas de mes
-      return moment().date(randomDay).format('YYYY-MM-DD');
+      return moment().date(randomDay).toDate();
     });
   }
 

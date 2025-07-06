@@ -6,14 +6,14 @@ export enum CalendarViewMode {
   DEFAULT = 'default',
 }
 
-export enum CalendarSelectionType {
+export enum CalendarType {
   DAY = 'day',
   WEEK = 'week',
   RANGE = 'range',
 }
 
 export type ViewMode = CalendarViewMode | `${CalendarViewMode}`;
-export type SelectionType = CalendarSelectionType | `${CalendarSelectionType}`;
+export type SelectionType = CalendarType | `${CalendarType}`;
 
 export interface CalendarDay {
   date: moment.Moment; // Día concreto
