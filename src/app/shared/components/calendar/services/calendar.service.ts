@@ -7,11 +7,6 @@ import { DEFAULT_FORMAT } from '../models/calendar.model';
 })
 export class CalendarService {
   /**
-   * Función para devolver la fecha en tipo "momentjs" según el tipo de valor que venga
-   * @param {any} value
-   * @returns
-   */
-  /**
    * Convierte un valor en un objeto Moment válido o devuelve null si no es posible
    * @param {Date | string | null} value
    * @returns {moment.Moment | null}
@@ -32,9 +27,9 @@ export class CalendarService {
     // Si el valor es una cadena, intentamos parsearlo con el formato por defecto
     if (typeof value === 'string') {
       // Aquí asumimos el formato por defecto, cambiar si usas uno específico.
-      // El 'true' en `moment(value, format, strict)` fuerza validación estricta de formato
-      const momentDate = moment(value, DEFAULT_FORMAT, true);
-      return momentDate.isValid() ? momentDate : null;
+      // El 'true' en el tercer argumento de moment es para hacer un parseo estricto.
+      const m = moment(value, DEFAULT_FORMAT, true);
+      return m.isValid() ? m : null;
     }
 
     return null;
@@ -47,12 +42,19 @@ export class CalendarService {
    * @returns {boolean}
    */
   isRangeDate(date: moment.Moment, range: string[] | moment.Moment[]): boolean {
-    if (!Array.isArray(range) || range.length < 2) return false;
+    if (!Array.isArray(range) || range.length === 0) return false;
 
+    // Si solo hay una fecha en el rango, la fecha está "en rango" si es el mismo día
+    if (range.length === 1) {
+      const singleDate = moment(range[0]);
+      return date.isSame(singleDate, 'day');
+    }
+
+    // Si hay dos o más fechas, es un rango propiamente dicho
     const startDate = moment(range[0]);
     const endDate = moment(range[range.length - 1]);
 
-    // Comprobamos si la fecha está dentro del rango
+    // Comprobamos si la fecha está dentro del rango (inclusive de inicio y fin)
     return date.isBetween(startDate, endDate, 'day', '[]');
   }
 
@@ -77,7 +79,10 @@ export class CalendarService {
     const dates: moment.Moment[] = [];
     let currentDate = start.clone();
 
-    while (currentDate.isSameOrBefore(end)) {
+    // Aseguramos que el final no sea anterior al inicio
+    const finalEnd = end.isBefore(start, 'day') ? start.clone() : end.clone();
+
+    while (currentDate.isSameOrBefore(finalEnd, 'day')) {
       dates.push(currentDate.clone());
       currentDate.add(1, 'day');
     }

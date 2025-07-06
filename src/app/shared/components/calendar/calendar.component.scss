@@ -201,19 +201,24 @@
     &--no_current_month {
       cursor: default;
       opacity: 0.5;
-      pointer-events: none;
 
       &:hover,
       &:focus {
-        background: none;
-        border: none;
-        color: inherit;
-        outline: none;
+        background: none !important;
+        border: none !important;
+        color: var(--text-color) !important;
+        outline: none !important;
       }
     }
 
     &--disabled {
       text-decoration: line-through;
+      color: var(--danger-color);
+
+      &:hover,
+      &:focus {
+        color: var(--danger-color) !important;
+      }
     }
 
     &--selected {

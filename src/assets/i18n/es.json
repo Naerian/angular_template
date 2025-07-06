@@ -15,6 +15,7 @@
   "APP.SAVE": "Guardar",
   "APP.SEARCH": "Buscar",
   "APP.MONTHS": "Meses",
+  "CALENDAR.DAY_DISABLED": "Día no disponible: {{ date }}",
   "CALENDAR.BLOCKED_BY_DISABLED_DATES_TITLE": "Rango de fechas bloqueado",
   "CALENDAR.BLOCKED_BY_DISABLED_DATES": "El rango de fechas seleccionado contiene fechas que no están disponibles. Por favor, selecciona un rango diferente.",
   "CALENDAR.DISABLED_DATES_WARNING_TITLE": "Fechas no disponibles",

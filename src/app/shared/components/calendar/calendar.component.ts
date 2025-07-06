@@ -82,7 +82,7 @@ export class CalendarComponent implements OnInit {
    */
   @Input()
   set date(value: Date | Date[] | string | string[] | null) {
-    setTimeout(() => this.updateSelectedDate(value));
+    queueMicrotask(() => this.updateSelectedDate(value));
   }
 
   // El getter `date` ahora simplemente devuelve el valor de la señal `selectedDate` o `selectedRange`
@@ -174,7 +174,7 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => this.initCalendar());
+    this.initCalendar();
   }
 
   /**
@@ -187,17 +187,10 @@ export class CalendarComponent implements OnInit {
     this.currentViewDate.set(null);
     this.selectedRange.set([]);
 
-    // Flag para saber si el input ha sido procesado
-    let dateProcessed = false;
-    let isRangeDate = false;
-
     // Si `value` es null o undefined y no es un array, establecemos la fecha de hoy.
     if ((value === null || value === undefined) && !Array.isArray(value)) {
       // Si el input es nulo, indefinido o un array vacío
-      if (this.type === CalendarType.DAY) {
-        this.setToday();
-        dateProcessed = true;
-      }
+      if (this.type === CalendarType.DAY) this.setToday();
     }
     // Si es un array, parseamos las fechas y actualizamos las señales correspondientes.
     else if (Array.isArray(value) && value.length > 0) {
@@ -211,13 +204,11 @@ export class CalendarComponent implements OnInit {
       // --
       // Si las fechas son válidas, procesamos según el tipo de calendario.
       if (parsedDates.length === 0) {
-        dateProcessed = false;
       } else {
         // Si es de tipo DAY y se ha pasado un array, tomamos la primera fecha.
         if (this.type === CalendarType.DAY) {
           this.selectedDate.set(parsedDates[0]); // Establecemos la primera fecha como seleccionada.
           this.currentViewDate.set(parsedDates[0].toDate()); // Establecemos la fecha de vista actual.
-          dateProcessed = true; // Indicamos que se ha procesado la fecha.
         }
         // Si es de tipo WEEK, comprobamos si el array representa una semana completa válida,
         // o si el array tiene un único valor, establecemos la semana en base a esa fecha.
@@ -227,53 +218,32 @@ export class CalendarComponent implements OnInit {
             const firstDay = parsedDates[0].clone().startOf('isoWeek');
             const lastDay = parsedDates[0].clone().endOf('isoWeek');
             this.handleRangeSelection(firstDay, lastDay, true); // true indica selección de semana.
-            isRangeDate = true;
           }
-          // Si el array tiene más de una fecha, comprobamos si es una semana completa válida.
+          // Si el array tiene más de una fecha, tomamos la primera como inicio de semana.
           else {
             const firstDate = parsedDates[0].clone();
-            const lastDate = parsedDates[parsedDates.length - 1].clone();
-
             const startOfWeek = firstDate.clone().startOf('isoWeek');
             const endOfWeek = firstDate.clone().endOf('isoWeek');
-
-            // Comprobar si el array de fechas representa una semana completa válida.
-            // Es decir, si tiene 7 días y el inicio/fin del rango coincide con el inicio/fin de una semana ISO.
-            const isFullWeek =
-              parsedDates.length === 7 &&
-              firstDate.isSame(startOfWeek, 'day') &&
-              lastDate.isSame(endOfWeek, 'day') &&
-              parsedDates.every((d, i) =>
-                d.isSame(startOfWeek.clone().add(i, 'days'), 'day'),
-              );
-
-            // Si el array tiene 7 días y es una semana completa válida, lo usamos como rango.
-            // Si no, establecemos la semana en base a la primera fecha del array.
-            if (isFullWeek) {
-              this.selectedRange.set(parsedDates);
-              this.currentViewDate.set(firstDate.toDate());
-            } else {
-              this.handleRangeSelection(startOfWeek, endOfWeek, true);
-              isRangeDate = true;
-            }
+            this.handleRangeSelection(startOfWeek, endOfWeek, true);
           }
-
-          // Indicamos que se ha procesado la fecha.
-          dateProcessed = true;
         }
         // Si es de tipo RANGE, usamos el array de fechas como rango.
         else if (this.type === CalendarType.RANGE) {
-          // Para tipo RANGE, simplemente usamos el array de fechas como el rango.
-          // Aseguramos que las fechas estén en orden para un rango.
-          const sortedDates = [...parsedDates].sort(
-            (a, b) => a.valueOf() - b.valueOf(),
-          );
-
-          const startDay = sortedDates[0].clone();
-          const endDay = sortedDates[sortedDates.length - 1].clone();
-          this.handleRangeSelection(startDay, endDay, true);
-          isRangeDate = true;
-          dateProcessed = true; // Indicamos que se ha procesado la fecha.
+          // Si el array tiene una sola fecha, es el inicio y fin del rango.
+          if (parsedDates.length === 1) {
+            const firstDay = parsedDates[0].clone();
+            const lastDay = parsedDates[0].clone();
+            this.handleRangeSelection(firstDay, lastDay);
+          }
+          // Si el array tiene más de una fecha, tomamos la primera y última como inicio y fin del rango, ordenándolas.
+          else {
+            const sortedDates = [...parsedDates].sort(
+              (a, b) => a.valueOf() - b.valueOf(),
+            );
+            const startDay = sortedDates[0].clone();
+            const endDay = sortedDates[sortedDates.length - 1].clone();
+            this.handleRangeSelection(startDay, endDay);
+          }
         }
       }
     }
@@ -290,25 +260,18 @@ export class CalendarComponent implements OnInit {
             // Si es tipo DAY, establecer la fecha seleccionada y la vista actual.
             this.selectedDate.set(parsedDate);
             this.currentViewDate.set(parsedDate.toDate());
-            dateProcessed = true;
           } else if (this.type === CalendarType.WEEK) {
             // Si es tipo WEEK y se pasa una sola fecha, establecer la semana en base a esa fecha.
             const firstDay = parsedDate.clone().startOf('isoWeek');
             const lastDay = parsedDate.clone().endOf('isoWeek');
-            this.handleRangeSelection(firstDay, lastDay, true); // true indica selección de semana.
-            isRangeDate = true;
-            dateProcessed = true;
+            this.handleRangeSelection(firstDay, lastDay, true);
           } else if (this.type === CalendarType.RANGE) {
             // Para tipo RANGE con una sola fecha, es el inicio y fin de un rango.
             // Por lo que el valor se duplica para el array con la misma fecha.
             const firstDay = parsedDate.clone();
             const lastDay = parsedDate.clone();
-            this.handleRangeSelection(firstDay, lastDay, true); // true indica selección de semana.
-            isRangeDate = true;
-            dateProcessed = true;
+            this.handleRangeSelection(firstDay, lastDay);
           }
-        } else {
-          dateProcessed = false;
         }
       }
     }
@@ -316,27 +279,22 @@ export class CalendarComponent implements OnInit {
     // Aseguramos que currentViewDate tenga un valor si no se procesó ninguna fecha específica.
     if (!this.currentViewDate()) this.currentViewDate.set(moment().toDate());
 
-    // ÚNICAMENTE para el tipo RANGE, si se ha procesado una fecha válida, actualizamos selectedRange,
-    // o si el tipo de calendario es 'DAY' y no se ha establecido una fecha seleccionada.
-    if (
-      (dateProcessed && !isRangeDate) ||
-      (this.type === CalendarType.DAY && !this.selectedDate())
-    ) {
-      this.renderCalendarDays();
-    }
+    // Renderizamos los días del calendario después de actualizar la fecha.
+    this.renderCalendarDays();
 
     // Si no se abre el overlay y se ha procesado una fecha válida, emitimos la fecha seleccionada automáticamente.
+    // De esta forma el propio calendario puede emitir los valores sin pertenecer, por ejemplo, a un date-picker.
     setTimeout(() => {
       if (!this.isOpenedByOverlay) {
         if (this.type === CalendarType.DAY && this.selectedDate()) {
-          this.dateSelected.emit(this.selectedDate()?.toDate() as Date);
+          this.emitDateSelected(this.selectedDate()?.toDate() as Date);
         } else if (
-          (this.type === CalendarType.WEEK ||
-            this.type === CalendarType.RANGE) &&
-          this.selectedRange().length > 0
+          this.type === CalendarType.WEEK ||
+          this.type === CalendarType.RANGE
         ) {
-          this.dateSelected.emit(
-            this.selectedRange().map((date) => date.toDate()),
+          this.emitDateSelected(
+            (this.selectedRange()?.map((date) => date.toDate()) ??
+              []) as Date[],
           );
         }
       }
@@ -549,7 +507,7 @@ export class CalendarComponent implements OnInit {
    * Se utiliza para la navegación de accesibilidad.
    */
   focusInitialDay() {
-    setTimeout(() => {
+    queueMicrotask(() => {
       // Obtenemos todos los días del mes actual.
       const allCalendarDays = this.daysInMonth();
 
@@ -601,7 +559,7 @@ export class CalendarComponent implements OnInit {
    * Se utiliza para la navegación de accesibilidad.
    */
   focusSelectedYear() {
-    setTimeout(() => {
+    queueMicrotask(() => {
       const buttons = this.yearButtons?.toArray() ?? [];
       const selected = buttons.find(
         (btn) => btn.nativeElement.getAttribute('aria-selected') === 'true',
@@ -623,7 +581,7 @@ export class CalendarComponent implements OnInit {
    * Se utiliza para la navegación de accesibilidad.
    */
   focusSelectedMonth() {
-    setTimeout(() => {
+    queueMicrotask(() => {
       const buttons = this.monthButtons?.toArray() ?? [];
       const monthIndex = this.currentMonthNumber();
       const monthButton = buttons[monthIndex]; // Usa 'buttons' para obtener el elemento
@@ -646,18 +604,26 @@ export class CalendarComponent implements OnInit {
    * Obtiene los nombres de los meses y asegura que la vista esté lista.
    */
   initCalendar() {
-    // Asegurarse de que currentViewDate siempre tenga un valor inicial válido.
-    if (!this.currentViewDate()) this.currentViewDate.set(moment().toDate());
+    queueMicrotask(() => {
+      // Asegurarse de que currentViewDate siempre tenga un valor inicial válido.
+      if (!this.currentViewDate()) this.currentViewDate.set(moment().toDate());
 
-    // Si el calendario es de tipo 'DAY', y no hay fecha parametrizada,
-    // establecemos la fecha seleccionada al día actual y enfocamos dicho día.
-    if (!this.date && this.type === CalendarType.DAY) {
-      this.setToday();
-      this.focusInitialDay();
-    }
+      // Si el calendario es de tipo 'DAY', y no hay fecha parametrizada,
+      // establecemos la fecha seleccionada al día actual y enfocamos dicho día.
+      if (
+        !this.date ||
+        this.date === null ||
+        (Array.isArray(this.date) && this.date.length === 0)
+      ) {
+        if (this.type === CalendarType.DAY) {
+          this.setToday();
+          this.focusInitialDay();
+        }
 
-    // Renderizamos los días del calendario basados en la fecha actual.
-    this.renderCalendarDays();
+        // Renderizamos los días del calendario. Si hubiese fecha se renderizaría desde el método `updateSelectedDate`.
+        this.renderCalendarDays();
+      }
+    });
   }
 
   /**
@@ -680,18 +646,26 @@ export class CalendarComponent implements OnInit {
    * Actualiza el signal `daysInMonth`.
    */
   renderCalendarDays() {
-    const firstDayOfMonth = moment(this.currentViewDate()).startOf('month');
-    const firstCell = firstDayOfMonth.clone().startOf('isoWeek'); // Lunes de la 1ª fila.
-    const totalDays = 6 * 7; // 6 filas x 7 columnas para cubrir todo el mes.
+    // Limpiamos el array de días antes de llenarlo.
     const days: CalendarDay[] = [];
 
+    // Creamos el primer día del mes actual y el primer día de la semana (lunes).
+    const firstDayOfMonth = moment(this.currentViewDate()).startOf('month');
+    const firstCell = firstDayOfMonth.clone().startOf('isoWeek'); // Lunes de la 1ª fila.
+
+    // Calculamos el total de días a mostrar en el calendario (6 filas x 7 columnas).
+    // Esto asegura que siempre mostramos 6 filas, incluso si el mes tiene menos días.
+    // Por ejemplo, si el mes empieza en un miércoles, habrá días del mes anterior en el calendario.
+    const totalDays = 6 * 7; // 6 filas x 7 columnas para cubrir todo el mes.
+
+    // Obtenemos las fechas deshabilitadas del input `disabledDates`, si las hubiese.
     const disabledDates = this.getDisabledDates();
 
+    // Iteramos desde el primer día de la semana hasta el total de días a mostrar.
+    // Esto incluye días del mes anterior y del siguiente para completar las 6 filas.
     for (let i = 0; i < totalDays; i++) {
       const date = firstCell.clone().add(i, 'day');
-
       const isDisabled = disabledDates.some((dd) => dd.isSame(date, 'day'));
-
       days.push({
         date,
         isCurrentMonth: date.month() === firstDayOfMonth.month(),
@@ -702,6 +676,7 @@ export class CalendarComponent implements OnInit {
       });
     }
 
+    // Actualizamos el signal `daysInMonth` con los días generados.
     this.daysInMonth.set(days);
   }
 
@@ -754,12 +729,8 @@ export class CalendarComponent implements OnInit {
    * Función principal para seleccionar un día, semana o rango de fechas.
    * Delega la lógica específica a `setDay`, `setWeek` o `setRange`.
    * @param {CalendarDay} day - El día seleccionado.
-   * @param {Event} event - El evento de clic.
    */
-  selectDay(day: CalendarDay, event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-
+  selectDay(day: CalendarDay) {
     // Validaciones básicas antes de proceder.
     if (!day || !day.date || day.isDisabled || !day.isCurrentMonth) return;
 
@@ -770,22 +741,6 @@ export class CalendarComponent implements OnInit {
     } else if (this.type === CalendarType.RANGE) {
       this.setRange(day);
     }
-  }
-
-  /**
-   * Establece un único día como seleccionado.
-   * @param {CalendarDay} day - El día a seleccionar.
-   */
-  setDay(day: CalendarDay) {
-    if (!day || !day.date || !moment.isMoment(day.date)) return;
-
-    this.selectedDate.set(day.date); // <-- selectedDate ahora solo contiene un momento
-    this.currentViewDate.set(day.date.toDate());
-    this.selectedRange.set([]); // Limpiar `selectedRange` si la selección es de un solo día.
-    this.emitDateSelected(day.date.toDate()); // Emite la fecha seleccionada.
-
-    // Vuelve a renderizar para actualizar la UI.
-    this.renderCalendarDays();
   }
 
   /**
@@ -862,11 +817,25 @@ export class CalendarComponent implements OnInit {
         ? moment(filteredDates[0]).toDate()
         : moment().toDate(),
     );
-    this.emitDateSelected(
-      filteredDates.map((dateStr) => moment(dateStr).toDate()),
-    );
+  }
 
-    // Volvemos a renderizar los días del calendario para reflejar el nuevo rango.
+  /**
+   * Establece un único día como seleccionado.
+   * @param {CalendarDay} day - El día a seleccionar.
+   */
+  setDay(day: CalendarDay) {
+    if (!day || !day.date || !moment.isMoment(day.date)) return;
+
+    // Asignamos el día seleccionado y actualizamos la vista actual.
+    // Limpiamos el rango seleccionado al seleccionar un día individual.
+    this.selectedDate.set(day.date);
+    this.currentViewDate.set(day.date.toDate());
+    this.selectedRange.set([]);
+
+    // Emitimos la fecha seleccionada como un objeto Date.
+    this.emitDateSelected(day.date.toDate());
+
+    // Volvemos a renderizar los días del calendario para reflejar la selección.
     this.renderCalendarDays();
   }
 
@@ -878,16 +847,18 @@ export class CalendarComponent implements OnInit {
     if (!day || !day.date || !moment.isMoment(day.date)) return;
     const firstDay = day.date.clone().startOf('isoWeek');
     const lastDay = day.date.clone().endOf('isoWeek');
-    this.handleRangeSelection(firstDay, lastDay, true); // `true` indica selección de semana.
+    this.handleRangeSelection(firstDay, lastDay, true);
+
+    // Emitimos el rango seleccionado como un array de fechas.
+    const daysSelected = this.selectedRange()?.map((d) => moment(d).toDate());
+    this.emitDateSelected(daysSelected ?? []);
+
+    // Volvemos a renderizar los días del calendario para reflejar la selección.
+    this.renderCalendarDays();
   }
 
   /**
    * Establece un rango de fechas seleccionado.
-   * Este método se llamará dos veces: una para el inicio y otra para el final del rango, pudiendo
-   * establecer un rango de fechas con el mismo día, o un rango de días que pueda tener un inicio anterior al fin y viceversa.
-   * Si el día seleccionado es el mismo que el día actual, se considerará un rango de un solo día.
-   * Si hay fechas deshabilitadas en el rango y `blockDisabledRanges` es `true`, se bloqueará la selección y se mostrará un toast de error.
-   * Si hay fechas deshabilitadas pero `blockDisabledRanges` es `false`, se mostrará un toast de advertencia y se permitirá la selección del rango, pero sin las fechas deshabilitadas.
    * @param {CalendarDay} day
    */
   setRange(day: CalendarDay) {
@@ -921,6 +892,13 @@ export class CalendarComponent implements OnInit {
 
       // Si la fecha final es válida (posterior o igual), completamos el rango.
       this.handleRangeSelection(start, end);
+
+      // Emitimos el rango seleccionado como un array de fechas.
+      const daysSelected = this.selectedRange()?.map((d) => moment(d).toDate());
+      this.emitDateSelected(daysSelected ?? []);
+
+      // Volvemos a renderizar los días del calendario para reflejar la selección.
+      this.renderCalendarDays();
     }
   }
 
@@ -1011,12 +989,8 @@ export class CalendarComponent implements OnInit {
   /**
    * Cambia el mes seleccionado en la vista de calendario.
    * @param month - Número de mes (0-11).
-   * @param event - Evento (opcional).
    */
-  selectMonth(month: number, event?: Event) {
-    event?.preventDefault();
-    event?.stopPropagation();
-
+  selectMonth(month: number) {
     // Establecemos el mes actual al mes seleccionado actualizando `currentViewDate`.
     const currentDate = moment(this.currentViewDate())
       .set('month', month)
@@ -1030,12 +1004,8 @@ export class CalendarComponent implements OnInit {
   /**
    * Cambia el año seleccionado en la vista de calendario.
    * @param {number} year - Año a cambiar (4 dígitos).
-   * @param {Event} event - Evento (opcional).
    */
-  selectYear(year: number, event?: Event) {
-    event?.preventDefault();
-    event?.stopPropagation();
-
+  selectYear(year: number) {
     // Establecemos el año actual al año seleccionado actualizando `currentViewDate`.
     const currentDate = moment(this.currentViewDate())
       .set('year', year)
@@ -1078,5 +1048,24 @@ export class CalendarComponent implements OnInit {
    */
   loadFutureYears() {
     this.loadYearRange(this.yearsBlockStart + 20);
+  }
+
+  /**
+   * Genera el texto para los atributos 'title' y 'aria-label' de un día.
+   * Si el día está deshabilitado, incluye un mensaje traducido.
+   * @param day El objeto CalendarDay.
+   * @returns El string para el título/aria-label.
+   */
+  getDayAccessibilityLabel(day: CalendarDay): string {
+    const formattedDate = day.date.format('DD/MM/YYYY');
+
+    if (day.isDisabled) {
+      // Usamos el servicio de traducción para el mensaje de día deshabilitado
+      return this._translateService.instant('CALENDAR.DAY_DISABLED', {
+        date: formattedDate,
+      });
+    }
+    // Si no está deshabilitado, solo mostramos la fecha formateada
+    return formattedDate;
   }
 }

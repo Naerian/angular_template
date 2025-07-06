@@ -68,10 +68,11 @@
                 [attr.aria-selected]="day.isSelected"
                 [attr.aria-disabled]="true"
                 [attr.aria-current]="day.isToday"
-                [attr.aria-label]="day.date.toDate() | date: 'dd/MM/yyyy'"
-                [title]="day.date.toDate() | date: 'dd/MM/yyyy'"
-                >{{ day.date.date() }}</span
+                [attr.aria-label]="getDayAccessibilityLabel(day)"
+                [title]="getDayAccessibilityLabel(day)"
               >
+                {{ day.date.date() }}
+              </span>
             } @else {
               <button
                 #dayButton
@@ -84,10 +85,10 @@
                 [attr.aria-selected]="day.isSelected"
                 [attr.aria-disabled]="day.isDisabled"
                 [attr.aria-current]="day.isToday"
-                [attr.aria-label]="day.date.toDate() | date: 'dd/MM/yyyy'"
+                [attr.aria-label]="getDayAccessibilityLabel(day)"
                 [attr.data-day]="day.date.toDate() | date: 'dd'"
-                [title]="day.date.toDate() | date: 'dd/MM/yyyy'"
-                (click)="selectDay(day, $event)"
+                [title]="getDayAccessibilityLabel(day)"
+                (click)="selectDay(day)"
               >
                 {{ day.date.date() }}
               </button>
@@ -126,7 +127,7 @@
             [title]="'CALENDAR.MONTH.' + $index | translate"
             [attr.aria-selected]="currentMonthNumber() === $index"
             [attr.aria-label]="'CALENDAR.MONTH.' + $index | translate"
-            (click)="selectMonth($index, $event)"
+            (click)="selectMonth($index)"
           >
             {{ "CALENDAR.MONTH." + $index | translate }}
           </button>
@@ -176,7 +177,7 @@
             class="calendar-picker__year"
             [attr.tabindex]="currentYear() === year ? 0 : -1"
             [class.calendar-picker__year--selected]="currentYear() === year"
-            (click)="selectYear(year, $event)"
+            (click)="selectYear(year)"
             [title]="year"
             [attr.aria-selected]="currentYear() === year"
             [attr.aria-label]="year"
