@@ -63,8 +63,8 @@
                   !day.isCurrentMonth
                 "
                 [class.calendar-picker__no-day--disabled]="day.isDisabled"
-                [class.calendar-picker__day--selected]="day.isSelected"
-                [class.calendar-picker__day--today]="day.isToday"
+                [class.calendar-picker__no-day--selected]="day.isSelected"
+                [class.calendar-picker__no-day--today]="day.isToday"
                 [attr.aria-selected]="day.isSelected"
                 [attr.aria-disabled]="true"
                 [attr.aria-current]="day.isToday"

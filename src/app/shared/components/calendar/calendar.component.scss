@@ -1,4 +1,38 @@
-@import 'base';
+// calendar.component.scss
+@import 'base'; // Asegúrate de que 'base' define las variables como --text-color, etc.
+
+// Mixin para centrar contenido usando flexbox en fila
+@mixin flex-center-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center; // Para cuando hay varias líneas
+}
+
+// Mixin para estilos base de botones (o elementos que se comportan como tal)
+@mixin button-base {
+  border: none;
+  border-radius: 0.25rem;
+  background-color: transparent; // Por defecto transparente, puede ser sobrescrito
+  color: var(--text-color); // Color de texto por defecto
+  cursor: pointer;
+  outline: none; // Elimina el contorno de enfoque por defecto
+}
+
+// Mixin para estados de hover/focus/active comunes de botones principales
+@mixin button-primary-states {
+  background-color: var(--hover-btn-primary-color);
+  color: var(--text-btn-primary-color); // Se asume que el texto también cambia con el fondo
+}
+
+// Mixin para estilos de elementos seleccionados (fondo/color principal)
+@mixin selected-style {
+  background-color: var(--bg-btn-primary-color);
+  color: var(--text-btn-primary-color);
+  border-radius: 0.25rem;
+}
 
 .calendar-picker {
   width: 285px;
@@ -23,29 +57,22 @@
     background-color: var(--bg-btn-primary-color);
     font-size: 0.8rem;
 
+    // Estilos comunes para botones y títulos dentro del header
     &__btn,
     &__title {
       font-size: 0.85rem;
       font-weight: 500;
       color: var(--text-btn-primary-color);
-      background-color: transparent !important;
     }
 
     &__btn {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-content: center;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      padding: 5px 10px;
-      border-radius: 0.25rem;
-      border: none;
-      background-color: var(--bg-btn-primary-color) !important;
-      color: var(--text-btn-primary-color);
+      @include flex-center-row;
+      @include button-base;
       width: 30px;
       height: 30px;
+      padding: 5px 10px;
+      background-color: var(--bg-btn-primary-color);
+      color: var(--text-btn-primary-color);
 
       i::before {
         color: var(--text-btn-primary-color);
@@ -54,37 +81,25 @@
       &:hover,
       &:focus,
       &:active {
-        outline: 0;
-        background-color: var(--hover-btn-primary-color) !important;
+        @include button-primary-states;
       }
     }
 
     &__actions {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      justify-content: center;
-      align-items: center;
+      @include flex-center-row;
       color: var(--text-btn-primary-color);
 
       &--selector {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        border: none;
+        @include flex-center-row;
+        @include button-base;
         padding: 5px 10px;
-        border-radius: 0.25rem;
         background-color: var(--bg-btn-primary-color);
         color: var(--text-btn-primary-color);
 
         &:hover,
         &:focus,
         &:active {
-          outline: 0;
-          background-color: var(--hover-btn-primary-color);
+          @include button-primary-states;
         }
 
         &:last-child {
@@ -107,33 +122,23 @@
   }
 
   &__back {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
+    @include flex-center-row;
     width: 100%;
     padding: 5px;
 
     &__btn {
-      cursor: pointer;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      justify-content: center;
-      align-items: center;
-      border: none;
-      border-radius: 0.25rem;
+      @include flex-center-row;
+      @include button-base;
       font-size: 1.3rem;
       width: 40px;
       height: 40px;
-      background-color: transparent !important;
+      background-color: transparent;
 
       &:hover,
       &:focus,
       &:active {
         color: var(--text-color);
-        background-color: var(--background-color) !important;
+        background-color: var(--background-color);
         border-radius: 0.25rem;
       }
     }
@@ -150,6 +155,14 @@
 
   /* HEADER DE DÍAS DE LA SEMANA */
   &__weekdays {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(7, 35px);
+    grid-gap: 5px;
+    border-radius: 0.25rem;
+    justify-items: center;
+    align-items: center;
+
     span {
       font-weight: 600;
       font-size: 0.85rem;
@@ -157,8 +170,7 @@
   }
 
   /* DÍAS DEL MES */
-  &__days,
-  &__weekdays {
+  &__days {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(7, 35px);
@@ -171,72 +183,73 @@
   /* DÍA */
   &__day,
   &__no-day {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    border-radius: 0.25rem;
+    @include flex-center-row;
+    @include button-base;
     font-size: 0.8rem;
     width: 35px;
     height: 35px;
-    background-color: transparent !important;
-    cursor: pointer;
+    background-color: transparent;
     color: var(--text-color);
 
     &:hover,
     &:focus,
     &:active {
-      background-color: var(--bg-btn-primary-color) !important;
-      color: var(--text-btn-primary-color) !important;
-      border-radius: 0.25rem;
+      @include selected-style;
       outline: none;
     }
 
     &:focus:not(&--selected) {
-      filter: opacity(0.8);
+      filter: opacity(0.7);
     }
 
-
+    // Estilos para días deshabilitados o fuera del mes actual (no interactivos)
     &--disabled,
     &--no_current_month {
       cursor: default;
-      opacity: 0.5;
 
       &:hover,
-      &:focus {
-        background: none !important;
-        border: none !important;
-        color: var(--text-color) !important;
-        outline: none !important;
+      &:focus,
+      &:active {
+        background: none;
+        border: none;
+        color: inherit;
+        outline: none;
       }
     }
 
+    // Estilos específicos para días deshabilitados
     &--disabled {
       text-decoration: line-through;
       color: var(--danger-color);
 
       &:hover,
-      &:focus {
-        color: var(--danger-color) !important;
+      &:focus,
+      &:active {
+        color: var(--danger-color);
       }
     }
 
-    &--selected {
-      background-color: var(--bg-btn-primary-color) !important;
-      color: var(--text-btn-primary-color) !important;
-      border-radius: 0.25rem;
-    }
-
+    // Estilos para el día actual
     &--today {
       color: var(--primary-color);
       font-weight: 700;
 
       &:hover,
-      &:focus {
-        background-color: var(--bg-btn-primary-color) !important;
-        color: var(--text-btn-primary-color) !important;
+      &:focus,
+      &:active {
+        @include selected-style;
         outline: none;
       }
+    }
+
+    // Estilos para días seleccionados
+    &--selected {
+      @include selected-style;
+    }
+
+    &--disabled:is(&--selected) {
+      @include selected-style;
+      background-color: var(--danger-color);
     }
   }
 
@@ -265,38 +278,26 @@
   /* BOTONES MESES Y AÑOS */
   &__month,
   &__year {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.25rem;
+    @include flex-center-row;
+    @include button-base;
     height: 30px;
     letter-spacing: normal;
-    align-content: center;
-    flex-direction: row;
-    cursor: pointer;
     width: 100%;
-    color: var(--text-color);
-    border: none;
-    background-color: transparent !important;
+    background-color: transparent;
 
     &:hover,
     &:focus,
     &:active {
-      background-color: var(--bg-btn-primary-color) !important;
-      color: var(--text-btn-primary-color) !important;
-      border-radius: 0.25rem;
+      @include selected-style;
       outline: none;
     }
 
     &:focus:not(&--selected) {
-      filter: opacity(0.8);
+      filter: opacity(0.7);
     }
 
     &--selected {
-      background-color: var(--bg-btn-primary-color) !important;
-      color: var(--text-btn-primary-color) !important;
-      border-radius: 0.25rem;
+      @include selected-style;
     }
   }
 
