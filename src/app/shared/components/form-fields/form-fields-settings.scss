@@ -1,3 +1,76 @@
+@import 'base';
+
+// --- SCSS Maps para definir los valores de tamaño ---
+// Define todos los tamaños en un solo lugar
+$sizes: (
+  xs: (font-size: 0.6rem,
+    line-height: 0.8rem,
+    height: 28px,
+    checkmark-size: 10px,
+    checkmark-border: 4px),
+  s: (font-size: 0.7rem,
+    line-height: 0.85rem,
+    height: 30px,
+    checkmark-size: 10px,
+    checkmark-border: 4px),
+  xm: (font-size: 0.75rem,
+    line-height: 0.90rem,
+    height: 34px,
+    checkmark-size: 14px,
+    checkmark-border: 4px),
+  m: (font-size: 0.8rem,
+    line-height: 0.95rem,
+    height: 38px,
+    checkmark-size: 18px,
+    checkmark-border: 5px),
+  l: (font-size: 0.85rem,
+    line-height: 1rem,
+    height: 42px,
+    checkmark-size: 22px,
+    checkmark-border: 6px),
+  xl: (font-size: 0.9rem,
+    line-height: 1rem,
+    height: 47px,
+    checkmark-size: 26px,
+    checkmark-border: 8px)
+);
+
+// --- Mixin para aplicar estilos de tamaño a campos de texto/select ---
+@mixin apply-field-sizes {
+  @each $size-name, $props in $sizes {
+    &.size-#{$size-name} {
+      font-size: map-get($props, font-size);
+      line-height: map-get($props, line-height);
+    }
+  }
+}
+
+// --- Mixin para aplicar altura de campo ---
+@mixin apply-field-heights {
+  @each $size-name, $props in $sizes {
+    &.size-#{$size-name} {
+      height: map-get($props, height);
+    }
+  }
+}
+
+// --- Mixin para aplicar estilos de tamaño a checkboxes/radiobuttons ---
+@mixin apply-checkmark-sizes {
+  @each $size-name, $props in $sizes {
+    &.size-#{$size-name} {
+      &__checkmark {
+        height: map-get($props, checkmark-size);
+        width: map-get($props, checkmark-size);
+
+        &::after {
+          border-width: map-get($props, checkmark-border);
+        }
+      }
+    }
+  }
+}
+
+// --- Estilos generales para las etiquetas (no cambian por tamaño) ---
 .neo-input,
 .neo-input-password,
 .neo-input-date-picker,
@@ -13,6 +86,7 @@
   }
 }
 
+// --- Aplicación de Mixins a los selectores correspondientes ---
 .neo-select__field,
 .neo-input__wrapper__field,
 .neo-input-password__wrapper__field,
@@ -22,36 +96,7 @@
 .neo-radiobutton__control,
 .neo-radiobutton__control__label,
 .neo-input-file__wrapper__label {
-
-  &.size-xs {
-    font-size: 0.6rem;
-    line-height: 0.8rem;
-  }
-
-  &.size-s {
-    font-size: 0.7rem;
-    line-height: 0.85rem;
-  }
-
-  &.size-xm {
-    font-size: 0.75rem;
-    line-height: 0.90rem;
-  }
-
-  &.size-m {
-    font-size: 0.8rem;
-    line-height: 0.95rem;;
-  }
-
-  &.size-l {
-    font-size: 0.85rem;
-    line-height: 1rem;
-  }
-
-  &.size-xl {
-    font-size: 0.9rem;
-    line-height: 1rem;
-  }
+  @include apply-field-sizes; // Aplica font-size y line-height
 }
 
 .neo-select__field,
@@ -61,77 +106,10 @@
 .neo-checkbox__control,
 .neo-radiobutton__control,
 .neo-input-file {
-  &.size-xs {
-    height: 28px;
-  }
-
-  &.size-s {
-    height: 30px;
-  }
-
-  &.size-xm {
-    height: 34px;
-  }
-
-  &.size-m {
-    height: 38px;
-  }
-
-  &.size-l {
-    height: 42px;
-  }
-
-  &.size-xl {
-    height: 47px;
-  }
+  @include apply-field-heights; // Aplica height
 }
 
 .neo-checkbox__control,
 .neo-radiobutton__control {
-
-  &.size-xs &__checkmark,
-  &.size-s &__checkmark {
-    height: 10px;
-    width: 10px;
-
-    &::after {
-      border-width: 4px;
-    }
-  }
-
-  &.size-xm &__checkmark {
-    height: 14px;
-    width: 14px;
-
-    &::after {
-      border-width: 4px;
-    }
-  }
-
-  &.size-m &__checkmark {
-    height: 18px;
-    width: 18px;
-
-    &::after {
-      border-width: 5px;
-    }
-  }
-
-  &.size-l &__checkmark {
-    height: 22px;
-    width: 22px;
-
-    &::after {
-      border-width: 6px;
-    }
-  }
-
-  &.size-xl &__checkmark {
-    height: 26px;
-    width: 26px;
-
-    &::after {
-      border-width: 8px;
-    }
-  }
+  @include apply-checkmark-sizes; // Aplica estilos de checkmark
 }

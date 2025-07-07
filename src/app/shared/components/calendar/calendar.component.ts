@@ -1088,6 +1088,18 @@ export class CalendarComponent implements OnInit {
   }
 
   /**
+   * Vuelve a la vista predeterminada del calendario (días).
+   * @param {Event} event - Evento del clic, si se recibe.
+   */
+  backToDefaultView(event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay
+    event?.stopPropagation();
+
+    // Volvemos a la vista de días (predeterminada).
+    this.setDefaultView();
+  }
+
+  /**
    * Genera el texto para los atributos 'title' y 'aria-label' de un día.
    * Si el día está deshabilitado, incluye un mensaje traducido.
    * @param {CalendarDay} day - El día del calendario.

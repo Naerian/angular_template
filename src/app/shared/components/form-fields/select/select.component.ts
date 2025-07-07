@@ -81,8 +81,8 @@ export class SelectComponent implements ControlValueAccessor {
   @ViewChild(CdkConnectedOverlay)
   protected _cdkConnectedOverlay!: CdkConnectedOverlay;
 
-  @ViewChild('calendarOverlay', { read: ElementRef })
-  calendarOverlayRef!: ElementRef;
+  @ViewChild('selectField') selectFieldRef!: ElementRef<HTMLElement>;
+  @ViewChild('dropdownOverlay') dropdownOverlayRef!: ElementRef<HTMLElement>;
 
   @Input({ transform: booleanAttribute }) multiple?: boolean = false;
   @Input({ transform: booleanAttribute }) transparent?: boolean = false;
@@ -206,14 +206,25 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   /**
-   * Método para cerrar el calendario al hacer click fuera del panel
+   * Método para cerrar el dropdown al hacer click fuera del panel,
+   * excluyendo el propio campo del select y el contenido del dropdown.
    */
   @HostListener('document:click', ['$event'])
   onOutsideClick(event: MouseEvent) {
-    const clickedInside = this.calendarOverlayRef?.nativeElement.contains(
-      event.target as Node,
-    );
-    if (!clickedInside) this.closeDropdown();
+    // Verificar si las referencias a los elementos existen para evitar errores
+    const clickedInsideSelectField =
+      this.selectFieldRef?.nativeElement.contains(event.target as Node);
+    const clickedInsideDropdownOverlay =
+      this.dropdownOverlayRef?.nativeElement.contains(event.target as Node);
+
+    // Si el dropdown está abierto y el clic no fue dentro del campo del select NI dentro del overlay del dropdown
+    if (
+      this.isDropdownOpened() &&
+      !clickedInsideSelectField &&
+      !clickedInsideDropdownOverlay
+    ) {
+      this.closeDropdown();
+    }
   }
 
   ngOnInit() {

@@ -1,9 +1,16 @@
-import { Component, ContentChild, Input, TemplateRef, ViewEncapsulation, WritableSignal, signal } from '@angular/core';
+import {
+  Component,
+  ContentChild,
+  Input,
+  TemplateRef,
+  ViewEncapsulation,
+  WritableSignal,
+  signal,
+} from '@angular/core';
 import { TabLabelDirective } from '@shared/components/tabs/directives/tab-label.directive';
-import { DEFAULT_TITLE } from '../models/tabs.entity';
-import { TabsHeaderDirective } from './tabs-header/tabs-header.directive';
 import { TabsBodyDirective } from './tabs-body/tabs-body.directive';
 import { TabsFooterDirective } from './tabs-footer/tabs-footer.directive';
+import { TabsHeaderDirective } from './tabs-header/tabs-header.directive';
 
 /**
  * @name
@@ -37,10 +44,9 @@ import { TabsFooterDirective } from './tabs-footer/tabs-footer.directive';
     '[class.active]': 'isActiveTab()',
     '[class.hidden]': '!isActiveTab()',
   },
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class TabsItemComponent {
-
   @ContentChild(TabsHeaderDirective) tabHeader!: TabsHeaderDirective;
   @ContentChild(TabsBodyDirective) tabBody!: TabsBodyDirective;
   @ContentChild(TabsFooterDirective) tabFooter!: TabsFooterDirective;
@@ -72,16 +78,12 @@ export class TabsItemComponent {
   }
 
   private _active: WritableSignal<boolean> = signal(false);
-  private _title: string = DEFAULT_TITLE;
+  private _title: string = '';
   private _id: string = `tab_${Math.floor(Math.random() * 999999)}`;
   private _contentId: string = `content_${Math.floor(Math.random() * 999999)}`;
 
   ngAfterContentInit() {
-    if (this.title) {
-      this._title = this.title;
-    } else {
-      this._title = DEFAULT_TITLE;
-    }
+    if (this.title) this._title = this.title;
   }
 
   /**
@@ -153,5 +155,4 @@ export class TabsItemComponent {
   getLabelContent(): TemplateRef<any> {
     return this.tabLabel?.templateRef || null;
   }
-
 }

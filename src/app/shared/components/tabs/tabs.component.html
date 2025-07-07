@@ -15,7 +15,7 @@
           <!-- SI ES DE TIPO ROUTER-TAB SE AGREGARÁN LOS ATRIBUTOS DE ROUTER -->
           <div
             class="tabs__nav__item"
-            tabindex="0"
+            [attr.tabindex]="tab.isActiveTab() ? 0 : -1"
             role="tab"
             [id]="tab.getId()"
             (click)="selected(tab, $index)"
@@ -30,6 +30,8 @@
             "
             [attr.aria-selected]="tab.isActiveTab()"
             [attr.aria-controls]="tab.getContentId()"
+            [attr.aria-label]="tab.getTitle()"
+            [attr.aria-current]="tab.isActiveTab()"
           >
             <ng-container
               *ngTemplateOutlet="tabLabel; context: { $implicit: tab }"
@@ -39,7 +41,7 @@
           <!-- SI ES DE TIPO TAB SOLO AÑADIMOS LO NECESARIO -->
           <div
             class="tabs__nav__item"
-            tabindex="0"
+            [attr.tabindex]="tab.isActiveTab() ? 0 : -1"
             role="tab"
             [id]="tab.getId()"
             (click)="selected(tab, $index)"
@@ -49,6 +51,8 @@
             [title]="tab.getTitle()"
             [attr.aria-selected]="tab.isActiveTab()"
             [attr.aria-controls]="tab.getContentId()"
+            [attr.aria-label]="tab.getTitle()"
+            [attr.aria-current]="tab.isActiveTab()"
           >
             <ng-container
               *ngTemplateOutlet="tabLabel; context: { $implicit: tab }"
