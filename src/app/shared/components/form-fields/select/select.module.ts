@@ -1,21 +1,17 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeHtmlPipe } from '@shared/pipes/safeHtml/safe-html.pipe';
 import { StripHtmlPipe } from '@shared/pipes/striphtml/striphtml.pipe';
-import { SelectComponent } from './select.component';
-import { OptionComponent } from './option/option.component';
 import { OptionGroupsComponent } from './option-groups/option-groups.component';
+import { OptionComponent } from './option/option.component';
+import { SelectComponent } from './select.component';
 
 @NgModule({
-  declarations: [
-    SelectComponent,
-    OptionComponent,
-    OptionGroupsComponent
-  ],
+  declarations: [SelectComponent, OptionComponent, OptionGroupsComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -23,12 +19,8 @@ import { OptionGroupsComponent } from './option-groups/option-groups.component';
     A11yModule,
     OverlayModule,
     SafeHtmlPipe,
-    StripHtmlPipe
+    StripHtmlPipe,
   ],
-  exports: [
-    SelectComponent,
-    OptionComponent,
-    OptionGroupsComponent
-  ]
+  exports: [SelectComponent, OptionComponent, OptionGroupsComponent],
 })
-export class SelectModule { }
+export class SelectModule {}

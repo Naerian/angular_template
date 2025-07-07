@@ -87,7 +87,18 @@
   &__dropdown {
     display: flex;
     flex-direction: column;
-    border: none;
+    border: 0.5px solid var(--border-field-color);
+
+    &--below {
+      margin-top: -0.5px;
+      box-shadow: var(--shadow-box-below);
+
+    }
+
+    &--above {
+      margin-bottom: -0.5px;
+      box-shadow: var(--shadow-box-above);
+    }
 
     &__search {
       display: flex;

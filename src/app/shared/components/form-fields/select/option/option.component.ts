@@ -1,8 +1,19 @@
-import { Component, ElementRef, Inject, Input, Optional, ViewChild, ViewEncapsulation, WritableSignal, booleanAttribute, signal } from '@angular/core';
-import { NEO_OPTION_GROUPS, OptionGroupsComponent } from '../option-groups/option-groups.component';
-import { NEO_SELECT, SelectComponent } from '../select.component';
-import { InputsUtilsService } from '../../services/inputs-utils.service';
 import { FocusableOption } from '@angular/cdk/a11y';
+import {
+  Component,
+  ElementRef,
+  Input,
+  ViewChild,
+  ViewEncapsulation,
+  WritableSignal,
+  booleanAttribute,
+  inject,
+  signal,
+} from '@angular/core';
+import { InputsUtilsService } from '../../services/inputs-utils.service';
+import { NEO_OPTION_GROUPS, NEO_SELECT } from '../models/select.model';
+import { OptionGroupsComponent } from '../option-groups/option-groups.component';
+import { SelectComponent } from '../select.component';
 
 /**
  * @name
@@ -17,7 +28,7 @@ import { FocusableOption } from '@angular/cdk/a11y';
   templateUrl: './option.component.html',
   styleUrl: './option.component.scss',
   host: {
-    'role': 'option',
+    role: 'option',
     '[id]': 'getId()',
     '[class.neo-select__dropdown__options__option]': 'true',
     '[class.neo-select__dropdown__options__option--hidden]': 'isHideBySearch()',
@@ -27,15 +38,14 @@ import { FocusableOption } from '@angular/cdk/a11y';
     '[attr.aria-disabled]': 'disabled.toString()', // Atributo para indicar si la opción está deshabilitada
     '[attr.aria-hidden]': 'isHideBySearch()', // Atributo para indicar si la opción está oculta por la búsqueda
     '[attr.aria-label]': 'getLabelText()', // Atributo para indicar el texto de la opción
-    '(click)': 'toggleSelectOption()', // Evento para seleccionar o deseleccionar la opción
+    '(click)': 'toggleSelectOption($event)', // Evento para seleccionar o deseleccionar la opción
     '(keydown.enter)': 'toggleSelectOption()', // Evento para seleccionar o deseleccionar la opción
     '(keydown.space)': 'toggleSelectOption()', // Evento para seleccionar o deseleccionar la opción
-    '[tabindex]': 'disabled ? -1 : 0' // Atributo para poder seleccionar la opción con el teclado
+    '[tabindex]': 'disabled ? -1 : 0', // Atributo para poder seleccionar la opción con el teclado
   },
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class OptionComponent implements FocusableOption {
-
   /**
    * Referencia al elemento que contiene el texto de la opción
    */
@@ -63,7 +73,7 @@ export class OptionComponent implements FocusableOption {
     this._selected.set(value);
 
     if (this.selectParent && value)
-      setTimeout(() => this.selectParent.updateValue(this), 0);
+      setTimeout(() => this.selectParent?.updateValue(this), 0);
   }
 
   @Input() value!: any;
@@ -76,13 +86,23 @@ export class OptionComponent implements FocusableOption {
   private _labelHtml: string = '';
   private _elementRef: ElementRef;
 
-  constructor(
-    @Optional() @Inject(NEO_SELECT) private selectParent: SelectComponent,
-    @Optional() @Inject(NEO_OPTION_GROUPS) private groupOption: OptionGroupsComponent,
-    private readonly _inputsUtilsService: InputsUtilsService,
-    private readonly elementRef: ElementRef,
-  ) {
-    this._elementRef = elementRef;
+  // Inyectamos el componente SelectComponent para poder acceder a sus propiedades y métodos
+  // desde el componente OptionComponent y OptionGroupComponent.
+  private readonly selectParent = inject(NEO_SELECT, {
+    optional: true,
+  }) as SelectComponent | null;
+
+  // Inyectamos el componente OptionGroupsComponent para poder acceder a sus propiedades y métodos
+  // desde el componente OptionComponent y OptionGroupComponent.
+  private readonly groupOption = inject(NEO_OPTION_GROUPS, {
+    optional: true,
+  }) as OptionGroupsComponent | null;
+
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
+  private readonly elementRef = inject(ElementRef);
+
+  constructor() {
+    this._elementRef = this.elementRef;
   }
 
   ngAfterContentInit(): void {
@@ -104,22 +124,25 @@ export class OptionComponent implements FocusableOption {
   /**
    * Método para seleccionar o deseleccionar una opción
    */
-  toggleSelectOption(): void {
+  toggleSelectOption(event?: Event): void {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
 
-    if (this.disabled)
-      return;
+    if (this.disabled) return;
 
     // Si el select padre no permite múltiples selecciones, deseleccionamos todas las opciones
     // excepto la que se está seleccionando para poder cambiar su estado justo después
     // y así poder seleccionarla o deseleccionarla
-    if (!this.selectParent.multiple)
-      this.selectParent.options.forEach(option => option.getId() !== this.getId() ? option.deselect() : null);
+    if (!this.selectParent?.multiple)
+      this.selectParent?.options.forEach((option) =>
+        option.getId() !== this.getId() ? option.deselect() : null,
+      );
 
     // Alternamos la selección de la opción
     this.toggle();
 
     // Actualizamos el valor del select padre
-    this.selectParent.updateValue(this);
+    this.selectParent?.updateValue(this);
   }
 
   /**
@@ -226,7 +249,6 @@ export class OptionComponent implements FocusableOption {
    * del teclado gracias al uso de `FocusKeyManager` en el componente `neo-select`.
    */
   focus() {
-    this._elementRef.nativeElement.focus();
+    this._elementRef?.nativeElement?.focus();
   }
-
 }

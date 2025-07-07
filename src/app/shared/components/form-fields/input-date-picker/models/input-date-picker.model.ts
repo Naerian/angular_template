@@ -1,5 +1,12 @@
 import { ConnectedPosition } from '@angular/cdk/overlay';
 
+/**
+ * Posiciones del overlay de calendario del componente InputDatePicker.
+ * Define cómo se posiciona el calendario respecto al campo de entrada.
+ * - `originX` y `originY`: Definen el punto de origen del campo de entrada.
+ * - `overlayX` y `overlayY`: Definen el punto de anclaje del dropdown.
+ * - `panelClass`: Clase CSS opcional para aplicar estilos específicos al dropdown.
+ */
 export const OVERLAY_POSITIONS: ConnectedPosition[] = [
   {
     originX: 'start', // El borde izquierdo del input

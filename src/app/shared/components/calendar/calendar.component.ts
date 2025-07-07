@@ -1105,4 +1105,20 @@ export class CalendarComponent implements OnInit {
     // Si no está deshabilitado, solo mostramos la fecha formateada
     return formattedDate;
   }
+
+  /**
+   * Función para saber si algún día está seleccionado.
+   * @returns {boolean} True si hay al menos un día seleccionado.
+   */
+  hasSelectedDays(): boolean {
+    if (this.type === CalendarType.DAY) {
+      return !!this.selectedDate();
+    } else if (
+      this.type === CalendarType.WEEK ||
+      this.type === CalendarType.RANGE
+    ) {
+      return this.selectedRange().length > 0;
+    }
+    return false;
+  }
 }

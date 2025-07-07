@@ -38,6 +38,20 @@
   --icon-btn-warning-transparent-color: #cd8218;
   --hover-bg-btn-warning-transparent-color: #b1b1b129;
   --icon-btn-warning-color: #cd8218;
+
+  --shadow-base: 0 0.5rem 2rem rgba(4, 9, 20, 0.03),
+    0 1rem 1.5rem rgba(4, 9, 20, 0.03),
+    0 0.25rem 0.5rem rgba(4, 9, 20, 0.05),
+    0 0.125rem 0.25rem rgba(4, 9, 20, 0.03);
+  --shadow-box: var(--shadow-base);
+  --shadow-btn: var(--shadow-base);
+  --shadow-card: var(--shadow-base);
+  --shadow-box-sidebar-menu: 0 1rem 1rem 0.5rem rgba(4, 9, 20, 0.03);
+  --shadow-box-below: var(--shadow-base);
+  --shadow-box-above: 0 -0.5rem 2rem rgba(4, 9, 20, 0.03),
+    0 -1rem 1.5rem rgba(4, 9, 20, 0.03),
+    0 -0.25rem 0.5rem rgba(4, 9, 20, 0.05),
+    0 -0.125rem 0.25rem rgba(4, 9, 20, 0.03);
 }
 
 :root {
@@ -105,11 +119,6 @@
 
   --bg-spinner-primary-color: #333333;
 
-  --shadow-box: 0 .46875rem 2.1875rem rgba(4, 9, 20, .03), 0 .9375rem 1.40625rem rgba(4, 9, 20, .03), 0 .25rem .53125rem rgba(4, 9, 20, .05), 0 .125rem .1875rem rgba(4, 9, 20, .03);
-  --shadow-btn: 0 .45rem 2rem rgba(4, 9, 20, .03), 0 .9rem 1.4rem rgba(4, 9, 20, .03), 0 .25rem .5rem rgba(4, 9, 20, .05), 0 .12rem .18rem rgba(4, 9, 20, .03);
-  --shadow-card: 0 .46875rem 2.1875rem rgba(4, 9, 20, .03), 0 .9375rem 1.40625rem rgba(4, 9, 20, .03), 0 .25rem .53125rem rgba(4, 9, 20, .05), 0 .125rem .1875rem rgba(4, 9, 20, .03);
-  --shadow-box-sidebar-menu: 0px 15px 12px 5px rgba(4, 9, 20, 0.03);
-
   // MODO OSCURO AL APLICAR CLASE .theme-dark
   .theme-dark {
 
@@ -173,10 +182,5 @@
     --border-field-disabled-color: #000000;
 
     --bg-spinner-primary-color: #616161;
-
-    --shadow-box: 0 .46875rem 2.1875rem rgba(4, 9, 20, .03), 0 .9375rem 1.40625rem rgba(4, 9, 20, .03), 0 .25rem .53125rem rgba(4, 9, 20, .05), 0 .125rem .1875rem rgba(4, 9, 20, .03);
-    --shadow-btn: 0 .45rem 2rem rgba(4, 9, 20, .03), 0 .9rem 1.4rem rgba(4, 9, 20, .03), 0 .25rem .5rem rgba(4, 9, 20, .05), 0 .12rem .18rem rgba(4, 9, 20, .03);
-    --shadow-card: 0 .46875rem 2.1875rem rgba(4, 9, 20, .03), 0 .9375rem 1.40625rem rgba(4, 9, 20, .03), 0 .25rem .53125rem rgba(4, 9, 20, .05), 0 .125rem .1875rem rgba(4, 9, 20, .03);
-    --shadoe-box-sidebar-menu: 0px 15px 12px 5px rgba(4, 9, 20, .03);
   }
 }

@@ -1,19 +1,37 @@
-import { Component, ContentChildren, ElementRef, EventEmitter, HostListener, InjectionToken, Input, InputSignal, Output, QueryList, ViewChild, ViewEncapsulation, WritableSignal, booleanAttribute, forwardRef, input, signal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { InputSize } from '../models/form-field.entity';
-import { OptionComponent } from './option/option.component';
-import { OptionGroupsComponent } from './option-groups/option-groups.component';
-import { SelectionModel } from '@angular/cdk/collections';
-import { CdkConnectedOverlay, ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
-import { InputsUtilsService } from '../services/inputs-utils.service';
-import { take } from 'rxjs';
 import { FocusKeyManager } from '@angular/cdk/a11y';
-
-/**
- * Permite inyectar el componente SelectComponent en el componente OptionComponent y OptionGroupComponent
- * para poder acceder a sus propiedades y métodos desde el componente hijo
- */
-export const NEO_SELECT = new InjectionToken<SelectComponent>('SelectComponent');
+import { SelectionModel } from '@angular/cdk/collections';
+import {
+  CdkConnectedOverlay,
+  Overlay,
+  ScrollStrategy,
+} from '@angular/cdk/overlay';
+import {
+  Component,
+  ContentChildren,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  InputSignal,
+  Output,
+  QueryList,
+  ViewChild,
+  ViewEncapsulation,
+  WritableSignal,
+  booleanAttribute,
+  forwardRef,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Subject, take, takeUntil } from 'rxjs';
+import { InputSize } from '../models/form-field.entity';
+import { InputsUtilsService } from '../services/inputs-utils.service';
+import { NEO_SELECT, OVERLAY_POSITIONS } from './models/select.model';
+import { OptionGroupsComponent } from './option-groups/option-groups.component';
+import { OptionComponent } from './option/option.component';
+import { SelectManagerService } from './services/select-manager/select-manager.service';
 
 /**
  * @name
@@ -42,18 +60,27 @@ export const NEO_SELECT = new InjectionToken<SelectComponent>('SelectComponent')
       multi: true,
     },
     {
-      provide: NEO_SELECT, useExisting: SelectComponent
+      provide: NEO_SELECT,
+      useExisting: SelectComponent,
     },
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class SelectComponent implements ControlValueAccessor {
+  @ContentChildren(forwardRef(() => OptionComponent), { descendants: true })
+  options!: QueryList<OptionComponent>;
+  @ContentChildren(forwardRef(() => OptionGroupsComponent), {
+    descendants: true,
+  })
+  optionGroups!: QueryList<OptionGroupsComponent>;
 
-  @ContentChildren(forwardRef(() => OptionComponent), { descendants: true }) options!: QueryList<OptionComponent>;
-  @ContentChildren(forwardRef(() => OptionGroupsComponent), { descendants: true }) optionGroups!: QueryList<OptionGroupsComponent>;
+  @ViewChild('searchInput') searchInput: ElementRef =
+    null as unknown as ElementRef;
+  @ViewChild(CdkConnectedOverlay)
+  protected _cdkConnectedOverlay!: CdkConnectedOverlay;
 
-  @ViewChild('searchInput') searchInput: ElementRef = null as unknown as ElementRef;
-  @ViewChild(CdkConnectedOverlay) protected _cdkConnectedOverlay!: CdkConnectedOverlay;
+  @ViewChild('calendarOverlay', { read: ElementRef })
+  calendarOverlayRef!: ElementRef;
 
   @Input({ transform: booleanAttribute }) multiple?: boolean = false;
   @Input({ transform: booleanAttribute }) transparent?: boolean = false;
@@ -77,8 +104,8 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   /**
-  * Input para marcar el campo como deshabilitado
-  */
+   * Input para marcar el campo como deshabilitado
+   */
   @Input({ transform: booleanAttribute })
   get disabled() {
     return this._disabled();
@@ -97,8 +124,7 @@ export class SelectComponent implements ControlValueAccessor {
   set value(newValue: any) {
     const valueAssigned = this.setValue(newValue);
 
-    if (valueAssigned)
-      this.onChange(valueAssigned);
+    if (valueAssigned) this.onChange(valueAssigned);
   }
 
   /**
@@ -117,8 +143,7 @@ export class SelectComponent implements ControlValueAccessor {
 
     // Si ya hay opciones seleccionadas, volvemos a inicializar la selección
     // para comprobar si hay opciones seleccionadas, forzando la selección de las opciones por valor
-    if (this._optionsSelected)
-      this.initSelection(true);
+    if (this._optionsSelected) this.initSelection(true);
   }
 
   /**
@@ -149,6 +174,7 @@ export class SelectComponent implements ControlValueAccessor {
 
   // Estrategia de scroll para el overlay
   scrollStrategy: ScrollStrategy;
+  overlayPositions = OVERLAY_POSITIONS;
 
   _id: WritableSignal<string> = signal('');
   _labelId: WritableSignal<string> = signal('');
@@ -158,19 +184,53 @@ export class SelectComponent implements ControlValueAccessor {
   // Manager para el control de teclas en las opciones
   private keyManager!: FocusKeyManager<OptionComponent>;
 
-  constructor(
-    private readonly _inputsUtilsService: InputsUtilsService,
-    scrollStrategyOptions: ScrollStrategyOptions
-  ) {
-    this.scrollStrategy = scrollStrategyOptions.close();
+  private readonly overlay = inject(Overlay);
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
+  private readonly _selectManagerService = inject(SelectManagerService);
+
+  private destroy$ = new Subject<void>();
+
+  constructor() {
+    this.scrollStrategy = this.overlay.scrollStrategies.close();
+  }
+
+  /**
+   * Método para cerrar el panel al pulsar la tecla "Escape"
+   */
+  @HostListener('keydown', ['$event'])
+  _onKeydownHandler(event: KeyboardEvent) {
+    const keyCode = event.key;
+    if (keyCode === 'Escape') this.closeDropdown();
+  }
+
+  /**
+   * Método para cerrar el calendario al hacer click fuera del panel
+   */
+  @HostListener('document:click', ['$event'])
+  onOutsideClick(event: MouseEvent) {
+    const clickedInside = this.calendarOverlayRef?.nativeElement.contains(
+      event.target as Node,
+    );
+    if (!clickedInside) this.closeDropdown();
   }
 
   ngOnInit() {
-    this._optionsSelected = new SelectionModel<OptionComponent>(this.multiple, []);
+    // Inicializamos la selección de opciones y comprobamos si hay opciones seleccionadas
+    this._optionsSelected = new SelectionModel<OptionComponent>(
+      this.multiple,
+      [],
+    );
+
+    // Nos suscribimos al servicio SelectManagerService para cerrar el dropdown si otro componente de tipo Select se abre
+    this.selectManager();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngAfterContentInit(): void {
-
     // Creamos un id único para el label del input
     this.createUniqueId();
 
@@ -180,6 +240,22 @@ export class SelectComponent implements ControlValueAccessor {
 
     // Inicialización del manager de teclas para las opciones
     this.keyManager = new FocusKeyManager(this.options).withWrap();
+  }
+
+  /**
+   * Método para suscribirse a las notificaciones del servicio SelectManagerService
+   * para cerrar el dropdown si otro componente de tipo Select se abre.
+   */
+  selectManager() {
+    // 📡 Nos suscribimos a las notificaciones del servicio
+    this._selectManagerService.dropdownOpened$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((openedComponent) => {
+        // Si el componente notificado no es este mismo, ciérrate.
+        if (openedComponent !== this) {
+          this.closeDropdown();
+        }
+      });
   }
 
   // Evento para controlar cuando se pulsa una tecla
@@ -192,7 +268,11 @@ export class SelectComponent implements ControlValueAccessor {
    */
   createUniqueId(): void {
     if (!this.id) {
-      this._id.set(this._inputsUtilsService.createUniqueId(this.label || this.title || 'select'));
+      this._id.set(
+        this._inputsUtilsService.createUniqueId(
+          this.label || this.title || 'select',
+        ),
+      );
       this._labelId.set(`label_${this._id()}`);
     }
   }
@@ -203,14 +283,12 @@ export class SelectComponent implements ControlValueAccessor {
    */
   private initSelection(forceSetByValue: boolean = false): void {
     setTimeout(() => {
-
       // Si hay un valor asignado, seleccionamos la opción correspondiente
       // --
       // Si no hay un valor asignado, seleccionamos las opciones que estén marcadas como seleccionadas desde el componente `OptionComponent`
       if (this._value() || forceSetByValue)
         this.setOptionSelectedByValue(this._value());
-      else
-        this.setOptionSelectedByStatus();
+      else this.setOptionSelectedByStatus();
     }, 0);
   }
 
@@ -220,13 +298,13 @@ export class SelectComponent implements ControlValueAccessor {
    * @returns {boolean}
    */
   private setValue(newValue: any | any[]): boolean {
-
-    if (newValue !== this._value() || (this.multiple && Array.isArray(newValue))) {
+    if (
+      newValue !== this._value() ||
+      (this.multiple && Array.isArray(newValue))
+    ) {
       setTimeout(() => {
-
         // Si hay opciones, seleccionamos las opciones que coincidan con el valor pasado por parámetro
-        if (this.options)
-          this.setOptionSelectedByValue(newValue);
+        if (this.options) this.setOptionSelectedByValue(newValue);
 
         this._value.set(newValue);
         return true;
@@ -254,7 +332,11 @@ export class SelectComponent implements ControlValueAccessor {
    * Método para establecer el foco en el input de búsqueda si el select es buscable y está abierto
    */
   setFocusToSearch() {
-    if (this.searchable && this.isDropdownOpened() && this.searchInput?.nativeElement)
+    if (
+      this.searchable &&
+      this.isDropdownOpened() &&
+      this.searchInput?.nativeElement
+    )
       setTimeout(() => this.searchInput.nativeElement.focus(), 0);
   }
 
@@ -263,7 +345,6 @@ export class SelectComponent implements ControlValueAccessor {
    * @param {any | any[]} value
    */
   private setOptionSelectedByValue(value: any | any[]): void {
-
     // Limpiamos las opciones seleccionadas de la variable `_optionsSelected`
     // y deseleccionamos todas las opciones que hubieran sido seleccionadas
     this.deselectAllOptions();
@@ -272,9 +353,10 @@ export class SelectComponent implements ControlValueAccessor {
     // --
     // Si el valor no es un array, seleccionamos la opción correspondiente
     if (this.multiple && value)
-      value.forEach((currentValue: any) => this.selectOptionByValue(currentValue));
-    else
-      this.selectOptionByValue(value);
+      value.forEach((currentValue: any) =>
+        this.selectOptionByValue(currentValue),
+      );
+    else this.selectOptionByValue(value);
   }
 
   /**
@@ -282,16 +364,16 @@ export class SelectComponent implements ControlValueAccessor {
    * @returns {OptionComponent | undefined} Opción seleccionada
    */
   private selectOptionByValue(value: any): OptionComponent | undefined {
-
     // Buscamos la opción que coincida con el valor
     const optionFound = this.options.find((option: OptionComponent) => {
-
       // Si la opción ya está seleccionada, no la volvemos a seleccionar
-      if (this._optionsSelected.isSelected(option))
-        return false;
+      if (this._optionsSelected.isSelected(option)) return false;
 
       // Comprobamos si el valor de la opción coincide con el valor pasado por parámetro
-      return option.value && this._compareSelectedWith(option.value, value) || false;
+      return (
+        (option.value && this._compareSelectedWith(option.value, value)) ||
+        false
+      );
     });
 
     // Si la opción se ha encontrado, la seleccionamos y la devolvemos.
@@ -308,22 +390,19 @@ export class SelectComponent implements ControlValueAccessor {
    * Actualiza el valor del select a partir de las opciones seleccionadas
    */
   updateValue(option: OptionComponent): void {
-
     // Si el select es múltiple, actualizamos el valor a partir de las opciones seleccionadas
     // comprobando si ya están seleccionadas o no
     // -
     // Si el select no es múltiple, actualizamos el valor a partir de la opción seleccionada
     // limpando la selección anterior
     if (this.multiple) {
-      if (option.isSelected())
-        this._optionsSelected?.select(option);
-      else
-        this._optionsSelected?.deselect(option);
-      this._value.set(this._optionsSelected.selected.map(option => option.value));
+      if (option.isSelected()) this._optionsSelected?.select(option);
+      else this._optionsSelected?.deselect(option);
+      this._value.set(
+        this._optionsSelected.selected.map((option) => option.value),
+      );
     } else {
-
-      if (!this._optionsSelected.isEmpty())
-        this._optionsSelected?.clear();
+      if (!this._optionsSelected.isEmpty()) this._optionsSelected?.clear();
 
       if (option.isSelected()) {
         this._optionsSelected?.select(option);
@@ -345,20 +424,25 @@ export class SelectComponent implements ControlValueAccessor {
    * @param {string} value
    */
   searchOption(value: string) {
-
     // Normalizamos el texto para que no haya problemas con las tildes
-    const textToSearchNormalized = String(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const textToSearchNormalized = String(value)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
 
     // Si el texto está vacío, mostramos todas las opciones
-    if (textToSearchNormalized === '') return this.options.forEach(option => option.showOptionBySearch());
+    if (textToSearchNormalized === '')
+      return this.options.forEach((option) => option.showOptionBySearch());
 
     // Si el texto contiene algún valor filtramos las opciones que contengan dicho texto
     this.options.forEach((option: OptionComponent) => {
-      const labelNormalized: string = String(option.getLabelText()).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      const labelNormalized: string = String(option.getLabelText())
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
       if (labelNormalized.includes(textToSearchNormalized))
         option.showOptionBySearch();
-      else
-        option.hideOptionBySearch();
+      else option.hideOptionBySearch();
     });
   }
 
@@ -366,7 +450,7 @@ export class SelectComponent implements ControlValueAccessor {
    * Método para resetear la búsqueda y mostrar todas las opciones
    */
   resetSearch() {
-    this.options.forEach(option => option.showOptionBySearch());
+    this.options.forEach((option) => option.showOptionBySearch());
   }
 
   /**
@@ -374,46 +458,29 @@ export class SelectComponent implements ControlValueAccessor {
    * @param {Event} event
    */
   toggleDropdown(event: Event) {
-
-    if (this.disabled) return;
-
     event?.preventDefault();
     event?.stopPropagation();
 
-    this.isDropdownOpened.set(!this.isDropdownOpened());
-
+    if (this.isDropdownOpened()) this.closeDropdown();
+    else this.openDropdown();
   }
 
   /**
-   * Método para comprobar si el dropdown está abierto mediante el evento 'attach'
-   * del overlay de Angular CDK en la vista
+   * Método para abrir el selector si está cerrado
    */
-  attachDropdown() {
+  openDropdown() {
+    if (this.disabled) return;
 
-    // Nos suscribimos al evento de cambio de posición del overlay
-    this._cdkConnectedOverlay.positionChange.pipe(take(1)).subscribe(
-      () => {
-
-        // Si el campo está abierto
-        if (this.isDropdownOpened()) {
-
-          // Hacemos scroll al primer `neo-option` seleccionado
-          this.scrollToSelectedOption();
-
-          // Establecemos el foco en el input de búsqueda si el select permite búsqueda
-          if (this.searchable)
-            this.setFocusToSearch();
-        }
-      }
-    );
+    // Abrimos el dropdown y notificamos al servicio SelectManagerService
+    this.isDropdownOpened.set(true);
+    this._selectManagerService.notifyOpened(this);
   }
 
   /**
    * Método para cerrar el selector si está abierto
    */
   closeDropdown() {
-    if (this.isDropdownOpened())
-      this.isDropdownOpened.set(false);
+    this.isDropdownOpened.set(false);
 
     // Reseteamos la búsqueda
     this.resetSearch();
@@ -423,14 +490,35 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   /**
+   * Método para comprobar si el dropdown está abierto mediante
+   * el evento 'attach' del overlay de Angular CDK en la vista
+   */
+  attachDropdown() {
+    // Nos suscribimos al evento de cambio de posición del overlay
+    this._cdkConnectedOverlay.positionChange.pipe(take(1)).subscribe(() => {
+      // Si el campo está abierto
+      if (this.isDropdownOpened()) {
+        // Hacemos scroll al primer `neo-option` seleccionado
+        this.scrollToSelectedOption();
+
+        // Establecemos el foco en el input de búsqueda si el select permite búsqueda
+        if (this.searchable) this.setFocusToSearch();
+      }
+    });
+  }
+
+  /**
    * Método para comprobar si hay errores en el campo y mostrarlos.
    * Se activa si el campo es requerido y no se ha seleccionado ninguna opción
    */
   checkErrors() {
-    if (this.required && !this.isDropdownOpened() && this._optionsSelected.isEmpty()) {
+    if (
+      this.required &&
+      !this.isDropdownOpened() &&
+      this._optionsSelected.isEmpty()
+    ) {
       this._hasErrors.set(true);
-    } else
-      this._hasErrors.set(false);
+    } else this._hasErrors.set(false);
   }
 
   /**
@@ -438,7 +526,7 @@ export class SelectComponent implements ControlValueAccessor {
    */
   deselectAllOptions() {
     this._optionsSelected.clear();
-    this.options.forEach(option => option.deselect());
+    this.options.forEach((option) => option.deselect());
   }
 
   /**
@@ -452,15 +540,16 @@ export class SelectComponent implements ControlValueAccessor {
    * Método para hacer scroll al primer `neo-option` seleccionado
    */
   scrollToSelectedOption() {
-    const selectedOption = this.options.find(option => option.isSelected());
+    const selectedOption = this.options.find((option) => option.isSelected());
 
     // Hacemos scroll al primer `neo-option` seleccionado
     if (selectedOption)
-      selectedOption.getElementRef().nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      selectedOption
+        .getElementRef()
+        .nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     // Si el select no tiene búsqueda, establecemos el foco en la opción seleccionada
-    if (!this.searchable)
-      selectedOption?.getElementRef().nativeElement.focus();
+    if (!this.searchable) selectedOption?.getElementRef().nativeElement.focus();
   }
 
   /**
@@ -468,25 +557,23 @@ export class SelectComponent implements ControlValueAccessor {
    * y usarlas en el `title` de la vista
    */
   getTitleOptionsSelected(): string | null {
-
     // Si no hay valores seleccionados, devolvemos el valor vacío
-    if (this._optionsSelected.isEmpty())
-      return null;
+    if (this._optionsSelected.isEmpty()) return null;
 
     // Si no es de selección múltiple, devolvemos el primero
     // Si es de selección múltiple obtenemos todas las seleccionadas y las unimos por un coma (,)
-    if (!this.multiple)
-      return this._optionsSelected.selected[0].getLabelText();
+    if (!this.multiple) return this._optionsSelected.selected[0].getLabelText();
     else {
-      const titlesOptions: string[] = this._optionsSelected.selected.map(option => option.getLabelText());
+      const titlesOptions: string[] = this._optionsSelected.selected.map(
+        (option) => option.getLabelText(),
+      );
       return titlesOptions.join(', ');
     }
-
   }
 
   // Funciones de control de eventos
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   writeValue(value: any) {
     this.setValue(value);
@@ -503,5 +590,4 @@ export class SelectComponent implements ControlValueAccessor {
   setDisabledState(isDisabled: boolean): void {
     this._disabled.set(isDisabled);
   }
-
 }

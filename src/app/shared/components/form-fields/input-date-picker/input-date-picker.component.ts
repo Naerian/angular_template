@@ -26,6 +26,7 @@ import {
 import { CalendarComponent } from '@shared/components/calendar/calendar.component';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 import moment from 'moment';
+import { Subject, takeUntil } from 'rxjs';
 import {
   CalendarType,
   DEFAULT_FORMAT,
@@ -33,6 +34,7 @@ import {
 } from '../../calendar/models/calendar.model';
 import { InputAutocomplete, InputSize } from '../models/form-field.entity';
 import { OVERLAY_POSITIONS } from './models/input-date-picker.model';
+import { DatePickerManagerService } from './services/date-picker-manager/date-picker-manager.service';
 
 /**
  * @name
@@ -170,6 +172,16 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   realDateValue: WritableSignal<Date | Date[] | string | string[] | null> =
     signal(null);
 
+  private readonly overlay = inject(Overlay);
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
+  private readonly _datePickerManagerService = inject(DatePickerManagerService);
+
+  private destroy$ = new Subject<void>();
+
+  constructor() {
+    this.scrollStrategy = this.overlay.scrollStrategies.close();
+  }
+
   /**
    * Método para cerrar el panel al pulsar la tecla "Escape"
    */
@@ -190,15 +202,34 @@ export class InputDatePickerComponent implements ControlValueAccessor {
     if (!clickedInside) this.closeCalendar();
   }
 
-  private readonly overlay = inject(Overlay);
-  private readonly _inputsUtilsService = inject(InputsUtilsService);
-
-  constructor() {
-    this.scrollStrategy = this.overlay.scrollStrategies.close();
-  }
-
   ngAfterViewInit(): void {
     this.createUniqueId();
+  }
+
+  ngOnInit(): void {
+    // Nos suscribimos a las notificaciones del servicio DatePickerManagerService
+    this.datePickerManager();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Método para suscribirse a las notificaciones del servicio DatePickerManagerService
+   * para cerrar el calendario si otro componente de tipo InputDatePicker se abre.
+   */
+  datePickerManager() {
+    // 📡 Nos suscribimos a las notificaciones del servicio
+    this._datePickerManagerService.datePickerOpened$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((openedComponent) => {
+        // Si el componente notificado no es este mismo, ciérrate.
+        if (openedComponent !== this) {
+          this.closeCalendar();
+        }
+      });
   }
 
   /**
@@ -326,16 +357,26 @@ export class InputDatePickerComponent implements ControlValueAccessor {
     event?.preventDefault();
     event?.stopPropagation();
 
+    if (this.isDatePickerOpened()) this.closeCalendar();
+    else this.openCalendar();
+  }
+
+  /**
+   * Función para abrir el calendario
+   */
+  openCalendar() {
     if (this.disabled) return;
 
-    this.isDatePickerOpened.set(!this.isDatePickerOpened());
+    // Abrimos el calendario y notificamos al servicio DatePickerManagerService
+    this.isDatePickerOpened.set(true);
+    this._datePickerManagerService.notifyOpened(this);
   }
 
   /**
    * Función para cerrar el calendario
    */
   closeCalendar() {
-    if (this.isDatePickerOpened()) this.isDatePickerOpened.set(false);
+    this.isDatePickerOpened.set(false);
   }
 
   /**

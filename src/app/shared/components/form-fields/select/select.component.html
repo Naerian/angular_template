@@ -77,8 +77,7 @@
     [cdkConnectedOverlayOrigin]="selectDropdown"
     [cdkConnectedOverlayOpen]="isDropdownOpened()"
     [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
-    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayPositions]="overlayPositions"
     (attach)="attachDropdown()"
     (detach)="closeDropdown()"
     (backdropClick)="closeDropdown()"
@@ -88,6 +87,7 @@
       [ngStyle]="{ 'min-width': selectField.offsetWidth + 'px' }"
       [cdkTrapFocus]="true"
       [cdkTrapFocusAutoCapture]="true"
+      #dropdownOverlay
     >
       @if (searchable && options.length > 0) {
         <div class="neo-select__dropdown__search">

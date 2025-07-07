@@ -79,7 +79,9 @@
                 type="button"
                 class="calendar-picker__day"
                 role="gridcell"
-                [attr.tabindex]="-1"
+                [attr.tabindex]="
+                  day.isSelected || (!hasSelectedDays() && day.isToday) ? 0 : -1
+                "
                 [class.calendar-picker__day--selected]="day.isSelected"
                 [class.calendar-picker__day--today]="day.isToday"
                 [attr.aria-selected]="day.isSelected"
