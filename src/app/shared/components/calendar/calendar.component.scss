@@ -259,6 +259,7 @@
       &:focus,
       &:active {
         @include selected-style;
+        background-color: var(--danger-color);
         outline: none;
       }
     }
