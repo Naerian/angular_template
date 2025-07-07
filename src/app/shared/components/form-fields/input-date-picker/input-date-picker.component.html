@@ -75,9 +75,13 @@
   (detach)="closeCalendar()"
   (backdropClick)="closeCalendar()"
 >
-  <div cdkTrapFocus [cdkTrapFocusAutoCapture]="true" #calendarOverlay>
+  <div
+    cdkTrapFocus
+    [cdkTrapFocusAutoCapture]="true"
+    #calendarOverlay
+    [@fadeInOutScale]="isDatePickerOpened() ? '*' : 'void'"
+  >
     <neo-calendar
-      tabindex="0"
       [date]="realDateValue() ?? null"
       [type]="type"
       [disabledDates]="disabledDates || []"

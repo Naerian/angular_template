@@ -88,6 +88,7 @@
       [cdkTrapFocus]="true"
       [cdkTrapFocusAutoCapture]="true"
       #dropdownOverlay
+      [@fadeInOutScale]="isDropdownOpened() ? '*' : 'void'"
     >
       @if (searchable && options.length > 0) {
         <div class="neo-select__dropdown__search">

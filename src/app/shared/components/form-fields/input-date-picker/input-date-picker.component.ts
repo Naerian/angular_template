@@ -23,6 +23,7 @@ import {
   FormsModule,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
+import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { CalendarComponent } from '@shared/components/calendar/calendar.component';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 import moment from 'moment';
@@ -51,6 +52,7 @@ import { DatePickerManagerService } from './services/date-picker-manager/date-pi
     './input-date-picker.component.scss',
     './../form-fields-settings.scss',
   ],
+  animations: [FADE_IN_OUT_SCALE],
   standalone: true,
   imports: [
     CommonModule,

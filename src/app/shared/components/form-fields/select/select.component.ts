@@ -25,6 +25,7 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { Subject, take, takeUntil } from 'rxjs';
 import { InputSize } from '../models/form-field.entity';
 import { InputsUtilsService } from '../services/inputs-utils.service';
@@ -53,6 +54,7 @@ import { SelectManagerService } from './services/select-manager/select-manager.s
   selector: 'neo-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss', './../form-fields-settings.scss'],
+  animations: [FADE_IN_OUT_SCALE],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

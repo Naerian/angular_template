@@ -1,6 +1,19 @@
-import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
-import { Component, HostListener, Input, WritableSignal, signal } from '@angular/core';
+import { Overlay, ScrollStrategy } from '@angular/cdk/overlay';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  ViewChild,
+  WritableSignal,
+  inject,
+  signal,
+} from '@angular/core';
+import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
+import { Subject, takeUntil } from 'rxjs';
 import { ButtonColor, ButtonSize } from '../button/models/button.entity';
+import { OVERLAY_POSITIONS } from './models/menu-context.model';
+import { MenuContextManagerService } from './services/menu-context-manager/menu-context-manager.service';
 
 /**
  * @name
@@ -17,8 +30,11 @@ import { ButtonColor, ButtonSize } from '../button/models/button.entity';
   selector: 'neo-menu-context',
   templateUrl: './menu-context.component.html',
   styleUrls: ['./menu-context.component.scss'],
+  animations: [FADE_IN_OUT_SCALE],
 })
 export class MenuContextComponent {
+  @ViewChild('menuContext', { read: ElementRef })
+  menuContextOverlayRef!: ElementRef;
 
   /**
    * Input que recibe el icono del menú, por defecto es 'ri-more-2-fill'
@@ -47,6 +63,7 @@ export class MenuContextComponent {
 
   isMenuContextOpened: WritableSignal<boolean> = signal(false);
   scrollStrategy: ScrollStrategy;
+  overlayPositions = OVERLAY_POSITIONS;
 
   /**
    * Método para cerrar el panel al pulsar la tecla "Escape"
@@ -54,14 +71,55 @@ export class MenuContextComponent {
   @HostListener('keydown', ['$event'])
   _onKeydownHandler(event: KeyboardEvent) {
     const keyCode = event.key;
-    if (keyCode === 'Escape')
-      this.close();
+    if (keyCode === 'Escape') this.close();
   }
 
-  constructor(
-    scrollStrategyOptions: ScrollStrategyOptions
-  ) {
-    this.scrollStrategy = scrollStrategyOptions.close();
+  /**
+   * Método para cerrar el menú contextual al hacer click fuera del panel
+   */
+  @HostListener('document:click', ['$event'])
+  onOutsideClick(event: MouseEvent) {
+    const clickedInside = this.menuContextOverlayRef?.nativeElement.contains(
+      event.target as Node,
+    );
+    if (!clickedInside) this.close();
+  }
+
+  private readonly overlay = inject(Overlay);
+  private readonly _menuContextManagerService = inject(
+    MenuContextManagerService,
+  );
+
+  private destroy$ = new Subject<void>();
+
+  constructor() {
+    this.scrollStrategy = this.overlay.scrollStrategies.close();
+  }
+
+  ngOnInit(): void {
+    // Nos suscribimos a las notificaciones del servicio MenuContextManagerService
+    this.menuContextManager();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Método para suscribirse a las notificaciones del servicio MenuContextManagerService
+   * para cerrar el calendario si otro componente de tipo MenuContext se abre.
+   */
+  menuContextManager() {
+    // 📡 Nos suscribimos a las notificaciones del servicio
+    this._menuContextManagerService.menuContextOpened$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((openedComponent) => {
+        // Si el componente notificado no es este mismo, ciérrate.
+        if (openedComponent !== this) {
+          this.close();
+        }
+      });
   }
 
   /**
@@ -80,5 +138,4 @@ export class MenuContextComponent {
     event?.stopPropagation();
     this.isMenuContextOpened.set(!this.isMenuContextOpened());
   }
-
 }

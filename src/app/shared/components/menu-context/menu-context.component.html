@@ -16,16 +16,16 @@
   [cdkConnectedOverlayOrigin]="menuContext"
   [cdkConnectedOverlayOpen]="isMenuContextOpened()"
   [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
-  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayPositions]="overlayPositions"
   (detach)="close()"
   (backdropClick)="close()"
 >
   <div
     class="menu-context"
-    (clickOutside)="close()"
+    #menuContext
     cdkTrapFocus
     [cdkTrapFocusAutoCapture]="true"
+    [@fadeInOutScale]="isMenuContextOpened() ? '*' : 'void'"
   >
     <ng-content></ng-content>
   </div>
