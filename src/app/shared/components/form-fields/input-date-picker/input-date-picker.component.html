@@ -59,7 +59,6 @@
         (keydown.enter)="toogleCalendar($event)"
         (keydown.space)="toogleCalendar($event)"
         cdkOverlayOrigin
-        #datePicker="cdkOverlayOrigin"
       >
         <i [class]="icon"></i>
       </div>
@@ -72,12 +71,11 @@
   [cdkConnectedOverlayOrigin]="datePicker"
   [cdkConnectedOverlayOpen]="isDatePickerOpened()"
   [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
-  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayPositions]="overlayPositions"
   (detach)="closeCalendar()"
   (backdropClick)="closeCalendar()"
 >
-  <div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+  <div cdkTrapFocus [cdkTrapFocusAutoCapture]="true" #calendarOverlay>
     <neo-calendar
       tabindex="0"
       [date]="realDateValue() ?? null"

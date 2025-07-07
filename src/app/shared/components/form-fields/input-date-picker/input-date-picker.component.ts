@@ -1,21 +1,20 @@
 import { A11yModule } from '@angular/cdk/a11y';
-import {
-  OverlayModule,
-  ScrollStrategy,
-  ScrollStrategyOptions,
-} from '@angular/cdk/overlay';
+import { Overlay, OverlayModule, ScrollStrategy } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import {
   booleanAttribute,
   Component,
+  ElementRef,
   EventEmitter,
   forwardRef,
   HostListener,
+  inject,
   Input,
   input,
   InputSignal,
   Output,
   signal,
+  ViewChild,
   ViewEncapsulation,
   WritableSignal,
 } from '@angular/core';
@@ -33,6 +32,7 @@ import {
   SelectionType,
 } from '../../calendar/models/calendar.model';
 import { InputAutocomplete, InputSize } from '../models/form-field.entity';
+import { OVERLAY_POSITIONS } from './models/input-date-picker.model';
 
 /**
  * @name
@@ -67,6 +67,9 @@ import { InputAutocomplete, InputSize } from '../models/form-field.entity';
   encapsulation: ViewEncapsulation.None,
 })
 export class InputDatePickerComponent implements ControlValueAccessor {
+  @ViewChild('calendarOverlay', { read: ElementRef })
+  calendarOverlayRef!: ElementRef;
+
   // Si el campo está deshabilitado, se añade el atributo "disabled" al input
   @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
 
@@ -161,6 +164,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
 
   isDatePickerOpened: WritableSignal<boolean> = signal(false);
   scrollStrategy: ScrollStrategy;
+  overlayPositions = OVERLAY_POSITIONS;
 
   // Fecha por defecto del calendario
   realDateValue: WritableSignal<Date | Date[] | string | string[] | null> =
@@ -175,11 +179,22 @@ export class InputDatePickerComponent implements ControlValueAccessor {
     if (keyCode === 'Escape') this.closeCalendar();
   }
 
-  constructor(
-    private readonly _inputsUtilsService: InputsUtilsService,
-    scrollStrategyOptions: ScrollStrategyOptions,
-  ) {
-    this.scrollStrategy = scrollStrategyOptions.close();
+  /**
+   * Método para cerrar el calendario al hacer click fuera del panel
+   */
+  @HostListener('document:click', ['$event'])
+  onOutsideClick(event: MouseEvent) {
+    const clickedInside = this.calendarOverlayRef?.nativeElement.contains(
+      event.target as Node,
+    );
+    if (!clickedInside) this.closeCalendar();
+  }
+
+  private readonly overlay = inject(Overlay);
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
+
+  constructor() {
+    this.scrollStrategy = this.overlay.scrollStrategies.close();
   }
 
   ngAfterViewInit(): void {
@@ -243,33 +258,41 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * Función para seleccionar una fecha
    * @param {Date | Date[]} value - Fecha o rango de fechas seleccionadas
    */
-  setCalendarValue(value: Date | Date[]) {
-    if (!value) return;
+  setCalendarValue(value: Date | Date[] | null) {
+    let realValue = '';
 
-    // Mostrar en el input como string (aunque sea rango)
-    const formatted = this.formatDate(this.format, value);
-
-    // Si es de tipo rango, mostramos la primera y última fecha
-    // Si no es de tipo rango, mostramos la fecha única
-    if (Array.isArray(value)) {
-      const startDate = moment(value[0]).format(this.format);
-      const endDate = moment(value[value.length - 1]).format(this.format);
-      this._value.set(`${startDate} - ${endDate}`); // Valor visual
+    // Si el valor es nulo o un array vacío, lo dejamos como null
+    // Si no, lo formateamos y lo mostramos en el input
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+      value = null;
+      this._value.set(null); // Valor visual
     } else {
-      this._value.set(formatted); // Valor visual
+      if (Array.isArray(value) && value.length > 1) {
+        const startDate = moment(value[0]).format(this.format);
+        const endDate = moment(value[value.length - 1]).format(this.format);
+        realValue = `${startDate} - ${endDate}`;
+      } else {
+        // Mostrar en el input como string (aunque sea rango)
+        const formatted = this.formatDate(this.format, value);
+        realValue = formatted as string;
+      }
     }
+
+    // Valor visual del campo
+    this._value.set(realValue);
 
     // Valor real del campo
     this.realDateValue.set(value);
 
-    this.onChange(value); // Emitimos el valor REAL (string o string[])
+    this.onChange(value);
     this.onTouched();
+
+    // Emitimos el valor REAL
+    this.dateSelected.emit(value);
+    this.change.emit(value);
 
     // Cerramos el calendario
     this.closeCalendar();
-
-    this.dateSelected.emit(value); // Emitimos el valor REAL
-    this.change.emit(value); // Emitimos el valor REAL
   }
 
   /**

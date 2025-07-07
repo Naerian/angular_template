@@ -9,7 +9,7 @@
         <button
           class="calendar-picker__header__btn"
           type="button"
-          (click)="prevMonth()"
+          (click)="prevMonth($event)"
           [title]="'CALENDAR.PREV_MONTH' | translate"
           [attr.aria-label]="'CALENDAR.PREV_MONTH' | translate"
         >
@@ -19,7 +19,7 @@
           <button
             class="calendar-picker__header__actions--selector"
             type="button"
-            (click)="setMonthsView()"
+            (click)="setMonthsView($event)"
             [title]="'CALENDAR.CHANGE_MONTH' | translate"
             [attr.aria-label]="'CALENDAR.CHANGE_MONTH' | translate"
           >
@@ -29,7 +29,7 @@
           <button
             class="calendar-picker__header__actions--selector"
             type="button"
-            (click)="setYearsView()"
+            (click)="setYearsView($event)"
             [title]="'CALENDAR.CHANGE_YEAR' | translate"
             [attr.aria-label]="'CALENDAR.CHANGE_YEAR' | translate"
           >
@@ -40,7 +40,7 @@
         <button
           type="button"
           class="calendar-picker__header__btn"
-          (click)="nextMonth()"
+          (click)="nextMonth($event)"
           [title]="'CALENDAR.NEXT_MONTH' | translate"
           [attr.aria-label]="'CALENDAR.NEXT_MONTH' | translate"
         >
@@ -88,7 +88,7 @@
                 [attr.aria-label]="getDayAccessibilityLabel(day)"
                 [attr.data-day]="day.date.toDate() | date: 'dd'"
                 [title]="getDayAccessibilityLabel(day)"
-                (click)="selectDay(day)"
+                (click)="selectDay(day, $event)"
               >
                 {{ day.date.date() }}
               </button>
@@ -127,7 +127,7 @@
             [title]="'CALENDAR.MONTH.' + $index | translate"
             [attr.aria-selected]="currentMonthNumber() === $index"
             [attr.aria-label]="'CALENDAR.MONTH.' + $index | translate"
-            (click)="selectMonth($index)"
+            (click)="selectMonth($index, $event)"
           >
             {{ "CALENDAR.MONTH." + $index | translate }}
           </button>
@@ -146,7 +146,7 @@
         <button
           type="button"
           class="calendar-picker__header__btn"
-          (click)="loadPastYears()"
+          (click)="loadPastYears($event)"
           [title]="'CALENDAR.PREV_YEAR' | translate"
           [attr.aria-label]="'CALENDAR.PREV_YEAR' | translate"
         >
@@ -158,7 +158,7 @@
         <button
           type="button"
           class="calendar-picker__header__btn"
-          (click)="loadFutureYears()"
+          (click)="loadFutureYears($event)"
           [title]="'CALENDAR.NEXT_YEAR' | translate"
           [attr.aria-label]="'CALENDAR.NEXT_YEAR' | translate"
         >
@@ -177,7 +177,7 @@
             class="calendar-picker__year"
             [attr.tabindex]="currentYear() === year ? 0 : -1"
             [class.calendar-picker__year--selected]="currentYear() === year"
-            (click)="selectYear(year)"
+            (click)="selectYear(year, $event)"
             [title]="year"
             [attr.aria-selected]="currentYear() === year"
             [attr.aria-label]="year"

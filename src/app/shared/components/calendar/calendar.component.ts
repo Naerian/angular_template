@@ -729,8 +729,12 @@ export class CalendarComponent implements OnInit {
    * Función principal para seleccionar un día, semana o rango de fechas.
    * Delega la lógica específica a `setDay`, `setWeek` o `setRange`.
    * @param {CalendarDay} day - El día seleccionado.
+   * @param {Event} event - Evento del clic, si se recibe.
    */
-  selectDay(day: CalendarDay) {
+  selectDay(day: CalendarDay, event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
+
     // Validaciones básicas antes de proceder.
     if (!day || !day.date || day.isDisabled || !day.isCurrentMonth) return;
 
@@ -797,9 +801,8 @@ export class CalendarComponent implements OnInit {
     }
 
     // Si hay fechas deshabilitadas pero `blockDisabledRanges` es `false`, mostramos un toast de advertencia.
-    if (!this.blockDisabledRanges && hasDisabledDates) {
+    if (!this.blockDisabledRanges && hasDisabledDates)
       this.showDisabledDatesToast();
-    }
 
     // Filtramos las fechas deshabilitadas del rango si no está bloqueado.
     const filteredDates = totalDates.filter(
@@ -950,8 +953,12 @@ export class CalendarComponent implements OnInit {
   /**
    * Establece la vista del calendario a la vista de meses.
    * El enfoque del elemento se gestiona automáticamente por el `effect`.
+   * @param {Event} event - Evento del clic, si se recibe.
    */
-  setMonthsView() {
+  setMonthsView(event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
+
     this.allMonths = moment.months();
     this.viewMode.set(CalendarViewMode.MONTHS);
   }
@@ -959,8 +966,12 @@ export class CalendarComponent implements OnInit {
   /**
    * Establece la vista del calendario a la vista de años.
    * Carga el rango de años y el enfoque del elemento se gestiona automáticamente por el `effect`.
+   * @param {Event} event - Evento del clic, si se recibe.
    */
-  setYearsView() {
+  setYearsView(event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
+
     this.viewMode.set(CalendarViewMode.YEARS);
     const year = moment(this.currentViewDate()).year();
     this.loadYearRange(year);
@@ -969,8 +980,12 @@ export class CalendarComponent implements OnInit {
   /**
    * Cambia el calendario al mes anterior.
    * Actualiza `currentViewDate` y vuelve a renderizar los días.
+   * @param {Event} event - Evento del clic, si se recibe.
    */
-  prevMonth() {
+  prevMonth(event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
+
     const prevMonth = moment(this.currentViewDate()).subtract(1, 'month');
     this.currentViewDate.set(prevMonth.toDate());
     this.renderCalendarDays();
@@ -979,8 +994,12 @@ export class CalendarComponent implements OnInit {
   /**
    * Cambia el calendario al mes siguiente.
    * Actualiza `currentViewDate` y vuelve a renderizar los días.
+   * @param {Event} event - Evento del clic, si se recibe.
    */
-  nextMonth() {
+  nextMonth(event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
+
     const nextMonth = moment(this.currentViewDate()).add(1, 'month');
     this.currentViewDate.set(nextMonth.toDate());
     this.renderCalendarDays();
@@ -989,8 +1008,12 @@ export class CalendarComponent implements OnInit {
   /**
    * Cambia el mes seleccionado en la vista de calendario.
    * @param month - Número de mes (0-11).
+   * @param {Event} event - Evento del clic, si se recibe.
    */
-  selectMonth(month: number) {
+  selectMonth(month: number, event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
+
     // Establecemos el mes actual al mes seleccionado actualizando `currentViewDate`.
     const currentDate = moment(this.currentViewDate())
       .set('month', month)
@@ -1004,8 +1027,12 @@ export class CalendarComponent implements OnInit {
   /**
    * Cambia el año seleccionado en la vista de calendario.
    * @param {number} year - Año a cambiar (4 dígitos).
+   * @param {Event} event - Evento del clic, si se recibe.
    */
-  selectYear(year: number) {
+  selectYear(year: number, event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
+
     // Establecemos el año actual al año seleccionado actualizando `currentViewDate`.
     const currentDate = moment(this.currentViewDate())
       .set('year', year)
@@ -1022,8 +1049,12 @@ export class CalendarComponent implements OnInit {
    * Carga el rango de años para la vista de selección de años.
    * Genera 20 años en un bloque centrado alrededor de `centerYear`.
    * @param centerYear - Año central para cargar la década (por defecto: año actual).
+   * @param event - Evento del clic, si se recibe.
    */
-  loadYearRange(centerYear: number = moment().year()) {
+  loadYearRange(centerYear: number = moment().year(), event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
+
     // Calcula el año de inicio para el bloque de 20 años (múltiplo de 20).
     const startYear = Math.floor(centerYear / 20) * 20;
     this.allYears = Array.from({ length: 20 }, (_, i) =>
@@ -1038,23 +1069,29 @@ export class CalendarComponent implements OnInit {
 
   /**
    * Carga el rango de años anterior (20 años atrás).
+   * @param {Event} event - Evento del clic, si se recibe.
    */
-  loadPastYears() {
+  loadPastYears(event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
     this.loadYearRange(this.yearsBlockStart - 20);
   }
 
   /**
    * Carga el rango de años siguiente (20 años adelante).
+   * @param {Event} event - Evento del clic, si se recibe.
    */
-  loadFutureYears() {
+  loadFutureYears(event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
     this.loadYearRange(this.yearsBlockStart + 20);
   }
 
   /**
    * Genera el texto para los atributos 'title' y 'aria-label' de un día.
    * Si el día está deshabilitado, incluye un mensaje traducido.
-   * @param day El objeto CalendarDay.
-   * @returns El string para el título/aria-label.
+   * @param {CalendarDay} day - El día del calendario.
+   * @returns {string} Texto accesible para el día.
    */
   getDayAccessibilityLabel(day: CalendarDay): string {
     const formattedDate = day.date.format('DD/MM/YYYY');
