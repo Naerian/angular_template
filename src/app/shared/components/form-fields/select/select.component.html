@@ -21,7 +21,7 @@
     [title]="getTitleOptionsSelected() || title || label"
     [class.neo-select__field--empty]="options.length === 0"
     [class.neo-select__field--multiple]="multiple"
-    [class.neo-select__field--error]="hasErrors() || _hasErrors()"
+    [class.neo-select__field--has-error]="hasErrors() || _hasErrors()"
     [class.neo-select__field--disabled]="disabled"
     [class.neo-select__field--transparent]="transparent"
     [attr.tabindex]="disabled ? -1 : 0"
@@ -94,7 +94,7 @@
         <div class="neo-select__dropdown__search">
           <input
             #searchInput
-            class="neo-select__dropdown__search__input"
+            class="neo-select__dropdown__search__input size-{{ inputSize }}"
             type="text"
             [placeholder]="placeholderSearch || ('APP.SEARCH' | translate)"
             [attr.id]="'listbox_search_' + _id()"
