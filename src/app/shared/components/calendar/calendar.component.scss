@@ -217,6 +217,10 @@
       }
     }
 
+    &--no_current_month {
+      opacity: 0.5;
+    }
+
     // Estilos específicos para días deshabilitados
     &--disabled {
       text-decoration: line-through;
@@ -250,6 +254,23 @@
     &--disabled:is(&--selected) {
       @include selected-style;
       background-color: var(--danger-color);
+
+      &:hover,
+      &:focus,
+      &:active {
+        @include selected-style;
+        outline: none;
+      }
+    }
+
+    &--no_current_month:is(&--selected) {
+
+      &:hover,
+      &:focus,
+      &:active {
+        @include selected-style;
+        outline: none;
+      }
     }
   }
 
