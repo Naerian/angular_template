@@ -4,45 +4,48 @@
   [attr.data-calendar-id]="calendarId"
 >
   @if (viewMode() === VIEW_MODE.DEFAULT) {
-    <div class="calendar-picker__default">
+    <div class="calendar-picker__view calendar-picker__view--default">
       <div class="calendar-picker__header">
         <button
-          class="calendar-picker__header__btn"
+          class="calendar-picker__header-btn"
           type="button"
           (click)="prevMonth($event)"
-          [title]="'CALENDAR.PREV_MONTH' | translate"
-          [attr.aria-label]="'CALENDAR.PREV_MONTH' | translate"
+          [title]="_translations.prevMonth"
+          [attr.aria-label]="_translations.prevMonth"
         >
           <i class="ri-arrow-left-s-line"></i>
         </button>
-        <div class="calendar-picker__header__actions">
+
+        <div class="calendar-picker__selectors">
           <button
-            class="calendar-picker__header__actions--selector"
+            class="calendar-picker__selector calendar-picker__selector--month"
             type="button"
             (click)="setMonthsView($event)"
-            [title]="'CALENDAR.CHANGE_MONTH' | translate"
-            [attr.aria-label]="'CALENDAR.CHANGE_MONTH' | translate"
+            [title]="_translations.changeMonth"
+            [attr.aria-label]="_translations.changeMonth"
           >
-            {{ "CALENDAR.MONTH." + currentMonthNumber() | translate }}
+            {{ _translations.shortMonths[currentMonthNumber()] }}
             <i class="ri-arrow-down-s-line arrow-dropdown"></i>
           </button>
+
           <button
-            class="calendar-picker__header__actions--selector"
+            class="calendar-picker__selector calendar-picker__selector--year"
             type="button"
             (click)="setYearsView($event)"
-            [title]="'CALENDAR.CHANGE_YEAR' | translate"
-            [attr.aria-label]="'CALENDAR.CHANGE_YEAR' | translate"
+            [title]="_translations.changeYear"
+            [attr.aria-label]="_translations.changeYear"
           >
             {{ currentViewDate() | date: "yyyy" }}
             <i class="ri-arrow-down-s-line arrow-dropdown"></i>
           </button>
         </div>
+
         <button
           type="button"
-          class="calendar-picker__header__btn"
+          class="calendar-picker__header-btn"
           (click)="nextMonth($event)"
-          [title]="'CALENDAR.NEXT_MONTH' | translate"
-          [attr.aria-label]="'CALENDAR.NEXT_MONTH' | translate"
+          [title]="_translations.nextMonth"
+          [attr.aria-label]="_translations.nextMonth"
         >
           <i class="ri-arrow-right-s-line"></i>
         </button>
@@ -50,21 +53,28 @@
 
       <div class="calendar-picker__content">
         <div class="calendar-picker__weekdays">
-          @for (dayKey of WEEK_DAYS; track dayKey) {
-            <span>{{ dayKey | translate }}</span>
+          @for (dayKey of _translations.weekDaysShort; track dayKey) {
+            <span class="calendar-picker__weekday">
+              {{ dayKey }}
+            </span>
           }
         </div>
-        <div class="calendar-picker__grid calendar-picker__days" role="grid">
+
+        <div
+          class="calendar-picker__grid calendar-picker__grid--days"
+          role="grid"
+        >
           @for (day of daysInMonth(); track day.date.valueOf()) {
             @if (day.isDisabled || !day.isCurrentMonth) {
               <span
-                class="calendar-picker__no-day"
-                [class.calendar-picker__no-day--no_current_month]="
+                class="calendar-picker__grid-day"
+                [class.calendar-picker__grid-day--inactive]="
                   !day.isCurrentMonth
                 "
-                [class.calendar-picker__no-day--disabled]="day.isDisabled"
-                [class.calendar-picker__no-day--selected]="day.isSelected"
-                [class.calendar-picker__no-day--today]="day.isToday"
+                [class.calendar-picker__grid-day--disabled]="day.isDisabled"
+                [class.calendar-picker__grid-day--selected]="day.isSelected"
+                [class.calendar-picker__grid-day--in-range]="day.isInRange"
+                [class.calendar-picker__grid-day--today]="day.isToday"
                 [attr.aria-selected]="day.isSelected"
                 [attr.aria-disabled]="true"
                 [attr.aria-current]="day.isToday"
@@ -77,13 +87,13 @@
               <button
                 #dayButton
                 type="button"
-                class="calendar-picker__day"
+                class="calendar-picker__grid-day"
                 role="gridcell"
                 [attr.tabindex]="
                   day.isSelected || (!hasSelectedDays() && day.isToday) ? 0 : -1
                 "
-                [class.calendar-picker__day--selected]="day.isSelected"
-                [class.calendar-picker__day--today]="day.isToday"
+                [class.calendar-picker__grid-day--selected]="day.isSelected"
+                [class.calendar-picker__grid-day--today]="day.isToday"
                 [attr.aria-selected]="day.isSelected"
                 [attr.aria-disabled]="day.isDisabled"
                 [attr.aria-current]="day.isToday"
@@ -101,45 +111,50 @@
     </div>
   } @else if (viewMode() === VIEW_MODE.MONTHS) {
     <div
-      class="calendar-picker__months"
+      class="calendar-picker__view calendar-picker__view--months"
       cdkTrapFocus
       [cdkTrapFocusAutoCapture]="true"
       (keydown.escape)="setDefaultView()"
     >
       <div class="calendar-picker__header">
-        <span class="calendar-picker__header__title">
-          {{ "CALENDAR.MONTH" | translate }}
+        <span class="calendar-picker__title">
+          {{ _translations.month }}
         </span>
       </div>
-      <div
-        class="calendar-picker__content calendar-picker__months__content"
-        role="grid"
-        [attr.aria-label]="'APP.MONTHS' | translate"
-      >
-        @for (month of allMonths; track $index) {
-          <button
-            #monthButton
-            class="calendar-picker__month"
-            type="button"
-            role="gridcell"
-            [attr.tabindex]="currentMonthNumber() === $index ? 0 : -1"
-            [class.calendar-picker__month--selected]="
-              currentMonthNumber() === $index
-            "
-            [title]="'CALENDAR.MONTH.' + $index | translate"
-            [attr.aria-selected]="currentMonthNumber() === $index"
-            [attr.aria-label]="'CALENDAR.MONTH.' + $index | translate"
-            (click)="selectMonth($index, $event)"
-          >
-            {{ "CALENDAR.MONTH." + $index | translate }}
-          </button>
-        }
+
+      <div class="calendar-picker__content">
+        <div
+          class="calendar-picker__grid calendar-picker__grid--months"
+          role="grid"
+          [title]="_translations.monthAria"
+          [attr.aria-label]="_translations.monthAria"
+        >
+          @for (month of allMonths; track $index) {
+            <button
+              #monthButton
+              class="calendar-picker__grid-month"
+              type="button"
+              role="gridcell"
+              [attr.tabindex]="currentMonthNumber() === $index ? 0 : -1"
+              [class.calendar-picker__grid-month--selected]="
+                currentMonthNumber() === $index
+              "
+              [title]="_translations.shortMonths[$index]"
+              [attr.aria-selected]="currentMonthNumber() === $index"
+              [attr.aria-label]="_translations.shortMonths[$index]"
+              (click)="selectMonth($index, $event)"
+            >
+              {{ _translations.shortMonths[$index] }}
+            </button>
+          }
+        </div>
+
+        <ng-container *ngTemplateOutlet="backButton"></ng-container>
       </div>
-      <ng-container *ngTemplateOutlet="backButton"></ng-container>
     </div>
   } @else if (viewMode() === VIEW_MODE.YEARS) {
     <div
-      class="calendar-picker__years"
+      class="calendar-picker__view calendar-picker__view--years"
       cdkTrapFocus
       [cdkTrapFocusAutoCapture]="true"
       (keydown.escape)="setDefaultView()"
@@ -147,61 +162,70 @@
       <div class="calendar-picker__header">
         <button
           type="button"
-          class="calendar-picker__header__btn"
+          class="calendar-picker__header-btn"
           (click)="loadPastYears($event)"
-          [title]="'CALENDAR.PREV_YEAR' | translate"
-          [attr.aria-label]="'CALENDAR.PREV_YEAR' | translate"
+          [title]="_translations.prevMonth"
+          [attr.aria-label]="_translations.prevMonth"
         >
           <i class="ri-arrow-left-s-line"></i>
         </button>
-        <span class="calendar-picker__header__title">
-          {{ "CALENDAR.YEAR" | translate }}
+
+        <span class="calendar-picker__title">
+          {{ _translations.year }}
         </span>
+
         <button
           type="button"
-          class="calendar-picker__header__btn"
+          class="calendar-picker__header-btn"
           (click)="loadFutureYears($event)"
-          [title]="'CALENDAR.NEXT_YEAR' | translate"
-          [attr.aria-label]="'CALENDAR.NEXT_YEAR' | translate"
+          [title]="_translations.nextMonth"
+          [attr.aria-label]="_translations.nextMonth"
         >
           <i class="ri-arrow-right-s-line"></i>
         </button>
       </div>
-      <div
-        class="calendar-picker__content calendar-picker__years__content"
-        role="grid"
-      >
-        @for (year of allYears; track year) {
-          <button
-            #yearButton
-            type="button"
-            role="gridcell"
-            class="calendar-picker__year"
-            [attr.tabindex]="currentYear() === year ? 0 : -1"
-            [class.calendar-picker__year--selected]="currentYear() === year"
-            (click)="selectYear(year, $event)"
-            [title]="year"
-            [attr.aria-selected]="currentYear() === year"
-            [attr.aria-label]="year"
-          >
-            {{ year }}
-          </button>
-        }
+
+      <div class="calendar-picker__content">
+        <div
+          class="calendar-picker__grid calendar-picker__grid--years"
+          role="grid"
+          [title]="_translations.yearsAria"
+          [attr.aria-label]="_translations.yearsAria"
+        >
+          @for (year of allYears; track year) {
+            <button
+              #yearButton
+              type="button"
+              role="gridcell"
+              class="calendar-picker__grid-year"
+              [attr.tabindex]="currentYear() === year ? 0 : -1"
+              [class.calendar-picker__grid-year--selected]="
+                currentYear() === year
+              "
+              (click)="selectYear(year, $event)"
+              [title]="year"
+              [attr.aria-selected]="currentYear() === year"
+              [attr.aria-label]="year"
+            >
+              {{ year }}
+            </button>
+          }
+        </div>
+
+        <ng-container *ngTemplateOutlet="backButton"></ng-container>
       </div>
-      <ng-container *ngTemplateOutlet="backButton"></ng-container>
     </div>
   }
 </div>
 
-<!-- TEMPLATE DEL BOTÓN VOLVER PARA LA VISTA DE MES Y AÑO -->
 <ng-template #backButton>
   <div class="calendar-picker__back">
     <button
       type="button"
-      class="calendar-picker__back__btn"
+      class="calendar-picker__back-btn"
       (click)="backToDefaultView($event)"
-      [title]="'APP.BACK' | translate"
-      [attr.aria-label]="'APP.BACK' | translate"
+      [title]="_translations.back"
+      [attr.aria-label]="_translations.back"
     >
       <i class="ri-calendar-close-fill"></i>
     </button>

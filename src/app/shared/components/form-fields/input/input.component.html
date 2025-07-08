@@ -4,25 +4,23 @@
   [class.neo-input--disabled]="_disabled()"
 >
   @if (label) {
-    <label
-      [attr.for]="_id()"
-      [attr.id]="_labelId()"
-      class="neo-input__label"
-      [class.neo-input__label--required]="required"
-    >
+    <label [attr.for]="_id()" [attr.id]="_labelId()" class="neo-input__label">
       <span [innerHtml]="label"></span>
+      @if (required) {
+        <abbr aria-hidden="true">*</abbr>
+      }
     </label>
   }
   <div class="neo-input__wrapper">
     <input
       #input="ngModel"
-      class="neo-input__wrapper__field size-{{ inputSize }}"
-      [ngClass]="{
-        'neo-input__wrapper__field--has-error':
-          hasErrors() ||
-          (input?.errors && (input?.dirty || input?.touched)) ||
-          false
-      }"
+      class="
+        neo-input__wrapper__field 
+        neo-input__wrapper__field--{{ inputSize }}
+      "
+      [class.neo-input__wrapper__field--has-error]="
+        hasErrors() || (input?.errors && (input?.dirty || input?.touched))
+      "
       [(ngModel)]="value"
       (input)="onInput(input.value)"
       (blur)="onBlur()"

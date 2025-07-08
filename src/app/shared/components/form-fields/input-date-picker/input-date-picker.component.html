@@ -8,9 +8,11 @@
       class="neo-input-date-picker__label"
       [attr.for]="_id()"
       [attr.id]="_labelId()"
-      [class.neo-input-date-picker__label--required]="required"
     >
       <span [innerHtml]="label"></span>
+      @if (required) {
+        <abbr aria-hidden="true">*</abbr>
+      }
     </label>
   }
   <div class="neo-input-date-picker__wrapper">
@@ -21,17 +23,17 @@
       (keydown.space)="toogleCalendar($event)"
       cdkOverlayOrigin
       #datePicker="cdkOverlayOrigin"
-      #datePickerInput="ngModel"
-      class="neo-input-date-picker__wrapper__field size-{{ inputSize }}"
+      #dpInput="ngModel"
+      class="
+        neo-input-date-picker__wrapper__field 
+        neo-input-date-picker__wrapper__field--{{ inputSize }}
+      "
       [class.neo-input-date-picker__wrapper__field--has-error]="
-        hasErrors() ||
-        (datePickerInput?.errors &&
-          (datePickerInput?.dirty || datePickerInput?.touched)) ||
-        false
+        hasErrors() || (dpInput?.errors && (dpInput?.dirty || dpInput?.touched))
       "
       [value]="_value()"
       [(ngModel)]="value"
-      (input)="onInput(datePickerInput.value)"
+      (input)="onInput(dpInput.value)"
       (blur)="onBlur()"
       [attr.id]="_id()"
       [attr.aria-disabled]="_disabled()"
@@ -52,7 +54,7 @@
     />
     @if (showIconCalendar) {
       <div
-        class="neo-input-date-picker__wrapper__icon-calendar"
+        class="neo-input-date-picker__wrapper__icon"
         [class.disabled]="_disabled()"
         [tabindex]="!_disabled() ? 0 : -1"
         (click)="toogleCalendar($event)"

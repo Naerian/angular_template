@@ -1,42 +1,50 @@
-@import 'base';
+@import "config";
+@import "mixins";
 
-.neo-main-menu {
-  bottom: 0;
-  float: none;
+:host.neo-side-menu {
+  z-index: 99;
+  display: block;
+}
+
+.neo-side-menu__nav {
   position: fixed;
+  padding-top: 50px;
   top: 0;
   height: 100vh;
+  width: 250px;
+  background-color: $color-gray-900;
+  color: $color-white;
+  box-shadow: $box-shadow-md;
   overflow-y: auto;
-  z-index: 1002;
-  transition: left 0.3s;
-  width: 255px;
-  margin-top: 55px;
-  padding-bottom: 55px;
-  background-color: var(--bg-menu-color);
-  box-shadow: var(--shadow-box-sidebar-menu);
+  display: flex;
+  flex-direction: column;
+}
 
-  &--right {
-    right: 0;
-    left: auto;
-  }
+:host.neo-side-menu--left .neo-side-menu__nav {
+  left: 0;
+  right: auto;
+}
 
-  &--left {
-    right: auto;
-    left: 0;
-  }
+:host.neo-side-menu--right .neo-side-menu__nav {
+  left: auto;
+  right: 0;
+}
 
-  &__wrapper {
-    padding: 10px;
-  }
+.neo-side-menu__nav__wrapper {
+  padding: $spacing-m;
+  flex-grow: 1;
+}
 
-  &__backdrop {
-    background: #0000002b;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: fixed;
-    display: block;
-    z-index: 50;
-  }
+.neo-side-menu__nav__item {
+  display: block;
+}
+
+.neo-side-menu__backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($color-black, 0.4);
+  z-index: -1;
 }

@@ -1,4 +1,8 @@
-@import 'base';
+// src/app/shared/components/form-fields/input/input.component.scss
+
+@import "config"; // Importa tus variables globales (SCSS)
+@import "mixins"; // Importa tus mixins globales
+@import "functions"; // Importa tus funciones globales
 
 .neo-input {
   position: relative;
@@ -8,26 +12,43 @@
     pointer-events: none;
   }
 
-  &__label {
-    &--required {
-      &::after {
-        content: '*';
-        color: var(--danger-color);
-      }
-    }
-  }
-
   &__wrapper {
     position: relative;
 
     &__field {
       width: 100%;
-      border-radius: 5px;
+      border-radius: $border-radius-md;
       box-sizing: border-box;
-      padding: 10px;
+      padding: $spacing-s;
+      background-color: var(--bg-field-color);
+      border: $border-width-base solid var(--border-field-color);
+
+      &:focus,
+      &:active {
+        @include outline-focus;
+      }
+
+      &--xs {
+        @include component-size(xs);
+      }
+      &--s {
+        @include component-size(s);
+      }
+      &--xm {
+        @include component-size(xm);
+      }
+      &--m {
+        @include component-size(m);
+      }
+      &--l {
+        @include component-size(l);
+      }
+      &--xl {
+        @include component-size(xl);
+      }
 
       &--has-error {
-        border: 1px solid var(--danger-color);
+        border: $border-width-xs solid var(--color-danger);
       }
 
       &[disabled],

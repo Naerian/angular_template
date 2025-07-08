@@ -1,333 +1,247 @@
-// calendar.component.scss
-@import 'base'; // Asegúrate de que 'base' define las variables como --text-color, etc.
+// src/app/shared/components/calendar/calendar.component.scss
 
-// Mixin para centrar contenido usando flexbox en fila
-@mixin flex-center-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: center;
-  align-content: center; // Para cuando hay varias líneas
-}
-
-// Mixin para estilos base de botones (o elementos que se comportan como tal)
-@mixin button-base {
-  border: none;
-  border-radius: 0.25rem;
-  background-color: transparent; // Por defecto transparente, puede ser sobrescrito
-  color: var(--text-color); // Color de texto por defecto
-  cursor: pointer;
-  outline: none; // Elimina el contorno de enfoque por defecto
-}
-
-// Mixin para estados de hover/focus/active comunes de botones principales
-@mixin button-primary-states {
-  background-color: var(--hover-btn-primary-color);
-  color: var(--text-btn-primary-color); // Se asume que el texto también cambia con el fondo
-}
-
-// Mixin para estilos de elementos seleccionados (fondo/color principal)
-@mixin selected-style {
-  background-color: var(--bg-btn-primary-color);
-  color: var(--text-btn-primary-color);
-  border-radius: 0.25rem;
-}
+@import "config";
+@import "mixins";
+@import "functions";
 
 .calendar-picker {
-  width: 285px;
-  height: 325px;
-  border-radius: 0.25rem;
-  min-height: 265px;
-  background-color: var(--bg-field-color);
-  color: var(--text-color);
-  box-shadow: var(--shadow-box);
-  border: 0.5px solid var(--border-field-color);
+  box-shadow: $box-shadow-md;
+  border-radius: $border-radius-md;
+  background-color: var(--color-white);
+  border: $border-width-base solid var(--border-color-base);
+  overflow: hidden;
+  width: 310px;
+  height: 375px;
+  font-family: $font-family-base;
+  font-size: map-get($component-font-sizes, m);
+  color: var(--color-text);
 
   &__header {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
     justify-content: space-between;
-    margin-bottom: 5px;
-    padding: 10px;
-    height: 50px;
-    border-top-left-radius: 0.25rem;
-    border-top-right-radius: 0.25rem;
-    background-color: var(--bg-btn-primary-color);
-    font-size: 0.8rem;
+    align-items: center;
+    padding: $spacing-xs $spacing-s;
+    border-bottom: $border-width-base solid var(--border-color-base);
+  }
 
-    // Estilos comunes para botones y títulos dentro del header
-    &__btn,
-    &__title {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-btn-primary-color);
+  &__header-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-gray-600);
+    font-size: map-get($component-font-sizes, l);
+    cursor: pointer;
+    padding: $spacing-xxs;
+    border-radius: $border-radius-md;
+    height: #{map-get($component-heights, m)};
+    aspect-ratio: 1 / 1;
+    @include transition(all 0.2s ease-in-out);
+    @include flex-center;
+
+    &:hover {
+      background-color: var(--color-gray-100);
+      color: var(--color-accent);
     }
-
-    &__btn {
-      @include flex-center-row;
-      @include button-base;
-      width: 30px;
-      height: 30px;
-      padding: 5px 10px;
-      background-color: var(--bg-btn-primary-color);
-      color: var(--text-btn-primary-color);
-
-      i::before {
-        color: var(--text-btn-primary-color);
-      }
-
-      &:hover,
-      &:focus,
-      &:active {
-        @include button-primary-states;
-      }
-    }
-
-    &__actions {
-      @include flex-center-row;
-      color: var(--text-btn-primary-color);
-
-      &--selector {
-        @include flex-center-row;
-        @include button-base;
-        padding: 5px 10px;
-        background-color: var(--bg-btn-primary-color);
-        color: var(--text-btn-primary-color);
-
-        &:hover,
-        &:focus,
-        &:active {
-          @include button-primary-states;
-        }
-
-        &:last-child {
-          margin-left: 10px;
-        }
-
-        i::before {
-          color: var(--text-btn-primary-color);
-        }
-      }
-
-      .arrow-dropdown {
-        width: 10px;
-        height: 10px;
-        font-size: 0.65rem;
-        right: 10px;
-        margin-left: 5px;
-      }
+    &:focus {
+      @include outline-focus;
     }
   }
 
-  &__back {
-    @include flex-center-row;
-    width: 100%;
-    padding: 5px;
+  &__selectors {
+    display: flex;
+    gap: $spacing-xs;
+  }
 
-    &__btn {
-      @include flex-center-row;
-      @include button-base;
-      font-size: 1.3rem;
-      width: 40px;
-      height: 40px;
-      background-color: transparent;
+  &__selector {
+    background: transparent;
+    border: none;
+    font-size: map-get($component-font-sizes, m);
+    font-weight: $font-weight-semibold;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: $spacing-xxs $spacing-s;
+    border-radius: $border-radius-md;
+    height: #{map-get($component-heights, m)};
+    @include transition(all 0.2s ease-in-out);
+    @include flex-center;
 
-      &:hover,
-      &:focus,
-      &:active {
-        color: var(--text-color);
-        background-color: var(--background-color);
-        border-radius: 0.25rem;
+    .arrow-dropdown {
+      margin-left: $spacing-xxs;
+      font-size: map-get($component-font-sizes, s);
+      color: var(--color-gray-500);
+    }
+
+    &:hover {
+      background-color: var(--color-gray-100);
+      color: var(--color-accent);
+      .arrow-dropdown {
+        color: var(--color-accent);
       }
     }
+    &:focus {
+      @include outline-focus;
+    }
+  }
+
+  &__title {
+    font-size: map-get($component-font-sizes, l);
+    font-weight: $font-weight-bold;
+    color: var(--color-text);
+    padding: $spacing-xxs $spacing-s;
   }
 
   &__content {
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
+    padding: $spacing-xxs $spacing-s;
   }
 
-  /* HEADER DE DÍAS DE LA SEMANA */
   &__weekdays {
     display: grid;
-    width: 100%;
-    grid-template-columns: repeat(7, 35px);
-    grid-gap: 5px;
-    border-radius: 0.25rem;
-    justify-items: center;
-    align-items: center;
-
-    span {
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
+    grid-template-columns: repeat(7, #{map-get($component-heights, m)});
+    gap: $spacing-xxs;
+    border-bottom: $border-width-base solid var(--border-color-base);
+    font-size: map-get($component-font-sizes, s);
+    font-weight: $font-weight-bold;
+    color: var(--color-gray-600);
+    padding-bottom: $spacing-xs;
+    padding-top: $spacing-xxs;
+    text-align: center;
   }
 
-  /* DÍAS DEL MES */
-  &__days {
+  &__weekday {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: map-get($component-heights, xm);
+  }
+
+  &__grid {
     display: grid;
-    width: 100%;
-    grid-template-columns: repeat(7, 35px);
-    grid-gap: 5px;
-    border-radius: 0.25rem;
-    justify-items: center;
-    align-items: center;
+    gap: $spacing-xxs;
+    padding: $spacing-xs;
+    text-align: center;
+    min-height: calc(6 * (#{map-get($component-heights, m)} + #{$spacing-xxs}));
+    align-content: center;
+    justify-content: center;
+
+    &--days {
+      grid-template-columns: repeat(7, #{map-get($component-heights, m)});
+    }
+    &--months {
+      gap: $spacing-xs;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    &--years {
+      gap: $spacing-xs;
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 
-  /* DÍA */
-  &__day,
-  &__no-day {
-    @include flex-center-row;
-    @include button-base;
-    font-size: 0.8rem;
-    width: 35px;
-    height: 35px;
+  &__grid-day,
+  &__grid-month,
+  &__grid-year {
+    width: 100%;
+    min-width: 38px;
+    min-height: 38px;
     background-color: transparent;
-    color: var(--text-color);
+    border: none;
+    font-size: map-get($component-font-sizes, m);
+    font-weight: $font-weight-regular;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: $spacing-xxs;
+    border-radius: $border-radius-md;
+    @include transition(
+      background-color 0.2s ease-in-out,
+      color 0.2s ease-in-out,
+      border-color 0.2s ease-in-out,
+      box-shadow 0.2s ease
+    );
+    @include flex-center;
 
-    &:hover,
-    &:focus,
-    &:active {
-      @include selected-style;
-      outline: none;
+    &:hover:not(&--disabled):not(&--selected),
+    &:hover:not(&--inactive):not(&--selected) {
+      background-color: var(--color-gray-100);
     }
 
-    &:focus:not(&--selected) {
-      filter: opacity(0.7);
-    }
-
-    // Estilos para días deshabilitados o fuera del mes actual (no interactivos)
-    &--disabled,
-    &--no_current_month {
-      cursor: default;
-
-      &:hover,
-      &:focus,
-      &:active {
-        background: none;
-        border: none;
-        color: inherit;
-        outline: none;
-      }
-    }
-
-    &--no_current_month {
-      opacity: 0.5;
-    }
-
-    // Estilos específicos para días deshabilitados
-    &--disabled {
-      text-decoration: line-through;
-      color: var(--danger-color);
-
-      &:hover,
-      &:focus,
-      &:active {
-        color: var(--danger-color);
-      }
-    }
-
-    // Estilos para el día actual
     &--today {
-      color: var(--primary-color);
-      font-weight: 700;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      font-weight: $font-weight-bold;
+      background-color: var(--color-accent-tint-95);
+    }
 
-      &:hover,
-      &:focus,
-      &:active {
-        @include selected-style;
-        outline: none;
+    &--selected,
+    &:focus {
+      background-color: var(--color-accent);
+      color: var(--color-white);
+      font-weight: $font-weight-bold;
+    }
+
+    &:focus {
+      @include outline-focus;
+    }
+
+    &--disabled,
+    &--inactive {
+      color: var(--color-gray-500);
+      cursor: default;
+      opacity: 0.6;
+      background-color: transparent;
+      &:hover {
+        background-color: transparent;
+      }
+    }
+    &--disabled {
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    &--inactive.calendar-picker__grid-day--selected {
+      background-color: var(--color-accent-tint-65);
+      color: var(--color-accent);
+      &:hover {
+        background-color: var(--color-accent-tint-65);
+        color: var(--color-accent);
       }
     }
 
-    // Estilos para días seleccionados
-    &--selected {
-      @include selected-style;
-    }
-
-    &--disabled:is(&--selected) {
-      @include selected-style;
-      background-color: var(--danger-color);
-
-      &:hover,
-      &:focus,
-      &:active {
-        @include selected-style;
-        background-color: var(--danger-color);
-        outline: none;
-      }
-    }
-
-    &--no_current_month:is(&--selected) {
-
-      &:hover,
-      &:focus,
-      &:active {
-        @include selected-style;
-        outline: none;
+    &--disabled.calendar-picker__grid-day--selected {
+      background-color: var(--color-danger-tint-50);
+      color: var(--color-white);
+      &:hover {
+        background-color: var(--color-danger-tint-50);
+        color: var(--color-white);
       }
     }
   }
 
-  /* CONTENEDOR MESES */
-  &__months__content {
-    display: grid;
-    width: 100%;
-    grid-gap: 10px;
-    grid-template-columns: repeat(3, 80px);
-    border-radius: 0.25rem;
-    justify-items: center;
-    align-items: center;
+  &__grid-month,
+  &__grid-year {
+    height: map-get($component-heights, m);
   }
 
-  /* CONTENEDOR AÑOS */
-  &__years__content {
-    display: grid;
-    width: 100%;
-    grid-gap: 10px;
-    grid-template-columns: repeat(4, 60px);
-    border-radius: 0.25rem;
-    justify-items: center;
-    align-items: center;
-  }
+  &__back {
+    display: flex;
+    justify-content: center;
+    padding: $spacing-s $spacing-m;
+    border-top: $border-width-base solid var(--border-color-base);
 
-  /* BOTONES MESES Y AÑOS */
-  &__month,
-  &__year {
-    @include flex-center-row;
-    @include button-base;
-    height: 30px;
-    letter-spacing: normal;
-    width: 100%;
-    background-color: transparent;
-
-    &:hover,
-    &:focus,
-    &:active {
-      @include selected-style;
-      outline: none;
-    }
-
-    &:focus:not(&--selected) {
-      filter: opacity(0.7);
-    }
-
-    &--selected {
-      @include selected-style;
-    }
-  }
-
-  /* AJUSTES ESPECÍFICOS */
-  &__months {
-    .calendar-picker__header {
-      justify-content: center;
+    .calendar-picker__back-btn {
+      @extend .calendar-picker__header-btn;
+      font-size: map-get($component-font-sizes, m);
+      color: var(--color-text);
+      font-weight: $font-weight-medium;
+      padding: $spacing-xs $spacing-m;
+      i {
+        margin-right: $spacing-xxs;
+        font-size: map-get($component-font-sizes, m);
+        color: var(--color-gray-600);
+      }
+      &:hover {
+        color: var(--color-accent);
+        i {
+          color: var(--color-accent);
+        }
+      }
     }
   }
 }

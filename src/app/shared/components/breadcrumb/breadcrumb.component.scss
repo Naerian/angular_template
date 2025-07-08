@@ -1,59 +1,71 @@
-@import 'base';
+// src/app/shared/components/breadcrumb/breadcrumb.component.scss
+
+@import "config";
+@import "mixins";
+@import "functions";
 
 .breadcrumb {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
-  font-size: 0.80rem;
-  font-weight: 400;
-  line-height: 0.80rem;
-  padding: 10px 15px;
-  border-radius: 0.2rem;
-  min-height: 35px;
-  background-color: var(--bg-breadcrumb-color);
-  border: 1px solid var(--border-breadcrumb-color);
-  color: var(--text-color) !important;
+  gap: $spacing-xs;
+  font-size: $font-size-base * 0.875;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-base;
+  border-radius: $border-radius-md;
+  min-height: map-get($component-heights, s);
+  box-shadow: inset 0 1px 2px rgba(var(-color-black), 0.05);
 
   &__separator {
-    &::before {
-      color: var(--text-color) !important;
-    }
-  }
-
-  @media (max-width: 576px) {
-    display: none;
-  }
-
-  @media (max-width: 768px) {
-    gap: 5px;
-    font-size: 0.70rem;
-  }
-
-  &__separator {
-    font-size: 1rem;
-
-    &::before {
-      color: var(--text-color) !important;
-    }
+    font-size: $font-size-base;
+    display: inline-flex;
+    align-items: center;
+    color: var(--separator-breadcrumb-color);
+    margin: 0 $spacing-xxs;
+    margin-top: $spacing-xxs;
   }
 
   &__item {
     cursor: pointer;
     text-decoration: none;
+    color: var(--text-breadcrumb-color);
+    @include transition(all 0.2s ease-in-out);
+    padding: $spacing-xxs $spacing-xs;
+    border-radius: $border-radius-md;
+    display: inline-flex;
+
+    &--active {
+      font-weight: $font-weight-semibold;
+      color: var(--active-breadcrumb-text-color);
+      background-color: var(--active-breadcrumb-bg);
+      cursor: default;
+      text-decoration: none;
+    }
+
+    &:hover:not(&--active),
+    &:focus:not(&--active) {
+      outline: none;
+      color: var(--text-breadcrumb-color-hover);
+      background-color: var(--bg-color-hover);
+      box-shadow: $box-shadow-sm;
+    }
 
     @media (max-width: 768px) {
-      max-width: 100px;
+      max-width: 80px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+  }
 
-    &:hover,
-    &:focus {
-      outline: 0;
-      text-decoration-line: underline;
-    }
+  @media (max-width: 768px) {
+    gap: calc($spacing-xs / 2);
+    font-size: $font-size-base * 0.8;
+    padding: $spacing-xs;
+  }
+
+  @media (max-width: 576px) {
+    display: none;
   }
 }

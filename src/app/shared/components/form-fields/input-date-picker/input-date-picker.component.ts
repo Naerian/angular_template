@@ -189,6 +189,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    */
   @HostListener('keydown', ['$event'])
   _onKeydownHandler(event: KeyboardEvent) {
+    if (!this.isDatePickerOpened) return;
     const keyCode = event.key;
     if (keyCode === 'Escape') this.closeCalendar();
   }
@@ -198,6 +199,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    */
   @HostListener('document:click', ['$event'])
   onOutsideClick(event: MouseEvent) {
+    if (!this.isDatePickerOpened) return;
     const clickedInside = this.calendarOverlayRef?.nativeElement.contains(
       event.target as Node,
     );
@@ -223,7 +225,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * para cerrar el calendario si otro componente de tipo InputDatePicker se abre.
    */
   datePickerManager() {
-    // 📡 Nos suscribimos a las notificaciones del servicio
+    // Nos suscribimos a las notificaciones del servicio
     this._datePickerManagerService.datePickerOpened$
       .pipe(takeUntil(this.destroy$))
       .subscribe((openedComponent) => {

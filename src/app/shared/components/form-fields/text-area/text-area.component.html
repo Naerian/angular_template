@@ -1,26 +1,22 @@
 <div class="neo-textarea" [title]="label || ''">
   @if (label) {
-    <label
-      [for]="_id()"
-      [attr.id]="_labelId()"
-      class="neo-textarea__label"
-      [class.neo-textarea__label--required]="required"
-    >
+    <label [for]="_id()" [attr.id]="_labelId()" class="neo-textarea__label">
       <span [innerHtml]="label"></span>
+      @if (required) {
+        <abbr aria-hidden="true">*</abbr>
+      }
     </label>
   }
   <div class="neo-textarea__wrapper">
     <textarea
-      #textArea="ngModel"
+      #txArea="ngModel"
       class="neo-textarea__wrapper__field size-{{ inputSize }}"
       [class.neo-textarea__wrapper__field--has-error]="
-        hasErrors() ||
-        (textArea?.errors && (textArea?.dirty || textArea?.touched)) ||
-        false
+        hasErrors() || (txArea?.errors && (txArea?.dirty || txArea?.touched))
       "
       [ngClass]="{ 'no-resize': !resize }"
       [(ngModel)]="_value"
-      (input)="onInput(textArea.value)"
+      (input)="onInput(txArea.value)"
       (blur)="onBlur()"
       [attr.id]="_id()"
       [attr.name]="name"

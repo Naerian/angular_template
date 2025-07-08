@@ -1,10 +1,15 @@
 import { Component, Input, Signal, computed, signal } from '@angular/core';
-import { DEFAULT_MENU_POSITION, MenuEntity, SideMenuPosition } from './model/menu.entity';
+import {
+  DEFAULT_MENU_POSITION,
+  MenuEntity,
+  SideMenuPosition,
+} from './model/menu.entity';
 import { MenuService } from './services/menu.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { FADE_IN_OUT_MENU } from './animations/fade-in-out.animation';
 import { SLIDE_BY_POSITION } from './animations/slide-by-position.animation';
+import { FADE_IN_OUT } from '@shared/animations/fade-in-out.animation';
 
 /**
  * @name
@@ -18,13 +23,16 @@ import { SLIDE_BY_POSITION } from './animations/slide-by-position.animation';
   selector: 'neo-side-menu',
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss'],
-  animations: [
-    FADE_IN_OUT_MENU,
-    SLIDE_BY_POSITION
-  ]
+  host: {
+    class: 'neo-side-menu',
+    '[class.neo-side-menu--left]': 'position === LEFT_MENU_POSITION',
+    '[class.neo-side-menu--right]': 'position === RIGHT_MENU_POSITION',
+    '[class.neo-side-menu--opened]': 'isMenuOpened()',
+    '[class.neo-side-menu--closed]': '!isMenuOpened()',
+  },
+  animations: [FADE_IN_OUT, SLIDE_BY_POSITION],
 })
 export class SideMenuComponent {
-
   LEFT_MENU_POSITION = SideMenuPosition.LEFT;
   RIGHT_MENU_POSITION = SideMenuPosition.RIGHT;
 
@@ -43,9 +51,11 @@ export class SideMenuComponent {
 
   constructor(
     private readonly _menuService: MenuService,
-    private readonly router: Router
+    private readonly router: Router,
   ) {
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => this.closeSideMenu());
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => this.closeSideMenu());
   }
 
   ngOnInit() {
@@ -89,5 +99,4 @@ export class SideMenuComponent {
       }
     }
   }
-
 }

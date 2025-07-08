@@ -23,13 +23,3 @@ export interface CalendarDay {
   isInRange: boolean; // Si está dentro del rango seleccionado
   isDisabled?: boolean; // Si está deshabilitado
 }
-
-export const WEEK_DAYS: string[] = [
-  'CALENDAR.SHORT.MONDAY',
-  'CALENDAR.SHORT.TUESDAY',
-  'CALENDAR.SHORT.WEDNESDAY',
-  'CALENDAR.SHORT.THURSDAY',
-  'CALENDAR.SHORT.FRIDAY',
-  'CALENDAR.SHORT.SATURDAY',
-  'CALENDAR.SHORT.SUNDAY',
-];

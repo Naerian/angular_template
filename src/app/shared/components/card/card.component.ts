@@ -1,5 +1,5 @@
 import { Component, ContentChild, HostBinding, Input, WritableSignal, signal, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { ButtonSize } from '../button/models/button.entity';
+import { ButtonSize } from '../button/models/button.model';
 import { CardHeaderDirective } from './card-header/card-header.directive';
 import { CardFooterDirective } from './card-footer/card-footer.directive';
 

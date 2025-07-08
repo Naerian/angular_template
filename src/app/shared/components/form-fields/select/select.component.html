@@ -5,15 +5,20 @@
       [for]="_id()"
       [attr.id]="_labelId()"
       class="neo-select__label"
-      [class.neo-select__label--required]="required"
     >
       <span [innerHtml]="label"></span>
+      @if (required) {
+        <abbr aria-hidden="true">*</abbr>
+      }
     </label>
   }
   <div
     #selectField
     #selectDropdown="cdkOverlayOrigin"
-    class="neo-select__field size-{{ inputSize }}"
+    class="
+      neo-select__field 
+      neo-select__field--{{ inputSize }}
+    "
     role="combobox"
     (click)="toggleDropdown($event)"
     (keydown.enter)="toggleDropdown($event)"
@@ -55,14 +60,13 @@
           [innerHTML]="
             getSelectedOptions().length === 1
               ? (getSelectedOptions()[0].getLabelText() | safeHtml)
-              : ('DROPDOWN.MULTIPLE_CHOICES'
-                | translate: { choices: getSelectedOptions().length })
+              : translatedMultipleChoices()
           "
         ></span>
       }
       @if (getSelectedOptions().length === 0) {
         <span class="neo-select__field__value__label">{{
-          placeholder || "DROPDOWN.SELECT_OPTION" | translate
+          placeholder || _translations.selectOption
         }}</span>
       }
     </div>
@@ -94,9 +98,12 @@
         <div class="neo-select__dropdown__search">
           <input
             #searchInput
-            class="neo-select__dropdown__search__input size-{{ inputSize }}"
+            class="
+              neo-select__dropdown__search__input 
+              neo-select__dropdown__search__input--{{ inputSize }}
+            "
             type="text"
-            [placeholder]="placeholderSearch || ('APP.SEARCH' | translate)"
+            [placeholder]="placeholderSearch || _translations.search"
             [attr.id]="'listbox_search_' + _id()"
             [disabled]="isLoading()"
             [attr.aria-disabled]="isLoading()"

@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, HostBinding, Input, Output, ViewChild, ViewEncapsulation, WritableSignal, signal } from '@angular/core';
-import { ButtonColor, ButtonMode, ButtonSize, ButtonType } from './models/button.entity';
+import { ButtonColor, ButtonMode, ButtonSize, ButtonType } from './models/button.model';
 
 /**
  * @name

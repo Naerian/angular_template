@@ -2,14 +2,14 @@
   <a
     class="breadcrumb__item"
     tabindex="0"
-    #routerLink="routerLinkActive"
-    [title]="'APP.HOME' | translate"
+    #routerLinkHome="routerLinkActive"
+    [title]="homeLabel"
     [routerLink]="['/']"
     [routerLinkActiveOptions]="{ exact: true }"
-    [attr.aria-current]="routerLink.isActive ? 'page' : null"
+    [attr.aria-current]="routerLinkHome.isActive ? 'page' : null"
     routerLinkActive="breadcrumb__item--active"
   >
-    {{ "APP.HOME" | translate }}
+    {{ homeLabel }}
   </a>
   @for (breadcrumb of breadcrumbs; track breadcrumb; let isLast = $last) {
     <i class="breadcrumb__separator ri-arrow-right-double-line"></i>
@@ -17,13 +17,13 @@
       class="breadcrumb__item"
       tabindex="0"
       #routerLink="routerLinkActive"
-      [title]="breadcrumb.label | translate"
+      [title]="breadcrumb.label"
       [routerLink]="[breadcrumb.url]"
       [routerLinkActiveOptions]="{ exact: true }"
       [attr.aria-current]="routerLink.isActive ? 'page' : null"
       routerLinkActive="breadcrumb__item--active"
     >
-      {{ breadcrumb.label | translate }}
+      {{ breadcrumb.label }}
     </a>
   }
 </div>

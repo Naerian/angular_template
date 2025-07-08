@@ -1,620 +1,292 @@
-@import 'base';
+// src/app/shared/components/button/button.component.scss
+
+@import "config";
+@import "mixins";
+@import "functions";
+
+// Mixin para aplicar estilos de color a botones
+// Utiliza este mixin para definir los estilos de color de los botones en la aplicación
+@mixin button-color-styles(
+  $bg,
+  $border,
+  $text,
+  $hover-bg,
+  $transparent-text,
+  $icon-solid,
+  $icon-transparent,
+  $hover-bg-transparent
+) {
+  &:not(.neo-btn--transparent):not(.neo-btn--icon),
+  &.neo-btn--icon:not(.neo-btn--transparent) {
+    background-color: $bg;
+    border-color: $border;
+    color: $text;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: $hover-bg;
+    }
+
+    &.neo-btn--icon i::before {
+      color: $icon-solid;
+    }
+  }
+
+  // Botones transparentes (con texto o icono)
+  &.neo-btn--transparent {
+    background-color: transparent;
+    border-color: transparent;
+    color: $transparent-text;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: $hover-bg-transparent;
+    }
+
+    i::before {
+      color: $icon-transparent;
+    }
+  }
+}
 
 :host {
   display: inline-block;
   cursor: pointer;
+  @include transition(opacity 0.2s ease-in-out);
 }
 
 [disabled],
-.disabled {
+.neo-btn--disabled {
   pointer-events: none;
   cursor: default;
+  opacity: 0.6;
+  filter: grayscale(30%);
 }
 
 .neo-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
-  display: flex;
-  border-radius: .25rem;
-  font-weight: normal;
-  font-stretch: normal;
-  font-style: normal;
-  align-items: center;
-  justify-content: center;
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-medium;
+  text-decoration: none;
+  @include transition(all 0.2s ease-in-out);
+  transition: box-shadow 0.2s ease;
 
   &:focus,
   &:active {
-    outline: 0;
+    @include outline-focus;
+  }
+
+  &--xs {
+    @include component-size(xs);
+    font-weight: $font-weight-regular;
+  }
+  &--s {
+    @include component-size(s);
+    font-weight: $font-weight-regular;
+  }
+  &--xm {
+    @include component-size(xm);
+    font-weight: $font-weight-medium;
+  }
+  &--m {
+    @include component-size(m);
+    font-weight: $font-weight-medium;
+  }
+  &--l {
+    @include component-size(l);
+    font-weight: $font-weight-semibold;
+  }
+  &--xl {
+    @include component-size(xl);
+    font-weight: $font-weight-semibold;
   }
 
   &--all-width {
     width: 100%;
   }
 
-  [disabled],
-  &--disabled {
-    pointer-events: none;
-    cursor: default;
-    opacity: 0.7;
-  }
-
   span,
   p,
   div {
-    white-space: nowrap;
     overflow: hidden;
+    white-space: nowrap;
+    display: block;
     text-overflow: ellipsis;
   }
 
   i {
-    font-weight: normal;
+    font-size: $font-size-base;
+    line-height: 1;
+    &:not(:last-child) {
+      margin-right: $spacing-xxs;
+    }
+    &:not(:first-child) {
+      margin-left: $spacing-xxs;
+    }
   }
 
-  &:not(.neo-btn-icon):not(.neo-btn-transparent) {
+  &:not(&--transparent) {
     border-width: 1px;
     border-style: solid;
+    box-shadow: $box-shadow-sm;
+
+    &:hover {
+      box-shadow: $box-shadow-button-hover;
+    }
+
+    &:active {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset;
+    }
   }
 
-  &.neo-btn-xs {
-    padding: 3px 10px;
-    font-size: 0.6rem;
-    font-weight: 500;
-    height: 25px;
+  &--icon {
+    box-shadow: none;
+    width: auto;
+    min-width: unset;
+    padding: 0;
 
-    &.neo-btn-transparent:not(.neo-btn-icon) {
+    i {
+      margin: 0;
+    }
+
+    &.neo-btn--xs {
+      height: map-get($component-heights, xs);
+      width: map-get($component-heights, xs);
       i {
-        font-size: 0.7rem;
+        font-size: map-get($component-font-sizes, xs);
       }
     }
-  }
-
-  &.neo-btn-s {
-    padding: 5px 10px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    height: 28px;
-
-    &.neo-btn-transparent:not(.neo-btn-icon) {
+    &.neo-btn--s {
+      height: map-get($component-heights, s);
+      width: map-get($component-heights, s);
       i {
-        font-size: 0.85rem;
+        font-size: map-get($component-font-sizes, s);
       }
     }
-  }
-
-  &.neo-btn-xm {
-    padding: 10px 15px;
-    font-size: 0.80rem;
-    font-weight: 500;
-    height: 32px;
-  }
-
-  &.neo-btn-m {
-    padding: 10px 15px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    height: 35px;
-
-    &.neo-btn-transparent:not(.neo-btn-icon) {
+    &.neo-btn--xm {
+      height: map-get($component-heights, xm);
+      width: map-get($component-heights, xm);
       i {
-        font-size: 1rem;
+        font-size: map-get($component-font-sizes, xm);
       }
     }
-  }
-
-  &.neo-btn-l {
-    padding: 15px 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    height: 40px;
-
-    &.neo-btn-transparent:not(.neo-btn-icon) {
+    &.neo-btn--m {
+      height: map-get($component-heights, m);
+      width: map-get($component-heights, m);
       i {
-        font-size: 1.10rem;
+        font-size: map-get($component-font-sizes, m);
       }
     }
-  }
-
-  &.neo-btn-xl {
-    padding: 20px 25px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    height: 45px;
-
-    &.neo-btn-transparent:not(.neo-btn-icon) {
+    &.neo-btn--l {
+      height: map-get($component-heights, l);
+      width: map-get($component-heights, l);
       i {
-        font-size: 1.30rem;
+        font-size: map-get($component-font-sizes, l);
+      }
+    }
+    &.neo-btn--xl {
+      height: map-get($component-heights, xl);
+      width: map-get($component-heights, xl);
+      i {
+        font-size: map-get($component-font-sizes, xl);
       }
     }
   }
 
-  &.neo-btn-transparent {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 5px;
-    padding: 0px;
-
-    &:not(.neo-btn-icon) {
-      height: auto;
-
-      &:hover,
-      &:focus,
-      &:active {
-        outline: none !important;
-      }
-    }
+  &--transparent {
+    box-shadow: none;
+    background-color: transparent;
+    border-color: transparent;
 
     &:hover,
-    &:focus,
     &:active {
-
-      span,
-      div,
-      p {
-        text-decoration-line: underline;
-      }
-    }
-  }
-
-  &.neo-btn-none {
-    padding: 0;
-  }
-
-  &.neo-btn-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-    border-radius: .25rem;
-
-    &.neo-btn-xs {
-      font-size: 0.75rem;
-      width: 25px;
-      height: 25px;
-    }
-
-    &.neo-btn-s {
-      font-size: 0.9rem;
-      width: 28px;
-      height: 28px;
-    }
-
-    &.neo-btn-xm {
-      font-size: 1rem;
-      width: 32px;
-      height: 32px;
-    }
-
-    &.neo-btn-m {
-      font-size: 1.25rem;
-      width: 35px;
-      height: 35px;
-    }
-
-    &.neo-btn-l {
-      font-size: 1.35rem;
-      width: 40px;
-      height: 40px;
-    }
-
-    &.neo-btn-xl {
-      font-size: 1.60rem;
-      width: 45px;
-      height: 45px;
-    }
-  }
-
-  &.neo-btn-transparent,
-  &.neo-btn-icon {
-    box-shadow: none;
-    color: var(--text-color);
-    background-color: transparent;
-    border: none;
-  }
-
-  &.neo-btn-secondary,
-  &.neo-btn-primary {
-
-    &.neo-btn-transparent,
-    &.neo-btn-icon {
       box-shadow: none;
-      background-color: transparent;
-      border: none;
-
-      &:hover,
-      &:focus,
-      &:active {
-        background-color: transparent;
-      }
     }
   }
 
-  &.neo-btn-primary {
-
-    &:not(.neo-btn-transparent):not(.neo-btn-icon),
-    &.neo-btn-icon:not(.neo-btn-transparent) {
-      background-color: var(--bg-btn-primary-color);
-      border-color: var(--border-btn-primary-color);
-      box-shadow: var(--shadow-btn);
-      color: var(--text-btn-primary-color);
-
-      &:hover,
-      &:focus,
-      &:active {
-        background-color: var(--hover-btn-primary-color);
-      }
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--text-btn-primary-color);
-        }
-      }
-    }
-
-    &.neo-btn-transparent {
-      color: var(--text-btn-primary-transparent-color);
-
-      &.neo-btn-icon {
-        color: var(--icon-btn-primary-color);
-      }
-
-      &:not(.neo-btn-icon) {
-        i::before {
-          color: var(--icon-btn-primary-transparent-color);
-        }
-      }
-    }
-
-    &.neo-btn-icon {
-
-      i::before {
-        color: var(--icon-btn-primary-color);
-      }
-
-      &.neo-btn-transparent {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-bg-btn-primary-transparent-color);
-        }
-      }
-
-      &:not(.neo-btn-transparent) {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-btn-primary-color);
-        }
-      }
-    }
+  &--primary {
+    @include button-color-styles(
+      var(--bg-btn-primary-color),
+      var(--border-btn-primary-color),
+      var(--text-btn-primary-color),
+      var(--hover-btn-primary-color),
+      var(--text-btn-primary-transparent-color),
+      var(--icon-btn-primary-color),
+      var(--icon-btn-primary-transparent-color),
+      var(--hover-bg-btn-primary-transparent-color)
+    );
   }
 
-  &.neo-btn-secondary {
-
-    &:not(.neo-btn-transparent):not(.neo-btn-icon),
-    &.neo-btn-icon:not(.neo-btn-transparent) {
-      background-color: var(--bg-btn-secondary-color);
-      border-color: var(--border-btn-secondary-color);
-      box-shadow: var(--shadow-btn);
-
-      color: var(--text-btn-secondary-color);
-
-      &:hover,
-      &:focus,
-      &:active {
-        background-color: var(--hover-btn-secondary-color);
-      }
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--text-btn-secondary-color);
-        }
-      }
-    }
-
-    &.neo-btn-transparent {
-
-      color: var(--text-btn-secondary-transparent-color);
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--icon-btn-secondary-color);
-        }
-      }
-
-      &:not(.neo-btn-icon) {
-        i::before {
-          color: var(--icon-btn-secondary-transparent-color);
-        }
-      }
-    }
-
-    &.neo-btn-icon {
-      i::before {
-        color: var(--icon-btn-secondary-color);
-      }
-
-      &.neo-btn-transparent {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-bg-btn-secondary-transparent-color);
-        }
-      }
-
-      &:not(.neo-btn-transparent) {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-btn-secondary-color);
-        }
-      }
-    }
+  &--secondary {
+    @include button-color-styles(
+      var(--bg-btn-secondary-color),
+      var(--border-btn-secondary-color),
+      var(--text-btn-secondary-color),
+      var(--hover-btn-secondary-color),
+      var(--text-btn-secondary-transparent-color),
+      var(--icon-btn-secondary-color),
+      var(--icon-btn-secondary-transparent-color),
+      var(--hover-bg-btn-secondary-transparent-color)
+    );
   }
 
-  &.neo-btn-success {
-
-    &:not(.neo-btn-transparent):not(.neo-btn-icon),
-    &.neo-btn-icon:not(.neo-btn-transparent) {
-      background-color: var(--bg-btn-success-color);
-      border-color: var(--border-btn-success-color);
-      box-shadow: var(--shadow-btn);
-
-      color: var(--text-btn-success-color);
-
-      &:hover,
-      &:focus,
-      &:active {
-        background-color: var(--hover-btn-success-color);
-      }
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--text-btn-success-color);
-        }
-      }
-    }
-
-    &.neo-btn-transparent {
-
-      color: var(--text-btn-success-transparent-color);
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--icon-btn-success-color);
-        }
-      }
-
-      &:not(.neo-btn-icon) {
-        i::before {
-          color: var(--icon-btn-success-transparent-color);
-        }
-      }
-    }
-
-    &.neo-btn-icon {
-      i::before {
-        color: var(--icon-btn-success-color);
-      }
-
-      &.neo-btn-transparent {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-bg-btn-success-transparent-color);
-        }
-      }
-
-      &:not(.neo-btn-transparent) {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-btn-success-color);
-        }
-      }
-    }
+  &--success {
+    @include button-color-styles(
+      var(--bg-btn-success-color),
+      var(--border-btn-success-color),
+      var(--text-btn-success-color),
+      var(--hover-btn-success-color),
+      var(--text-btn-success-transparent-color),
+      var(--icon-btn-success-color),
+      var(--icon-btn-success-transparent-color),
+      var(--hover-bg-btn-success-transparent-color)
+    );
   }
 
-  &.neo-btn-info {
-
-    &:not(.neo-btn-transparent):not(.neo-btn-icon),
-    &.neo-btn-icon:not(.neo-btn-transparent) {
-      background-color: var(--bg-btn-info-color);
-      border-color: var(--border-btn-info-color);
-      box-shadow: var(--shadow-btn);
-
-      color: var(--text-btn-info-color);
-
-      &:hover,
-      &:focus,
-      &:active {
-        background-color: var(--hover-btn-info-color);
-      }
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--text-btn-info-color);
-        }
-      }
-    }
-
-    &.neo-btn-transparent {
-
-      color: var(--text-btn-info-transparent-color);
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--icon-btn-info-color);
-        }
-      }
-
-      &:not(.neo-btn-icon) {
-        i::before {
-          color: var(--icon-btn-info-transparent-color);
-        }
-      }
-    }
-
-    &.neo-btn-icon {
-      i::before {
-        color: var(--icon-btn-info-color);
-      }
-
-      &.neo-btn-transparent {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-bg-btn-info-transparent-color);
-        }
-      }
-
-      &:not(.neo-btn-transparent) {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-btn-info-color);
-        }
-      }
-    }
+  &--info {
+    @include button-color-styles(
+      var(--bg-btn-info-color),
+      var(--border-btn-info-color),
+      var(--text-btn-info-color),
+      var(--hover-btn-info-color),
+      var(--text-btn-info-transparent-color),
+      var(--icon-btn-info-color),
+      var(--icon-btn-info-transparent-color),
+      var(--hover-bg-btn-info-transparent-color)
+    );
   }
 
-  &.neo-btn-danger {
-
-    &:not(.neo-btn-transparent):not(.neo-btn-icon),
-    &.neo-btn-icon:not(.neo-btn-transparent) {
-      background-color: var(--bg-btn-danger-color);
-      border-color: var(--border-btn-danger-color);
-      box-shadow: var(--shadow-btn);
-
-      color: var(--text-btn-danger-color);
-
-      &:hover,
-      &:focus,
-      &:active {
-        background-color: var(--hover-btn-danger-color);
-      }
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--text-btn-danger-color);
-        }
-      }
-    }
-
-    &.neo-btn-transparent {
-
-      color: var(--text-btn-danger-transparent-color);
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--icon-btn-danger-color);
-        }
-      }
-
-      &:not(.neo-btn-icon) {
-        i::before {
-          color: var(--icon-btn-danger-transparent-color);
-        }
-      }
-    }
-
-    &.neo-btn-icon {
-      i::before {
-        color: var(--icon-btn-danger-color);
-      }
-
-      &.neo-btn-transparent {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-bg-btn-danger-transparent-color);
-        }
-      }
-
-      &:not(.neo-btn-transparent) {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-btn-danger-color);
-        }
-      }
-    }
+  &--danger {
+    @include button-color-styles(
+      var(--bg-btn-danger-color),
+      var(--border-btn-danger-color),
+      var(--text-btn-danger-color),
+      var(--hover-btn-danger-color),
+      var(--text-btn-danger-transparent-color),
+      var(--icon-btn-danger-color),
+      var(--icon-btn-danger-transparent-color),
+      var(--hover-bg-btn-danger-transparent-color)
+    );
   }
 
-  &.neo-btn-warning {
-
-    &:not(.neo-btn-transparent):not(.neo-btn-icon),
-    &.neo-btn-icon:not(.neo-btn-transparent) {
-      background-color: var(--bg-btn-warning-color);
-      border-color: var(--border-btn-warning-color);
-      box-shadow: var(--shadow-btn);
-
-      color: var(--text-btn-warning-color);
-
-      &:hover,
-      &:focus,
-      &:active {
-        background-color: var(--hover-btn-warning-color);
-      }
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--text-btn-warning-color);
-        }
-      }
-    }
-
-    &.neo-btn-transparent {
-
-      color: var(--text-btn-warning-transparent-color);
-
-      &.neo-btn-icon {
-        i::before {
-          color: var(--icon-btn-warning-color);
-        }
-      }
-
-      &:not(.neo-btn-icon) {
-        i::before {
-          color: var(--icon-btn-warning-transparent-color);
-        }
-      }
-    }
-
-    &.neo-btn-icon {
-      i::before {
-        color: var(--icon-btn-warning-color);
-      }
-
-      &.neo-btn-transparent {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-bg-btn-warning-transparent-color);
-        }
-      }
-
-      &:not(.neo-btn-transparent) {
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-btn-warning-color);
-        }
-      }
-    }
+  &--warning {
+    @include button-color-styles(
+      var(--bg-btn-warning-color),
+      var(--border-btn-warning-color),
+      var(--text-btn-warning-color),
+      var(--hover-btn-warning-color),
+      var(--text-btn-warning-transparent-color),
+      var(--icon-btn-warning-color),
+      var(--icon-btn-warning-transparent-color),
+      var(--hover-bg-btn-warning-transparent-color)
+    );
   }
 }

@@ -1,68 +1,80 @@
-@import 'base';
+@import "config";
+@import "mixins";
+
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
 
 .main-content {
-  .main-header {
-    position: sticky;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 1002;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 55px;
-    box-shadow: var(--shadow-box);
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "content sidebar-panel";
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 50px 1fr;
+  height: 100%;
+}
 
-    &__left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+.main-header {
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 $spacing-l;
+  background-color: $color-white;
+  box-shadow: $box-shadow-sm;
+  z-index: 100;
+}
 
-      i {
-        &::before {
-          color: var(--icon-menu-toggle-color) !important;
-        }
-      }
+.main-header__left {
+  display: flex;
+  align-items: center;
+  gap: $spacing-m;
+}
 
-      &__menu {
-        width: 50px;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
+.main-header__left__menu {
+  @include flex-center;
+  width: 40px;
+  height: 40px;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 
-        &:hover,
-        &:focus {
-          background-color: var(--menu-item-hover-active-color) !important;
-          color: var(--menu-item-hover-active-text) !important;
-        }
-      }
-
-      &__logo {
-        display: flex;
-        align-items: center;
-        width: 25px;
-        height: 25px;
-      }
-    }
-
-    &__actions {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 25px;
-      margin-right: 20px;
-    }
+  &:hover {
+    background-color: $color-gray-100;
   }
 
-  .content-wrapper {
-    transition: margin-left 0.3s;
-    padding: 20px 25px;
-    overflow: auto;
-    height: calc(100vh - 55px);
-    display: block;
+  i {
+    font-size: 1.5rem;
+    color: $color-text;
   }
+}
+
+.main-header__actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-s;
+}
+
+.content-wrapper {
+  grid-area: content;
+  padding: $spacing-l;
+  overflow-y: auto;
+  background-color: $color-gray-100;
+}
+
+neo-sidebar-panel {
+  grid-area: sidebar-panel;
+  background-color: $color-white;
+  border-left: 1px solid $color-gray-300;
+  width: 0;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+router-outlet + * {
+  display: block;
+  height: 100%;
 }

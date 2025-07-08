@@ -21,9 +21,10 @@ import { LOGO, LOGO_DARK, LOGO_SMALL, LOGO_SMALL_DARK, LogoSize } from './models
 export class LogoComponent {
 
   /**
-   * Tamaño del logo (s, m) de tipo `LogoSize`
+   * Tamaño del logo
    */
-  @Input() size: LogoSize = 'm';
+  @Input() width: string = 'auto';
+  @Input() height: string = '50px';
 
   /**
    * Texto alternativo del logo
@@ -31,8 +32,6 @@ export class LogoComponent {
   @Input() alt: string = 'logo';
 
   logo: string = LOGO;
-  logoSmall: string = LOGO_SMALL;
-
   theme: Signal<ThemeType> = signal(LIGHT_THEME);
 
   constructor(
@@ -46,15 +45,12 @@ export class LogoComponent {
 
     // Cuando el tema cambie, cambiamos el logo
     effect(() => {
-
       switch (this.theme()) {
         case LIGHT_THEME:
           this.logo = LOGO;
-          this.logoSmall = LOGO_SMALL;
           break;
         default:
           this.logo = LOGO_DARK
-          this.logoSmall = LOGO_SMALL_DARK;
           break;
       }
     }, { injector: this.injector, allowSignalWrites: true });

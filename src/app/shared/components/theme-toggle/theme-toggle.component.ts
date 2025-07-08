@@ -1,7 +1,7 @@
 import { Component, Input, Signal, computed, signal } from '@angular/core';
 import { DARK_THEME, LIGHT_THEME } from './model/theme.entity';
 import { ThemesService } from './service/themes.service';
-import { ButtonColor, ButtonSize } from '../button/models/button.entity';
+import { ButtonColor, ButtonSize } from '../button/models/button.model';
 
 /**
  * @name

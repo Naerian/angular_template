@@ -14,6 +14,7 @@ import { InputsUtilsService } from '../../services/inputs-utils.service';
 import { NEO_OPTION_GROUPS, NEO_SELECT } from '../models/select.model';
 import { OptionGroupsComponent } from '../option-groups/option-groups.component';
 import { SelectComponent } from '../select.component';
+import { InputSize } from '../../models/form-field.entity';
 
 /**
  * @name
@@ -26,14 +27,21 @@ import { SelectComponent } from '../select.component';
 @Component({
   selector: 'neo-option',
   templateUrl: './option.component.html',
-  styleUrl: './option.component.scss',
   host: {
     role: 'option',
     '[id]': 'getId()',
+    '[title]': 'getLabelText()',
+    '[role]': 'option',
     '[class.neo-select__dropdown__options__option]': 'true',
     '[class.neo-select__dropdown__options__option--hidden]': 'isHideBySearch()',
     '[class.neo-select__dropdown__options__option--selected]': 'selected',
     '[class.neo-select__dropdown__options__option--disabled]': 'disabled',
+    '[class.neo-select__dropdown__options__option--xs]': '_size() === "xs"',
+    '[class.neo-select__dropdown__options__option--s]': '_size() === "s"',
+    '[class.neo-select__dropdown__options__option--xm]': '_size() === "xm"',
+    '[class.neo-select__dropdown__options__option--m]': '_size() === "m"',
+    '[class.neo-select__dropdown__options__option--l]': '_size() === "l"',
+    '[class.neo-select__dropdown__options__option--xl]': '_size() === "xl"',
     '[attr.aria-selected]': 'isSelected()', // Atributo para indicar si la opción está seleccionada
     '[attr.aria-disabled]': 'disabled.toString()', // Atributo para indicar si la opción está deshabilitada
     '[attr.aria-hidden]': 'isHideBySearch()', // Atributo para indicar si la opción está oculta por la búsqueda
@@ -79,6 +87,7 @@ export class OptionComponent implements FocusableOption {
   @Input() value!: any;
 
   private _id: string = '';
+  private _size: WritableSignal<InputSize> = signal('m');
   private _disabled: WritableSignal<boolean> = signal(false);
   private _selected: WritableSignal<boolean> = signal(false);
   private _hideBySearch: WritableSignal<boolean> = signal(false);
@@ -108,6 +117,7 @@ export class OptionComponent implements FocusableOption {
   ngAfterContentInit(): void {
     // Obtenemos el contenido para asignarlo a la propiedad label
     setTimeout(() => {
+      this._size.set(this.selectParent?.inputSize || 'm');
       this.setLabelHtml(this.optionLabel?.nativeElement.innerHTML || '');
       this.setLabelText(this.optionLabel?.nativeElement.textContent || '');
       this.createUniqueId();

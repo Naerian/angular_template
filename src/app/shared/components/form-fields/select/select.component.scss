@@ -1,41 +1,8 @@
-@import 'base';
+// src/app/shared/components/form-fields/select/select.component.scss
 
-// --- Variables SCSS (complemento a tus variables CSS) ---
-$spacing-xxs: 3px;
-$spacing-xs: 5px;
-$spacing-s: 10px;
-$spacing-m: 20px;
-$border-radius: 5px;
-$transition-speed-fast: 100ms;
-$transition-speed-normal: 150ms;
-$transition-speed-slow: 200ms;
-
-// --- Mixins para propiedades comunes ---
-@mixin flex-row-center {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-@mixin flex-col-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-@mixin ellipsis-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-@mixin spinner-pseudo-elements($color: var(--primary-color), $border-width: 2.9px) {
-  border: $border-width solid $color;
-  border-radius: 50%;
-  position: absolute;
-  content: '';
-  display: block;
-}
+@import "config";
+@import "mixins";
+@import "functions";
 
 :host {
   display: block;
@@ -45,37 +12,66 @@ $transition-speed-slow: 200ms;
 .neo-select {
   position: relative;
 
-  &__label {
-    &--required {
-      &::after {
-        content: '*';
-        color: var(--danger-color);
-      }
-    }
-  }
-
   &__field {
     @include flex-row-center;
     justify-content: space-between;
-    border-radius: $border-radius;
-    font-weight: 500;
+    border-radius: $border-radius-md;
+    font-weight: $font-weight-medium;
     box-sizing: border-box;
     padding: $spacing-s $spacing-s;
-    padding-right: $spacing-m + $spacing-xs;
+    padding-right: calc(#{$spacing-m} + #{$spacing-xs});
     cursor: pointer;
     position: relative;
     gap: $spacing-xs;
+    background-color: var(--bg-field-color);
+    border: $border-width-base solid var(--border-field-color);
+
+    &:focus,
+    &:active {
+      @include outline-focus;
+    }
+
+    &--xs {
+      @include component-size(xs);
+      height: map-get($component-heights, xs);
+      font-size: map-get($component-font-sizes, xs);
+    }
+    &--s {
+      @include component-size(s);
+      height: map-get($component-heights, s);
+      font-size: map-get($component-font-sizes, s);
+    }
+    &--xm {
+      @include component-size(xm);
+      height: map-get($component-heights, xm);
+      font-size: map-get($component-font-sizes, xm);
+    }
+    &--m {
+      @include component-size(m);
+      height: map-get($component-heights, m);
+      font-size: map-get($component-font-sizes, m);
+    }
+    &--l {
+      @include component-size(l);
+      height: map-get($component-heights, l);
+      font-size: map-get($component-font-sizes, l);
+    }
+    &--xl {
+      @include component-size(xl);
+      height: map-get($component-heights, xl);
+      font-size: map-get($component-font-sizes, xl);
+    }
 
     &--disabled,
     &--empty {
       cursor: not-allowed;
-      border: 1px solid var(--border-field-disabled-color);
+      border: $border-width-base solid var(--border-field-disabled-color);
       pointer-events: none;
       opacity: 0.7;
     }
 
     &--has-error {
-      border: 1px solid var(--danger-color);
+      border: $border-width-base solid var(--color-danger);
     }
 
     &--transparent {
@@ -85,9 +81,10 @@ $transition-speed-slow: 200ms;
     &__arrow-dropdown {
       position: absolute;
       right: $spacing-xs;
-      font-size: 1rem;
-      line-height: 1rem;
-      transition: transform $transition-speed-normal ease;
+      font-size: map-get($component-font-sizes, m);
+      line-height: map-get($component-font-sizes, m);
+      transition: transform $transition-duration-normal
+        $transition-timing-function-ease;
 
       &.open {
         transform: rotate(180deg);
@@ -108,43 +105,49 @@ $transition-speed-slow: 200ms;
 
   &__dropdown {
     @include flex-col-center;
-    border: 0.5px solid var(--border-field-color);
-
-    &--below {
-      margin-top: -0.5px;
-      box-shadow: var(--shadow-box-below);
-    }
-
-    &--above {
-      margin-bottom: -0.5px;
-      box-shadow: var(--shadow-box-above);
-    }
+    border: calc(#{$border-width-base} / 2) solid var(--border-field-color);
+    background-color: var(--bg-field-color);
 
     &__search {
       @include flex-row-center;
       justify-content: center;
       padding: 0 $spacing-xs;
-      margin-top: $spacing-s;
-      margin-bottom: $spacing-s;
+      margin-top: $spacing-xs;
+      padding-bottom: $spacing-xs;
       position: relative;
       width: 100%;
 
       &__input {
-        height: 35px;
-        font-size: 12px;
         width: 100%;
-        border-radius: $border-radius;
+        border-radius: $border-radius-md;
         border: none;
         box-sizing: border-box;
-        padding: $spacing-s;
-        border: 0.5px solid var(--border-field-color);
+        padding: $spacing-xs $spacing-s;
+        border: calc(#{$border-width-base} / 2) solid var(--border-field-color);
         background-color: var(--bg-field-color);
         color: var(--text-color);
 
-        &:focus {
-          border-color: var(--border-field-color);
-          outline: 0;
-          box-shadow: 0px 0px 2px 1px var(--border-field-color);
+        &--xs {
+          @include component-size(xs);
+        }
+        &--s {
+          @include component-size(s);
+        }
+        &--xm {
+          @include component-size(xm);
+        }
+        &--m {
+          @include component-size(m);
+        }
+        &--l {
+          @include component-size(l);
+        }
+        &--xl {
+          @include component-size(xl);
+        }
+        &:focus,
+        &:active {
+          @include outline-focus;
         }
       }
 
@@ -165,7 +168,8 @@ $transition-speed-slow: 200ms;
       overflow: auto;
       padding: $spacing-xs;
       scrollbar-width: thin;
-      scrollbar-color: var(--bg-scroll-color) var(--bg-field-color);
+      scrollbar-color: var(--bg-scroll-field-color) var(--bg-field-color);
+      gap: $spacing-xxs;
 
       &--empty {
         display: none;
@@ -175,47 +179,80 @@ $transition-speed-slow: 200ms;
         @include flex-col-center;
         align-items: flex-start;
         justify-content: center;
-        padding: $spacing-xs $spacing-s;
-        font-size: 0.8rem;
-        line-height: 1rem;
-        letter-spacing: 0.3px;
-        gap: $spacing-xs;
-
-        &--hidden {
-          display: none;
-        }
+        padding: 0 $spacing-xs;
+        gap: $spacing-xxs;
 
         &__label {
-          font-weight: 600;
+          font-weight: $font-weight-bold;
+          border-bottom: $border-width-xs solid var(--border-field-color);
           cursor: default;
+          width: 100%;
+          padding: $spacing-xs 0;
+
+          &--xs {
+            @include component-font-size(xs);
+          }
+          &--s {
+            @include component-font-size(s);
+          }
+          &--xm {
+            @include component-font-size(xm);
+          }
+          &--m {
+            @include component-font-size(m);
+          }
+          &--l {
+            @include component-font-size(l);
+          }
+          &--xl {
+            @include component-font-size(xl);
+          }
         }
 
         &__options {
           @include flex-col-center;
-          padding-left: $spacing-s;
-          padding-right: $spacing-s;
           width: 100%;
+          gap: $spacing-xxs;
         }
       }
 
       &__option {
         @include flex-row-center;
         cursor: pointer;
-        font-size: 0.75rem;
         padding: $spacing-s;
-        line-height: 1rem;
         letter-spacing: 0.3px;
-        margin: $spacing-xxs 0px;
         width: 100%;
 
-        &:hover:not(&--disabled),
+        &--xs {
+          @include component-size(xs);
+        }
+        &--s {
+          @include component-size(s);
+        }
+        &--xm {
+          @include component-size(xm);
+        }
+        &--m {
+          @include component-size(m);
+        }
+        &--l {
+          @include component-size(l);
+        }
+        &--xl {
+          @include component-size(xl);
+        }
+
         &:focus:not(&--disabled),
-        &:active:not(&--disabled),
+        &:active:not(&--disabled) {
+          @include outline-focus;
+          border-radius: $border-radius-md;
+        }
+
+        &:hover:not(&--disabled),
         &--selected {
-          outline: 0;
           color: var(--text-color);
-          background-color: var(--background-color);
-          border-radius: $border-radius;
+          background-color: var(--bg-options-field-color);
+          border-radius: $border-radius-md;
         }
 
         &--hidden {
@@ -225,13 +262,12 @@ $transition-speed-slow: 200ms;
         &__label {
           @include ellipsis-text;
           width: 100%;
-          font-weight: 500;
+          font-weight: $font-weight-medium;
         }
 
         &--selected {
-
           .neo-select__dropdown__options__item__label {
-            font-weight: 600;
+            font-weight: $font-weight-semibold;
           }
         }
 
@@ -253,7 +289,6 @@ $transition-speed-slow: 200ms;
     }
   }
 
-  // --- Loader/Spinner ---
   &__loading {
     position: absolute;
     width: 100%;
@@ -271,8 +306,8 @@ $transition-speed-slow: 200ms;
 
       &::before {
         @include spinner-pseudo-elements;
-        width: 12.4px;
-        height: 12.4px;
+        width: calc(#{$spacing-m} / 2);
+        height: calc(#{$spacing-m} / 2);
         border-bottom-color: transparent;
         border-left-color: transparent;
         animation: spinner-dropdown 0.75s infinite linear reverse;
@@ -288,7 +323,6 @@ $transition-speed-slow: 200ms;
       }
     }
 
-    // --- Animación del spinner ---
     @keyframes spinner-dropdown {
       to {
         transform: rotate(360deg);

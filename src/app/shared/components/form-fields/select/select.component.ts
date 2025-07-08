@@ -19,6 +19,7 @@ import {
   ViewEncapsulation,
   WritableSignal,
   booleanAttribute,
+  computed,
   forwardRef,
   inject,
   input,
@@ -33,6 +34,8 @@ import { NEO_SELECT, OVERLAY_POSITIONS } from './models/select.model';
 import { OptionGroupsComponent } from './option-groups/option-groups.component';
 import { OptionComponent } from './option/option.component';
 import { SelectManagerService } from './services/select-manager/select-manager.service';
+import { NarTranslations } from '@shared/translations/translations.model';
+import { NAR_TRANSLATIONS } from '@shared/translations/translations.token';
 
 /**
  * @name
@@ -189,6 +192,18 @@ export class SelectComponent implements ControlValueAccessor {
   private readonly overlay = inject(Overlay);
   private readonly _inputsUtilsService = inject(InputsUtilsService);
   private readonly _selectManagerService = inject(SelectManagerService);
+
+  // Inyectamos las traducciones
+  protected _translations: NarTranslations = inject(NAR_TRANSLATIONS);
+
+  // Señal computada para obtener el texto de la opción seleccionada
+  protected translatedMultipleChoices = computed(() => {
+    const selectedCount = this.getSelectedOptions().length;
+    return this._translations.multipleChoices.replace(
+      '{choices}',
+      String(selectedCount),
+    );
+  });
 
   private destroy$ = new Subject<void>();
 

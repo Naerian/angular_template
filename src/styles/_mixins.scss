@@ -1,0 +1,118 @@
+// src/styles/_mixins.scss
+
+// Mixin para definir tamaños de componentes
+// Utiliza este mixin para aplicar tamaños consistentes a los componentes de la aplicación
+@mixin component-size($size) {
+  $height: map-get($component-heights, $size);
+  $padding: map-get($component-paddings, $size);
+  $font-size: map-get($component-font-sizes, $size);
+
+  @if ($height) {
+    height: $height;
+  } @else {
+    // Manejo de error o valor por defecto si el tamaño no existe
+    height: map-get($component-heights, m); // Tamaño medio como fallback
+  }
+
+  @if ($padding) {
+    padding: $padding;
+  } @else {
+    padding: map-get($component-paddings, m);
+  }
+
+  @if ($font-size) {
+    font-size: $font-size;
+    line-height: $font-size *
+      1.5; // Ajuste de line-height basado en el tamaño de fuente
+  } @else {
+    font-size: map-get($component-font-sizes, m);
+    line-height: map-get($component-font-sizes, m) *
+      1.5; // Ajuste de line-height basado en el tamaño de fuente
+  }
+}
+
+// Mixin para aplicar tamaño de fuente según el tamaño del componente
+// Utiliza este mixin para aplicar un tamaño de fuente específico a los componentes
+@mixin component-font-size($size) {
+  $font-size: map-get($component-font-sizes, $size);
+
+  @if ($font-size) {
+    font-size: $font-size;
+    line-height: $font-size *
+      1.5; // Ajuste de line-height basado en el tamaño de fuente
+  } @else {
+    // Manejo de error o valor por defecto si el tamaño no existe
+    font-size: map-get($component-font-sizes, m); // Tamaño medio como fallback
+    line-height: map-get($component-font-sizes, m) *
+      1.5; // Ajuste de line-height para tamaño medio
+  }
+}
+
+// Mixin aplicar una transición suave a las propiedades CSS
+// Utiliza este mixin para aplicar transiciones suaves a las propiedades CSS de un elemento
+@mixin transition($args...) {
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -o-transition: $args;
+  transition: $args;
+}
+
+// Mixin para ocultar elementos visualmente
+// Utiliza este mixin para ocultar elementos que no deben ser visibles pero aún accesibles
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Mixin para centrar elementos con flexbox
+// Utiliza este mixin para centrar elementos dentro de un contenedor flex
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-row-center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+@mixin flex-col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@mixin ellipsis-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin outline-focus($color: var(--outline-color), $width: $border-width-xs) {
+  outline-color: $color;
+  outline-style: solid;
+  outline-width: $width;
+  box-shadow: 0px 0px 2px $width var(--focus-ring-color);
+}
+
+// Este mixin es específico del spinner, lo mantendremos aquí.
+// Asegúrate de que $spinner-border-width esté en _config.scss o pásalo como parámetro por defecto.
+@mixin spinner-pseudo-elements(
+  $color: var(--primary-color),
+  $border-width: $spinner-border-width
+) {
+  border: $border-width solid $color;
+  border-radius: 50%;
+  position: absolute;
+  content: "";
+  display: block;
+}

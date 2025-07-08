@@ -1,3 +1,9 @@
+// src/app/shared/components/form-fields/radio-button/radio-button.component.scss
+
+@import "config";
+@import "mixins";
+@import "functions";
+
 .neo-radiobutton {
   display: flex;
   position: relative;
@@ -20,28 +26,29 @@
       z-index: -1;
     }
 
-    &__input:checked~&__checkmark {
+    &__input:checked ~ &__checkmark {
       border-color: var(--border-field-color);
       box-shadow: none;
     }
 
-    &__input:focus~&__checkmark {
+    &__input:focus ~ &__checkmark {
       outline-color: var(--outline-color);
       outline-style: solid;
-      outline-width: 1px;
-      box-shadow: 0px 0px 2px 1px var(--bg-field-color);
+      outline-width: $border-width-xs;
+      box-shadow: 0px 0px 2px $border-width-xs var(--bg-field-color);
     }
 
-    &__input:checked~&__checkmark::after {
+    &__input:checked ~ &__checkmark::after {
       opacity: 1;
     }
 
     &__checkmark {
-      height: 18px;
-      width: 18px;
-      border: 1px solid var(--border-field-color);
+      height: $checkbox-size;
+      width: $checkbox-size;
+      border: $border-width-xs solid var(--border-field-color);
       background-color: var(--bg-field-color);
-      transition: background-color 0.25s ease;
+      transition: background-color $transition-duration-base
+        $transition-timing-function-ease;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
@@ -51,13 +58,14 @@
 
       &::after {
         content: "";
-        content: "";
-        border: solid var(--primary-color);
-        border-width: 4px;
-        opacity: 0;
-        transition: opacity 0.25s ease;
+        display: block;
+        width: $radiobutton-dot-size;
+        height: $radiobutton-dot-size;
         border-radius: 50%;
-        display: inline-block;
+        background: var(--color-primary);
+        opacity: 0;
+        transition: opacity $transition-duration-base
+          $transition-timing-function-ease;
       }
     }
 
@@ -65,8 +73,7 @@
       color: var(--text-color);
       margin: 0;
       cursor: pointer;
-      padding-left: 5px;
+      padding-left: calc(#{$spacing-xs} / 1.6);
     }
   }
-
 }

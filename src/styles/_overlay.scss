@@ -1,0 +1,41 @@
+// Necesario para que se renderice y posicione correctamente el overlay
+.cdk-overlay-container {
+  position: fixed;
+  z-index: 1000; // Asegura que quede por encima del resto de la app
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.cdk-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: auto;
+  background-color: rgba(0, 0, 0, 0.32); // Color de fondo para modales
+  z-index: 1000;
+}
+
+.cdk-overlay-dark-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cdk-global-overlay-wrapper {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+.cdk-overlay-pane {
+  position: absolute;
+  pointer-events: auto;
+  z-index: 1001;
+}

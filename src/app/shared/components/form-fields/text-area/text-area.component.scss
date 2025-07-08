@@ -1,4 +1,4 @@
-@import 'base';
+
 
 .neo-textarea {
   display: flex;
@@ -7,15 +7,6 @@
   &--disabled {
     cursor: not-allowed;
     pointer-events: none;
-  }
-
-  &__label {
-    &--required {
-      &::after {
-        content: '*';
-        color: var(--danger-color);
-      }
-    }
   }
 
   &__wrapper {

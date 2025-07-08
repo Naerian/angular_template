@@ -15,7 +15,6 @@ import { SelectComponent } from './select.component';
   imports: [
     CommonModule,
     FormsModule,
-    TranslateModule,
     A11yModule,
     OverlayModule,
     SafeHtmlPipe,

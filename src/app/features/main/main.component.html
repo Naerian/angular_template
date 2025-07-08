@@ -1,25 +1,24 @@
 <div class="main-content">
   <header class="main-header navbar">
     <div class="main-header__left">
-      <div
-        [ngClass]="{
-          'expanded-menu': isMenuOpened(),
-          'collapsed-menu': !isMenuOpened()
-        }"
+      <neo-button
         id="nvar_menu"
         class="main-header__left__menu"
+        mode="icon"
+        [color]="'secondary'"
+        [transparent]="true"
+        (onClick)="toggleMenu()"
+        [size]="'xl'"
         [title]="'MENU.OPEN_CLOSE' | translate"
-        (click)="toggleMenu()"
-        clickable
       >
         @if (isMenuOpened()) {
           <i class="ri-menu-fold-line"></i>
         } @else {
           <i class="ri-menu-line"></i>
         }
-      </div>
+      </neo-button>
       <div class="main-header__left__logo">
-        <neo-logo [size]="'m'"></neo-logo>
+        <neo-logo [height]="'40px'"></neo-logo>
       </div>
     </div>
     <div class="main-header__actions">
@@ -36,8 +35,14 @@
       </neo-button> -->
     </div>
   </header>
-  <neo-side-menu class="navbar_menu"></neo-side-menu>
-  <main class="content-wrapper" cdkScrollable>
+  <neo-side-menu></neo-side-menu>
+  <main
+    class="content-wrapper"
+    [ngClass]="{
+      'menu-opened': isMenuOpened()
+    }"
+    cdkScrollable
+  >
     <router-outlet></router-outlet>
   </main>
   <neo-sidebar-panel></neo-sidebar-panel>

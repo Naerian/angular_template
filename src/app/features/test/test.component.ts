@@ -15,7 +15,6 @@ import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.co
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { CalendarComponent } from '@shared/components/calendar/calendar.component';
 import { CardModule } from '@shared/components/card/card.module';
-import { FilterColumnsTableComponent } from '@shared/components/filter-columns-table/filter-columns-table.component';
 import { FormFieldsModule } from '@shared/components/form-fields/form-fields.module';
 import { InputDatePickerComponent } from '@shared/components/form-fields/input-date-picker/input-date-picker.component';
 import { MenuContextModule } from '@shared/components/menu-context/menu-context.module';
@@ -51,7 +50,6 @@ import { ToastrService } from 'ngx-toastr';
     JsonPipe,
     PaginatorComponent,
     MenuContextModule,
-    FilterColumnsTableComponent,
     MatTableModule,
     MatSortModule,
     CalendarComponent,

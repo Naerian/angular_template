@@ -1,9 +1,13 @@
 <button
   #btnContent
-  class="neo-btn neo-btn-{{ size }} neo-btn-{{ color }} neo-btn-{{ mode }}"
+  class="neo-btn
+         neo-btn--{{ size }}
+         neo-btn--{{ color }}
+         neo-btn--{{ mode }}
+         "
   [disabled]="disabled"
   [autofocus]="focus"
-  [class.neo-btn-transparent]="transparent"
+  [class.neo-btn--transparent]="transparent"
   [class.neo-btn--disabled]="disabled"
   [class.neo-btn--all-width]="allWidth"
   [title]="_title()"

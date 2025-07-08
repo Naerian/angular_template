@@ -1,5 +1,7 @@
+// src/app/shared/components/breadcrumb/breadcrumb.component.ts
+
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core'; // Importamos Input
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -7,9 +9,9 @@ import {
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+// import { TranslateModule } from '@ngx-translate/core'; // <-- ¡Eliminar esta importación!
 import { distinctUntilChanged, filter } from 'rxjs';
-import { BreadCrumbEntity } from './models/breadcrumb.entity';
+import { BreadCrumbEntity } from './models/breadcrumb.model';
 
 /**
  * @name
@@ -22,11 +24,16 @@ import { BreadCrumbEntity } from './models/breadcrumb.entity';
 @Component({
   selector: 'neo-breadcrumb',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './breadcrumb.component.html',
   styleUrl: './breadcrumb.component.scss',
 })
 export class BreadcrumbComponent {
+  /**
+   * Texto para el enlace de "Home" del breadcrumb.
+   */
+  @Input() homeLabel: string = 'Home';
+
   /**
    * Array de `breadcrumbs` que almacenará las rutas de la aplicación en las que se encuentre el usuario
    */
@@ -61,10 +68,10 @@ export class BreadcrumbComponent {
     url: string = '',
     breadcrumbs: BreadCrumbEntity[] = [],
   ): BreadCrumbEntity[] {
-    // Si no hay `routeConfig` disponible, significa que estamos en la ruta inicial
+    // Aquí, `label` debe ser el texto final a mostrar, no una clave de traducción.
     let label =
       route.routeConfig && route.routeConfig.data
-        ? route.routeConfig.data['breadcrumb']
+        ? route.routeConfig.data['breadcrumb'] // Esperamos que esto sea el texto final
         : '';
     let path =
       route.routeConfig && route.routeConfig.data ? route.routeConfig.path : '';
@@ -74,15 +81,15 @@ export class BreadcrumbComponent {
     const isDynamicRoute = lastRoutePart?.startsWith(':');
     if (isDynamicRoute && !!route.snapshot) {
       const paramName = lastRoutePart?.split(':')[1];
+      label = route.snapshot.params[paramName]; // Esto definitivamente ya es el VALOR, no una clave
       path = path?.replace(lastRoutePart, route.snapshot.params[paramName]);
-      label = route.snapshot.params[paramName];
     }
 
     // En `routeConfig` la ruta completa no está disponible, por lo que la reconstruimos cada vez
     const nextUrl = path ? `${url}/${path}` : url;
 
     const breadcrumb: BreadCrumbEntity = {
-      label: label,
+      label: label, // La etiqueta ya es el texto final
       url: nextUrl,
     };
 

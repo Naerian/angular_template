@@ -1,0 +1,163 @@
+// src/styles/_config.scss
+
+// --- Variables de colores ---
+
+// Grises para UI
+$color-white: #ffffff;
+$color-gray-100: #f8f9fa;
+$color-gray-200: #e9ecef;
+$color-gray-300: #dee2e6;
+$color-gray-400: #ced4da;
+$color-gray-500: #adb5bd;
+$color-gray-600: #6c757d;
+$color-gray-700: #495057;
+$color-gray-800: #343a40;
+$color-gray-900: #212529;
+$color-black: #000000;
+
+// Colores base
+$color-primary: $color-gray-800; // Gris oscuro profesional para acciones principales
+$color-secondary: $color-gray-200; // Gris claro para acciones secundarias / fondos sutiles
+$color-accent: #73b6ff; // Azul claro (color de acento)
+
+// Colores Semánticos para UI (botones, alertas, etc.)
+$color-success: #28a745; // Un verde para éxito
+$color-info: #17a2b8; // Un cian / azul claro para información
+$color-warning: #c77c00; // Un naranja para advertencias
+$color-danger: #dc3545; // Un rojo para peligro / errores
+
+// Color de texto principal
+$color-text: $color-gray-900;
+$color-text-light: $color-white;
+
+// Color del anillo de enfoque para accesibilidad
+$focus-ring-color: rgba($color-accent, 0.3);
+
+// -----------------------------------------
+
+// --- Variables de Bordes y Radios ---
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-circle: 50%;
+$border-width-base: 1px;
+$border-color-base: $color-gray-300;
+
+// -----------------------------------------
+
+// --- Base de Tipografía ---
+// Fuentes
+$font-family-base: "OpenSans", sans-serif;
+$font-size-base: 1rem; // 16px por defecto (para el html/body)
+$line-height-base: 1.5; // Altura de línea estándar para el texto general
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// -----------------------------------------
+
+// --- Sombras (Box Shadows) ---
+// Para efectos de elevación o profundidad
+$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05); // Sombra sutil para componentes (la usaremos como default)
+$box-shadow-md:
+  0 4px 6px rgba(0, 0, 0, 0.1),
+  0 1px 3px rgba(0, 0, 0, 0.08); // Sombra mediana
+$box-shadow-lg:
+  0 10px 15px rgba(0, 0, 0, 0.1),
+  0 4px 6px rgba(0, 0, 0, 0.05); // Sombra grande
+$box-shadow-button-hover: 0 2px 6px rgba(0, 0, 0, 0.08); // Sombra específica para el hover de botones, más sutil
+
+// -----------------------------------------
+
+$spinner-border-width: 2.9px; // O un valor más genérico si lo usas en otros loaders
+
+// -----------------------------------------
+
+// --- Mapas de Tamaños de Fuente de Componentes (ACTUALIZADO: 'm' a 0.875rem) ---
+// Controla el font-size de los componentes por su tamaño (xs, s, xm, m, l, xl)
+$component-font-sizes: (
+  xs: $font-size-base * 0.625,
+  // 10px
+  s: $font-size-base * 0.75,
+  // 12px
+  xm: $font-size-base * 0.8125,
+  // 13px
+  m: $font-size-base * 0.875,
+  // 14px (¡NUEVO ESTÁNDAR 'M' PARA COMPONENTES!)
+  l: $font-size-base,
+  // 16px
+  xl: $font-size-base * 1.125 // 18px,,,,,,,,,,,,
+);
+
+// -----------------------------------------
+
+// --- Variables de Espaciado ---
+// Utilizadas para paddings, margins, gaps, etc.
+$spacing-xxs: 4px;
+$spacing-xs: 8px;
+$spacing-s: 12px;
+$spacing-m: 15px;
+$spacing-l: 24px;
+$spacing-xl: 36px;
+$spacing-xxl: 48px;
+
+// -----------------------------------------
+
+// --- Mapas de Alturas de Componentes (RECALCULADO para el nuevo estándar de fuente) ---
+// Define las alturas fijas para los componentes, como botones e inputs
+$component-heights: (
+  xs: 24px,
+  // 10px font + 2*7px padding = 24px
+  s: 28px,
+  // 12px font + 2*8px padding = 28px
+  xm: 32px,
+  // 13px font + 2*9.5px padding = 32px
+  m: 36px,
+  // 14px font + 2*11px padding = 36px
+  l: 40px,
+  // 16px font + 2*12px padding = 40px
+  xl: 44px // 18px font + 2*13px padding = 44px
+);
+
+// --- Mapas de Padding de Componentes ---
+// Define el padding interno de los componentes, el primer valor es vertical (top/bottom), el segundo horizontal (left/right)
+$component-paddings: (
+  xs: 7px $spacing-s,
+  // Vertical 7px, Horizontal $spacing-s (16px)
+  s: 8px $spacing-m,
+  // Vertical 8px, Horizontal $spacing-m (24px)
+  xm: 9.5px $spacing-m,
+  // Vertical 9.5px, Horizontal $spacing-m (24px)
+  m: 11px $spacing-m,
+  // Vertical 11px, Horizontal $spacing-m (24px)
+  l: 12px $spacing-l,
+  // Vertical 12px, Horizontal $spacing-l (32px)
+  xl: 13px $spacing-xl,
+);
+
+// -----------------------------------------
+
+// --- Variables para transiciones ---
+$transition-duration-fast: 0.1s; // 100ms
+$transition-duration-normal: 0.15s; // 150ms
+$transition-duration-slow: 0.2s; // 200ms
+$transition-duration-base: 0.25s; // 250ms
+$transition-timing-function-ease: ease; // Si no la tienes
+
+// -----------------------------------------
+
+// --- Variables de tamaño y borde para Checkbox ---
+$checkbox-size: 18px;
+$border-width-xs: 1px; // Si no tienes una variable para 1px
+$border-radius-checkbox: 2px; // Específico para el radio del checkbox, o usar $border-radius-xxs si tienes
+
+// --- Variables para el diseño del checkmark (dentro del cuadrado) ---
+$checkmark-border-width: 5px; // Grosor del borde del checkmark para el estado 'checked'
+$checkmark-indeterminate-border-vertical-width: 2px; // Grosor vertical para el estado 'indeterminate'
+$checkmark-indeterminate-border-horizontal-width: 5px; // Grosor horizontal para el estado 'indeterminate'
+
+// -----------------------------------------
+
+// --- Variables para Radiobuttons ---
+$radiobutton-dot-size: 10px;

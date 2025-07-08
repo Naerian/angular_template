@@ -1,4 +1,8 @@
-@import 'base';
+// src/app/shared/components/form-fields/input-date-picker/input-date-picker.component.scss
+
+@import "config";
+@import "mixins";
+@import "functions";
 
 .neo-input-date-picker {
   position: relative;
@@ -8,25 +12,42 @@
     pointer-events: none;
   }
 
-  &__label {
-    &--required {
-      &::after {
-        content: '*';
-        color: var(--danger-color);
-      }
-    }
-  }
-
   &__wrapper {
     position: relative;
 
     &__field {
       width: 100%;
-      border-radius: 5px;
+      border-radius: $border-radius-md;
       box-sizing: border-box;
-      padding: 10px 10px;
-      padding-right: 40px;
+      padding: $spacing-s $spacing-s;
+      padding-right: $spacing-m;
       cursor: pointer;
+      background-color: var(--bg-field-color);
+      border: $border-width-base solid var(--border-field-color);
+
+      &:focus,
+      &:active {
+        @include outline-focus;
+      }
+
+      &--xs {
+        @include component-size(xs);
+      }
+      &--s {
+        @include component-size(s);
+      }
+      &--xm {
+        @include component-size(xm);
+      }
+      &--m {
+        @include component-size(m);
+      }
+      &--l {
+        @include component-size(l);
+      }
+      &--xl {
+        @include component-size(xl);
+      }
 
       &[disabled],
       &:disabled {
@@ -34,37 +55,17 @@
       }
 
       &--has-error {
-        border: 1px solid var(--danger-color);
+        border: $border-width-xs solid var(--color-danger);
       }
     }
 
-    &__icon-calendar {
+    &__icon {
       position: absolute;
-      top: 0;
-      right: 0;
-      height: 100%;
-      width: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      right: $spacing-m;
+      cursor: default;
 
-      i:before {
+      &::before {
         color: var(--icon-field-color);
-      }
-    }
-  }
-
-  &__calendar {
-    &--below {
-      .calendar-picker {
-        box-shadow: var(--shadow-box-below);
-      }
-    }
-
-    &--above {
-      .calendar-picker {
-        box-shadow: var(--shadow-box-above);
       }
     }
   }

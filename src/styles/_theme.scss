@@ -1,0 +1,172 @@
+// src/styles/_theme.scss (añade esto al final del archivo)
+
+@import "config";
+@import "mixins";
+
+:root {
+  // -------------------------------------------------
+  // --- COLORES Y VARIABLES GLOBALES ---
+  // -------------------------------------------------
+  // Colores principales del tema
+  --color-primary: #{$color-primary}; // Color primario del tema
+  --color-secondary: #{$color-secondary}; // Color secundario del tema
+  --color-success: #{$color-success}; // Color de éxito
+  --color-info: #{$color-info}; // Color de información
+  --color-warning: #{$color-warning}; // Color de advertencia
+  --color-danger: #{$color-danger}; // Color de peligro/error
+
+  // Versiones tintadas de colores principales
+  --color-primary-tint-50: #{tint($color-primary, 50%)};
+  --color-primary-tint-65: #{tint($color-primary, 65%)};
+  --color-primary-tint-90: #{tint($color-primary, 90%)};
+  --color-primary-tint-95: #{tint($color-primary, 95%)};
+  --color-secondary-tint-50: #{tint($color-secondary, 50%)};
+  --color-secondary-tint-65: #{tint($color-secondary, 65%)};
+  --color-secondary-tint-90: #{tint($color-secondary, 90%)};
+  --color-secondary-tint-95: #{tint($color-secondary, 95%)};
+
+  // Colores base
+  --color-white: #{$color-white};
+  --color-black: #{$color-black};
+  --color-text: #{$color-text}; // Color principal del texto
+  --color-accent: #{$color-accent}; // Color de acento
+
+  // Colores de escala de grises
+  --color-gray-100: #{$color-gray-100}; // Gris muy claro (para hover sutil)
+  --color-gray-400: #{$color-gray-400}; // Gris claro (para texto de días no del mes actual)
+  --color-gray-500: #{$color-gray-500}; // Gris medio (para texto deshabilitado/sutil)
+  --color-gray-600: #{$color-gray-600}; // Gris oscuro (para iconos, texto secundario)
+
+  // Color de "halo" de enfoque para accesibilidad
+  --focus-ring-color: #{$focus-ring-color};
+  --outline-color: #{$focus-ring-color};
+
+  // Versiones tintadas de los colores base
+  --color-accent-tint-50: #{tint($color-accent, 50%)};
+  --color-accent-tint-65: #{tint($color-accent, 65%)};
+  --color-accent-tint-90: #{tint($color-accent, 90%)};
+  --color-accent-tint-95: #{tint($color-accent, 95%)};
+
+  // Versiones tintadas de colores adicionales
+  --color-success-tint-50: #{tint($color-success, 50%)};
+  --color-success-tint-65: #{tint($color-success, 65%)};
+  --color-success-tint-90: #{tint($color-success, 90%)};
+  --color-success-tint-95: #{tint($color-success, 95%)};
+  --color-info-tint-50: #{tint($color-info, 50%)};
+  --color-info-tint-65: #{tint($color-info, 65%)};
+  --color-info-tint-90: #{tint($color-info, 90%)};
+  --color-info-tint-95: #{tint($color-info, 95%)};
+  --color-warning-tint-50: #{tint($color-warning, 50%)};
+  --color-warning-tint-65: #{tint($color-warning, 65%)};
+  --color-warning-tint-90: #{tint($color-warning, 90%)};
+  --color-warning-tint-95: #{tint($color-warning, 95%)};
+  --color-danger-tint-50: #{tint($color-danger, 50%)};
+  --color-danger-tint-65: #{tint($color-danger, 65%)};
+  --color-danger-tint-90: #{tint($color-danger, 90%)};
+  --color-danger-tint-95: #{tint($color-danger, 95%)};
+
+  // Borde base (si quieres que sea tematizable)
+  --border-color-base: #{$border-color-base};
+
+  // -------------------------------------------------
+  // --- COLORES Y VARIABLES PARA LAS FORMS ---
+  // -------------------------------------------------
+  --border-field-color: #{$border-color-base};
+  --bg-field-color: #{$color-white};
+  --border-field-disabled-color: #{$color-gray-400}; // Asume un color gris para campos deshabilitados
+  --icon-field-color: #{$color-gray-600}; // Color para iconos dentro de campos (flechas, lupa)
+  --bg-scroll-field-color: #{$color-gray-200}; // Color del pulgar del scrollbar
+  --bg-options-field-color: #{$color-gray-100}; // Color de fondo para opciones hover/seleccionadas
+
+  // -------------------------------------------------
+  // --- COLORES Y VARIABLES PARA LAS CARDS ---
+  // -------------------------------------------------
+  --bg-card-color: var(--color-white);
+  --shadow-card: #{$box-shadow-md};
+  --border-color-card: var(--border-color-base);
+
+  // -------------------------------------------------
+  // --- COLORES Y VARIABLES PARA BREADCRUMB ---
+  // -------------------------------------------------
+  --bg-color-hover: #{$color-gray-100};
+
+  --text-breadcrumb-color: #{$color-text};
+  --text-breadcrumb-color-hover: #{$color-accent};
+
+  --separator-breadcrumb-color: #{$color-accent};
+
+  --active-breadcrumb-text-color: #{$color-accent};
+  --active-breadcrumb-bg: #{tint($color-accent, 90%)};
+
+  // -------------------------------------------------
+  // --- COLORES Y VARIABLES PARA BOTONES ---
+  // -------------------------------------------------
+  // Sombras comunes para botones
+  --shadow-btn: 0 2px 4px rgba(0, 0, 0, 0.1); // Una sombra sutil para botones
+
+  // Colores para el botón PRIMARIO
+  --bg-btn-primary-color: #{$color-primary}; // Fondo del botón primario
+  --border-btn-primary-color: #{$color-primary}; // Borde del botón primario
+  --text-btn-primary-color: #{$color-gray-100}; // Color del texto del botón primario (blanco/gris muy claro)
+  --hover-btn-primary-color: #{shade($color-primary, 10%)}; // Fondo del primario al hover (ligeramente más oscuro)
+
+  --text-btn-primary-transparent-color: #{$color-primary}; // Texto del primario transparente
+  --icon-btn-primary-color: #{$color-gray-100}; // Icono del primario (sólido)
+  --icon-btn-primary-transparent-color: #{$color-primary}; // Icono del primario transparente
+  --hover-bg-btn-primary-transparent-color: #{tint($color-primary, 90%)}; // Fondo del transparente al hover
+
+  // Colores para el botón SECUNDARIO
+  --bg-btn-secondary-color: #{$color-secondary};
+  --border-btn-secondary-color: #{$color-secondary};
+  --text-btn-secondary-color: #{$color-text}; // Texto del secundario (gris oscuro)
+  --hover-btn-secondary-color: #{shade($color-secondary, 5%)};
+
+  --text-btn-secondary-transparent-color: #{$color-text};
+  --icon-btn-secondary-color: #{$color-text};
+  --icon-btn-secondary-transparent-color: #{$color-text};
+  --hover-bg-btn-secondary-transparent-color: #{tint($color-secondary, 5%)};
+
+  // Colores para el botón SUCCESS
+  --bg-btn-success-color: #{$color-success};
+  --border-btn-success-color: #{$color-success};
+  --text-btn-success-color: #{$color-gray-100};
+  --hover-btn-success-color: #{shade($color-success, 10%)};
+
+  --text-btn-success-transparent-color: #{$color-success};
+  --icon-btn-success-color: #{$color-gray-100};
+  --icon-btn-success-transparent-color: #{$color-success};
+  --hover-bg-btn-success-transparent-color: #{tint($color-success, 90%)};
+
+  // Colores para el botón INFO
+  --bg-btn-info-color: #{$color-info};
+  --border-btn-info-color: #{$color-info};
+  --text-btn-info-color: #{$color-gray-100};
+  --hover-btn-info-color: #{shade($color-info, 10%)};
+
+  --text-btn-info-transparent-color: #{$color-info};
+  --icon-btn-info-color: #{$color-gray-100};
+  --icon-btn-info-transparent-color: #{$color-info};
+  --hover-bg-btn-info-transparent-color: #{tint($color-info, 90%)};
+
+  // Colores para el botón DANGER
+  --bg-btn-danger-color: #{$color-danger};
+  --border-btn-danger-color: #{$color-danger};
+  --text-btn-danger-color: #{$color-gray-100};
+  --hover-btn-danger-color: #{shade($color-danger, 10%)};
+
+  --text-btn-danger-transparent-color: #{$color-danger};
+  --icon-btn-danger-color: #{$color-gray-100};
+  --icon-btn-danger-transparent-color: #{$color-danger};
+  --hover-bg-btn-danger-transparent-color: #{tint($color-danger, 90%)};
+
+  // Colores para el botón WARNING
+  --bg-btn-warning-color: #{$color-warning};
+  --border-btn-warning-color: #{$color-warning};
+  --text-btn-warning-color: #{$color-gray-100}; // Texto más oscuro para warning (amarillo/naranja)
+  --hover-btn-warning-color: #{shade($color-warning, 10%)};
+
+  --text-btn-warning-transparent-color: #{$color-warning};
+  --icon-btn-warning-color: #{$color-gray-100};
+  --icon-btn-warning-transparent-color: #{$color-warning};
+  --hover-bg-btn-warning-transparent-color: #{tint($color-warning, 90%)};
+}

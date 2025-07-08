@@ -31,12 +31,12 @@
             ],
             "styles": [
               "remixicon/fonts/remixicon.css",
+              "src/styles/main.scss",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/assets/scss/themes",
-                "src/assets/scss/setting"
+                "src/styles"
               ]
             },
             "scripts": [],
@@ -121,12 +121,12 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/styles/main.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/assets/scss/themes",
-                "src/assets/scss/setting"
+                "src/styles"
               ]
             },
             "scripts": []
@@ -147,12 +147,12 @@
             "port": 6006,
             "styles": [
               "remixicon/fonts/remixicon.css",
+              "src/styles/main.scss",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/assets/scss/themes",
-                "src/assets/scss/setting"
+                "src/styles"
               ]
             }
           }
@@ -172,12 +172,12 @@
             "outputDir": "storybook-static",
             "styles": [
               "remixicon/fonts/remixicon.css",
+              "src/styles/main.scss",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/assets/scss/themes",
-                "src/assets/scss/setting"
+                "src/styles"
               ]
             }
           }

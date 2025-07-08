@@ -19,18 +19,17 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
-import { ToastrService } from 'ngx-toastr';
 import {
   CalendarDay,
   CalendarType,
   CalendarViewMode,
   SelectionType,
   ViewMode,
-  WEEK_DAYS,
 } from './models/calendar.model';
 import { CalendarService } from './services/calendar.service';
+import { NarTranslations } from '@shared/translations/translations.model';
+import { NAR_TRANSLATIONS } from '@shared/translations/translations.token';
 
 /**
  * @name
@@ -45,23 +44,16 @@ import { CalendarService } from './services/calendar.service';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    OverlayModule,
-    TranslateModule,
-    A11yModule,
-  ],
+  imports: [CommonModule, FormsModule, OverlayModule, A11yModule],
 })
 export class CalendarComponent implements OnInit {
+  // ViewChildrens para acceder a los botones de días, meses y años.
   @ViewChildren('monthButton') monthButtons!: QueryList<
     ElementRef<HTMLButtonElement>
   >;
-
   @ViewChildren('yearButton') yearButtons!: QueryList<
     ElementRef<HTMLButtonElement>
   >;
-
   @ViewChildren('dayButton') dayButtons!: QueryList<
     ElementRef<HTMLButtonElement>
   >;
@@ -71,11 +63,6 @@ export class CalendarComponent implements OnInit {
   @Input() blockDisabledRanges: boolean | undefined = undefined;
   @Input() isOpenedByOverlay: boolean = false;
 
-  // Signal para la fecha seleccionada cuando el tipo es 'DAY'.
-  // Cuando el tipo es 'WEEK' o 'RANGE', esta señal contendrá 'null' o la última fecha individual seleccionada.
-  // La selección de rango se manejará en `selectedRange`.
-  readonly selectedDate: WritableSignal<moment.Moment | null> = signal(null);
-
   /**
    * Input para establecer la fecha por defecto del calendario
    * Este setter actualizará la señal `selectedDate` y `selectedRange` según el tipo.
@@ -84,9 +71,6 @@ export class CalendarComponent implements OnInit {
   set date(value: Date | Date[] | string | string[] | null) {
     queueMicrotask(() => this.updateSelectedDate(value));
   }
-
-  // El getter `date` ahora simplemente devuelve el valor de la señal `selectedDate` o `selectedRange`
-  // dependiendo del tipo de selección.
   get date(): moment.Moment | moment.Moment[] | null {
     if (this.type === CalendarType.DAY) {
       return this.selectedDate();
@@ -99,46 +83,49 @@ export class CalendarComponent implements OnInit {
     return null;
   }
 
+  // Variable privada para almacenar las traducciones del calendario por defecto o las inyectadas.
+  protected _translations: NarTranslations = inject(NAR_TRANSLATIONS);
+
+  // Evento para emitir la fecha seleccionada.
   @Output() dateSelected = new EventEmitter<Date | Date[]>();
 
+  // Eventos para manejar advertencias de fechas bloqueadas y deshabilitadas.
+  @Output() blockedRangeWarning: EventEmitter<void> = new EventEmitter();
+  @Output() disabledDatesWarning: EventEmitter<void> = new EventEmitter();
+
+  // Constantes para el modo de vista del calendario y el tipo de selección.
+  public readonly VIEW_MODE = CalendarViewMode;
+  public readonly SELECTION_TYPE = CalendarType;
   readonly viewMode: WritableSignal<ViewMode> = signal(
     CalendarViewMode.DEFAULT,
   );
 
-  // Variables para almacenar los años y meses disponibles.
-  allYears: number[] = [];
-  allMonths: string[] = [];
-
-  // Variable para el inicio del bloque de años. Por defecto, el año actual.
-  yearsBlockStart = moment().year();
-
+  // Señales para manejar el estado del calendario.
+  readonly selectedDate: WritableSignal<moment.Moment | null> = signal(null);
   readonly daysInMonth: WritableSignal<CalendarDay[]> = signal([]);
-
-  // Variables de vista más consistentes con constantes.
-  readonly VIEW_MODE = CalendarViewMode;
-  readonly SELECTION_TYPE = CalendarType;
-  readonly WEEK_DAYS: string[] = WEEK_DAYS;
-
   readonly currentViewDate: WritableSignal<Date | null> = signal(
     moment().toDate(),
   );
-
+  readonly selectedRange: WritableSignal<moment.Moment[]> = signal([]);
   readonly currentYear: Signal<number> = computed(() =>
     moment(this.currentViewDate()).year(),
   );
-
   readonly currentMonthNumber: Signal<number> = computed(() =>
     moment(this.currentViewDate()).month(),
   );
 
+  // ID único para el calendario, útil para accesibilidad y pruebas.
   readonly calendarId = crypto.randomUUID();
 
-  // `selectedRange` como Signal para una mejor reactividad para los tipos WEEK y RANGE.
-  readonly selectedRange: WritableSignal<moment.Moment[]> = signal([]);
+  // Variables para almacenar los años y meses disponibles en el calendario.
+  allYears: number[] = [];
+  allMonths: string[] = [];
 
-  private readonly _toastService = inject(ToastrService);
+  // Variables para manejar el bloque de años y el inicio del bloque de años.
+  yearsBlockStart = moment().year();
+
+  // Inyección de Servicios
   private readonly _calendarService = inject(CalendarService);
-  private readonly _translateService = inject(TranslateService);
 
   constructor() {
     // Effect para manejar el enfoque después de cambiar de vista.
@@ -158,6 +145,11 @@ export class CalendarComponent implements OnInit {
     });
   }
 
+  ngOnInit(): void {
+    // Cargamos la traducción
+    this.initCalendar();
+  }
+
   /**
    * Listener para manejar el evento de teclado.
    * @param {KeyboardEvent} event - Evento de teclado.
@@ -171,10 +163,6 @@ export class CalendarComponent implements OnInit {
     } else if (this.viewMode() === CalendarViewMode.YEARS) {
       this.navigateCalendarYears(event);
     }
-  }
-
-  ngOnInit(): void {
-    this.initCalendar();
   }
 
   /**
@@ -749,7 +737,8 @@ export class CalendarComponent implements OnInit {
 
   /**
    * Función unificada para manejar la lógica de selección de rango (semana/rango).
-   * Contiene la lógica común para verificar fechas deshabilitadas y emitir toasts.
+   * Contiene la lógica común para verificar fechas deshabilitadas y emitir eventos.
+   * Esta función se utiliza tanto para semanas como para rangos de fechas.
    * @param {moment.Moment} startDate - Fecha de inicio del rango.
    * @param {moment.Moment} endDate - Fecha de fin del rango.
    * @param {boolean} isWeekSelection - Indica si es una selección de semana.
@@ -791,18 +780,22 @@ export class CalendarComponent implements OnInit {
       ),
     );
 
-    // Si hay fechas deshabilitadas y `blockDisabledRanges` es `true`, bloqueamos la selección.
+    // Si hay fechas deshabilitadas y `blockDisabledRanges` es `true`,
+    // limpiamos la selección y emitimos una advertencia.
+    // Esto bloquea la selección del rango si hay fechas deshabilitadas.
     if (this.blockDisabledRanges && hasDisabledDates) {
       this.selectedDate.set(null);
       this.selectedRange.set([]);
       this.renderCalendarDays();
-      this.showBlockedRangeToast();
+      this.blockedRangeWarning.emit();
       return;
     }
 
-    // Si hay fechas deshabilitadas pero `blockDisabledRanges` es `false`, mostramos un toast de advertencia.
+    // Si hay fechas deshabilitadas pero `blockDisabledRanges` es `false`
+    // emitimos una advertencia, pero no bloqueamos la selección.
+    // Esto permite que el usuario pueda seleccionar el rango, pero con una advertencia.
     if (!this.blockDisabledRanges && hasDisabledDates)
-      this.showDisabledDatesToast();
+      this.disabledDatesWarning.emit();
 
     // Filtramos las fechas deshabilitadas del rango si no está bloqueado.
     const filteredDates = totalDates.filter(
@@ -815,11 +808,11 @@ export class CalendarComponent implements OnInit {
     // Establecemos el rango seleccionado con las fechas filtradas.
     this.selectedRange.set(filteredDates.map((dateStr) => moment(dateStr)));
     this.selectedDate.set(null); // Limpiar selectedDate para tipos de rango
-    this.currentViewDate.set(
-      filteredDates.length > 0
-        ? moment(filteredDates[0]).toDate()
-        : moment().toDate(),
-    );
+
+    // Si es de tipo WEEK, actualizamos la vista actual al primer día de la semana,
+    // Si es de tipo RANGE, actualizamos al primer último día del rango,
+    if (isWeekSelection) this.currentViewDate.set(startDate.toDate());
+    else this.currentViewDate.set(endDate.toDate());
   }
 
   /**
@@ -903,34 +896,6 @@ export class CalendarComponent implements OnInit {
       // Volvemos a renderizar los días del calendario para reflejar la selección.
       this.renderCalendarDays();
     }
-  }
-
-  /**
-   * Muestra un toast de error cuando se bloquea la selección por fechas deshabilitadas.
-   */
-  showBlockedRangeToast() {
-    this._toastService.error(
-      this._translateService.instant('CALENDAR.BLOCKED_BY_DISABLED_DATES'),
-      this._translateService.instant(
-        'CALENDAR.BLOCKED_BY_DISABLED_DATES_TITLE',
-      ),
-      {
-        timeOut: 5000,
-      },
-    );
-  }
-
-  /**
-   * Muestra un toast de advertencia cuando hay fechas deshabilitadas en el rango pero no se bloquea la selección.
-   */
-  showDisabledDatesToast() {
-    this._toastService.warning(
-      this._translateService.instant('CALENDAR.DISABLED_DATES_WARNING'),
-      this._translateService.instant('CALENDAR.DISABLED_DATES_WARNING_TITLE'),
-      {
-        timeOut: 5000,
-      },
-    );
   }
 
   /**
@@ -1110,9 +1075,10 @@ export class CalendarComponent implements OnInit {
 
     if (day.isDisabled) {
       // Usamos el servicio de traducción para el mensaje de día deshabilitado
-      return this._translateService.instant('CALENDAR.DAY_DISABLED', {
-        date: formattedDate,
-      });
+      return this._translations.dayDisabled.replace(
+        '{date}',
+        formattedDate,
+      );
     }
     // Si no está deshabilitado, solo mostramos la fecha formateada
     return formattedDate;

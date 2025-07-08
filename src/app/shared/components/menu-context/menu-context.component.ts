@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { Subject, takeUntil } from 'rxjs';
-import { ButtonColor, ButtonSize } from '../button/models/button.entity';
+import { ButtonColor, ButtonSize } from '../button/models/button.model';
 import { OVERLAY_POSITIONS } from './models/menu-context.model';
 import { MenuContextManagerService } from './services/menu-context-manager/menu-context-manager.service';
 

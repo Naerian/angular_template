@@ -4,13 +4,13 @@ import { Component, Signal, computed, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '@services/auth/auth.service';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { FullscreenToggleComponent } from '@shared/components/fullscreen-toggle/fullscreen-toggle.component';
 import { LogoComponent } from '@shared/components/logo/logo.component';
 import { MenuService } from '@shared/components/side-menu/services/menu.service';
 import { SideMenuModule } from '@shared/components/side-menu/side-menu.module';
 import { SidebarPanelComponent } from '@shared/components/sidebar-panel/sidebar-panel.component';
 import { ThemeToggleModule } from '@shared/components/theme-toggle/theme-toggle.module';
-import { ClickableDirective } from '@shared/directives/clickable.directive';
 
 @Component({
   selector: 'neo-main',
@@ -23,11 +23,11 @@ import { ClickableDirective } from '@shared/directives/clickable.directive';
     LogoComponent,
     CdkScrollable,
     SideMenuModule,
+    ButtonComponent,
     ThemeToggleModule,
     FullscreenToggleComponent,
     SidebarPanelComponent,
     RouterOutlet,
-    ClickableDirective,
   ],
 })
 export class MainComponent {

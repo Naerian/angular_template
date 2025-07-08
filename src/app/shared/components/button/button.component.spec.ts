@@ -4,7 +4,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { axe, toHaveNoViolations } from "jasmine-axe";
 import { By } from '@angular/platform-browser';
-import { ButtonMode, ButtonColor, ButtonSize, ButtonType } from './models/button.entity';
+import { ButtonMode, ButtonColor, ButtonSize, ButtonType } from './models/button.model';
 
 describe('ButtonComponent', () => {
   let component: ButtonComponent;

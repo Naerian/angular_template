@@ -1,14 +1,17 @@
-//---------------
-// ## Estilos para los mensajes toast
-//---------------
-@import 'ngx-toastr/toastr';
+// Estilos para los mensajes toast
+@import "ngx-toastr/toastr";
 
-//---------------
-// ## Themes (oscuro y claro)
-//---------------
-@import "./assets/scss/themes/themes";
+// Importación de bootstrap SCSS
+@import "./assets/scss/bootstrap-grid";
+@import "./assets/scss/bootstrap-utilities";
 
-//---------------
-// ## Setting
-//---------------
-@import "./assets/scss/setting/settings";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
