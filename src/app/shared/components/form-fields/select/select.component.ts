@@ -28,7 +28,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { Subject, take, takeUntil } from 'rxjs';
-import { InputSize } from '../models/form-field.entity';
+import { InputSize } from '../models/form-field.model';
 import { InputsUtilsService } from '../services/inputs-utils.service';
 import { NEO_SELECT, OVERLAY_POSITIONS } from './models/select.model';
 import { OptionGroupsComponent } from './option-groups/option-groups.component';
@@ -295,14 +295,8 @@ export class SelectComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id) {
-      this._id.set(
-        this._inputsUtilsService.createUniqueId(
-          this.label || this.title || 'select',
-        ),
-      );
-      this._labelId.set(`label_${this._id()}`);
-    }
+    this._id?.set(this._inputsUtilsService.createUniqueId('select'));
+    this._labelId?.set(`label_${this._id()}`);
   }
 
   /**

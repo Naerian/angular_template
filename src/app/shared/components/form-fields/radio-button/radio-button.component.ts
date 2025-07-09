@@ -1,8 +1,23 @@
-import { Component, ElementRef, EventEmitter, Inject, Input, Optional, Output, ViewChild, WritableSignal, booleanAttribute, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  Optional,
+  Output,
+  ViewChild,
+  WritableSignal,
+  booleanAttribute,
+  signal,
+} from '@angular/core';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { NEO_RADIO_BUTTON_GROUP, RadioButtonGroupComponent } from './radio-button-group/radio-button-group.component';
+import {
+  NEO_RADIO_BUTTON_GROUP,
+  RadioButtonGroupComponent,
+} from './radio-button-group/radio-button-group.component';
 import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
-import { InputSize } from '../models/form-field.entity';
+import { InputSize } from '../models/form-field.model';
 
 /**
  * @name
@@ -19,13 +34,15 @@ import { InputSize } from '../models/form-field.entity';
 @Component({
   selector: 'neo-radio-button',
   templateUrl: './radio-button.component.html',
-  styleUrls: ['./radio-button.component.scss', './../form-fields-settings.scss'],
+  styleUrls: [
+    './radio-button.component.scss',
+    './../form-fields-settings.scss',
+  ],
   host: {
     '(focus)': '_inputElement.nativeElement.focus()',
-  }
+  },
 })
 export class RadioButtonComponent {
-
   @ViewChild('input') _inputElement!: ElementRef<HTMLInputElement>;
   @ViewChild('radioButtonContent') radioButtonContent!: ElementRef;
 
@@ -63,14 +80,11 @@ export class RadioButtonComponent {
     if (this._value !== value) {
       this._value = value;
       if (this.radioGroup !== null) {
-
         // Si no está marcado y el valor del grupo es el mismo que el valor del radio button, lo marcamos
-        if (!this.checked)
-          this.checked = this.radioGroup.value === value;
+        if (!this.checked) this.checked = this.radioGroup.value === value;
 
         // Si el radio button está seleccionado, actualiza el valor del grupo de radio buttons
-        if (this.checked)
-          this.radioGroup.selected = this;
+        if (this.checked) this.radioGroup.selected = this;
       }
     }
   }
@@ -79,31 +93,30 @@ export class RadioButtonComponent {
     return this._value;
   }
 
-
   /**
    * Input para asignar el estado deshabilitado del radio button
    */
   _disabled: WritableSignal<boolean> = signal(false);
 
   @Input({ transform: booleanAttribute }) set disabled(value: boolean) {
-    if (this._disabled() !== value)
-      this._disabled.set(value);
+    if (this._disabled() !== value) this._disabled.set(value);
   }
 
   get disabled(): boolean {
-    return this._disabled() || (this.radioGroup !== null && this.radioGroup.disabled);
+    return (
+      this._disabled() || (this.radioGroup !== null && this.radioGroup.disabled)
+    );
   }
 
   /**
    * Input para asignar el nombre del radio buttons
    */
   @Input() set name(value: string) {
-
     this._name.set(value);
 
     // Actualizamos el ID del radio button
     this.createUniqueId();
-  };
+  }
 
   _name: WritableSignal<string> = signal('');
   get name() {
@@ -116,19 +129,20 @@ export class RadioButtonComponent {
   _checked: WritableSignal<boolean> = signal(false);
   @Input({ transform: booleanAttribute }) set checked(value: boolean) {
     if (this.checked !== value) {
-
       this._checked.set(value);
 
       // Si el radio button está marcado y el grupo de radio buttons tiene un valor diferente, actualiza el valor del grupo
       if (value && this.radioGroup && this.radioGroup.value !== this.value)
         this.radioGroup.selected = this;
-      else if (!value && this.radioGroup && this.radioGroup.value === this.value)
+      else if (
+        !value &&
+        this.radioGroup &&
+        this.radioGroup.value === this.value
+      )
         this.radioGroup.selected = null;
 
-
       // Si el radio button está marcado, notifica al dispatcher para desmarcar otros radio buttons con el mismo nombre
-      if (value)
-        this._radioDispatcher.notify(this.id, this.name);
+      if (value) this._radioDispatcher.notify(this.id, this.name);
     }
   }
 
@@ -153,12 +167,14 @@ export class RadioButtonComponent {
   _title: WritableSignal<string> = signal('');
 
   // Nos servirá para desuscribirnos del _radioDispatcher
-  private _removeUniqueSelectionListener: () => void = () => { };
+  private _removeUniqueSelectionListener: () => void = () => {};
 
   constructor(
-    @Optional() @Inject(NEO_RADIO_BUTTON_GROUP) radioGroup: RadioButtonGroupComponent,
+    @Optional()
+    @Inject(NEO_RADIO_BUTTON_GROUP)
+    radioGroup: RadioButtonGroupComponent,
     private _radioDispatcher: UniqueSelectionDispatcher,
-    private readonly _inputsUtilsService: InputsUtilsService
+    private readonly _inputsUtilsService: InputsUtilsService,
   ) {
     this.radioGroup = radioGroup;
   }
@@ -171,42 +187,43 @@ export class RadioButtonComponent {
 
   ngOnInit() {
     if (this.radioGroup) {
-
       // Si el radio está dentro de un grupo de radio, determina si debe estar marcado
       this.checked = this.radioGroup.value === this.value;
 
       // Si el radio button está marcado, actualiza el radio button seleccionado del grupo
-      if (this.checked)
-        this.radioGroup.selected = this;
-
+      if (this.checked) this.radioGroup.selected = this;
     }
 
     // Utilizamos `_radioDispatcher` para notificar a otros radio buttons con el mismo nombre para desmarcar.
-    this._removeUniqueSelectionListener = this._radioDispatcher.listen((id, name) => {
-      if (id !== this.id && name === this.name)
-        this.checked = false;
-    });
+    this._removeUniqueSelectionListener = this._radioDispatcher.listen(
+      (id, name) => {
+        if (id !== this.id && name === this.name) this.checked = false;
+      },
+    );
   }
 
   /**
    * Función para crear el título del radio button
    */
   createTitle() {
-    this._title.set(this.radioButtonContent?.nativeElement?.innerHTML.replace(/(<([^>]+)>)/gi, "") || '');
+    this._title.set(
+      this.radioButtonContent?.nativeElement?.innerHTML.replace(
+        /(<([^>]+)>)/gi,
+        '',
+      ) || '',
+    );
   }
 
   /**
    * Función para crear name único a partir del label del radio button
    */
   createUniqueName(): void {
-
     // Copia el nombre del grupo de radio padre si no tiene nombre y el grupo de radio tiene nombre
-    if (this.radioGroup?.name)
-      this.name = this.radioGroup.name;
+    if (this.radioGroup?.name) this.name = this.radioGroup.name;
 
     // Si no tiene nombre, crea un nombre único
     if (!this._name() && !this.radioGroup?.name) {
-      this.name = this._inputsUtilsService.createUniqueId(this._title() || 'neo_radio');
+      this.name = this._inputsUtilsService.createUniqueId('radiobutton');
     }
   }
 
@@ -223,10 +240,8 @@ export class RadioButtonComponent {
    * Función para crear un ID único a partir del nombre
    */
   createUniqueId(): void {
-    if (!this.id) {
-      this._id.set(this._inputsUtilsService.createUniqueId('neo_radiobutton'));
-      this._labelId.set(`label_${this._id()}`);
-    }
+    this._id?.set(this._inputsUtilsService.createUniqueId('radiobutton'));
+    this._labelId?.set(`label_${this._id()}`);
   }
 
   /**
@@ -241,21 +256,17 @@ export class RadioButtonComponent {
    * @param {Event} event
    */
   onChangeRadioButton(event: Event) {
-
     event?.stopPropagation();
 
     // Si el radio button no está marcado y no está deshabilitado, lo marcamos
     // y emitimos el evento de cambio al grupo de radio buttons
     if (!this.checked && !this.disabled) {
-
       this.checked = true;
 
       this._emitChangeEvent();
 
       // Actualiza el radio button seleccionado del grupo
-      if (this.radioGroup)
-        this.radioGroup.changeValue(this.value);
-
+      if (this.radioGroup) this.radioGroup.changeValue(this.value);
     }
   }
 
@@ -264,13 +275,10 @@ export class RadioButtonComponent {
    * @param {Event} event
    */
   onClickTargetRadioButton(event: Event) {
-
     this.onChangeRadioButton(event);
 
     // Si el radio button no está deshabilitado, enfocamos el input
-    if (!this._disabled())
-      this._inputElement.nativeElement.focus();
-
+    if (!this._disabled()) this._inputElement.nativeElement.focus();
   }
 
   ngOnDestroy() {

@@ -1,6 +1,17 @@
-import { Component, EventEmitter, Input, InputSignal, Output, WritableSignal, booleanAttribute, forwardRef, input, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  InputSignal,
+  Output,
+  WritableSignal,
+  booleanAttribute,
+  forwardRef,
+  input,
+  signal,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { InputSize } from '../models/form-field.entity';
+import { InputSize } from '../models/form-field.model';
 import { InputsUtilsService } from '../services/inputs-utils.service';
 
 @Component({
@@ -10,18 +21,17 @@ import { InputsUtilsService } from '../services/inputs-utils.service';
   templateUrl: './input-file.component.html',
   styleUrls: ['./input-file.component.scss', './../form-fields-settings.scss'],
   host: {
-    'class': 'neo-input-file'
+    class: 'neo-input-file',
   },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputFileComponent),
-      multi: true
-    }
+      multi: true,
+    },
   ],
 })
 export class InputFileComponent implements ControlValueAccessor {
-
   @Input({ transform: booleanAttribute }) required: boolean = false;
   @Input() title?: string;
   @Input() extensions?: string;
@@ -46,8 +56,8 @@ export class InputFileComponent implements ControlValueAccessor {
   }
 
   /**
-  * Input para crear un id único para el campo
-  */
+   * Input para crear un id único para el campo
+   */
   _id: WritableSignal<string> = signal('');
   _labelId: WritableSignal<string> = signal('');
   @Input() set id(value: string) {
@@ -77,9 +87,7 @@ export class InputFileComponent implements ControlValueAccessor {
 
   private _multiple: WritableSignal<boolean> = signal(false);
 
-  constructor(
-    private readonly _inputsUtilsService: InputsUtilsService,
-  ) { }
+  constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
 
   ngAfterViewInit(): void {
     this.createUniqueId();
@@ -89,10 +97,8 @@ export class InputFileComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id) {
-      this._id.set(this._inputsUtilsService.createUniqueId(this.label || this.title || 'input'));
-      this._labelId.set(`label_${this._id()}`);
-    }
+    this._id?.set(this._inputsUtilsService.createUniqueId('input-file'));
+    this._labelId?.set(`label_${this._id()}`);
   }
 
   /**
@@ -111,17 +117,17 @@ export class InputFileComponent implements ControlValueAccessor {
   /**
    * Funciones de control de eventos
    */
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   /**
    * Write form value to the DOM element (model => view)
    */
-  writeValue(value: any): void { }
+  writeValue(value: any): void {}
 
   /**
-  * Update form when DOM element value changes (view => model)
-  */
+   * Update form when DOM element value changes (view => model)
+   */
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
@@ -139,5 +145,4 @@ export class InputFileComponent implements ControlValueAccessor {
   setDisabledState(isDisabled: boolean): void {
     this._disabled.set(isDisabled);
   }
-
 }

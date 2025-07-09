@@ -1,7 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, WritableSignal, forwardRef, signal } from '@angular/core';
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { InputSize } from '../models/form-field.entity';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+  WritableSignal,
+  forwardRef,
+  signal,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
+import { InputSize } from '../models/form-field.model';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 
 /**
@@ -22,21 +36,23 @@ import { InputsUtilsService } from '@shared/components/form-fields/services/inpu
   styleUrls: ['./checkbox.component.scss', './../form-fields-settings.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => CheckboxComponent),
-    multi: true,
-  }]
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CheckboxComponent),
+      multi: true,
+    },
+  ],
 })
 export class CheckboxComponent implements ControlValueAccessor {
-
   @ViewChild('input') _inputElement!: ElementRef<HTMLInputElement>;
   @ViewChild('checkboxContent') checkboxContent!: ElementRef;
 
   @Input() label?: string;
   @Input() name?: string;
   @Input() inputSize: InputSize = 'm';
-  @Output() readonly change: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() readonly change: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
 
   /**
    * Input para crear un id único para el campo
@@ -73,7 +89,6 @@ export class CheckboxComponent implements ControlValueAccessor {
         this._inputElement.nativeElement.indeterminate = this.indeterminate;
       this._checked.set(false);
     }
-
   }
 
   get indeterminate(): boolean {
@@ -98,9 +113,7 @@ export class CheckboxComponent implements ControlValueAccessor {
 
   _title: WritableSignal<string> = signal('');
 
-  constructor(
-    private readonly _inputsUtilsService: InputsUtilsService
-  ) { }
+  constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
 
   ngAfterViewInit(): void {
     this.createTitle();
@@ -108,32 +121,32 @@ export class CheckboxComponent implements ControlValueAccessor {
   }
 
   /**
-  * Función para crear el título del checkbox
-  */
+   * Función para crear el título del checkbox
+   */
   createTitle() {
     if (!this._title())
-      this._title.set(this.checkboxContent?.nativeElement?.innerHTML.replace(/(<([^>]+)>)/gi, "") || '');
+      this._title.set(
+        this.checkboxContent?.nativeElement?.innerHTML.replace(
+          /(<([^>]+)>)/gi,
+          '',
+        ) || '',
+      );
   }
 
   /**
    * Función para crear un ID único a partir del nombre
    */
   createUniqueId(): void {
-    if (!this.id) {
-      this._id.set(this._inputsUtilsService.createUniqueId('neo_checkbox'));
-      this._labelId.set(`label_${this._id()}`);
-    }
+    this._id?.set(this._inputsUtilsService.createUniqueId('checkbox'));
+    this._labelId?.set(`label_${this._id()}`);
   }
 
   /**
    * Función para activar o desactivar el checkbox
    */
   onClickTargetCheckbox() {
-
-    if (this._disabled())
-      return;
-    else
-      this._inputElement.nativeElement.focus();
+    if (this._disabled()) return;
+    else this._inputElement.nativeElement.focus();
 
     this._checked.set(!this._checked());
     this._inputElement.nativeElement.checked = this._checked();
@@ -151,8 +164,8 @@ export class CheckboxComponent implements ControlValueAccessor {
     event.stopPropagation();
   }
 
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   writeValue(checked: boolean) {
     this._checked.set(checked);
@@ -169,5 +182,4 @@ export class CheckboxComponent implements ControlValueAccessor {
   public setDisabledState(isDisabled: boolean) {
     this._disabled.set(isDisabled);
   }
-
 }

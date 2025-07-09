@@ -1,7 +1,7 @@
 import { Component, ContentChildren, EventEmitter, InjectionToken, Input, Output, QueryList, WritableSignal, forwardRef, signal } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { InputSize } from '../../models/form-field.entity';
+import { InputSize } from '../../models/form-field.model';
 import { RadioButtonComponent } from '../radio-button.component';
 import { DirectionRadioButtonGroup } from '../models/radio-button.entity';
 
@@ -161,7 +161,7 @@ export class RadioButtonGroupComponent implements ControlValueAccessor {
     this.createTitle();
 
     if (!this._name() || this._name() === '' || this._name() === null || this._name() === undefined) {
-      this._name.set(this._inputsUtilsService.createUniqueId(this.label || 'neo_group_radio'));
+      this._name.set(this._inputsUtilsService.createUniqueId('radiobutton-group'));
       this.updateRadioButtonsName();
     }
 

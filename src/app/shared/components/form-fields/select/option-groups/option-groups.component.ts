@@ -11,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { OptionComponent } from '../option/option.component';
-import { InputSize } from '../../models/form-field.entity';
+import { InputSize } from '../../models/form-field.model';
 import { NEO_SELECT, NEO_OPTION_GROUPS } from '../models/select.model';
 import { SelectComponent } from '../select.component';
 

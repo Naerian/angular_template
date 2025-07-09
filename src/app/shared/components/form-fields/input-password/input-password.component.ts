@@ -1,10 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, forwardRef, input, Input, InputSignal, Output, signal, WritableSignal } from '@angular/core';
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  input,
+  Input,
+  InputSignal,
+  Output,
+  signal,
+  WritableSignal,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 import { ButtonComponent } from '../../button/button.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { InputSize } from '../models/form-field.entity';
+import { InputSize } from '../models/form-field.model';
 
 /**
  * @name
@@ -17,19 +31,21 @@ import { InputSize } from '../models/form-field.entity';
 @Component({
   selector: 'neo-input-password',
   templateUrl: './input-password.component.html',
-  styleUrls: ['./input-password.component.scss', './../form-fields-settings.scss'],
+  styleUrls: [
+    './input-password.component.scss',
+    './../form-fields-settings.scss',
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputPasswordComponent),
-      multi: true
-    }
+      multi: true,
+    },
   ],
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, TranslateModule]
+  imports: [CommonModule, FormsModule, ButtonComponent, TranslateModule],
 })
 export class InputPasswordComponent implements ControlValueAccessor {
-
   @Input() autofocus?: boolean = false;
   @Input() readonly?: boolean = false;
   @Input() required: boolean = false;
@@ -89,9 +105,7 @@ export class InputPasswordComponent implements ControlValueAccessor {
 
   show: WritableSignal<boolean> = signal(false);
 
-  constructor(
-    private readonly _inputsUtilsService: InputsUtilsService,
-  ) { }
+  constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
 
   ngAfterViewInit(): void {
     this.createUniqueId();
@@ -101,10 +115,8 @@ export class InputPasswordComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id) {
-      this._id.set(this._inputsUtilsService.createUniqueId(this.label || 'input-password'));
-      this._labelId.set(`label_${this._id()}`);
-    }
+    this._id?.set(this._inputsUtilsService.createUniqueId('input-password'));
+    this._labelId?.set(`label_${this._id()}`);
   }
 
   /**
@@ -152,8 +164,8 @@ export class InputPasswordComponent implements ControlValueAccessor {
   /**
    * Funciones de control de eventos
    */
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   writeValue(value: any) {
     this._value.set(value);

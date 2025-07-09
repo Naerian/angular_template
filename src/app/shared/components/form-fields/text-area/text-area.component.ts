@@ -1,9 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { booleanAttribute, Component, EventEmitter, forwardRef, input, Input, InputSignal, Output, signal, WritableSignal } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  EventEmitter,
+  forwardRef,
+  input,
+  Input,
+  InputSignal,
+  Output,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { InputSize } from '../models/form-field.entity';
+import { InputSize } from '../models/form-field.model';
 
 /**
  * @name
@@ -17,16 +28,17 @@ import { InputSize } from '../models/form-field.entity';
   selector: 'neo-textarea',
   templateUrl: './text-area.component.html',
   styleUrls: ['./text-area.component.scss', './../form-fields-settings.scss'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => TextAreaComponent),
-    multi: true,
-  }],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TextAreaComponent),
+      multi: true,
+    },
+  ],
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule]
+  imports: [CommonModule, FormsModule, TranslateModule],
 })
 export class TextAreaComponent {
-
   @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
   @Input({ transform: booleanAttribute }) readonly?: boolean = false;
   @Input({ transform: booleanAttribute }) required: boolean = false;
@@ -43,8 +55,8 @@ export class TextAreaComponent {
   hasErrors: InputSignal<boolean> = input<boolean>(false);
 
   /**
-  * Input para crear un id único para el campo
-  */
+   * Input para crear un id único para el campo
+   */
   _id: WritableSignal<string> = signal('');
   _labelId: WritableSignal<string> = signal('');
   @Input() set id(value: string) {
@@ -84,9 +96,7 @@ export class TextAreaComponent {
    */
   @Input('aria-describedby') ariaDescribedBy!: string;
 
-  constructor(
-    private readonly _inputsUtilsService: InputsUtilsService,
-  ) { }
+  constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
 
   ngAfterViewInit(): void {
     this.createUniqueId();
@@ -96,10 +106,8 @@ export class TextAreaComponent {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id || this.id === '' || this.id === null || this.id === undefined) {
-      this._id.set(this._inputsUtilsService.createUniqueId(this.label || 'textarea'));
-      this._labelId.set(`label_${this._id()}`);
-    }
+    this._id?.set(this._inputsUtilsService.createUniqueId('textarea'));
+    this._labelId?.set(`label_${this._id()}`);
   }
 
   /**
@@ -121,10 +129,10 @@ export class TextAreaComponent {
   }
 
   /**
-  * Funciones de control de eventos
-  */
-  onChange: any = () => { };
-  onTouched: any = () => { };
+   * Funciones de control de eventos
+   */
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   /**
    * Write form value to the DOM element (model => view)

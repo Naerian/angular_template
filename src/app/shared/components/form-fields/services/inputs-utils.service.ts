@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { UtilsService } from '../../../../core/services/utils/utils.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InputsUtilsService {
+  private counter = 0;
 
-  constructor(
-    private readonly _utilsService: UtilsService
-  ) { }
+  constructor(private readonly _utilsService: UtilsService) {}
 
   /**
    * Función para crear un ID único a partir del nombre, label u otro valor
@@ -17,6 +16,6 @@ export class InputsUtilsService {
    * @returns {string} - LabelId creado a partir del nombre o label del campo
    */
   createUniqueId(name: string): string {
-    return `${this._utilsService.stringToSlug(name, '_')}_${(Math.floor(Math.random() * 999999))}`;
+    return `${this._utilsService.stringToSlug(name, '_')}_${this.counter}_${crypto.randomUUID()}`;
   }
 }

@@ -33,7 +33,7 @@ import {
   DEFAULT_FORMAT,
   SelectionType,
 } from '../../calendar/models/calendar.model';
-import { InputAutocomplete, InputSize } from '../models/form-field.entity';
+import { InputAutocomplete, InputSize } from '../models/form-field.model';
 import { OVERLAY_POSITIONS } from './models/input-date-picker.model';
 import { DatePickerManagerService } from './services/date-picker-manager/date-picker-manager.service';
 
@@ -240,14 +240,8 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id) {
-      this._id.set(
-        this._inputsUtilsService.createUniqueId(
-          this.label || this.title || 'input-date-picker',
-        ),
-      );
-      this._labelId.set(`label_${this._id()}`);
-    }
+    this._id?.set(this._inputsUtilsService.createUniqueId('input-date-picker'));
+    this._labelId?.set(`label_${this._id()}`);
   }
 
   /**

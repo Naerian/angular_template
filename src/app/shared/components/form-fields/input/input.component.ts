@@ -1,8 +1,27 @@
 import { CommonModule, JsonPipe } from '@angular/common';
-import { booleanAttribute, Component, EventEmitter, forwardRef, input, Input, InputSignal, Output, signal, WritableSignal } from '@angular/core';
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  booleanAttribute,
+  Component,
+  EventEmitter,
+  forwardRef,
+  input,
+  Input,
+  InputSignal,
+  Output,
+  signal,
+  WritableSignal,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { InputAutocomplete, InputSize, InputType } from '../models/form-field.entity';
+import {
+  InputAutocomplete,
+  InputSize,
+  InputType,
+} from '../models/form-field.model';
 
 /**
  * @name
@@ -21,14 +40,13 @@ import { InputAutocomplete, InputSize, InputType } from '../models/form-field.en
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputComponent),
-      multi: true
-    }
+      multi: true,
+    },
   ],
   standalone: true,
-  imports: [CommonModule, FormsModule, JsonPipe]
+  imports: [CommonModule, FormsModule, JsonPipe],
 })
 export class InputComponent implements ControlValueAccessor {
-
   @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
   @Input({ transform: booleanAttribute }) readonly?: boolean = false;
   @Input({ transform: booleanAttribute }) required: boolean = false;
@@ -36,7 +54,7 @@ export class InputComponent implements ControlValueAccessor {
   @Input() label?: string;
   @Input() name?: string;
   @Input() placeholder: string = '';
-  @Input() type: InputType = "text";
+  @Input() type: InputType = 'text';
   @Input() autocomplete: InputAutocomplete = 'off';
   @Input() size?: number;
   @Input() minlength?: number;
@@ -90,9 +108,7 @@ export class InputComponent implements ControlValueAccessor {
 
   @Output() change = new EventEmitter<string>();
 
-  constructor(
-    private readonly _inputsUtilsService: InputsUtilsService,
-  ) { }
+  constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
 
   ngAfterViewInit(): void {
     this.createUniqueId();
@@ -102,10 +118,8 @@ export class InputComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if (!this.id) {
-      this._id.set(this._inputsUtilsService.createUniqueId(this.label || this.title || 'input'));
-      this._labelId.set(`label_${this._id()}`);
-    }
+    this._id?.set(this._inputsUtilsService.createUniqueId('input'));
+    this._labelId?.set(`label_${this._id()}`);
   }
 
   /**
@@ -129,22 +143,20 @@ export class InputComponent implements ControlValueAccessor {
   /**
    * Funciones de control de eventos
    */
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   /**
    * Write form value to the DOM element (model => view)
    */
   writeValue(value: any) {
-    if (this.type === 'number')
-      this._value.set(value || 0);
-    else
-      this._value.set(value);
+    if (this.type === 'number') this._value.set(value || 0);
+    else this._value.set(value);
   }
 
   /**
-  * Update form when DOM element value changes (view => model)
-  */
+   * Update form when DOM element value changes (view => model)
+   */
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }

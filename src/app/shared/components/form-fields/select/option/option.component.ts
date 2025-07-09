@@ -14,7 +14,7 @@ import { InputsUtilsService } from '../../services/inputs-utils.service';
 import { NEO_OPTION_GROUPS, NEO_SELECT } from '../models/select.model';
 import { OptionGroupsComponent } from '../option-groups/option-groups.component';
 import { SelectComponent } from '../select.component';
-import { InputSize } from '../../models/form-field.entity';
+import { InputSize } from '../../models/form-field.model';
 
 /**
  * @name
@@ -29,9 +29,9 @@ import { InputSize } from '../../models/form-field.entity';
   templateUrl: './option.component.html',
   host: {
     role: 'option',
-    '[id]': 'getId()',
     '[title]': 'getLabelText()',
-    '[role]': 'option',
+    '[attr.id]': '_id()',
+    '[attr.role]': 'option',
     '[class.neo-select__dropdown__options__option]': 'true',
     '[class.neo-select__dropdown__options__option--hidden]': 'isHideBySearch()',
     '[class.neo-select__dropdown__options__option--selected]': 'selected',
@@ -86,7 +86,7 @@ export class OptionComponent implements FocusableOption {
 
   @Input() value!: any;
 
-  private _id: string = '';
+  private _id: WritableSignal<string> = signal('');
   private _size: WritableSignal<InputSize> = signal('m');
   private _disabled: WritableSignal<boolean> = signal(false);
   private _selected: WritableSignal<boolean> = signal(false);
@@ -128,7 +128,7 @@ export class OptionComponent implements FocusableOption {
    * Método para generar un identificador único para la opción
    */
   createUniqueId(): void {
-    this._id = `neo-option-${this._inputsUtilsService.createUniqueId(this.getLabelText())}`;
+    this._id?.set(this._inputsUtilsService.createUniqueId('select-option'));
   }
 
   /**
@@ -145,7 +145,7 @@ export class OptionComponent implements FocusableOption {
     // y así poder seleccionarla o deseleccionarla
     if (!this.selectParent?.multiple)
       this.selectParent?.options.forEach((option) =>
-        option.getId() !== this.getId() ? option.deselect() : null,
+        option._id() !== this._id() ? option.deselect() : null,
       );
 
     // Alternamos la selección de la opción
@@ -243,14 +243,6 @@ export class OptionComponent implements FocusableOption {
    */
   getElementRef(): ElementRef {
     return this._elementRef;
-  }
-
-  /**
-   * Método para obtener el identificador único de la opción
-   * @returns string
-   */
-  getId(): string {
-    return this._id;
   }
 
   /**
