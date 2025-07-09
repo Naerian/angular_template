@@ -31,6 +31,29 @@
   }
 }
 
+// Mixin para definir tamaños de componentes de textarea
+// Utiliza este mixin para aplicar tamaños consistentes a los componentes de textarea de la aplicación
+@mixin component-textarea-size($size) {
+  $padding: map-get($component-paddings, $size);
+  $font-size: map-get($component-font-sizes, $size);
+
+  @if ($padding) {
+    padding: $padding;
+  } @else {
+    padding: map-get($component-paddings, m);
+  }
+
+  @if ($font-size) {
+    font-size: $font-size;
+    line-height: $font-size *
+      1.5; // Ajuste de line-height basado en el tamaño de fuente
+  } @else {
+    font-size: map-get($component-font-sizes, m);
+    line-height: map-get($component-font-sizes, m) *
+      1.5; // Ajuste de line-height basado en el tamaño de fuente
+  }
+}
+
 // Mixin para aplicar tamaño de fuente según el tamaño del componente
 // Utiliza este mixin para aplicar un tamaño de fuente específico a los componentes
 @mixin component-font-size($size) {

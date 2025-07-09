@@ -1,8 +1,6 @@
-// src/app/shared/components/form-fields/input/input.component.scss
-
-@import "config"; // Importa tus variables globales (SCSS)
-@import "mixins"; // Importa tus mixins globales
-@import "functions"; // Importa tus funciones globales
+@import "config";
+@import "mixins";
+@import "functions";
 
 .neo-input {
   position: relative;

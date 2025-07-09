@@ -10,11 +10,14 @@
   <div class="neo-textarea__wrapper">
     <textarea
       #txArea="ngModel"
-      class="neo-textarea__wrapper__field size-{{ inputSize }}"
+      class="
+        neo-textarea__wrapper__field 
+        neo-textarea__wrapper__field--{{ inputSize }}
+      "
+      [class.neo-textarea__wrapper__field--no-resize]="!resize"
       [class.neo-textarea__wrapper__field--has-error]="
         hasErrors() || (txArea?.errors && (txArea?.dirty || txArea?.touched))
       "
-      [ngClass]="{ 'no-resize': !resize }"
       [(ngModel)]="_value"
       (input)="onInput(txArea.value)"
       (blur)="onBlur()"

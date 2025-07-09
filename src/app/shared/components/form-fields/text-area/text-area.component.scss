@@ -1,8 +1,9 @@
-
+@import "config";
+@import "mixins";
+@import "functions";
 
 .neo-textarea {
-  display: flex;
-  flex-direction: column;
+  position: relative;
 
   &--disabled {
     cursor: not-allowed;
@@ -11,23 +12,50 @@
 
   &__wrapper {
     position: relative;
+
     &__field {
       width: 100%;
-      border-radius: 5px;
+      border-radius: $border-radius-md;
       box-sizing: border-box;
-      text-decoration: none;
-      padding: 10px;
+      padding: $spacing-s;
+      background-color: var(--bg-field-color);
+      border: $border-width-base solid var(--border-field-color);
+
+      &:focus,
+      &:active {
+        @include outline-focus;
+      }
+
+      &--xs {
+        @include component-textarea-size(xs);
+      }
+      &--s {
+        @include component-textarea-size(s);
+      }
+      &--xm {
+        @include component-textarea-size(xm);
+      }
+      &--m {
+        @include component-textarea-size(m);
+      }
+      &--l {
+        @include component-textarea-size(l);
+      }
+      &--xl {
+        @include component-textarea-size(xl);
+      }
 
       &--has-error {
-        border: 1px solid var(--danger-color);
+        border: $border-width-xs solid var(--color-danger);
       }
 
-      &.no-resize {
-        resize: none;
-      }
-
+      &[disabled],
       &:disabled {
         cursor: not-allowed;
+      }
+
+      &--no-resize {
+        resize: none;
       }
     }
   }
