@@ -53,17 +53,19 @@
       type="text"
     />
     @if (showIconCalendar) {
-      <div
-        class="neo-input-date-picker__wrapper__icon"
+      <i
+        class="
+        neo-input-date-picker__wrapper__icon 
+        neo-input-date-picker__wrapper__icon--{{ inputSize }}
+        {{ icon }}
+        "
         [class.disabled]="_disabled()"
         [tabindex]="!_disabled() ? 0 : -1"
         (click)="toogleCalendar($event)"
         (keydown.enter)="toogleCalendar($event)"
         (keydown.space)="toogleCalendar($event)"
         cdkOverlayOrigin
-      >
-        <i [class]="icon"></i>
-      </div>
+      ></i>
     }
   </div>
 </div>

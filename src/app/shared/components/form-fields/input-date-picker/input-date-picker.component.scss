@@ -61,8 +61,28 @@
 
     &__icon {
       position: absolute;
-      right: $spacing-m;
-      cursor: default;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+      @include flex-center;
+      &--xs {
+        @include component-size(xs);
+      }
+      &--s {
+        @include component-size(s);
+      }
+      &--xm {
+        @include component-size(xm);
+      }
+      &--m {
+        @include component-size(m);
+      }
+      &--l {
+        @include component-size(l);
+      }
+      &--xl {
+        @include component-size(xl);
+      }
 
       &::before {
         color: var(--icon-field-color);
