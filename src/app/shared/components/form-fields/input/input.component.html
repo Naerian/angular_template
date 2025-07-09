@@ -32,7 +32,7 @@
       [attr.aria-readonly]="readonly"
       [attr.aria-labelledby]="_labelId()"
       [attr.aria-owns]="_labelId()"
-      [attr.aria-describedby]="ariaDescribedBy"
+      [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
       [readonly]="readonly"
       [disabled]="_disabled()"
       [required]="required"

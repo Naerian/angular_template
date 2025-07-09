@@ -16,7 +16,6 @@
     @include flex-row-center;
     justify-content: space-between;
     border-radius: $border-radius-md;
-    font-weight: $font-weight-medium;
     box-sizing: border-box;
     padding: $spacing-s $spacing-s;
     padding-right: calc(#{$spacing-m} + #{$spacing-xs});
@@ -33,33 +32,21 @@
 
     &--xs {
       @include component-size(xs);
-      height: map-get($component-heights, xs);
-      font-size: map-get($component-font-sizes, xs);
     }
     &--s {
       @include component-size(s);
-      height: map-get($component-heights, s);
-      font-size: map-get($component-font-sizes, s);
     }
     &--xm {
       @include component-size(xm);
-      height: map-get($component-heights, xm);
-      font-size: map-get($component-font-sizes, xm);
     }
     &--m {
       @include component-size(m);
-      height: map-get($component-heights, m);
-      font-size: map-get($component-font-sizes, m);
     }
     &--l {
       @include component-size(l);
-      height: map-get($component-heights, l);
-      font-size: map-get($component-font-sizes, l);
     }
     &--xl {
       @include component-size(xl);
-      height: map-get($component-heights, xl);
-      font-size: map-get($component-font-sizes, xl);
     }
 
     &--disabled,

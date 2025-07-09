@@ -1,22 +1,15 @@
-
+@import "config";
+@import "mixins";
 
 .neo-form-error {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 5px;
+  @include flex-col-start;
+  margin-top: #{spacing-xxs};
 
-  &__errors {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-
-    small {
-      font-size: 0.75rem;
-      line-height: 0.75rem;
-      letter-spacing: 0.5px;
-      font-style: italic;
-      color: var(--danger-color);
-    }
+  &__error {
+    @include flex-col-center;
+    gap: #{spacing-xxs};
+    font-size: #{component-font-size(xs)};
+    font-style: italic;
+    color: var(--color-danger);
   }
 }

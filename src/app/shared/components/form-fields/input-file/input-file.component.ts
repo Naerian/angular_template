@@ -7,19 +7,27 @@ import {
   WritableSignal,
   booleanAttribute,
   forwardRef,
+  inject,
   input,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputSize } from '../models/form-field.model';
 import { InputsUtilsService } from '../services/inputs-utils.service';
+import { NeoUITranslations } from '@shared/translations/translations.model';
+import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
+import { ButtonComponent } from '@shared/components/button/button.component';
+import {
+  ButtonColor,
+  ButtonMode,
+} from '@shared/components/button/models/button.model';
 
 @Component({
   selector: 'neo-input-file',
   standalone: true,
-  imports: [],
+  imports: [ButtonComponent],
   templateUrl: './input-file.component.html',
-  styleUrls: ['./input-file.component.scss', './../form-fields-settings.scss'],
+  styleUrls: ['./input-file.component.scss'],
   host: {
     class: 'neo-input-file',
   },
@@ -34,10 +42,14 @@ import { InputsUtilsService } from '../services/inputs-utils.service';
 export class InputFileComponent implements ControlValueAccessor {
   @Input({ transform: booleanAttribute }) required: boolean = false;
   @Input() title?: string;
-  @Input() extensions?: string;
+  @Input() extensions?: string | string[];
   @Input() label?: string;
   @Input() name?: string;
   @Input() inputSize: InputSize = 'm';
+  @Input() color: ButtonColor = 'primary';
+  @Input() allWidth: boolean = false;
+  @Input() transparent: boolean = false;
+  @Input() mode: ButtonMode = 'button';
 
   /**
    * Input para añadir un aria-describedby al campo
@@ -68,6 +80,20 @@ export class InputFileComponent implements ControlValueAccessor {
     return this._id();
   }
 
+  _value = signal<FileList | null>(null);
+  get value(): any[] {
+    const files = this._value();
+    return files
+      ? Array.from(files).map((file) => ({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          lastModified: file.lastModified,
+          webkitRelativePath: file.webkitRelativePath,
+        }))
+      : [];
+  }
+
   /**
    * Input para marcar el campo como deshabilitado
    */
@@ -75,7 +101,6 @@ export class InputFileComponent implements ControlValueAccessor {
   @Input() set disabled(status: boolean) {
     this._disabled.set(status);
   }
-
   get disabled() {
     return this._disabled();
   }
@@ -87,7 +112,8 @@ export class InputFileComponent implements ControlValueAccessor {
 
   private _multiple: WritableSignal<boolean> = signal(false);
 
-  constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
+  protected _translations: NeoUITranslations = inject(NEOUI_TRANSLATIONS); // Inyectamos las traducciones
 
   ngAfterViewInit(): void {
     this.createUniqueId();
@@ -102,6 +128,15 @@ export class InputFileComponent implements ControlValueAccessor {
   }
 
   /**
+   * Función para obtener el aria-describedby personalizado
+   * que incluye el hint y el error del campo.
+   * @return {string}
+   */
+  get ariaDescribedByCustom(): string {
+    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
+  }
+
+  /**
    * Función para controlar el evento de cambio de archivo
    * @param {Event} event
    */
@@ -111,6 +146,7 @@ export class InputFileComponent implements ControlValueAccessor {
     if (files) {
       this.onChange(files);
       this.filesSelected.emit(files);
+      this._value.set(files);
     }
   }
 

@@ -10,6 +10,7 @@ import { InputComponent } from './input/input.component';
 import { RadioButtonModule } from './radio-button/radio-button.module';
 import { SelectModule } from './select/select.module';
 import { TextAreaComponent } from './text-area/text-area.component';
+import { FormHintComponent } from './form-hint/form-hint.component';
 
 @NgModule({
   declarations: [],
@@ -20,6 +21,7 @@ import { TextAreaComponent } from './text-area/text-area.component';
     InputPasswordComponent,
     CheckboxComponent,
     FormErrorComponent,
+    FormHintComponent,
     RadioButtonModule,
     SelectModule,
     FormFieldComponent,
@@ -31,6 +33,7 @@ import { TextAreaComponent } from './text-area/text-area.component';
     TextAreaComponent,
     InputPasswordComponent,
     FormErrorComponent,
+    FormHintComponent,
     CheckboxComponent,
     RadioButtonModule,
     SelectModule,

@@ -1,0 +1,9 @@
+@import "config";
+@import "mixins";
+
+.neo-form-hint {
+  @include flex-col-start;
+  margin-top: #{spacing-xxs};
+  font-size: #{component-font-size(xs)};
+  color: var(--color-text-secondary);
+}

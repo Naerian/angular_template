@@ -48,10 +48,7 @@ import { DatePickerManagerService } from './services/date-picker-manager/date-pi
 @Component({
   selector: 'neo-input-date-picker',
   templateUrl: './input-date-picker.component.html',
-  styleUrls: [
-    './input-date-picker.component.scss',
-    './../form-fields-settings.scss',
-  ],
+  styleUrls: ['./input-date-picker.component.scss'],
   animations: [FADE_IN_OUT_SCALE],
   standalone: true,
   imports: [
@@ -242,6 +239,15 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   createUniqueId(): void {
     this._id?.set(this._inputsUtilsService.createUniqueId('input-date-picker'));
     this._labelId?.set(`label_${this._id()}`);
+  }
+
+  /**
+   * Función para obtener el aria-describedby personalizado
+   * que incluye el hint y el error del campo.
+   * @return {string}
+   */
+  get ariaDescribedByCustom(): string {
+    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
   }
 
   /**

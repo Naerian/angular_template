@@ -1,13 +1,16 @@
-@if (errors().length > 0) {
-  <div class="neo-form-error">
-    @for (error of errors(); track error) {
-      <div class="neo-form-error__errors">
-        <small
-          >{{
-            KEY_TRANSLATION_PREFIX + "." + error.message
-              | translate: error.params
-          }}
-        </small>
+@if (
+  errors().length > 0 &&
+  (control?.touched ||
+    control?.dirty ||
+    formGroup?.touched ||
+    formGroup?.dirty ||
+    ngModelControl?.touched ||
+    ngModelControl?.dirty)
+) {
+  <div class="neo-form-error" [id]="_id() + '-error'" [attr.aria-hidden]="true">
+    @for (error of errors(); track $index) {
+      <div class="neo-form-error__error">
+        {{ getValidationMessage(error) }}
       </div>
     }
   </div>

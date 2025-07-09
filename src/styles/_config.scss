@@ -28,6 +28,7 @@ $color-danger: #dc3545; // Un rojo para peligro / errores
 
 // Color de texto principal
 $color-text: $color-gray-900;
+$color-text-secondary: $color-gray-600;
 $color-text-light: $color-white;
 
 // Color del anillo de enfoque para accesibilidad
@@ -37,7 +38,7 @@ $focus-ring-color: rgba($color-accent, 0.3);
 
 // --- Variables de Bordes y Radios ---
 $border-radius-sm: 4px;
-$border-radius-md: 8px;
+$border-radius-md: 6px;
 $border-radius-lg: 12px;
 $border-radius-circle: 50%;
 $border-width-base: 1px;
@@ -47,7 +48,7 @@ $border-color-base: $color-gray-300;
 
 // --- Base de Tipografía ---
 // Fuentes
-$font-family-base: "OpenSans", sans-serif;
+$font-family-base: "Hellix", sans-serif;
 $font-size-base: 1rem; // 16px por defecto (para el html/body)
 $line-height-base: 1.5; // Altura de línea estándar para el texto general
 $font-weight-regular: 400;
@@ -77,17 +78,23 @@ $spinner-border-width: 2.9px; // O un valor más genérico si lo usas en otros l
 // --- Mapas de Tamaños de Fuente de Componentes (ACTUALIZADO: 'm' a 0.875rem) ---
 // Controla el font-size de los componentes por su tamaño (xs, s, xm, m, l, xl)
 $component-font-sizes: (
-  xs: $font-size-base * 0.625,
-  // 10px
-  s: $font-size-base * 0.75,
-  // 12px
-  xm: $font-size-base * 0.8125,
-  // 13px
-  m: $font-size-base * 0.875,
-  // 14px
-  l: $font-size-base,
-  // 16px
-  xl: $font-size-base * 1.125 // 18px,,
+  xs: 0.75rem,
+  s: 0.8125rem,
+  xm: 0.875rem,
+  m: 1rem,
+  l: 1.125rem,
+  xl: 1.25rem,
+);
+
+// --- Mapas de Peso de Fuente de Componentes ---
+// Controla el font-weight de los componentes por su tamaño (xs, s, xm,
+$component-font-weights: (
+  xs: $font-weight-regular,
+  s: $font-weight-regular,
+  xm: $font-weight-medium,
+  m: $font-weight-medium,
+  l: $font-weight-semibold,
+  xl: $font-weight-semibold,
 );
 
 // -----------------------------------------
@@ -104,15 +111,15 @@ $spacing-xxl: 48px;
 
 // -----------------------------------------
 
-// --- Mapas de Alturas de Componentes (RECALCULADO para el nuevo estándar de fuente) ---
+// --- Mapas de Alturas de Componentes ---
 // Define las alturas fijas para los componentes, como botones e inputs
 $component-heights: (
-  xs: 24px,
-  s: 28px,
-  xm: 32px,
-  m: 36px,
-  l: 40px,
-  xl: 44px,
+  xs: 1.75rem,
+  s: 2rem,
+  xm: 2.25rem,
+  m: 2.5rem,
+  l: 3rem,
+  xl: 3.5rem,
 );
 
 // --- Mapas de Padding de Componentes ---

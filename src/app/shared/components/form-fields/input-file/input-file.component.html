@@ -1,12 +1,4 @@
-<div
-  class="neo-input-file size-{{ inputSize }}"
-  [title]="
-    title ||
-    label ||
-    (multiple ? 'Seleccionar ficheros' : 'Seleccionar fichero')
-  "
-  [class.neo-input-file--disabled]="_disabled()"
->
+<div class="neo-input-file">
   <input
     #fileInputFile
     hidden
@@ -21,15 +13,39 @@
     [attr.aria-disabled]="_disabled()"
     [attr.aria-labelledby]="_labelId()"
     [attr.aria-owns]="_labelId()"
-    [attr.aria-describedby]="ariaDescribedBy"
+    [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
     [disabled]="_disabled()"
     [required]="required"
     [attr.aria-required]="required"
     [attr.name]="name"
+    [attr.title]="title || label || ''"
   />
-  <div class="neo-input-file__wrapper" (click)="fileInputFile.click()">
-    <span class="neo-input-file__wrapper__label size-{{ inputSize }}">{{
-      label || (multiple ? "Seleccionar ficheros" : "Seleccionar fichero")
-    }}</span>
-  </div>
+  <neo-button
+    (onClick)="fileInputFile.click()"
+    [size]="inputSize"
+    [color]="color"
+    [disabled]="_disabled()"
+    [allWidth]="allWidth"
+    [transparent]="transparent"
+    [mode]="mode"
+    [ariaLabel]="
+      label ||
+      (multiple
+        ? _translations.inputFileLabelMultiple
+        : _translations.inputFileLabel)
+    "
+    [title]="
+      label ||
+      (multiple
+        ? _translations.inputFileLabelMultiple
+        : _translations.inputFileLabel)
+    "
+  >
+    {{
+      label ||
+        (multiple
+          ? _translations.inputFileLabelMultiple
+          : _translations.inputFileLabel)
+    }}
+  </neo-button>
 </div>

@@ -111,6 +111,15 @@ export class TextAreaComponent {
   }
 
   /**
+   * Función para obtener el aria-describedby personalizado
+   * que incluye el hint y el error del campo.
+   * @return {string}
+   */
+  get ariaDescribedByCustom(): string {
+    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
+  }
+
+  /**
    * Función del evento `input` del campo para obtener el valor introducido
    * @param {string} value
    */

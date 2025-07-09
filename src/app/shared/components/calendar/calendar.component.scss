@@ -12,7 +12,6 @@
   overflow: hidden;
   width: 310px;
   height: 375px;
-  font-family: $font-family-base;
   font-size: map-get($component-font-sizes, m);
   color: var(--color-text);
 
@@ -95,7 +94,7 @@
 
   &__weekdays {
     display: grid;
-    grid-template-columns: repeat(7, #{map-get($component-heights, m)});
+    grid-template-columns: repeat(7, 1fr);
     gap: $spacing-xxs;
     border-bottom: $border-width-base solid var(--border-color-base);
     font-size: map-get($component-font-sizes, s);
@@ -123,7 +122,7 @@
     justify-content: center;
 
     &--days {
-      grid-template-columns: repeat(7, #{map-get($component-heights, m)});
+      grid-template-columns: repeat(7, 1fr);
     }
     &--months {
       gap: $spacing-xs;

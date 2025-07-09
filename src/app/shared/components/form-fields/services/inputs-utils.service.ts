@@ -18,4 +18,16 @@ export class InputsUtilsService {
   createUniqueId(name: string): string {
     return `${this._utilsService.stringToSlug(name, '_')}_${this.counter}_${crypto.randomUUID()}`;
   }
+
+  /**
+   * Función para crear un aria-describedby personalizado
+   * y generar un ID único para el aria-describedby.
+   * @param {string} id - ID del campo para el que se quiere crear el
+   * @returns {string} - Aria-describedby personalizado
+   */
+  getAriaDescribedByCustom(id: string): string {
+    if (!id) return '';
+    const ids = [`${id}-hint`, `${id}-error`];
+    return ids.join(' ');
+  }
 }

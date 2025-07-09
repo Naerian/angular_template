@@ -315,6 +315,7 @@
           formControlName="name"
           [required]="true"
         ></neo-input>
+        <neo-form-error [control]="this.testForm.get('name')"></neo-form-error>
       </form>
       <br />
       <neo-textarea label="Textarea"></neo-textarea>
@@ -422,16 +423,6 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-12">
-      <neo-form-field>
-        <neo-input
-          label="Input normal dentro de un neo-form-field"
-          (change)="inputChange($event)"
-        ></neo-input>
-      </neo-form-field>
-    </div>
-  </div>
-  <div class="row">
     <div class="col-3">
       <neo-form-field>
         <neo-input label="Input XS" [inputSize]="'xs'"></neo-input>
@@ -461,6 +452,119 @@
       <neo-form-field>
         <neo-input label="Input XL" [inputSize]="'xl'"></neo-input>
       </neo-form-field>
+    </div>
+  </div>
+</neo-card>
+<hr />
+<neo-card>
+  <neo-card-header>
+    <div>Form fields</div>
+    <small>
+      El componente <b>neo-form-field</b> es un contenedor para los campos de
+      formulario. Permite aplicar estilos y comportamientos comunes a todos los
+      campos de formulario. Permite tener <b>label</b>, <b>hint</b> y
+      <b>error</b> de forma ordenada.
+    </small>
+  </neo-card-header>
+  <div class="row">
+    <div class="col-3">
+      <neo-form-field>
+        <neo-input label="Form field"></neo-input>
+      </neo-form-field>
+    </div>
+    <div class="col-3">
+      <neo-form-field>
+        <neo-input
+          [required]="true"
+          #inputFormField="ngModel"
+          #inputCmp
+          [(ngModel)]="inputFormFieldValue"
+          label="Form field + error"
+          (change)="inputChange($event)"
+        ></neo-input>
+        <neo-form-error
+          [ngModelControl]="inputFormField"
+          [id]="inputCmp.id"
+        ></neo-form-error>
+      </neo-form-field>
+    </div>
+    <div class="col-3">
+      <neo-form-field>
+        <neo-input #inputHint label="Form field + hint"></neo-input>
+        {{ inputHint.id }}
+        <neo-form-hint [id]="inputHint.id">
+          Este es un hint de ejemplo para el input
+        </neo-form-hint>
+      </neo-form-field>
+    </div>
+    <div class="col-3">
+      <neo-form-field>
+        <neo-input
+          [required]="true"
+          #inputCmp2
+          #inputFormField2="ngModel"
+          [(ngModel)]="inputFormField2Value"
+          label="Form field + hint + error"
+        ></neo-input>
+        <neo-form-error
+          [ngModelControl]="inputFormField2"
+          [id]="inputCmp2.id"
+        ></neo-form-error>
+        <neo-form-hint [id]="inputCmp2.id">
+          Este es un hint de ejemplo para el input
+        </neo-form-hint>
+      </neo-form-field>
+    </div>
+  </div>
+</neo-card>
+<hr />
+<neo-card>
+  <neo-card-header>
+    <div>Input files</div>
+  </neo-card-header>
+  <small
+    ><b>NOTA: </b>Abrir ventana de desarrollador para ver los valores</small
+  >
+  <div class="row">
+    <div class="col-2">
+      <label>Input file sencillo</label>
+      <neo-input-file (filesSelected)="filsFromInput($event)"></neo-input-file>
+    </div>
+    <div class="col-2">
+      <label>Input file múltiple</label>
+      <neo-input-file
+        [multiple]="true"
+        (filesSelected)="filsFromInput($event)"
+      ></neo-input-file>
+    </div>
+    <div class="col-2">
+      <label>Input file múltiple solo PDF y DOCX</label>
+      <neo-input-file
+        [multiple]="true"
+        [extensions]="['.pdf', '.docx']"
+        (filesSelected)="filsFromInput($event)"
+      ></neo-input-file>
+    </div>
+    <div class="col-2">
+      <label>Input file sencillo (Transparente)</label>
+      <neo-input-file
+        [transparent]="true"
+        (filesSelected)="filsFromInput($event)"
+      ></neo-input-file>
+    </div>
+    <div class="col-2">
+      <label>Input file sencillo (Color secundario)</label>
+      <neo-input-file
+        [color]="'secondary'"
+        (filesSelected)="filsFromInput($event)"
+      ></neo-input-file>
+    </div>
+    <div class="col-2">
+      <label>Input file sencillo (Tamaño S)</label>
+      <neo-input-file
+        [inputSize]="'s'"
+        (filesSelected)="filsFromInput($event)"
+      ></neo-input-file>
     </div>
   </div>
 </neo-card>

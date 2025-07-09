@@ -1,11 +1,29 @@
 /**
+ * Type de los diferentes validadores nativos de Angular.
+ */
+export type AngularNativeValidator =
+  | 'required'
+  | 'requiredTrue'
+  | 'minlength'
+  | 'maxlength'
+  | 'min'
+  | 'max'
+  | 'pattern'
+  | 'email'
+  | 'nullValidator';
+
+/**
  * Interfaz para las traducciones de la librería
  */
-export interface NarTranslations {
+export interface NeoUITranslations {
   // Textos del componente Select
   multipleChoices: string;
   selectOption: string;
   search: string;
+
+  // Textos del componente InputFile
+  inputFileLabel: string;
+  inputFileLabelMultiple: string;
 
   // Textos del componente Calendar
   weekDaysShort: string[];
@@ -21,4 +39,17 @@ export interface NarTranslations {
   dayDisabled: string;
   monthAria: string;
   yearsAria: string;
+
+  // Textos de validadores de formularios de Angular
+  validators: {
+    required: string;
+    requiredTrue: string;
+    minlength: string;
+    maxlength: string;
+    min: string;
+    max: string;
+    pattern: string;
+    email: string;
+    nullValidator: string;
+  };
 }

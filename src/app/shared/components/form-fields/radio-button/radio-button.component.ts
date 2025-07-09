@@ -34,10 +34,7 @@ import { InputSize } from '../models/form-field.model';
 @Component({
   selector: 'neo-radio-button',
   templateUrl: './radio-button.component.html',
-  styleUrls: [
-    './radio-button.component.scss',
-    './../form-fields-settings.scss',
-  ],
+  styleUrls: ['./radio-button.component.scss'],
   host: {
     '(focus)': '_inputElement.nativeElement.focus()',
   },
@@ -242,6 +239,15 @@ export class RadioButtonComponent {
   createUniqueId(): void {
     this._id?.set(this._inputsUtilsService.createUniqueId('radiobutton'));
     this._labelId?.set(`label_${this._id()}`);
+  }
+
+  /**
+   * Función para obtener el aria-describedby personalizado
+   * que incluye el hint y el error del campo.
+   * @return {string}
+   */
+  get ariaDescribedByCustom(): string {
+    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
   }
 
   /**

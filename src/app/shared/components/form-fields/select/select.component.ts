@@ -34,8 +34,8 @@ import { NEO_SELECT, OVERLAY_POSITIONS } from './models/select.model';
 import { OptionGroupsComponent } from './option-groups/option-groups.component';
 import { OptionComponent } from './option/option.component';
 import { SelectManagerService } from './services/select-manager/select-manager.service';
-import { NarTranslations } from '@shared/translations/translations.model';
-import { NAR_TRANSLATIONS } from '@shared/translations/translations.token';
+import { NeoUITranslations } from '@shared/translations/translations.model';
+import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
 
 /**
  * @name
@@ -56,7 +56,7 @@ import { NAR_TRANSLATIONS } from '@shared/translations/translations.token';
 @Component({
   selector: 'neo-select',
   templateUrl: './select.component.html',
-  styleUrls: ['./select.component.scss', './../form-fields-settings.scss'],
+  styleUrls: ['./select.component.scss'],
   animations: [FADE_IN_OUT_SCALE],
   providers: [
     {
@@ -194,7 +194,7 @@ export class SelectComponent implements ControlValueAccessor {
   private readonly _selectManagerService = inject(SelectManagerService);
 
   // Inyectamos las traducciones
-  protected _translations: NarTranslations = inject(NAR_TRANSLATIONS);
+  protected _translations: NeoUITranslations = inject(NEOUI_TRANSLATIONS);
 
   // Señal computada para obtener el texto de la opción seleccionada
   protected translatedMultipleChoices = computed(() => {
@@ -297,6 +297,15 @@ export class SelectComponent implements ControlValueAccessor {
   createUniqueId(): void {
     this._id?.set(this._inputsUtilsService.createUniqueId('select'));
     this._labelId?.set(`label_${this._id()}`);
+  }
+
+  /**
+   * Función para obtener el aria-describedby personalizado
+   * que incluye el hint y el error del campo.
+   * @return {string}
+   */
+  get ariaDescribedByCustom(): string {
+    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
   }
 
   /**

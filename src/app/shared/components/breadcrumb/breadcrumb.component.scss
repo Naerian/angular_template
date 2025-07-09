@@ -10,20 +10,18 @@
   align-items: center;
   justify-content: flex-start;
   gap: $spacing-xs;
-  font-size: $font-size-base * 0.875;
   font-weight: $font-weight-regular;
-  line-height: $line-height-base;
   border-radius: $border-radius-md;
   min-height: map-get($component-heights, s);
   box-shadow: inset 0 1px 2px rgba(var(-color-black), 0.05);
 
   &__separator {
-    font-size: $font-size-base;
     display: inline-flex;
     align-items: center;
     color: var(--separator-breadcrumb-color);
     margin: 0 $spacing-xxs;
     margin-top: $spacing-xxs;
+    @include component-font-size(xm);
   }
 
   &__item {
@@ -34,6 +32,7 @@
     padding: $spacing-xxs $spacing-xs;
     border-radius: $border-radius-md;
     display: inline-flex;
+    @include component-font-size(xm);
 
     &--active {
       font-weight: $font-weight-semibold;

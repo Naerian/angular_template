@@ -33,7 +33,7 @@ import { InputsUtilsService } from '@shared/components/form-fields/services/inpu
 @Component({
   selector: 'neo-checkbox',
   templateUrl: './checkbox.component.html',
-  styleUrls: ['./checkbox.component.scss', './../form-fields-settings.scss'],
+  styleUrls: ['./checkbox.component.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule],
   providers: [
@@ -139,6 +139,15 @@ export class CheckboxComponent implements ControlValueAccessor {
   createUniqueId(): void {
     this._id?.set(this._inputsUtilsService.createUniqueId('checkbox'));
     this._labelId?.set(`label_${this._id()}`);
+  }
+
+  /**
+   * Función para obtener el aria-describedby personalizado
+   * que incluye el hint y el error del campo.
+   * @return {string}
+   */
+  get ariaDescribedByCustom(): string {
+    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
   }
 
   /**

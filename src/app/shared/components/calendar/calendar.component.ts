@@ -28,8 +28,8 @@ import {
   ViewMode,
 } from './models/calendar.model';
 import { CalendarService } from './services/calendar.service';
-import { NarTranslations } from '@shared/translations/translations.model';
-import { NAR_TRANSLATIONS } from '@shared/translations/translations.token';
+import { NeoUITranslations } from '@shared/translations/translations.model';
+import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
 
 /**
  * @name
@@ -84,7 +84,7 @@ export class CalendarComponent implements OnInit {
   }
 
   // Variable privada para almacenar las traducciones del calendario por defecto o las inyectadas.
-  protected _translations: NarTranslations = inject(NAR_TRANSLATIONS);
+  protected _translations: NeoUITranslations = inject(NEOUI_TRANSLATIONS);
 
   // Evento para emitir la fecha seleccionada.
   @Output() dateSelected = new EventEmitter<Date | Date[]>();

@@ -17,7 +17,7 @@
       [tabIndex]="disabled ? -1 : 0"
       [attr.name]="name"
       [attr.aria-labelledby]="_labelId()"
-      [attr.aria-describedby]="ariaDescribedBy"
+      [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
       [attr.aria-disabled]="disabled"
       [disabled]="_disabled()"
       [checked]="_checked()"

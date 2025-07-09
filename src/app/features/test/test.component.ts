@@ -94,6 +94,8 @@ export class TestComponent implements OnInit {
   checkboxValue: boolean = false;
   radioButtonValue: string | null | number = null;
   inputvalue: string = '';
+  inputFormFieldValue: string = '';
+  inputFormField2Value: string = '';
   selectValue: string = '';
   selectValueWithDefaultValue: string = '';
   selectMultipleValue: string[] = [];
@@ -294,5 +296,14 @@ export class TestComponent implements OnInit {
     };
 
     this._modalDialogService.open(options, CalendarComponent);
+  }
+
+  filsFromInput(files: FileList) {
+    if (files && files.length > 0) {
+      const fileNames = Array.from(files).map((file) => file.name);
+      console.log('Archivos seleccionados:', fileNames.join(', '));
+    } else {
+      console.log('No se seleccionó ningún archivo');
+    }
   }
 }

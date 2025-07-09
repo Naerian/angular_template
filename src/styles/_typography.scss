@@ -1,12 +1,16 @@
-// src/styles/_typography.scss
-
-body {
-    font-family: $font-family-base; // Ya usa la variable, ¡perfecto!
-    font-size: $font-size-base;
-    line-height: 1.5;
-    color: $color-text;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+html,
+body,
+button,
+input,
+select,
+textarea,
+span {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: 1.5;
+  color: $color-text;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
@@ -15,47 +19,55 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: $font-family-base;
-    margin-top: 0;
-    margin-bottom: $spacing-m;
-    line-height: 1.2;
-    color: $color-gray-900;
+  font-family: $font-family-base;
+  margin-top: 0;
+  margin-bottom: $spacing-m;
+  line-height: 1.2;
+  color: $color-gray-900;
 }
 
 h1 {
-    font-size: 2.5rem;
+  font-size: 2.5rem;
 }
 
 h2 {
-    font-size: 2rem;
+  font-size: 2rem; // 32px
 }
 
 h3 {
-    font-size: 1.75rem;
+  font-size: 1.75rem; // 28px
 }
 
 h4 {
-    font-size: 1.5rem;
+  font-size: 1.5rem; // 24px
 }
 
 h5 {
-    font-size: 1.25rem;
+  font-size: 1.25rem; // 20px
 }
 
 h6 {
-    font-size: 1rem;
+  font-size: 1rem; // 16px
+}
+
+small {
+  font-family: $font-family-base;
+  font-size: 0.75rem; // 12px
+  color: $color-gray-600;
 }
 
 p {
-    margin-top: 0;
-    margin-bottom: $spacing-s;
+  font-family: $font-family-base;
+  margin-top: 0;
+  margin-bottom: $spacing-s;
 }
 
 a {
-    color: $color-primary;
-    text-decoration: none;
+  font-family: $font-family-base;
+  color: $color-primary;
+  text-decoration: none;
 
-    &:hover {
-        text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
+  }
 }

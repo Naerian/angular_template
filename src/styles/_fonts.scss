@@ -1,97 +1,123 @@
 // src/styles/_fonts.scss
 
-// Fuentes personalizadas de OpenSans
-// FONT-FAMILY
-// La variable CSS --font-family está bien, pero para SCSS y para usarla en variables,
-// es mejor definirla también como variable SCSS global en _config.scss.
-// Aquí solo declaramos los @font-face.
+// FONT-FAMILY: Hellix
+// Source: './fonts/Hellix/'
+// License: SIL Open Font License, Version 1.1
+
+// THIN Y THIN ITALIC
+@font-face {
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-Thin.woff2") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-ThinItalic.woff2") format("truetype");
+  font-weight: 100;
+  font-style: italic;
+}
 
 // LIGHT Y LIGHT ITALIC
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-Light.ttf") format("truetype");
-    font-weight: 300;
-    font-style: normal;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-Light.woff2") format("truetype");
+  font-weight: 300;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-LightItalic.ttf") format("truetype");
-    font-weight: 300;
-    font-style: italic;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-LightItalic.woff2") format("truetype");
+  font-weight: 300;
+  font-style: italic;
 }
 
 // REGULAR Y REGULAR ITALIC
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-Regular.ttf") format("truetype");
-    font-weight: 400;
-    font-style: normal;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-Regular.woff2") format("truetype");
+  font-weight: 400;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-Italic.ttf") format("truetype"); // Asumiendo que tienes un OpenSans-Italic.ttf para regular italic
-    font-weight: 400;
-    font-style: italic;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-RegularItalic.woff2") format("truetype");
+  font-weight: 400;
+  font-style: italic;
 }
 
 // MEDIUM Y MEDIUM ITALIC
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-Medium.ttf") format("truetype");
-    font-weight: 500;
-    font-style: normal;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-Medium.woff2") format("truetype");
+  font-weight: 500;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-MediumItalic.ttf") format("truetype");
-    font-weight: 500;
-    font-style: italic;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-MediumItalic.woff2") format("truetype");
+  font-weight: 500;
+  font-style: italic;
 }
 
 // SEMIBOLD Y SEMIBOLD ITALIC
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-SemiBold.ttf") format("truetype");
-    font-weight: 600;
-    font-style: normal;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-SemiBold.woff2") format("truetype");
+  font-weight: 600;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-SemiBoldItalic.ttf") format("truetype");
-    font-weight: 600;
-    font-style: italic;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-SemiBoldItalic.woff2") format("truetype");
+  font-weight: 600;
+  font-style: italic;
 }
 
 // BOLD Y BOLD ITALIC
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-Bold.ttf") format("truetype");
-    font-weight: 700;
-    font-style: normal;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-Bold.woff2") format("truetype");
+  font-weight: 700;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-BoldItalic.ttf") format("truetype");
-    font-weight: 700;
-    font-style: italic;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-BoldItalic.woff2") format("truetype");
+  font-weight: 700;
+  font-style: italic;
 }
 
 // EXTRABOLD Y EXTRABOLD ITALIC
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-ExtraBold.ttf") format("truetype");
-    font-weight: 800;
-    font-style: normal;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-ExtraBold.woff2") format("truetype");
+  font-weight: 800;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "OpenSans";
-    src: url("./../assets/font/OpenSans/OpenSans-ExtraBoldItalic.ttf") format("truetype");
-    font-weight: 800;
-    font-style: italic;
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-ExtraBoldItalic.woff2") format("truetype");
+  font-weight: 800;
+  font-style: italic;
+}
+
+// BLACK Y BLACK ITALIC
+@font-face {
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-Black.woff2") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Hellix";
+  src: url("./fonts/Hellix/Hellix-BlackItalic.woff2") format("truetype");
+  font-weight: 900;
+  font-style: italic;
 }

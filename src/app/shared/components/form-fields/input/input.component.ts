@@ -35,7 +35,7 @@ import {
 @Component({
   selector: 'neo-input',
   templateUrl: './input.component.html',
-  styleUrls: ['./input.component.scss', './../form-fields-settings.scss'],
+  styleUrls: ['./input.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -120,6 +120,15 @@ export class InputComponent implements ControlValueAccessor {
   createUniqueId(): void {
     this._id?.set(this._inputsUtilsService.createUniqueId('input'));
     this._labelId?.set(`label_${this._id()}`);
+  }
+
+  /**
+   * Función para obtener el aria-describedby personalizado
+   * que incluye el hint y el error del campo.
+   * @return {string}
+   */
+  get ariaDescribedByCustom(): string {
+    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
   }
 
   /**

@@ -33,7 +33,7 @@
       [attr.aria-disabled]="_disabled()"
       [attr.aria-readonly]="readonly"
       [attr.aria-labelledby]="_labelId()"
-      [attr.aria-describedby]="ariaDescribedBy"
+      [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
       [attr.aria-owns]="_labelId()"
       [attr.aria-required]="required"
       [attr.placeholder]="placeholder"

@@ -1,14 +1,7 @@
-.neo-form-field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 5px;
+@import "config";
+@import "mixins";
 
-  &__error {
-    min-height: 13px;
-    margin-top: 2px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
+.neo-form-field {
+  @include flex-col-start;
+  margin-top: #{spacing-xxs};
 }

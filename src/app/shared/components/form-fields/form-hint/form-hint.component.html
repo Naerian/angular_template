@@ -1,0 +1,6 @@
+<small class="neo-form-hint" [id]="_id() + '-hint'" [attr.aria-hidden]="true">
+  {{ text || "" }}
+  @if (!text) {
+    <ng-content></ng-content>
+  }
+</small>

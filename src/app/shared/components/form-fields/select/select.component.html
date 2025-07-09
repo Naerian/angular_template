@@ -32,7 +32,7 @@
     [attr.tabindex]="disabled ? -1 : 0"
     [attr.aria-controls]="isDropdownOpened() ? 'panel_' + _id() : null"
     [attr.aria-labelledby]="_labelId()"
-    [attr.aria-describedby]="ariaDescribedBy"
+    [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
     [attr.aria-required]="required"
     [attr.aria-expanded]="isDropdownOpened()"
     [attr.aria-haspopup]="'listbox'"

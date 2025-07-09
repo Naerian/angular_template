@@ -1,10 +1,9 @@
 <div class="neo-form-field">
   <div class="neo-form-field__field">
     <ng-content
-      select="neo-checkbox, neo-radio-button, neo-radio-button-group, neo-input, neo-input-date-picker, neo-input-password, neo-select, neo-textarea"
+      select="neo-checkbox, neo-radio-button, neo-radio-button-group, neo-input, neo-input-date-picker, neo-input-password, neo-select, neo-textarea, neo-input-file"
     ></ng-content>
   </div>
-  <div class="neo-form-field__error">
-    <ng-content select="neo-form-error"></ng-content>
-  </div>
+  <ng-content select="neo-form-hint"></ng-content>
+  <ng-content select="neo-form-error"></ng-content>
 </div>

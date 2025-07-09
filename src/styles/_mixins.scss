@@ -10,8 +10,7 @@
   @if ($height) {
     height: $height;
   } @else {
-    // Manejo de error o valor por defecto si el tamaño no existe
-    height: map-get($component-heights, m); // Tamaño medio como fallback
+    height: map-get($component-heights, m);
   }
 
   @if ($padding) {
@@ -108,6 +107,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+@mixin flex-col-start {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 @mixin ellipsis-text {
