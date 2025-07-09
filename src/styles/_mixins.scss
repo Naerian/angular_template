@@ -22,12 +22,10 @@
 
   @if ($font-size) {
     font-size: $font-size;
-    line-height: $font-size *
-      1.5; // Ajuste de line-height basado en el tamaño de fuente
+    line-height: $font-size;
   } @else {
     font-size: map-get($component-font-sizes, m);
-    line-height: map-get($component-font-sizes, m) *
-      1.5; // Ajuste de line-height basado en el tamaño de fuente
+    line-height: map-get($component-font-sizes, m);
   }
 }
 
@@ -45,12 +43,10 @@
 
   @if ($font-size) {
     font-size: $font-size;
-    line-height: $font-size *
-      1.5; // Ajuste de line-height basado en el tamaño de fuente
+    line-height: $font-size;
   } @else {
     font-size: map-get($component-font-sizes, m);
-    line-height: map-get($component-font-sizes, m) *
-      1.5; // Ajuste de line-height basado en el tamaño de fuente
+    line-height: map-get($component-font-sizes, m);
   }
 }
 
