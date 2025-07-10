@@ -34,9 +34,14 @@
 
   // Colores de escala de grises
   --color-gray-100: #{$color-gray-100}; // Gris muy claro (para hover sutil)
+  --color-gray-200: #{$color-gray-200}; // Gris claro (para fondos sutiles)
+  --color-gray-300: #{$color-gray-300}; // Gris medio claro (
   --color-gray-400: #{$color-gray-400}; // Gris claro (para texto de días no del mes actual)
   --color-gray-500: #{$color-gray-500}; // Gris medio (para texto deshabilitado/sutil)
   --color-gray-600: #{$color-gray-600}; // Gris oscuro (para iconos, texto secundario)
+  --color-gray-700: #{$color-gray-700}; // Gris oscuro (para texto principal)
+  --color-gray-800: #{$color-gray-800}; // Gris muy oscuro (para texto principal)
+  --color-gray-900: #{$color-gray-900}; // Gris muy oscuro (para texto principal)
 
   // Color de "halo" de enfoque para accesibilidad
   --focus-ring-color: #{$focus-ring-color};

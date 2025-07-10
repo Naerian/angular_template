@@ -595,7 +595,7 @@
       ></neo-input-file>
     </div>
     <div class="col-2">
-      <label>Input file múltiple solo PDF y DOCX</label>
+      <label>Input file múltiple (PDF y DOCX)</label>
       <neo-input-file
         [multiple]="true"
         [extensions]="['.pdf', '.docx']"
@@ -603,23 +603,24 @@
       ></neo-input-file>
     </div>
     <div class="col-2">
-      <label>Input file sencillo (Transparente)</label>
+      <label>Input file (Transparente)</label>
       <neo-input-file
         [transparent]="true"
         (filesSelected)="filsFromInput($event)"
       ></neo-input-file>
     </div>
     <div class="col-2">
-      <label>Input file sencillo (Color secundario)</label>
+      <label>Input file (Color secundario)</label>
       <neo-input-file
         [color]="'secondary'"
         (filesSelected)="filsFromInput($event)"
       ></neo-input-file>
     </div>
     <div class="col-2">
-      <label>Input file sencillo (Tamaño S)</label>
+      <label>Input file (Tamaño S - Deshabilitado)</label>
       <neo-input-file
         [inputSize]="'s'"
+        [disabled]="true"
         (filesSelected)="filsFromInput($event)"
       ></neo-input-file>
     </div>
