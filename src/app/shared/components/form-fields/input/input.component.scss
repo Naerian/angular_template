@@ -25,23 +25,11 @@
         @include outline-focus;
       }
 
-      &--xs {
-        @include component-size(xs);
-      }
-      &--s {
-        @include component-size(s);
-      }
-      &--xm {
-        @include component-size(xm);
-      }
-      &--m {
-        @include component-size(m);
-      }
-      &--l {
-        @include component-size(l);
-      }
-      &--xl {
-        @include component-size(xl);
+      // Tamaño dinámico para el input según el tamaño del componente
+      @each $size-key, $input-size in $component-heights {
+        &--#{$size-key} {
+          @include component-size($size-key);
+        }
       }
 
       &--clear {

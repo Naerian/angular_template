@@ -1,5 +1,3 @@
-// src/styles/_mixins.scss
-
 // Mixin para definir tamaños de componentes
 // Utiliza este mixin para aplicar tamaños consistentes a los componentes de la aplicación
 @mixin component-size($size) {
@@ -94,6 +92,25 @@
   }
 }
 
+// Mixin para aplicar tamaño al checkbox
+// Utiliza este mixin para aplicar un tamaño específico al checkbox
+@mixin component-checkbox-size($size) {
+  $height: map-get($checkbox-box-sizes, $size);
+  $width: map-get($checkbox-box-sizes, $size);
+
+  @if ($height) {
+    height: $height;
+  } @else {
+    height: map-get($component-heights, m);
+  }
+
+  @if ($width) {
+    width: $width;
+  } @else {
+    width: map-get($component-paddings, m);
+  }
+}
+
 // Mixin aplicar una transición suave a las propiedades CSS
 // Utiliza este mixin para aplicar transiciones suaves a las propiedades CSS de un elemento
 @mixin transition($args...) {
@@ -129,8 +146,17 @@
   }
 }
 
-// Mixin para centrar elementos con flexbox
-// Utiliza este mixin para centrar elementos dentro de un contenedor flex
+@mixin flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+@mixin flex-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 @mixin flex-center {
   display: flex;
   justify-content: center;
@@ -138,40 +164,33 @@
 }
 
 @mixin flex-row-center {
-  display: flex;
-  flex-direction: row;
+  @include flex-row;
   align-items: center;
 }
 
 @mixin flex-row-center-start {
-  display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
 }
 
 @mixin flex-col-center {
-  display: flex;
-  flex-direction: column;
+  @include flex-col;
   align-items: center;
 }
 
 @mixin flex-col-start-center {
-  display: flex;
-  flex-direction: column;
+  @include flex-col;
   align-items: flex-start;
   justify-content: center;
 }
 
 @mixin flex-col-start {
-  display: flex;
-  flex-direction: column;
+  @include flex-col;
   align-items: flex-start;
 }
 
 @mixin flex-col-stretch {
-  display: flex;
-  flex-direction: column;
+  @include flex-col;
   align-items: stretch;
 }
 

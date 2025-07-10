@@ -6,12 +6,12 @@
     display: flex;
 
     &.horizontal {
-      @include flex-row-center-start();
+      @include flex-row-center-start;
       gap: $spacing-m;
     }
 
     &.vertical {
-      @include flex-col-start-center();
+      @include flex-col-start-center;
       gap: $spacing-s;
     }
   }

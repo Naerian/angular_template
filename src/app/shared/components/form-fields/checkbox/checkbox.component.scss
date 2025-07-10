@@ -1,90 +1,133 @@
-// src/app/shared/components/form-fields/checkbox/checkbox.component.scss
-
 @import "config";
 @import "mixins";
-@import "functions";
+
+:host {
+  @include flex-col-start;
+}
 
 .neo-checkbox {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: flex-start;
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
 
-  &__control {
-    display: flex;
-    position: relative;
-    cursor: pointer;
+  &--disabled {
+    cursor: default;
+    opacity: 0.6;
+    .neo-checkbox__label {
+      cursor: default;
+    }
+  }
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__input:focus:not([disabled]) + &__mark,
+  &__input:focus-visible:not([disabled]) + &__mark,
+  &__input:active:not([disabled]) + &__mark {
+    @include outline-focus;
+  }
+
+  &__mark {
+    border: $border-width-base solid var(--border-field-color);
+    background-color: var(--bg-field-color);
+    border-radius: $border-radius-md;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+    cursor: inherit;
 
-    &__input {
-      position: absolute;
+    &::after {
+      content: "";
+      display: block;
+      border: solid var(--color-primary);
+      transform: rotate(45deg);
       opacity: 0;
-      cursor: pointer;
-      height: 0;
-      width: 0;
-      margin: 0;
-      z-index: -1;
+      transition: opacity 0.2s ease;
+    }
 
-      &[disabled],
-      &:disabled,
-      &--disabled {
-        @include disabled;
+    // Tamaño dinámico para la marca (aspa) según el tamaño del componente
+    @each $key, $size in $checkbox-box-sizes {
+      &--#{$key} {
+        height: $size;
+        width: $size;
+
+        &::after {
+          // Tamaño del aspa en proporción a la caja
+          $mark-width: $size * 0.15; // 15% del tamaño del checkbox
+          $mark-height: $size * 0.5; // 50% del tamaño del checkbox
+          $border-thickness: $size * 0.15; // 15% del tamaño del checkbox
+
+          width: $mark-width;
+          height: $mark-height;
+          border-width: 0 $border-thickness $border-thickness 0;
+        }
       }
     }
+  }
 
-    &__input:checked ~ &__checkmark,
-    &__input:indeterminate ~ &__checkmark {
-      border-color: var(--border-field-color);
-      box-shadow: none;
-    }
+  &--checked &__mark::after {
+    opacity: 1;
+  }
 
-    &__input:focus ~ &__checkmark {
-      outline-color: var(--outline-color);
-      outline-style: solid;
-      outline-width: $border-width-xs;
-      box-shadow: 0px 0px 2px $border-width-xs var(--bg-field-color);
-    }
-
-    &__input:checked ~ &__checkmark::after,
-    &__input:indeterminate ~ &__checkmark::after {
+  &--indeterminate &__mark {
+    &::after {
+      transform: rotate(0deg);
+      background-color: var(--color-primary);
+      border: none;
       opacity: 1;
+      margin-top: 1px;
     }
 
-    &__checkmark {
-      height: $checkbox-size;
-      width: $checkbox-size;
-      border: $border-width-xs solid var(--border-field-color);
-      background-color: var(--bg-field-color);
-      transition: background-color $transition-duration-base
-        $transition-timing-function-ease;
-      border-radius: $border-radius-checkbox;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    // Tamaño para la línea de indeterminación
+    @each $key, $size in $checkbox-box-sizes {
+      &--#{$key} {
+        height: $size;
+        width: $size;
 
-      &::after {
-        content: "";
-        display: block;
-        border: solid var(--color-primary);
-        border-width: $checkmark-border-width;
-        opacity: 0;
-        transition: opacity $transition-duration-base
-          $transition-timing-function-ease;
+        &::after {
+          // Tamaño del aspa en proporción a la caja
+          $mark-width: $size * 0.55; // 55% del tamaño del checkbox
+          $mark-height: $size * 0.2; // 20% del tamaño del checkbox
+
+          width: $mark-width;
+          height: $mark-height;
+        }
       }
     }
+  }
 
-    &__input:indeterminate ~ &__checkmark::after {
-      border-width: $checkmark-indeterminate-border-vertical-width
-        $checkmark-indeterminate-border-horizontal-width !important;
+  // Tamaño dinámico para el checkbox según el tamaño del componente
+  @each $size-key, $checbox-size in $checkbox-box-sizes {
+    &--#{$size-key} &__mark {
+      @include component-checkbox-size($size-key);
     }
+  }
 
-    &__label {
-      color: var(--text-color);
-      margin: 0;
-      cursor: pointer;
-      padding-left: calc(#{$spacing-xs} / 1.6);
+  &__label {
+    color: var(--color-gray-700);
+    margin: 0 !important;
+    padding-left: $spacing-xs;
+    cursor: pointer;
+
+    // Tamaño dinámico para la fuente según el tamaño del componente
+    @each $size-key, $font-size in $component-font-sizes {
+      &--#{$size-key} {
+        font-size: map-get($component-font-sizes, $size-key);
+        line-height: map-get($component-font-sizes, $size-key);
+      }
     }
   }
 }

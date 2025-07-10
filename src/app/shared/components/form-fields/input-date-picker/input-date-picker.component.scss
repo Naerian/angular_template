@@ -9,23 +9,11 @@
     position: relative;
 
     &__field {
-      &--xs {
-        @include component-size(xs);
-      }
-      &--s {
-        @include component-size(s);
-      }
-      &--xm {
-        @include component-size(xm);
-      }
-      &--m {
-        @include component-size(m);
-      }
-      &--l {
-        @include component-size(l);
-      }
-      &--xl {
-        @include component-size(xl);
+      // Tamaño dinámico para el input según el tamaño del componente
+      @each $size-key, $input-size in $component-heights {
+        &--#{$size-key} {
+          @include component-size($size-key);
+        }
       }
 
       width: 100%;
@@ -64,23 +52,12 @@
       top: 0;
       cursor: pointer;
       @include flex-center;
-      &--xs {
-        @include component-icon-size(xs);
-      }
-      &--s {
-        @include component-icon-size(s);
-      }
-      &--xm {
-        @include component-icon-size(xm);
-      }
-      &--m {
-        @include component-icon-size(m);
-      }
-      &--l {
-        @include component-icon-size(l);
-      }
-      &--xl {
-        @include component-icon-size(xl);
+
+      // Tamaño dinámico para el icono según el tamaño del componente
+      @each $size-key, $icon-size in $component-heights {
+        &--#{$size-key} {
+          @include component-icon-size($size-key);
+        }
       }
 
       &::before {

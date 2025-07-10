@@ -498,6 +498,37 @@
       >
     </div>
     <div class="col-3">
+      <neo-checkbox
+        [label]="'Checkbox deshabilitado'"
+        inputSize="l"
+        [disabled]="true"
+        >Checkbox deshabilitado</neo-checkbox
+      >
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-2">
+      <neo-checkbox [inputSize]="'xs'">Checkbox (Tamaño s)</neo-checkbox>
+    </div>
+    <div class="col-2">
+      <neo-checkbox [inputSize]="'s'">Checkbox (Tamaño s)</neo-checkbox>
+    </div>
+    <div class="col-2">
+      <neo-checkbox [inputSize]="'xm'">Checkbox (Tamaño m)</neo-checkbox>
+    </div>
+    <div class="col-2">
+      <neo-checkbox [inputSize]="'m'">Checkbox (Tamaño m)</neo-checkbox>
+    </div>
+    <div class="col-2">
+      <neo-checkbox [inputSize]="'l'">Checkbox (Tamaño l)</neo-checkbox>
+    </div>
+    <div class="col-2">
+      <neo-checkbox [inputSize]="'xl'">Checkbox (Tamaño xl)</neo-checkbox>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-3">
       <neo-radio-button-group
         [label]="'Label del radiobutton'"
         [name]="'testRadiobutton'"

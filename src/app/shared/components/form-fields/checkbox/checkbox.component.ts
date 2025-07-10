@@ -1,13 +1,18 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
+  ContentChild,
   ElementRef,
   EventEmitter,
   Input,
   Output,
+  TemplateRef,
   ViewChild,
+  ViewContainerRef,
   WritableSignal,
   forwardRef,
+  inject,
   signal,
 } from '@angular/core';
 import {
@@ -17,6 +22,7 @@ import {
 } from '@angular/forms';
 import { InputSize } from '../models/form-field.model';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
+import { set } from 'date-fns';
 
 /**
  * @name
@@ -45,150 +51,121 @@ import { InputsUtilsService } from '@shared/components/form-fields/services/inpu
   ],
 })
 export class CheckboxComponent implements ControlValueAccessor {
-  @ViewChild('input') _inputElement!: ElementRef<HTMLInputElement>;
-  @ViewChild('checkboxContent') checkboxContent!: ElementRef;
+  @ViewChild('contentWrapper', { static: true })
+  contentWrapper!: ElementRef<HTMLDivElement>;
 
+  @Input() showHeader: boolean = true;
+  @Input() checked: boolean = false;
+  @Input() disabled: boolean = false;
+  @Input() indeterminate: boolean = false;
+  @Input() inputSize: InputSize = 'm';
   @Input() label?: string;
   @Input() name?: string;
-  @Input() inputSize: InputSize = 'm';
-  @Output() readonly change: EventEmitter<boolean> =
-    new EventEmitter<boolean>();
 
-  /**
-   * Input para crear un id único para el campo
-   */
   _id: WritableSignal<string> = signal('');
   _labelId: WritableSignal<string> = signal('');
-  @Input() set id(value: string) {
-    this._id.set(value);
-    this._labelId.set(`label_${value}`);
+  @Input()
+  set id(value: string) {
+    if (value && value.trim() !== '') this._id.set(value);
+    else this.createUniqueId();
   }
-  get id() {
+  get id(): string {
     return this._id();
   }
 
-  /**
-   * Input para marcar el checkbox como seleccionado
-   */
-  _checked: WritableSignal<boolean> = signal(false);
-  @Input() set checked(status: boolean) {
-    this._checked.set(status);
-  }
-  get checked() {
-    return this._checked();
-  }
-
-  /**
-   * Input para marcar el checkbox como indeterminado
-   */
-  _indeterminate: WritableSignal<boolean> = signal(false);
-  @Input() set indeterminate(status: boolean) {
-    this._indeterminate.set(status);
-    if (status) {
-      if (this._inputElement)
-        this._inputElement.nativeElement.indeterminate = this.indeterminate;
-      this._checked.set(false);
-    }
-  }
-
-  get indeterminate(): boolean {
-    return this._checked();
-  }
-
-  /**
-   * Input para marcar el checkbox como deshabilitado
-   */
-  _disabled: WritableSignal<boolean> = signal(false);
-  @Input() set disabled(status: boolean) {
-    this._disabled.set(status);
-  }
-  get disabled() {
-    return this._disabled();
-  }
-
-  /**
-   * Input para añadir un aria-describedby al campo
-   */
-  @Input('aria-describedby') ariaDescribedBy!: string;
-
   _title: WritableSignal<string> = signal('');
+  @Input()
+  set title(value: string) {
+    this._title.set(value);
+  }
+  get title(): string {
+    return this._title();
+  }
 
-  constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
+  // Variable para comprobar si el checkbox tiene contenido proyectado
+  // Se usa para mostrar el contenido proyectado en el label del checkbox
+  // Si no hay contenido proyectado, se usa el label o una cadena vacía
+  // Se inicializa en false y se comprueba en ngAfterViewInit
+  hasProjectedContent = false;
 
-  ngAfterViewInit(): void {
-    this.createTitle();
+  @Output() changed = new EventEmitter<boolean>();
+
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
+
+  onChange = (_: boolean) => {};
+  onTouched = () => {};
+
+  ngAfterViewInit() {
     this.createUniqueId();
+    this.checkHasProjectedContent();
+    this.computedTitle();
   }
 
   /**
-   * Función para crear el título del checkbox
+   * Función para comprobar si el checkbox tiene contenido proyectado
    */
-  createTitle() {
-    if (!this._title())
-      this._title.set(
-        this.checkboxContent?.nativeElement?.innerHTML.replace(
-          /(<([^>]+)>)/gi,
-          '',
-        ) || '',
+  checkHasProjectedContent() {
+    const el = this.contentWrapper.nativeElement;
+    this.hasProjectedContent =
+      el.hasChildNodes() &&
+      Array.from(el.childNodes).some(
+        (node: any) =>
+          node.nodeType === 1 ||
+          (node.nodeType === 3 && node?.textContent?.trim()?.length > 0),
       );
   }
 
   /**
-   * Función para crear un ID único a partir del nombre
+   * Función para obtener el título del checkbox
+   * Si se ha definido un título, se usa ese
+   * Si no, se usa el contenido proyectado o el label
    */
-  createUniqueId(): void {
-    this._id?.set(this._inputsUtilsService.createUniqueId('checkbox'));
-    this._labelId?.set(`label_${this._id()}`);
+  computedTitle() {
+    setTimeout(() => {
+      // Si ya se ha definido un título, lo usamos
+      if (this._title()?.length > 0) return;
+
+      // Si hay contenido proyectado, lo usamos como título,
+      // si no, usamos el label o una cadena vacía
+      const contentText =
+        this.contentWrapper?.nativeElement?.textContent?.trim() || '';
+      if (contentText?.length > 0) this._title.set(contentText);
+      else this._title.set(this.label ?? '');
+    });
   }
 
   /**
-   * Función para obtener el aria-describedby personalizado
-   * que incluye el hint y el error del campo.
-   * @return {string}
+   * Función para crear un id único para el label del checkbox
    */
-  get ariaDescribedByCustom(): string {
-    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
+  createUniqueId() {
+    if (this._id()) return; // Si ya existe, no generamos otro
+    const uniqueId = this._inputsUtilsService.createUniqueId('checkbox_');
+    this._id.set(uniqueId);
+    this._labelId.set(`${uniqueId}__label`);
   }
 
-  /**
-   * Función para activar o desactivar el checkbox
-   */
-  onClickTargetCheckbox() {
-    if (this._disabled()) return;
-    else this._inputElement.nativeElement.focus();
-
-    this._checked.set(!this._checked());
-    this._inputElement.nativeElement.checked = this._checked();
-    this.onChange(this._checked());
+  toggleChecked() {
+    if (this.disabled) return;
+    this.checked = !this.checked;
+    this.indeterminate = false;
+    this.onChange(this.checked);
+    this.changed.emit(this.checked);
     this.onTouched();
-    this.change.emit(this._checked());
   }
 
-  /**
-   * Función lanzada cuando se produce un cambio en el checkbox
-   * para evitar que se propague el evento al padre
-   * @param {Event} event
-   */
-  onChangeCheckbox(event: Event) {
-    event.stopPropagation();
+  writeValue(value: boolean): void {
+    this.checked = !!value;
   }
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
-
-  writeValue(checked: boolean) {
-    this._checked.set(checked);
-  }
-
-  public registerOnChange(fn: any) {
+  registerOnChange(fn: (val: boolean) => void): void {
     this.onChange = fn;
   }
 
-  public registerOnTouched(fn: any) {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
-  public setDisabledState(isDisabled: boolean) {
-    this._disabled.set(isDisabled);
+  setDisabledState(disabled: boolean): void {
+    this.disabled = disabled;
   }
 }

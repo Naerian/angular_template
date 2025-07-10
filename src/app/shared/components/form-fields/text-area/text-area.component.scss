@@ -5,11 +5,6 @@
 .neo-textarea {
   position: relative;
 
-  &--disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-
   &__wrapper {
     position: relative;
 
@@ -26,23 +21,11 @@
         @include outline-focus;
       }
 
-      &--xs {
-        @include component-textarea-size(xs);
-      }
-      &--s {
-        @include component-textarea-size(s);
-      }
-      &--xm {
-        @include component-textarea-size(xm);
-      }
-      &--m {
-        @include component-textarea-size(m);
-      }
-      &--l {
-        @include component-textarea-size(l);
-      }
-      &--xl {
-        @include component-textarea-size(xl);
+      // Tamaño dinámico para el input según el tamaño del componente
+      @each $size-key, $txtArea-size in $component-heights {
+        &--#{$size-key} {
+          @include component-textarea-size($size-key);
+        }
       }
 
       &--has-error {

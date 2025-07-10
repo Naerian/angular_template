@@ -1,42 +1,39 @@
-<div class="neo-checkbox">
-  @if (label) {
-    <label
-      class="neo-checkbox__label"
-      [for]="_id()"
-      [title]="_title()"
-      [attr.id]="_labelId()"
-      >{{ label }}</label
-    >
-  }
-  <div class="neo-checkbox__control size-{{ inputSize }}">
-    <input
-      #input
-      class="neo-checkbox__control__input"
-      [class.neo-checkbox__control__input--disabled]="_disabled()"
-      type="checkbox"
-      [id]="_id()"
-      [tabIndex]="disabled ? -1 : 0"
-      [attr.name]="name"
-      [attr.aria-labelledby]="_labelId()"
-      [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
-      [attr.aria-disabled]="disabled"
-      [disabled]="_disabled()"
-      [checked]="_checked()"
-      [indeterminate]="_indeterminate()"
-      (click)="onClickTargetCheckbox()"
-      (change)="onChangeCheckbox($event)"
-    />
-    <div
-      class="neo-checkbox__control__checkmark"
-      (click)="onClickTargetCheckbox()"
-    ></div>
-    <label
-      class="neo-checkbox__control__label size-{{ inputSize }}"
-      [for]="_id()"
-      [title]="_title()"
-      #checkboxContent
-    >
-      <ng-content></ng-content>
-    </label>
+@if (label && showHeader) {
+  <label
+    class="neo-checkbox__title"
+    [attr.for]="_id()"
+    [attr.id]="_labelId()"
+    [title]="label"
+  >
+    {{ label }}
+  </label>
+}
+<label
+  class="neo-checkbox neo-checkbox--{{ inputSize }}"
+  [class.neo-checkbox--disabled]="disabled"
+  [class.neo-checkbox--checked]="checked"
+  [class.neo-checkbox--indeterminate]="indeterminate"
+  [attr.title]="_title()"
+>
+  <input
+    type="checkbox"
+    [checked]="checked"
+    [disabled]="disabled"
+    [indeterminate]="indeterminate"
+    [attr.id]="_id()"
+    [attr.aria-labelledby]="_labelId()"
+    [attr.aria-disabled]="disabled"
+    (change)="toggleChecked()"
+    class="neo-checkbox__input"
+  />
+  <span class="neo-checkbox__mark neo-checkbox__mark--{{ inputSize }}"></span>
+  <div
+    class="neo-checkbox__label neo-checkbox__label--{{ inputSize }}"
+    #contentWrapper
+  >
+    <ng-content></ng-content>
+    @if (!hasProjectedContent) {
+      {{ label || "" }}
+    }
   </div>
-</div>
+</label>
