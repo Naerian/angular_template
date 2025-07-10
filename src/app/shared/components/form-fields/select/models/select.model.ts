@@ -12,8 +12,8 @@ export const NEO_SELECT = new InjectionToken<SelectComponent>(
 );
 
 /**
- * Permite inyectar el componente SelectComponent en el componente OptionComponent y OptionGroupComponent
- * para poder acceder a sus propiedades y métodos desde el componente hijo
+ * Permite inyectar el componente OptionGroupsComponent en el componente SelectComponent
+ * para poder acceder a sus propiedades y métodos desde el componente padre
  */
 export const NEO_OPTION_GROUPS = new InjectionToken<OptionGroupsComponent>(
   'OptionGroupsComponent',

@@ -1,4 +1,23 @@
 import { ConnectedPosition } from '@angular/cdk/overlay';
+import { MenuContextComponent } from '../menu-context.component';
+import { InjectionToken } from '@angular/core';
+import { ItemMenuContextComponent } from '../item-menu-context/item-menu-context.component';
+
+/**
+ * Permite inyectar el componente MenuContextComponent en el componente ItemMenuContextComponent
+ * para poder acceder a sus propiedades y métodos desde el componente hijo
+ */
+export const NEO_MENU_CONTEXT = new InjectionToken<MenuContextComponent>(
+  'MenuContextComponent',
+);
+
+/**
+ * Permite inyectar el componente ItemMenuContextComponent en el componente MenuContextComponent
+ * para poder acceder a sus propiedades y métodos desde el componente padre
+ */
+export const NEO_ITEMS_MENU_CONTEXT = new InjectionToken<ItemMenuContextComponent>(
+  'ItemMenuContextComponent',
+);
 
 /**
  * Posiciones del overlay de calendario del componente InputDatePicker.
@@ -13,13 +32,13 @@ export const OVERLAY_POSITIONS: ConnectedPosition[] = [
     originY: 'bottom', // El borde inferior del input
     overlayX: 'start', // El borde izquierdo del calendario
     overlayY: 'top', // El borde superior del calendario
-    panelClass: 'neo-input-date-picker__calendar--below', // Clase CSS opcional para cuando está abajo
+    panelClass: 'neo-date-picker__calendar--below', // Clase CSS opcional para cuando está abajo
   },
   {
     originX: 'start',
     originY: 'top',
     overlayX: 'start',
     overlayY: 'bottom',
-    panelClass: 'neo-input-date-picker__calendar--above', // Clase CSS opcional para cuando está arriba
+    panelClass: 'neo-date-picker__calendar--above', // Clase CSS opcional para cuando está arriba
   },
 ];

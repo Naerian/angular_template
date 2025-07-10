@@ -6,13 +6,18 @@ import {
   ScrollStrategy,
 } from '@angular/cdk/overlay';
 import {
+  AfterContentInit,
+  AfterViewInit,
   Component,
   ContentChildren,
   ElementRef,
   EventEmitter,
   HostListener,
+  Injector,
   Input,
   InputSignal,
+  OnDestroy,
+  OnInit,
   Output,
   QueryList,
   ViewChild,
@@ -25,7 +30,11 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  NgControl,
+} from '@angular/forms';
 import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { Subject, take, takeUntil } from 'rxjs';
 import { InputSize } from '../models/form-field.model';
@@ -71,7 +80,9 @@ import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class SelectComponent implements ControlValueAccessor {
+export class SelectComponent
+  implements ControlValueAccessor, AfterContentInit, OnDestroy, OnInit
+{
   @ContentChildren(forwardRef(() => OptionComponent), { descendants: true })
   options!: QueryList<OptionComponent>;
   @ContentChildren(forwardRef(() => OptionGroupsComponent), {
@@ -96,7 +107,7 @@ export class SelectComponent implements ControlValueAccessor {
   @Input() placeholder?: string;
   @Input() placeholderSearch?: string;
   @Input() inputSize: InputSize = 'm';
-
+  @Input({ transform: booleanAttribute }) showClear: boolean = false;
   /**
    * Input para crear un id único para el campo
    */
@@ -127,9 +138,7 @@ export class SelectComponent implements ControlValueAccessor {
     return this._value();
   }
   set value(newValue: any) {
-    const valueAssigned = this.setValue(newValue);
-
-    if (valueAssigned) this.onChange(valueAssigned);
+    this.setValue(newValue);
   }
 
   /**
@@ -167,15 +176,8 @@ export class SelectComponent implements ControlValueAccessor {
   // Función para comparar el valor seleccionado con el valor de la opción
   private _compareSelectedWith = (o1: any, o2: any) => o1 === o2;
 
-  // Variables para controlar los errores del campo por si está marcado como requerido
-  hasErrors: InputSignal<boolean> = input<boolean>(false);
-  _hasErrors: WritableSignal<boolean> = signal(false);
-
   // Variables para controlar el estado del dropdown e indicar si está abierto o cerrado
   isDropdownOpened: WritableSignal<boolean> = signal(false);
-
-  // Variable para controlar si el selector está en modo de carga de datos
-  isLoading: InputSignal<boolean> = input<boolean>(false);
 
   // Estrategia de scroll para el overlay
   scrollStrategy: ScrollStrategy;
@@ -187,11 +189,12 @@ export class SelectComponent implements ControlValueAccessor {
   private _value: WritableSignal<any> = signal(null);
 
   // Manager para el control de teclas en las opciones
-  private keyManager!: FocusKeyManager<OptionComponent>;
+  private _focusKeyManager!: FocusKeyManager<OptionComponent>;
 
   private readonly overlay = inject(Overlay);
   private readonly _inputsUtilsService = inject(InputsUtilsService);
   private readonly _selectManagerService = inject(SelectManagerService);
+  private readonly _injector = inject(Injector);
 
   // Inyectamos las traducciones
   protected _translations: NeoUITranslations = inject(NEOUI_TRANSLATIONS);
@@ -204,6 +207,9 @@ export class SelectComponent implements ControlValueAccessor {
       String(selectedCount),
     );
   });
+
+  // Propiedad para mantener la instancia de NgControl
+  public ngControl: NgControl | null = null;
 
   private destroy$ = new Subject<void>();
 
@@ -228,9 +234,9 @@ export class SelectComponent implements ControlValueAccessor {
   onOutsideClick(event: MouseEvent) {
     // Verificar si las referencias a los elementos existen para evitar errores
     const clickedInsideSelectField =
-      this.selectFieldRef?.nativeElement.contains(event.target as Node);
+      this.selectFieldRef?.nativeElement?.contains(event.target as Node);
     const clickedInsideDropdownOverlay =
-      this.dropdownOverlayRef?.nativeElement.contains(event.target as Node);
+      this.dropdownOverlayRef?.nativeElement?.contains(event.target as Node);
 
     // Si el dropdown está abierto y el clic no fue dentro del campo del select NI dentro del overlay del dropdown
     if (
@@ -253,9 +259,9 @@ export class SelectComponent implements ControlValueAccessor {
     this.selectManager();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  ngAfterViewInit(): void {
+    // Resolvemos el NgControl para poder usarlo en el componente y tener acceso a sus propiedades
+    this.resolveNgControl();
   }
 
   ngAfterContentInit(): void {
@@ -266,8 +272,24 @@ export class SelectComponent implements ControlValueAccessor {
     // para asegurarnos de que las opciones de `OptionComponent` ya han sido renderizadas
     this.initSelection();
 
-    // Inicialización del manager de teclas para las opciones
-    this.keyManager = new FocusKeyManager(this.options).withWrap();
+    // Inicialización del manager de teclas para las opciones.
+    // Con la opción "withWrap" permitimos que el foco se mueva cíclicamente entre los elementos del menú.
+    // Esto permite que al presionar la tecla "Tab" o "Shift + Tab" también se pueda navegar por los ítems del menú contextual.
+    this._focusKeyManager = new FocusKeyManager(this.options).withWrap();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Método para resolver NgControl y asignarlo a la propiedad `ngControl`
+   * para poder usarlo en el componente y tener acceso a sus propiedades.
+   */
+  resolveNgControl() {
+    this.ngControl = this._injector.get(NgControl, null);
+    if (this.ngControl) this.ngControl.valueAccessor = this;
   }
 
   /**
@@ -275,7 +297,7 @@ export class SelectComponent implements ControlValueAccessor {
    * para cerrar el dropdown si otro componente de tipo Select se abre.
    */
   selectManager() {
-    // 📡 Nos suscribimos a las notificaciones del servicio
+    // Nos suscribimos a las notificaciones del servicio
     this._selectManagerService.dropdownOpened$
       .pipe(takeUntil(this.destroy$))
       .subscribe((openedComponent) => {
@@ -288,7 +310,7 @@ export class SelectComponent implements ControlValueAccessor {
 
   // Evento para controlar cuando se pulsa una tecla
   onKeyDown(event: KeyboardEvent) {
-    this.keyManager.onKeydown(event);
+    this._focusKeyManager.onKeydown(event);
   }
 
   /**
@@ -451,28 +473,48 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   /**
-   * Método para buscar opciones en el selector
+   * Método para buscar opciones en el selector. Además
+   * permite buscar por múltiples tokens separados por espacios.
+   * Por ejemplo, si se busca "opción 1", se buscará por "opción" y "1".
+   * Si el texto está vacío, se mostrarán todas las opciones.
+   * De esta forma tenemos un buscador más flexible que permite
+   * buscar por partes del texto de las opciones.
    * @param {string} value
    */
   searchOption(value: string) {
-    // Normalizamos el texto para que no haya problemas con las tildes
     const textToSearchNormalized = String(value)
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase();
 
     // Si el texto está vacío, mostramos todas las opciones
-    if (textToSearchNormalized === '')
-      return this.options.forEach((option) => option.showOptionBySearch());
+    if (textToSearchNormalized === '') {
+      this.options.forEach((option) => option.showOptionBySearch());
+      return;
+    }
 
-    // Si el texto contiene algún valor filtramos las opciones que contengan dicho texto
+    // Obtenemos los tokens de búsqueda separados por espacios
+    // Por ejemplo: "opción 1" se convierte en ["opción", "1"]
+    const searchTokens = textToSearchNormalized.split(/\s+/).filter(Boolean);
+
+    // Recorremos las opciones y comprobamos si el texto de la opción
+    // contiene todos los tokens de búsqueda que hemos obtenido
     this.options.forEach((option: OptionComponent) => {
-      const labelNormalized: string = String(option.getLabelText())
+      const labelNormalized = String(option.getLabelText())
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase();
-      if (labelNormalized.includes(textToSearchNormalized))
-        option.showOptionBySearch();
+
+      // Comprobamos si la etiqueta de la opción contiene todos los tokens de búsqueda
+      // Usamos el método `every` para comprobar si todos los tokens de búsqueda están en la etiqueta
+      // Normalizamos la etiqueta de la opción para evitar problemas con acentos y mayúsculas
+      const matchesAllTokens = searchTokens.every((token) =>
+        labelNormalized.includes(token),
+      );
+
+      // Si la opción coincide con todos los tokens de búsqueda, la mostramos
+      // Si no, la ocultamos
+      if (matchesAllTokens) option.showOptionBySearch();
       else option.hideOptionBySearch();
     });
   }
@@ -515,9 +557,6 @@ export class SelectComponent implements ControlValueAccessor {
 
     // Reseteamos la búsqueda
     this.resetSearch();
-
-    // Comprobamos si hay errores en el campo
-    this.checkErrors();
   }
 
   /**
@@ -536,20 +575,6 @@ export class SelectComponent implements ControlValueAccessor {
         if (this.searchable) this.setFocusToSearch();
       }
     });
-  }
-
-  /**
-   * Método para comprobar si hay errores en el campo y mostrarlos.
-   * Se activa si el campo es requerido y no se ha seleccionado ninguna opción
-   */
-  checkErrors() {
-    if (
-      this.required &&
-      !this.isDropdownOpened() &&
-      this._optionsSelected.isEmpty()
-    ) {
-      this._hasErrors.set(true);
-    } else this._hasErrors.set(false);
   }
 
   /**
@@ -600,6 +625,24 @@ export class SelectComponent implements ControlValueAccessor {
       );
       return titlesOptions.join(', ');
     }
+  }
+
+  /**
+   * Método para limpiar la selección de opciones y actualizar el valor del select a null.
+   */
+  clearSelection() {
+    // Limpiamos la selección de opciones
+    this.deselectAllOptions();
+
+    // Actualizamos el valor del select a null
+    this._value.set(null);
+
+    // Emitimos el evento de cambio del valor
+    this.onChange(this._value());
+    this.change.emit(this._value());
+
+    // Cerramos el dropdown
+    this.closeDropdown();
   }
 
   // Funciones de control de eventos

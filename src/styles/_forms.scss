@@ -1,3 +1,6 @@
+@import "config";
+@import "mixins";
+
 label {
   font-family: $font-family-base;
   font-size: map-get($component-font-sizes, xm);
@@ -20,4 +23,38 @@ label abbr {
   text-decoration: none;
   font-weight: $font-weight-bold;
   cursor: default;
+  margin-left: $spacing-xxs;
+}
+
+// Estilo para el icono creado con la directiva `ShowClearFieldDirective`
+.neo-clear-field-button {
+  cursor: default;
+
+  &--xs {
+    @include component-icon-size(xs);
+  }
+  &--s {
+    @include component-icon-size(s);
+  }
+  &--xm {
+    @include component-icon-size(xm);
+  }
+  &--m {
+    @include component-icon-size(m);
+  }
+  &--l {
+    @include component-icon-size(l);
+  }
+  &--xl {
+    @include component-icon-size(xl);
+  }
+
+  &::before {
+    color: var(--icon-field-color);
+  }
+
+  &:hover,
+  &:focus {
+    opacity: 0.8;
+  }
 }

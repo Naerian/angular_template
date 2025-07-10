@@ -9,15 +9,14 @@ import {
   ViewChild,
   WritableSignal,
   booleanAttribute,
+  inject,
   signal,
 } from '@angular/core';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import {
-  NEO_RADIO_BUTTON_GROUP,
-  RadioButtonGroupComponent,
-} from './radio-button-group/radio-button-group.component';
+import { RadioButtonGroupComponent } from './radio-button-group/radio-button-group.component';
 import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
 import { InputSize } from '../models/form-field.model';
+import { NEO_RADIO_BUTTON_GROUP } from './models/radio-button.model';
 
 /**
  * @name
@@ -159,22 +158,16 @@ export class RadioButtonComponent {
    */
   @Output() readonly change: EventEmitter<any> = new EventEmitter<any>();
 
-  radioGroup: RadioButtonGroupComponent | null = null;
-
   _title: WritableSignal<string> = signal('');
 
   // Nos servirá para desuscribirnos del _radioDispatcher
   private _removeUniqueSelectionListener: () => void = () => {};
 
-  constructor(
-    @Optional()
-    @Inject(NEO_RADIO_BUTTON_GROUP)
-    radioGroup: RadioButtonGroupComponent,
-    private _radioDispatcher: UniqueSelectionDispatcher,
-    private readonly _inputsUtilsService: InputsUtilsService,
-  ) {
-    this.radioGroup = radioGroup;
-  }
+  private readonly radioGroup = inject(NEO_RADIO_BUTTON_GROUP, {
+    optional: true,
+  });
+  private readonly _radioDispatcher = inject(UniqueSelectionDispatcher);
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
 
   ngAfterViewInit(): void {
     this.createTitle();

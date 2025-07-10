@@ -16,7 +16,7 @@
       "
       [class.neo-textarea__wrapper__field--no-resize]="!resize"
       [class.neo-textarea__wrapper__field--has-error]="
-        hasErrors() || (txArea?.errors && (txArea?.dirty || txArea?.touched))
+        txArea?.errors && (txArea?.dirty || txArea?.touched)
       "
       [(ngModel)]="_value"
       (input)="onInput(txArea.value)"
@@ -34,6 +34,7 @@
       [attr.aria-readonly]="readonly"
       [attr.aria-labelledby]="_labelId()"
       [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
+      [attr.aria-invalid]="txArea?.errors && (txArea?.dirty || txArea?.touched)"
       [attr.aria-owns]="_labelId()"
       [attr.aria-required]="required"
       [attr.placeholder]="placeholder"

@@ -66,6 +66,34 @@
   }
 }
 
+// Mixin para aplicar tamaño de fuente a los iconos de los componentes
+// Utiliza este mixin para aplicar un tamaño de fuente específico a los iconos de los componentes
+@mixin component-icon-size($size) {
+  $height: map-get($component-heights, $size);
+  $padding: map-get($component-paddings, $size);
+  $font-size: map-get($component-font-sizes, $size);
+
+  @if ($height) {
+    height: $height;
+  } @else {
+    height: map-get($component-heights, m);
+  }
+
+  @if ($padding) {
+    padding: $padding;
+  } @else {
+    padding: map-get($component-paddings, m);
+  }
+
+  @if ($font-size) {
+    font-size: $font-size * 1.2;
+    line-height: $font-size * 1.2;
+  } @else {
+    font-size: map-get($component-font-sizes, m) * 1.2;
+    line-height: map-get($component-font-sizes, m) * 1.2;
+  }
+}
+
 // Mixin aplicar una transición suave a las propiedades CSS
 // Utiliza este mixin para aplicar transiciones suaves a las propiedades CSS de un elemento
 @mixin transition($args...) {
@@ -103,16 +131,36 @@
   align-items: center;
 }
 
+@mixin flex-row-center-start {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 @mixin flex-col-center {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+@mixin flex-col-start-center {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
 @mixin flex-col-start {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+@mixin flex-col-stretch {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 @mixin ellipsis-text {

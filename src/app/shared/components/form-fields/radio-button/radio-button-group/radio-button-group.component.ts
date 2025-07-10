@@ -1,15 +1,9 @@
-import { Component, ContentChildren, EventEmitter, InjectionToken, Input, Output, QueryList, WritableSignal, forwardRef, signal } from '@angular/core';
+import { Component, ContentChildren, EventEmitter, Input, Output, QueryList, WritableSignal, forwardRef, signal } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 import { InputSize } from '../../models/form-field.model';
 import { RadioButtonComponent } from '../radio-button.component';
-import { DirectionRadioButtonGroup } from '../models/radio-button.entity';
-
-/**
- * Permite inyectar el componente RadioButtonGroupComponent en el componente RadioButtonComponent
- * para poder acceder a sus propiedades y métodos desde el componente RadioButtonComponent hijo
- */
-export const NEO_RADIO_BUTTON_GROUP = new InjectionToken<RadioButtonGroupComponent>('RadioButtonGroupComponent');
+import { DirectionRadioButtonGroup, NEO_RADIO_BUTTON_GROUP } from '../models/radio-button.model';
 
 /**
  * @name

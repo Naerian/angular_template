@@ -2,6 +2,6 @@
 @import "mixins";
 
 .neo-form-field {
-  @include flex-col-start;
-  margin-top: #{spacing-xxs};
+  @include flex-col-stretch;
+  margin-top: $spacing-xxs;
 }

@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   forwardRef,
+  inject,
   input,
   Input,
   InputSignal,
@@ -15,10 +16,10 @@ import {
   FormsModule,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
-import { ButtonComponent } from '../../button/button.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 import { InputSize } from '../models/form-field.model';
+import { NeoUITranslations } from '@shared/translations/translations.model';
+import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
 
 /**
  * @name
@@ -40,7 +41,7 @@ import { InputSize } from '../models/form-field.model';
     },
   ],
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, TranslateModule],
+  imports: [CommonModule, FormsModule],
 })
 export class InputPasswordComponent implements ControlValueAccessor {
   @Input() autofocus?: boolean = false;
@@ -54,7 +55,6 @@ export class InputPasswordComponent implements ControlValueAccessor {
   @Input() minlength?: number;
   @Input() maxlength?: number;
   @Input() inputSize: InputSize = 'm';
-  hasErrors: InputSignal<boolean> = input<boolean>(false);
 
   /**
    * Input para crear un id único para el campo
@@ -98,11 +98,19 @@ export class InputPasswordComponent implements ControlValueAccessor {
    */
   @Input('aria-describedby') ariaDescribedBy!: string;
 
+  /**
+   * Evento que se emite cuando el valor del campo cambia
+   */
   @Output() change = new EventEmitter<string>();
 
+  // Signal para mostrar u ocultar la contraseña
   show: WritableSignal<boolean> = signal(false);
 
-  constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
+  // Inyectamos las traducciones
+  protected _translations: NeoUITranslations = inject(NEOUI_TRANSLATIONS);
+
+  // Inyectamos las dependencias necesarias
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
 
   ngAfterViewInit(): void {
     this.createUniqueId();

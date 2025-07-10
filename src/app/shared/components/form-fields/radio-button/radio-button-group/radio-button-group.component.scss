@@ -1,19 +1,18 @@
+@import "config";
+@import "mixins";
+
 .neo-radio-button-group {
   &__items {
     display: flex;
 
     &.horizontal {
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 15px;
+      @include flex-row-center-start();
+      gap: $spacing-m;
     }
 
     &.vertical {
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 10px;
+      @include flex-col-start-center();
+      gap: $spacing-s;
     }
   }
 }

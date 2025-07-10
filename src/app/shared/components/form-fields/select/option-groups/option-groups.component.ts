@@ -21,14 +21,21 @@ import { SelectComponent } from '../select.component';
   host: {
     role: 'group',
     '[title]': 'label',
-    '[attr.id]': '_id',
+    '[attr.id]': 'id',
     '[attr.aria-label]': 'label',
     '[attr.aria-disabled]': 'disabled',
     '[attr.aria-hidden]': 'isAllOptionsHideBySearch()',
+    '[hidden]': 'isAllOptionsHideBySearch()', // Oculta el grupo si todas las opciones están ocultas
     '[class.neo-select__dropdown__options__group]': 'true',
     '[class.neo-select__dropdown__options__group--hidden]':
       'isAllOptionsHideBySearch()', // Oculta el grupo si todas las opciones están ocultas
   },
+  providers: [
+    {
+      provide: NEO_OPTION_GROUPS,
+      useExisting: OptionGroupsComponent,
+    },
+  ],
   encapsulation: ViewEncapsulation.None,
 })
 export class OptionGroupsComponent implements AfterViewInit {
@@ -53,12 +60,6 @@ export class OptionGroupsComponent implements AfterViewInit {
   private readonly selectParent = inject(NEO_SELECT, {
     optional: true,
   }) as SelectComponent | null;
-
-  // Inyectamos el componente OptionGroupsComponent para poder acceder a sus propiedades y métodos
-  // desde el componente OptionComponent y OptionGroupComponent.
-  private readonly groupOption = inject(NEO_OPTION_GROUPS, {
-    optional: true,
-  }) as OptionGroupsComponent | null;
 
   ngAfterViewInit() {
     // Actualizamos el tamaño del grupo de opciones al tamaño del componente select padre

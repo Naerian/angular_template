@@ -36,6 +36,7 @@ import {
 import { InputAutocomplete, InputSize } from '../models/form-field.model';
 import { OVERLAY_POSITIONS } from './models/input-date-picker.model';
 import { DatePickerManagerService } from './services/date-picker-manager/date-picker-manager.service';
+import { ShowClearFieldDirective } from '@shared/directives/show-clear-field.directive';
 
 /**
  * @name
@@ -46,7 +47,7 @@ import { DatePickerManagerService } from './services/date-picker-manager/date-pi
  * <neo-date-picker [value]="'2021-12-31'" [format]="DEFAULT_FORMAT" (dateSelected)="dateSelected($event)"></neo-date-picker>
  */
 @Component({
-  selector: 'neo-input-date-picker',
+  selector: 'neo-date-picker',
   templateUrl: './input-date-picker.component.html',
   styleUrls: ['./input-date-picker.component.scss'],
   animations: [FADE_IN_OUT_SCALE],
@@ -57,6 +58,7 @@ import { DatePickerManagerService } from './services/date-picker-manager/date-pi
     OverlayModule,
     A11yModule,
     CalendarComponent,
+    ShowClearFieldDirective,
   ],
   providers: [
     {
@@ -116,7 +118,10 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   // Si se quiere bloquear el rango de fechas (range / week) si hay fechas deshabilitadas o no
   @Input() blockDisabledRanges: boolean | undefined = undefined;
 
-  hasErrors: InputSignal<boolean> = input<boolean>(false);
+  /**
+   * Input para mostrar el botón de limpiar el campo
+   */
+  @Input({ transform: booleanAttribute }) showClear: boolean = false;
 
   /**
    * Input para crear un id único para el campo
@@ -168,8 +173,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   overlayPositions = OVERLAY_POSITIONS;
 
   // Fecha por defecto del calendario
-  realDateValue: WritableSignal<Date | Date[] | string | string[] | null> =
-    signal(null);
+  realDateValue: WritableSignal<Date | Date[] | null> = signal(null);
 
   private readonly overlay = inject(Overlay);
   private readonly _inputsUtilsService = inject(InputsUtilsService);
@@ -255,31 +259,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * @param {string} value
    */
   onInput(value: string) {
-    this._value.set(value);
-    this.onChange(value);
-    this.onTouched();
-
-    // Parsea el valor introducido en el campo
-    // Si es un rango, se espera el formato 'aaaa-mm-dd - aaaa-mm-dd'
-    // Si es una semana, se espera el formato 'aaaa-mm-dd - aaaa-mm-dd'
-    // Si es un día, se espera el formato 'aaaa-mm-dd'
-    let parsedValue: Date | Date[] | null = null;
-    if (value) {
-      if (this.type === CalendarType.RANGE || this.type === CalendarType.WEEK) {
-        const parts = value.split(' - ');
-        const dates = parts
-          .map((part) => moment(part, this.format, true))
-          .filter((m) => m.isValid())
-          .map((m) => m.toDate());
-        parsedValue = dates.length > 0 ? dates : null;
-      } else {
-        const m = moment(value, this.format, true);
-        parsedValue = m.isValid() ? m.toDate() : null;
-      }
-    }
-
-    this.dateSelected.emit(parsedValue);
-    this.change.emit(parsedValue);
+    this.setCalendarValue(value);
   }
 
   /**
@@ -291,43 +271,87 @@ export class InputDatePickerComponent implements ControlValueAccessor {
 
   /**
    * Función para seleccionar una fecha
-   * @param {Date | Date[]} value - Fecha o rango de fechas seleccionadas
+   * @param {Date | Date[] | string | string[] | null} value - Fecha o rango de fechas seleccionadas
    */
-  setCalendarValue(value: Date | Date[] | null) {
-    let realValue = '';
-
-    // Si el valor es nulo o un array vacío, lo dejamos como null
-    // Si no, lo formateamos y lo mostramos en el input
-    if (!value || (Array.isArray(value) && value.length === 0)) {
-      value = null;
-      this._value.set(null); // Valor visual
-    } else {
-      if (Array.isArray(value) && value.length > 1) {
-        const startDate = moment(value[0]).format(this.format);
-        const endDate = moment(value[value.length - 1]).format(this.format);
-        realValue = `${startDate} - ${endDate}`;
-      } else {
-        // Mostrar en el input como string (aunque sea rango)
-        const formatted = this.formatDate(this.format, value);
-        realValue = formatted as string;
-      }
-    }
-
-    // Valor visual del campo
-    this._value.set(realValue);
-
-    // Valor real del campo
-    this.realDateValue.set(value);
+  setCalendarValue(value: Date | Date[] | string | string[] | null) {
+    // Establecemos el valor del campo de fecha
+    this.setValue(value);
 
     this.onChange(value);
     this.onTouched();
 
     // Emitimos el valor REAL
-    this.dateSelected.emit(value);
-    this.change.emit(value);
+    this.dateSelected.emit(this.realDateValue());
+    this.change.emit(this.realDateValue());
 
     // Cerramos el calendario
     this.closeCalendar();
+  }
+
+  /**
+   * Función para establecer el valor del campo de fecha
+   * @param {Date | Date[] | string | string[] | null} value - Fecha o rango de fechas seleccionadas
+   */
+  setValue(value: Date | Date[] | string | string[] | null) {
+    // Si no hay valor, lo establecemos a null
+    if (
+      value === '' ||
+      value === null ||
+      value === undefined ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
+      this._value.set(null); // Valor visual
+      this.realDateValue.set(null); // Valor real
+      return;
+    }
+
+    // VALOR REAL DEL CAMPO
+    // ---------------------------------
+    // Si el valor es de tipo `string`, lo convertimos a `Date` o `Date[]`
+    // dependiendo del tipo de calendario (rango, semana o día)
+    if (
+      typeof value === 'string' ||
+      (Array.isArray(value) && typeof value[0] === 'string')
+    ) {
+      // Si es un rango, formateamos cada valor de fecha y después los convertimos a Date[].
+      if (this.type === CalendarType.RANGE || this.type === CalendarType.WEEK) {
+        const parts = Array.isArray(value) ? value : [value];
+        const dates = parts
+          .map((part) => moment(part, this.format, true))
+          .filter((m) => m.isValid())
+          .map((m) => m.toDate());
+        value = dates.length > 0 ? dates : null;
+        this.realDateValue.set(value as Date[]); // Valor real
+      } else {
+        // Si es una sola fecha, la convertimos a Date
+        const m = moment(value as string, this.format, true);
+        value = m.isValid() ? m.toDate() : null;
+        this.realDateValue.set(value as Date); // Valor real
+      }
+    } else {
+      if (this.type === CalendarType.RANGE || this.type === CalendarType.WEEK) {
+        // Si es un rango de fechas, aseguramos que sea un array de Date[]
+        if (!Array.isArray(value)) value = [value as Date];
+        this.realDateValue.set(value as Date[]); // Valor real
+      } else {
+        this.realDateValue.set(value as Date);
+      }
+    }
+
+    // VALOR VISUAL DEL CAMPO
+    // ----------------------------
+    // Ahora `value` es de tipo `Date` o `Date[]`
+    // Si es un rango de fechas, lo mostramos como 'aaaa-mm-dd - aaaa-mm-dd' (this.format)
+    // Si es una sola fecha, lo mostramos como 'aaaa-mm-dd' (this.format)
+    if (Array.isArray(value) && value.length > 1) {
+      const startDate = moment(value[0]).format(this.format);
+      const endDate = moment(value[value.length - 1]).format(this.format);
+      this._value.set(`${startDate} - ${endDate}`); // Valor visual
+    } else {
+      // Mostrar en el input como string (aunque sea rango)
+      const formatted = this.formatDate(value as Date, this.format);
+      this._value.set(formatted); // Valor visual
+    }
   }
 
   /**
@@ -337,8 +361,8 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * @returns {string}
    */
   formatDate(
-    format: string = DEFAULT_FORMAT,
     date: Date | Date[],
+    format: string = DEFAULT_FORMAT,
   ): string | string[] | null {
     // Si es un rango de fechas, se formatea cada fecha por separado
     if (Array.isArray(date)) {
@@ -384,6 +408,18 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   }
 
   /**
+   * Función para limpiar el campo
+   */
+  clearInput() {
+    this._value.set(null);
+    this.realDateValue.set(null);
+    this.onChange(null);
+    this.onTouched();
+    this.dateSelected.emit(null);
+    this.change.emit(null);
+  }
+
+  /**
    * Funciones de control de eventos
    */
   onChange: any = () => {};
@@ -392,10 +428,9 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   /**
    * Write form value to the DOM element (model => view)
    */
-  writeValue(value: string | string[] | null) {
+  writeValue(value: string | string[] | Date | Date[] | null) {
     if (value) {
-      this.realDateValue.set(value);
-      this._value.set(value);
+      this.setValue(value);
     } else {
       this._value.set('');
     }

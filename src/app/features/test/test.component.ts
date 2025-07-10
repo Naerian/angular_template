@@ -119,8 +119,8 @@ export class TestComponent implements OnInit {
   // Fecha actual para el calendario
   today = new Date();
 
-  // Fecha actual con dos días de diferencia para el calendario
-  todayPlusTwoDays = new Date('2025/07/08');
+  // Valor por defecto para el date picker
+  datePickerValue: Date = new Date('2025/07/08');
 
   // Array de 5 fechas a partir de hoy para simular pasarle unas fechas predefinidas al calendario
   customDates: Date[] = [];

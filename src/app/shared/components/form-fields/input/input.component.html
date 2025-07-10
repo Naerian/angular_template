@@ -19,8 +19,9 @@
         neo-input__wrapper__field--{{ inputSize }}
       "
       [class.neo-input__wrapper__field--has-error]="
-        hasErrors() || (input?.errors && (input?.dirty || input?.touched))
+        input?.errors && (input?.dirty || input?.touched)
       "
+      [class.neo-input__wrapper__field--clear]="showClear"
       [(ngModel)]="value"
       (input)="onInput(input.value)"
       (blur)="onBlur()"
@@ -38,12 +39,15 @@
       [required]="required"
       [attr.aria-required]="required"
       [attr.placeholder]="placeholder"
+      [attr.aria-invalid]="input?.errors && (input?.dirty || input?.touched)"
       [attr.size]="size"
       [attr.minlength]="minlength"
       [attr.maxlength]="maxlength"
       [attr.autocomplete]="autocomplete"
       [attr.name]="name"
       [title]="title || label || placeholder || ''"
+      [showClear]="showClear"
+      (clear)="clearInput()"
     />
   </div>
 </div>

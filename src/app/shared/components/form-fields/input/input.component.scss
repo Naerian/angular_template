@@ -17,7 +17,6 @@
       width: 100%;
       border-radius: $border-radius-md;
       box-sizing: border-box;
-      padding: $spacing-s;
       background-color: var(--bg-field-color);
       border: $border-width-base solid var(--border-field-color);
 
@@ -43,6 +42,10 @@
       }
       &--xl {
         @include component-size(xl);
+      }
+
+      &--clear {
+        padding-right: calc(#{$spacing-s} * 2 + #{$spacing-s});
       }
 
       &--has-error {

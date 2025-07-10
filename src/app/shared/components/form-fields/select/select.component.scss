@@ -1,5 +1,3 @@
-// src/app/shared/components/form-fields/select/select.component.scss
-
 @import "config";
 @import "mixins";
 @import "functions";
@@ -13,23 +11,6 @@
   position: relative;
 
   &__field {
-    @include flex-row-center;
-    justify-content: space-between;
-    border-radius: $border-radius-md;
-    box-sizing: border-box;
-    padding: $spacing-s $spacing-s;
-    padding-right: calc(#{$spacing-m} + #{$spacing-xs});
-    cursor: pointer;
-    position: relative;
-    gap: $spacing-xs;
-    background-color: var(--bg-field-color);
-    border: $border-width-base solid var(--border-field-color);
-
-    &:focus,
-    &:active {
-      @include outline-focus;
-    }
-
     &--xs {
       @include component-size(xs);
     }
@@ -47,6 +28,26 @@
     }
     &--xl {
       @include component-size(xl);
+    }
+
+    @include flex-row-center;
+    justify-content: space-between;
+    border-radius: $border-radius-md;
+    box-sizing: border-box;
+    padding-right: calc(#{$spacing-m} * 2 + #{$spacing-xxs}) !important;
+    cursor: pointer;
+    position: relative;
+    gap: $spacing-xs;
+    background-color: var(--bg-field-color);
+    border: $border-width-base solid var(--border-field-color);
+
+    &:focus,
+    &:active {
+      @include outline-focus;
+    }
+
+    &--clear {
+      padding-right: calc(#{$spacing-m} * 2 + #{$spacing-xxs} + #{$spacing-s});
     }
 
     &--disabled,
@@ -80,6 +81,10 @@
       &::before {
         color: var(--icon-field-color);
       }
+    }
+
+    .neo-clear-field-button {
+      right: calc(#{$spacing-xs} * 2) !important;
     }
 
     &__value {
@@ -157,6 +162,7 @@
       scrollbar-width: thin;
       scrollbar-color: var(--bg-scroll-field-color) var(--bg-field-color);
       gap: $spacing-xxs;
+      box-shadow: $box-shadow-md;
 
       &--empty {
         display: none;
@@ -201,13 +207,16 @@
           width: 100%;
           gap: $spacing-xxs;
         }
+
+        &--hidden {
+          display: none;
+        }
       }
 
       &__option {
         @include flex-row-center;
         cursor: pointer;
         padding: $spacing-s;
-        letter-spacing: 0.3px;
         width: 100%;
 
         &--xs {

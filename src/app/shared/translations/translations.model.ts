@@ -25,6 +25,13 @@ export interface NeoUITranslations {
   inputFileLabel: string;
   inputFileLabelMultiple: string;
 
+  // Texto del componete InputPassword
+  showPassword: string;
+  hidePassword?: string;
+
+  // Textos generales de los campos de formulario
+  clearButton: string;
+
   // Textos del componente Calendar
   weekDaysShort: string[];
   months: string[];

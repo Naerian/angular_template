@@ -26,9 +26,13 @@
     [title]="getTitleOptionsSelected() || title || label"
     [class.neo-select__field--empty]="options.length === 0"
     [class.neo-select__field--multiple]="multiple"
-    [class.neo-select__field--has-error]="hasErrors() || _hasErrors()"
+    [class.neo-select__field--has-error]="
+      ngControl?.control?.errors &&
+      (ngControl?.control?.dirty || ngControl?.control?.touched)
+    "
     [class.neo-select__field--disabled]="disabled"
     [class.neo-select__field--transparent]="transparent"
+    [class.neo-select__field--clear]="showClear"
     [attr.tabindex]="disabled ? -1 : 0"
     [attr.aria-controls]="isDropdownOpened() ? 'panel_' + _id() : null"
     [attr.aria-labelledby]="_labelId()"
@@ -37,16 +41,16 @@
     [attr.aria-expanded]="isDropdownOpened()"
     [attr.aria-haspopup]="'listbox'"
     [attr.aria-disabled]="disabled"
-    [attr.aria-invalid]="hasErrors() || _hasErrors()"
+    [attr.aria-invalid]="
+      ngControl?.control?.errors &&
+      (ngControl?.control?.dirty || ngControl?.control?.touched)
+    "
     [attr.aria-autocomplete]="'none'"
     [attr.id]="_id()"
+    [showClear]="showClear"
+    (clear)="clearSelection()"
     cdkOverlayOrigin
   >
-    @if (isLoading()) {
-      <div class="neo-select__loading">
-        <div class="neo-select__loading__spinner"></div>
-      </div>
-    }
     <div class="neo-select__field__value">
       @if (!multiple && getSelectedOptions().length > 0) {
         <span
@@ -105,9 +109,6 @@
             type="text"
             [placeholder]="placeholderSearch || _translations.search"
             [attr.id]="'listbox_search_' + _id()"
-            [disabled]="isLoading()"
-            [attr.aria-disabled]="isLoading()"
-            [attr.aria-busy]="isLoading()"
             [attr.autocomplete]="'off'"
             [attr.autocapitalize]="'off'"
             (input)="searchOption(searchInput.value)"
@@ -116,13 +117,11 @@
         </div>
       }
       <div
-        #listboxSelect
         class="neo-select__dropdown__options"
         [class.neo-select__dropdown__options--empty]="options.length === 0"
         role="listbox"
         tabindex="-1"
         [attr.id]="'panel_' + _id()"
-        [attr.aria-busy]="isLoading()"
         [attr.aria-label]="label"
         [attr.aria-labelledby]="_labelId()"
         [attr.aria-multiselectable]="multiple"

@@ -10,6 +10,13 @@ export const NEOUI_DEFAULT_I18N: NeoUITranslations = {
   inputFileLabel: 'Seleccionar fichero',
   inputFileLabelMultiple: 'Seleccionar ficheros',
 
+  // Texto del componente InputPassword
+  showPassword: 'Mostrar contraseña',
+  hidePassword: 'Ocultar contraseña',
+
+  // Textos generales de los campos de formulario
+  clearButton: 'Limpiar',
+
   // Textos del componente Calendar
   weekDaysShort: ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'],
   months: [

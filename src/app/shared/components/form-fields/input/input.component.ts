@@ -22,6 +22,7 @@ import {
   InputSize,
   InputType,
 } from '../models/form-field.model';
+import { ShowClearFieldDirective } from '@shared/directives/show-clear-field.directive';
 
 /**
  * @name
@@ -44,7 +45,7 @@ import {
     },
   ],
   standalone: true,
-  imports: [CommonModule, FormsModule, JsonPipe],
+  imports: [CommonModule, FormsModule, ShowClearFieldDirective],
 })
 export class InputComponent implements ControlValueAccessor {
   @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
@@ -62,7 +63,7 @@ export class InputComponent implements ControlValueAccessor {
   @Input() min?: number;
   @Input() max?: number;
   @Input() inputSize: InputSize = 'm';
-  hasErrors: InputSignal<boolean> = input<boolean>(false);
+  @Input({ transform: booleanAttribute }) showClear: boolean = false;
 
   /**
    * Input para crear un id único para el campo
@@ -140,6 +141,16 @@ export class InputComponent implements ControlValueAccessor {
     this.onChange(value);
     this.onTouched();
     this.change.emit(value);
+  }
+
+  /**
+   * Función para limpiar el campo de texto
+   */
+  clearInput() {
+    this._value.set('');
+    this.onChange('');
+    this.onTouched();
+    this.change.emit('');
   }
 
   /**

@@ -1,5 +1,22 @@
-import { Component, Output, EventEmitter, ElementRef, ViewChild, Input, WritableSignal, signal } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  ElementRef,
+  ViewChild,
+  Input,
+  WritableSignal,
+  signal,
+  booleanAttribute,
+  inject,
+  AfterViewInit,
+} from '@angular/core';
 import { MenuContextComponent } from '../menu-context.component';
+import { FocusableOption } from '@angular/cdk/a11y';
+import {
+  NEO_ITEMS_MENU_CONTEXT,
+  NEO_MENU_CONTEXT,
+} from '../models/menu-context.model';
 
 /**
  * @name
@@ -17,11 +34,29 @@ import { MenuContextComponent } from '../menu-context.component';
   selector: 'neo-item-menu-context',
   templateUrl: './item-menu-context.component.html',
   styleUrls: ['./item-menu-context.component.scss'],
+  host: {
+    role: 'menuitem',
+    '[attr.id]': 'this.menuContext?.id + "-item"',
+    '[attr.title]': 'title',
+    '[attr.aria-label]': 'title',
+    '[attr.aria-disabled]': 'disabled',
+    '[class.menu-context__item-menu]': 'true',
+    '[class.menu-context__item-menu--disabled]': 'disabled',
+    '[tabindex]': 'disabled ? -1 : 0',
+    '(click)': 'onClickItem($event)',
+    '(keydown.enter)': 'onClickItem()',
+    '(keydown.space)': 'onClickItem()',
+  },
+  providers: [
+    {
+      provide: NEO_ITEMS_MENU_CONTEXT,
+      useExisting: ItemMenuContextComponent,
+    },
+  ],
 })
-export class ItemMenuContextComponent {
-
-  @ViewChild('itemMenuContent') itemMenuContent!: ElementRef;
-
+export class ItemMenuContextComponent
+  implements AfterViewInit, FocusableOption
+{
   /**
    * Label para darle nombre al item del menú en caso de no utilizar el contenido `ng-content` para ello
    */
@@ -32,44 +67,92 @@ export class ItemMenuContextComponent {
    */
   @Input() icon: string = '';
 
-  _title: WritableSignal<string> = signal('');
+  /**
+   * Título que recibirá el item si éste no consta de un `label`
+   */
+  @Input()
+  set title(title: string) {
+    this._title.set(title);
+  }
   get title(): string {
     return this._title();
   }
 
   /**
-   * Título que recibirá el item si éste no consta de un `label`
+   * Input para deshabilitar el item del menú contextual.
+   * Si está deshabilitado, no se podrá hacer clic en él y se aplicará
    */
-  @Input() set title(title: string) {
-    this._title.set(title);
-  }
-
-  @Output() click: EventEmitter<any> = new EventEmitter();
-
-  constructor(
-    private menuContextParent: MenuContextComponent,
-  ) { }
+  @Input({ transform: booleanAttribute }) disabled: boolean = false; // Nuevo input disabled
 
   /**
-   * Trigger al hacer click en el item del menú que emite el evento `click`
-   * @param {Event} event
+   * Output que emite un evento al hacer clic en el item del menú contextual.
+   * Este evento se emite solo si el item no está deshabilitado.
    */
-  onClickItem(event: Event) {
-    event?.preventDefault();
-    event?.stopPropagation();
-    this.menuContextParent.close(); // Cerramos el menú padre
-    this.click.emit(event);
+  @Output() itemClick: EventEmitter<any> = new EventEmitter();
+
+  private _title: WritableSignal<string> = signal('');
+  private _elementRef: ElementRef;
+
+  private readonly elementRef = inject(ElementRef);
+
+  // Inyectamos el componente MenuContextComponent para poder acceder a sus propiedades y métodos
+  // desde el componente ItemMenuContextComponent hijo.
+  private readonly menuContext = inject(NEO_MENU_CONTEXT, {
+    optional: true,
+  }) as MenuContextComponent | null;
+
+  constructor() {
+    this._elementRef = this.elementRef;
   }
 
   /**
    * Función que se ejecuta después de que el componente se haya inicializado
    */
-  ngAfterViewInit(): void {
-    if (this._title() === '' || this._title().length === 0 && this.label !== '')
-      this._title.set(this.label);
-    else {
-      if (this._title() === '' || this._title().length === 0)
-        this._title.set(this.itemMenuContent.nativeElement.innerHTML.replace(/(<([^>]+)>)/gi, ""));
+  ngAfterViewInit() {
+    this._createTitle();
+  }
+
+  /**
+   * Trigger al hacer click en el item del menú que emite el evento `click`
+   * @param {Event} event
+   */
+  onClickItem(event?: Event) {
+    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
+    event?.stopPropagation();
+
+    if (this.disabled) return;
+
+    this.menuContext?.close(); // Cerramos el menú padre
+    this.itemClick.emit(event);
+  }
+
+  /**
+   * Función para crear un título para el item del menú contextual.
+   * Si no se ha proporcionado un título, se utiliza el contenido del `ng-content`.
+   * Si se ha proporcionado un `label`, se utiliza ese texto como título.
+   */
+  _createTitle() {
+    const title = this._title();
+    if (title === '' || title.length === 0) {
+      if (this.label !== '') {
+        this._title.set(this.label);
+      } else {
+        const innerText =
+          this._elementRef?.nativeElement?.innerHTML?.replace(
+            /(<([^>]+)>)/gi,
+            '',
+          ) ?? '';
+        this._title.set(innerText);
+      }
     }
+  }
+
+  /**
+   * Método para enfocar la opción. Este método es necesario para implementar la interfaz `FocusableOption`
+   * en la clase. Se enfoca el elemento nativo de la opción para poder seleccionarla las flechas
+   * del teclado gracias al uso de `FocusKeyManager` en el componente `neo-menu-context`.
+   */
+  focus() {
+    this._elementRef?.nativeElement?.focus();
   }
 }

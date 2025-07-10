@@ -27,7 +27,7 @@ import { InputSize } from '../models/form-field.model';
 @Component({
   selector: 'neo-textarea',
   templateUrl: './text-area.component.html',
-  styleUrls: ['./text-area.component.scss', './../form-fields-settings.scss'],
+  styleUrls: ['./text-area.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -52,7 +52,6 @@ export class TextAreaComponent {
   @Input() resize?: boolean = true;
   @Input() inputSize: InputSize = 'm';
   @Output() change = new EventEmitter<string>();
-  hasErrors: InputSignal<boolean> = input<boolean>(false);
 
   /**
    * Input para crear un id único para el campo

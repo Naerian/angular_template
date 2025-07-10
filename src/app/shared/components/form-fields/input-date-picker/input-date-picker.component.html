@@ -1,11 +1,11 @@
 <div
-  class="neo-input-date-picker"
+  class="neo-date-picker"
   [title]="label || ''"
-  [class.neo-input-date-picker--disabled]="_disabled()"
+  [class.neo-date-picker--disabled]="_disabled()"
 >
   @if (label) {
     <label
-      class="neo-input-date-picker__label"
+      class="neo-date-picker__label"
       [attr.for]="_id()"
       [attr.id]="_labelId()"
     >
@@ -15,7 +15,7 @@
       }
     </label>
   }
-  <div class="neo-input-date-picker__wrapper">
+  <div class="neo-date-picker__wrapper">
     <input
       tabindex="0"
       (click)="toogleCalendar($event)"
@@ -25,12 +25,14 @@
       #datePicker="cdkOverlayOrigin"
       #dpInput="ngModel"
       class="
-        neo-input-date-picker__wrapper__field 
-        neo-input-date-picker__wrapper__field--{{ inputSize }}
+        neo-date-picker__wrapper__field 
+        neo-date-picker__wrapper__field--{{ inputSize }}
       "
-      [class.neo-input-date-picker__wrapper__field--has-error]="
-        hasErrors() || (dpInput?.errors && (dpInput?.dirty || dpInput?.touched))
+      [class.neo-date-picker__wrapper__field--has-error]="
+        dpInput?.errors && (dpInput?.dirty || dpInput?.touched)
       "
+      [class.neo-date-picker__wrapper__field--clear]="showClear"
+      [class.neo-date-picker__wrapper__field--disabled]="_disabled()"
       [value]="_value()"
       [(ngModel)]="value"
       (input)="onInput(dpInput.value)"
@@ -41,6 +43,9 @@
       [attr.aria-labelledby]="_labelId()"
       [attr.aria-owns]="_labelId()"
       [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
+      [attr.aria-invalid]="
+        dpInput?.errors && (dpInput?.dirty || dpInput?.touched)
+      "
       [readonly]="true"
       [disabled]="_disabled()"
       [required]="required"
@@ -49,14 +54,16 @@
       [attr.autocomplete]="autocomplete"
       [attr.name]="name"
       [title]="title || label || placeholder || ''"
+      [showClear]="showClear"
+      (clear)="clearInput()"
       autocomplete="off"
       type="text"
     />
     @if (showIconCalendar) {
       <i
         class="
-        neo-input-date-picker__wrapper__icon 
-        neo-input-date-picker__wrapper__icon--{{ inputSize }}
+        neo-date-picker__wrapper__icon 
+        neo-date-picker__wrapper__icon--{{ inputSize }}
         {{ icon }}
         "
         [class.disabled]="_disabled()"
@@ -69,7 +76,6 @@
     }
   </div>
 </div>
-
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="datePicker"
@@ -92,7 +98,7 @@
       [blockDisabledRanges]="blockDisabledRanges"
       [isOpenedByOverlay]="true"
       (dateSelected)="setCalendarValue($event)"
-      class="neo-input-date-picker__calendar"
+      class="neo-date-picker__calendar"
     ></neo-calendar>
   </div>
 </ng-template>

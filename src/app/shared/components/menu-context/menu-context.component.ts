@@ -1,10 +1,13 @@
 import { Overlay, ScrollStrategy } from '@angular/cdk/overlay';
 import {
   Component,
+  ContentChildren,
   ElementRef,
   HostListener,
   Input,
+  QueryList,
   ViewChild,
+  ViewEncapsulation,
   WritableSignal,
   inject,
   signal,
@@ -12,8 +15,14 @@ import {
 import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { Subject, takeUntil } from 'rxjs';
 import { ButtonColor, ButtonSize } from '../button/models/button.model';
-import { OVERLAY_POSITIONS } from './models/menu-context.model';
+import {
+  NEO_ITEMS_MENU_CONTEXT,
+  NEO_MENU_CONTEXT,
+  OVERLAY_POSITIONS,
+} from './models/menu-context.model';
 import { MenuContextManagerService } from './services/menu-context-manager/menu-context-manager.service';
+import { FocusKeyManager } from '@angular/cdk/a11y';
+import { ItemMenuContextComponent } from './item-menu-context/item-menu-context.component';
 
 /**
  * @name
@@ -31,10 +40,21 @@ import { MenuContextManagerService } from './services/menu-context-manager/menu-
   templateUrl: './menu-context.component.html',
   styleUrls: ['./menu-context.component.scss'],
   animations: [FADE_IN_OUT_SCALE],
+  providers: [
+    {
+      provide: NEO_MENU_CONTEXT,
+      useExisting: MenuContextComponent,
+    },
+  ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class MenuContextComponent {
-  @ViewChild('menuContext', { read: ElementRef })
+  @ViewChild('menuContextOverlay', { read: ElementRef })
   menuContextOverlayRef!: ElementRef;
+  @ViewChild('menuContext') menuContextRef!: ElementRef<HTMLElement>;
+
+  @ContentChildren(ItemMenuContextComponent)
+  menuItems!: QueryList<ItemMenuContextComponent>; // Obtener los ítems del menú
 
   /**
    * Input que recibe el icono del menú, por defecto es 'ri-more-2-fill'
@@ -61,15 +81,49 @@ export class MenuContextComponent {
    */
   @Input() title: string = '';
 
+  /**
+   * Output para notificar si el menú contextual se ha abierto o cerrado.
+   */
+  @Input() isOpened: WritableSignal<boolean> = signal(false);
+
+  /**
+   * Input para crear un id único para el menú contextual.
+   */
+  _id: WritableSignal<string> = signal('');
+  @Input() set id(value: string) {
+    this._id.set(value);
+  }
+  get id() {
+    return this._id();
+  }
+
   isMenuContextOpened: WritableSignal<boolean> = signal(false);
   scrollStrategy: ScrollStrategy;
   overlayPositions = OVERLAY_POSITIONS;
 
+  // Manager para el control de teclas en las opciones
+  private _focusKeyManager!: FocusKeyManager<ItemMenuContextComponent>;
+
+  private readonly overlay = inject(Overlay);
+  private readonly _menuContextManagerService = inject(
+    MenuContextManagerService,
+  );
+
+  private readonly itemMenuContext = inject(NEO_ITEMS_MENU_CONTEXT, {
+    optional: true,
+  }) as ItemMenuContextComponent | null;
+
+  private destroy$ = new Subject<void>();
+
+  constructor() {
+    this.scrollStrategy = this.overlay.scrollStrategies.close();
+  }
+
   /**
    * Método para cerrar el panel al pulsar la tecla "Escape"
    */
-  @HostListener('keydown', ['$event'])
-  _onKeydownHandler(event: KeyboardEvent) {
+  @HostListener('document:keydown', ['$event'])
+  onKeyDownHandler(event: KeyboardEvent) {
     const keyCode = event.key;
     if (keyCode === 'Escape') this.close();
   }
@@ -79,26 +133,36 @@ export class MenuContextComponent {
    */
   @HostListener('document:click', ['$event'])
   onOutsideClick(event: MouseEvent) {
-    const clickedInside = this.menuContextOverlayRef?.nativeElement.contains(
+    // Verificar si las referencias a los elementos existen para evitar errores
+    const clickedInsideBtnMenu = this.menuContextRef?.nativeElement?.contains(
       event.target as Node,
     );
-    if (!clickedInside) this.close();
-  }
+    const clickedInsideMenuCtxtOverlay =
+      this.menuContextOverlayRef?.nativeElement?.contains(event.target as Node);
 
-  private readonly overlay = inject(Overlay);
-  private readonly _menuContextManagerService = inject(
-    MenuContextManagerService,
-  );
-
-  private destroy$ = new Subject<void>();
-
-  constructor() {
-    this.scrollStrategy = this.overlay.scrollStrategies.close();
+    // Si el menú está abierto y el clic no fue dentro del botón NI dentro del overlay
+    if (
+      this.isMenuContextOpened() &&
+      !clickedInsideBtnMenu &&
+      !clickedInsideMenuCtxtOverlay
+    ) {
+      this.close();
+    }
   }
 
   ngOnInit(): void {
     // Nos suscribimos a las notificaciones del servicio MenuContextManagerService
     this.menuContextManager();
+  }
+
+  ngAfterViewInit(): void {
+    // Creamos un id único para el menú contextual
+    this.createUniqueId();
+
+    // Inicialización del manager de teclas para las opciones.
+    // Con la opción "withWrap" permitimos que el foco se mueva cíclicamente entre los elementos del menú.
+    // Esto permite que al presionar la tecla "Tab" o "Shift + Tab" también se pueda navegar por los ítems del menú contextual.
+    this._focusKeyManager = new FocusKeyManager(this.menuItems).withWrap();
   }
 
   ngOnDestroy(): void {
@@ -107,11 +171,18 @@ export class MenuContextComponent {
   }
 
   /**
+   * Función para crear un id único para el label del input
+   */
+  createUniqueId(): void {
+    this._id?.set('menu-context_' + crypto.randomUUID());
+  }
+
+  /**
    * Método para suscribirse a las notificaciones del servicio MenuContextManagerService
-   * para cerrar el calendario si otro componente de tipo MenuContext se abre.
+   * para cerrar el menú contextual si otro componente de tipo MenuContext se abre.
    */
   menuContextManager() {
-    // 📡 Nos suscribimos a las notificaciones del servicio
+    // Nos suscribimos a las notificaciones del servicio
     this._menuContextManagerService.menuContextOpened$
       .pipe(takeUntil(this.destroy$))
       .subscribe((openedComponent) => {
@@ -123,10 +194,20 @@ export class MenuContextComponent {
   }
 
   /**
+   * Función para abrir el menú contextual
+   */
+  open() {
+    this._menuContextManagerService.notifyOpened(this);
+    this.isMenuContextOpened.set(true);
+    this.isOpened.set(true);
+  }
+
+  /**
    * Función para cerrar el menú contextual
    */
   close() {
     this.isMenuContextOpened.set(false);
+    this.isOpened.set(false);
   }
 
   /**
@@ -136,6 +217,20 @@ export class MenuContextComponent {
   toggleMenuContext(event: Event) {
     event?.preventDefault();
     event?.stopPropagation();
-    this.isMenuContextOpened.set(!this.isMenuContextOpened());
+
+    // Si el menú contextual ya está abierto, lo cerramos.
+    // Si no, lo abrimos.
+    if (this.isMenuContextOpened()) this.close();
+    else this.open();
+  }
+
+  /**
+   * Método para controlar cuando se pulsa una tecla
+   * @param {KeyboardEvent} event
+   */
+  onKeyDown(event: KeyboardEvent) {
+    if (!this.isMenuContextOpened()) return;
+    // Permitir que el FocusKeyManager maneje las flechas de dirección
+    this._focusKeyManager.onKeydown(event);
   }
 }

@@ -1,18 +1,6 @@
-<div
-  #itemMenuContent
-  class="item-menu-context"
-  tabindex="0"
-  (click)="onClickItem($event)"
-  (keydown.enter)="onClickItem($event)"
-  (keydown.space)="onClickItem($event)"
-  [title]="_title()"
->
-  @if (!label) {
-    <ng-content></ng-content>
-  } @else {
-   <div class="item-menu-context__icon">
-    <i [class]="icon"></i>
-   </div>
-   <div class="item-menu-context__label">{{ label }}</div>
-  }
-</div>
+@if (!label) {
+  <ng-content></ng-content>
+} @else {
+  <i class="menu-context__item-menu__icon {{ icon }}"></i>
+  <div class="menu-context__item-menu__label">{{ label }}</div>
+}

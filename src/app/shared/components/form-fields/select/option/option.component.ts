@@ -32,6 +32,7 @@ import { InputSize } from '../../models/form-field.model';
     '[title]': 'getLabelText()',
     '[attr.id]': '_id()',
     '[attr.role]': 'option',
+    '[hidden]': 'isHideBySearch()',
     '[class.neo-select__dropdown__options__option]': 'true',
     '[class.neo-select__dropdown__options__option--hidden]': 'isHideBySearch()',
     '[class.neo-select__dropdown__options__option--selected]': 'selected',
@@ -43,7 +44,7 @@ import { InputSize } from '../../models/form-field.model';
     '[class.neo-select__dropdown__options__option--l]': '_size() === "l"',
     '[class.neo-select__dropdown__options__option--xl]': '_size() === "xl"',
     '[attr.aria-selected]': 'isSelected()', // Atributo para indicar si la opción está seleccionada
-    '[attr.aria-disabled]': 'disabled.toString()', // Atributo para indicar si la opción está deshabilitada
+    '[attr.aria-disabled]': 'disabled', // Atributo para indicar si la opción está deshabilitada
     '[attr.aria-hidden]': 'isHideBySearch()', // Atributo para indicar si la opción está oculta por la búsqueda
     '[attr.aria-label]': 'getLabelText()', // Atributo para indicar el texto de la opción
     '(click)': 'toggleSelectOption($event)', // Evento para seleccionar o deseleccionar la opción

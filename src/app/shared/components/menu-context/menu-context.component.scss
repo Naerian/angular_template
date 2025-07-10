@@ -1,24 +1,60 @@
-
+@import "config";
+@import "mixins";
 
 :host {
   display: flex;
 }
 
 .menu-context {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 5px;
-  min-width: 100px;
-  background-color: var(--background-color);
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  box-shadow: var(--shadow-box) !important;
+  @include flex-col-center;
+  border: calc(#{$border-width-base} / 2) solid var(--border-field-color);
+  background-color: var(--bg-field-color);
+  box-shadow: $box-shadow-md;
+  padding: $spacing-xs;
+  gap: $spacing-xxs;
+  min-width: 160px;
+  max-width: 280px;
+  border-radius: $border-radius-md;
 
-  &__btn {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
+  &__item-menu {
+    @include flex-row-center;
+    @include component-size(s);
+    @include transition(background-color 0.2s ease, color 0.2s ease);
+    cursor: pointer;
+    padding: $spacing-s;
+    gap: $spacing-xxs;
+    width: 100%;
+
+    &__label {
+      @include ellipsis-text;
+      font-size: map-get($component-font-sizes, s);
+      font-weight: $font-weight-medium;
+    }
+
+    &__icon {
+      font-size: map-get($component-font-sizes, s);
+      font-weight: $font-weight-medium;
+      &::before {
+        color: var(--icon-field-color);
+      }
+    }
+
+    &:hover:not(&--disabled),
+    &:focus:not(&--disabled),
+    &:active:not(&--disabled) {
+      color: var(--text-color);
+      background-color: var(--bg-options-field-color);
+      border-radius: $border-radius-md;
+    }
+
+    &:focus:not(&--disabled),
+    &:active:not(&--disabled) {
+      @include outline-focus;
+    }
+
+    &--disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
   }
 }

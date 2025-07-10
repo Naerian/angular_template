@@ -1,10 +1,8 @@
-// src/app/shared/components/form-fields/input-date-picker/input-date-picker.component.scss
-
 @import "config";
 @import "mixins";
 @import "functions";
 
-.neo-input-date-picker {
+.neo-date-picker {
   position: relative;
 
   &--disabled {
@@ -16,20 +14,6 @@
     position: relative;
 
     &__field {
-      width: 100%;
-      border-radius: $border-radius-md;
-      box-sizing: border-box;
-      padding: $spacing-s $spacing-s;
-      padding-right: $spacing-m;
-      cursor: pointer;
-      background-color: var(--bg-field-color);
-      border: $border-width-base solid var(--border-field-color);
-
-      &:focus,
-      &:active {
-        @include outline-focus;
-      }
-
       &--xs {
         @include component-size(xs);
       }
@@ -47,6 +31,25 @@
       }
       &--xl {
         @include component-size(xl);
+      }
+
+      width: 100%;
+      border-radius: $border-radius-md;
+      box-sizing: border-box;
+      padding-right: calc(#{$spacing-m} * 2 + #{$spacing-xs}) !important;
+      cursor: pointer;
+      background-color: var(--bg-field-color);
+      border: $border-width-base solid var(--border-field-color);
+
+      &:focus,
+      &:active {
+        @include outline-focus;
+      }
+
+      &--clear {
+        padding-right: calc(
+          #{$spacing-m} * 2 + #{$spacing-xxs} + #{$spacing-s}
+        );
       }
 
       &[disabled],
@@ -66,27 +69,31 @@
       cursor: pointer;
       @include flex-center;
       &--xs {
-        @include component-size(xs);
+        @include component-icon-size(xs);
       }
       &--s {
-        @include component-size(s);
+        @include component-icon-size(s);
       }
       &--xm {
-        @include component-size(xm);
+        @include component-icon-size(xm);
       }
       &--m {
-        @include component-size(m);
+        @include component-icon-size(m);
       }
       &--l {
-        @include component-size(l);
+        @include component-icon-size(l);
       }
       &--xl {
-        @include component-size(xl);
+        @include component-icon-size(xl);
       }
 
       &::before {
         color: var(--icon-field-color);
       }
+    }
+
+    .neo-clear-field-button {
+      right: calc(#{$spacing-s} * 2) !important;
     }
   }
 }

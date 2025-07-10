@@ -12,6 +12,11 @@
 <neo-card [collapsable]="true">
   <neo-card-header>
     <div>Tipos de botones</div>
+    <small>
+      Los botones son componentes interactivos que permiten al usuario realizar
+      acciones. Los botones pueden tener diferentes colores, tamaños y estilos.
+      También pueden tener iconos y texto.
+    </small>
   </neo-card-header>
   <div class="row">
     <div class="col-3">
@@ -248,16 +253,12 @@
 <hr />
 <neo-card>
   <neo-card-header>
-    <div
-      style="display: flex; flex-direction: row; align-items: center; gap: 10px"
+    <div>Tipos de toast</div>
+    <small
+      >(<a href="https://www.npmjs.com/package/ngx-toastr" target="_blank"
+        >Librería ngx-toastr</a
+      >)</small
     >
-      Tipos de toast
-      <small
-        >(<a href="https://www.npmjs.com/package/ngx-toastr" target="_blank"
-          >Librería ngx-toastr</a
-        >)</small
-      >
-    </div>
   </neo-card-header>
   <div class="row">
     <div class="col-4">
@@ -284,12 +285,27 @@
 <neo-card>
   <neo-card-header>
     <div>Tipos de inputs</div>
+    <small>
+      Los componentes <b>neo-input</b>, <b>neo-input-password</b>,
+      <b>neo-textarea</b>, <b>neo-select</b>, <b>neo-date-picker</b>,
+      <b>neo-input-file</b>, <b>neo-checkbox</b> y <b>neo-radio-button</b> son
+      componentes de formulario que permiten la entrada de datos por parte del
+      usuario. Estos componentes son personalizables y pueden ser utilizados en
+      formularios reactivos o basados en plantillas.
+    </small>
   </neo-card-header>
   <div class="row">
     <div class="col-12 col-md-6 col-lg-6 mb-2 mt-2">
       <neo-input
         label="Input normal"
         (change)="inputChange($event)"
+      ></neo-input>
+      <br />
+      <neo-input label="Input normal requerido" [required]="true"></neo-input>
+      <br />
+      <neo-input
+        label="Input normal con showClear"
+        [showClear]="true"
       ></neo-input>
       <br />
       <neo-input
@@ -327,6 +343,8 @@
         [label]="'Selector con NG Model'"
         [(ngModel)]="selectValue"
         (change)="selectChangeNM()"
+        [required]="true"
+        [showClear]="true"
       >
         <neo-option value="1">Opción 1</neo-option>
         <neo-option value="2">Opción 2</neo-option>
@@ -402,17 +420,14 @@
           <neo-option value="3">Opción 3</neo-option>
           <neo-option value="4">Opción 4</neo-option>
         </neo-option-groups>
-        <neo-option-groups [label]="'GRUPO 3'">
+        <neo-option-groups
+          [label]="'GRUPO 3 (Deshabilitado)'"
+          [disabled]="true"
+        >
           <neo-option value="5">Opción 1</neo-option>
           <neo-option value="5">Opción 5</neo-option>
           <neo-option value="6">Opción 6</neo-option>
         </neo-option-groups>
-      </neo-select>
-      <br />
-      <neo-select label="Selector requerido" [required]="true">
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
       </neo-select>
       <br />
       <neo-select label="Selector deshabilitado" [disabled]="true">
@@ -422,36 +437,75 @@
       </neo-select>
     </div>
   </div>
+  <hr />
   <div class="row">
-    <div class="col-3">
+    <div class="col-2">
       <neo-form-field>
         <neo-input label="Input XS" [inputSize]="'xs'"></neo-input>
       </neo-form-field>
     </div>
-    <div class="col-3">
+    <div class="col-2">
       <neo-form-field>
         <neo-input label="Input S" [inputSize]="'s'"></neo-input>
       </neo-form-field>
     </div>
-    <div class="col-3">
+    <div class="col-2">
       <neo-form-field>
         <neo-input label="Input XM" [inputSize]="'xm'"></neo-input>
       </neo-form-field>
     </div>
-    <div class="col-3">
+    <div class="col-2">
       <neo-form-field>
         <neo-input label="Input M (Estándar)" [inputSize]="'m'"></neo-input>
       </neo-form-field>
     </div>
-    <div class="col-3">
+    <div class="col-2">
       <neo-form-field>
         <neo-input label="Input L" [inputSize]="'l'"></neo-input>
       </neo-form-field>
     </div>
-    <div class="col-3">
+    <div class="col-2">
       <neo-form-field>
         <neo-input label="Input XL" [inputSize]="'xl'"></neo-input>
       </neo-form-field>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-3">
+      <neo-checkbox
+        [label]="'Label del checkbox'"
+        [checked]="true"
+        (change)="checkboxChange($event)"
+        >Checkbox</neo-checkbox
+      >
+    </div>
+    <div class="col-3">
+      <neo-checkbox
+        [label]="'Label del checkbox indeterminate'"
+        [indeterminate]="true"
+        (change)="checkboxChange($event)"
+        >Checkbox</neo-checkbox
+      >
+    </div>
+    <div class="col-3">
+      <neo-checkbox
+        [label]="'Label del checkbox ngModel'"
+        [checked]="true"
+        [(ngModel)]="checkboxValue"
+        (change)="checkboxChangeNM()"
+        >Checkbox ngModel</neo-checkbox
+      >
+    </div>
+    <div class="col-3">
+      <neo-radio-button-group
+        [label]="'Label del radiobutton'"
+        [name]="'testRadiobutton'"
+        [(ngModel)]="radioButtonValue"
+      >
+        <neo-radio-button value="1">Option 1</neo-radio-button>
+        <neo-radio-button value="2">Option 2</neo-radio-button>
+      </neo-radio-button-group>
     </div>
   </div>
 </neo-card>
@@ -521,10 +575,13 @@
 <neo-card>
   <neo-card-header>
     <div>Input files</div>
+    <small
+      >El componente <b>neo-input-file</b> permite seleccionar archivos desde el
+      sistema de archivos del usuario. Soporta múltiples archivos y extensiones
+      específicas.<br /><b>NOTA: </b>Abrir ventana de desarrollador para ver los
+      valores</small
+    >
   </neo-card-header>
-  <small
-    ><b>NOTA: </b>Abrir ventana de desarrollador para ver los valores</small
-  >
   <div class="row">
     <div class="col-2">
       <label>Input file sencillo</label>
@@ -570,7 +627,15 @@
 </neo-card>
 <hr />
 <neo-card>
-  <neo-card-header> <div>Tipos de modales y sidebar</div></neo-card-header>
+  <neo-card-header>
+    <div>Tipos de modales y sidebar</div>
+    <small>
+      Los componentes <b>neo-modal</b> y <b>neo-sidebar</b> son utilizados para
+      mostrar contenido adicional en una ventana modal o en una barra lateral.
+      Estos componentes permiten mostrar información adicional sin salir de la
+      página actual.
+    </small>
+  </neo-card-header>
   <div class="row">
     <div class="col-4">
       <label>Apertura de Sidebar con cambio de contenido en su interior</label>
@@ -592,6 +657,12 @@
 <neo-card>
   <neo-card-header>
     <div>Tipos de spinners</div>
+    <small>
+      El componente <b>neo-spinner</b> es utilizado para mostrar el progreso de
+      una tarea o acción en curso. Este componente es útil para indicar al
+      usuario que una acción está en curso y que debe esperar. El spinner puede
+      tener diferentes tamaños y estilos.
+    </small>
   </neo-card-header>
   <div class="row">
     <div class="col-3">
@@ -618,6 +689,14 @@
 <neo-card>
   <neo-card-header>
     <div>Tipos de barras de progreso</div>
+    <small>
+      El componente <b>neo-progress-bar</b> es utilizado para mostrar el
+      progreso de una tarea o acción en curso. Este componente es útil para
+      indicar al usuario que una acción está en curso y que debe esperar. La
+      barra de progreso puede tener diferentes tamaños, colores y estilos.
+      También puede mostrar el porcentaje de progreso y dividirse en dos partes
+      para mostrar dos valores diferentes.
+    </small>
   </neo-card-header>
   <div class="row">
     <div class="col-12">
@@ -730,6 +809,10 @@
 <neo-card>
   <neo-card-header>
     <div>Misceláneo</div>
+    <small>
+      Este apartado contiene componentes misceláneos que no encajan en las
+      categorías anteriores. Incluye menús contextuales, toggles de tema, etc...
+    </small>
   </neo-card-header>
   <div class="row">
     <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
@@ -737,46 +820,14 @@
       <neo-menu-context size="xm">
         <neo-item-menu-context>Test 1</neo-item-menu-context>
         <neo-item-menu-context>Test 2</neo-item-menu-context>
+        <neo-item-menu-context [disabled]="true"
+          >Test 3 (Deshabilitado)</neo-item-menu-context
+        >
       </neo-menu-context>
     </div>
     <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
       <label>Cambio de tema (claro / oscuro)</label>
       <neo-theme-toggle size="xm"></neo-theme-toggle>
-    </div>
-    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
-      <neo-checkbox
-        [label]="'Label del checkbox'"
-        [checked]="true"
-        (change)="checkboxChange($event)"
-        >Checkbox</neo-checkbox
-      >
-    </div>
-    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
-      <neo-checkbox
-        [label]="'Label del checkbox indeterminate'"
-        [indeterminate]="true"
-        (change)="checkboxChange($event)"
-        >Checkbox</neo-checkbox
-      >
-    </div>
-    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
-      <neo-checkbox
-        [label]="'Label del checkbox ngModel'"
-        [checked]="true"
-        [(ngModel)]="checkboxValue"
-        (change)="checkboxChangeNM()"
-        >Checkbox ngModel</neo-checkbox
-      >
-    </div>
-    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
-      <neo-radio-button-group
-        [label]="'Label del radiobutton'"
-        [name]="'testRadiobutton'"
-        [(ngModel)]="radioButtonValue"
-      >
-        <neo-radio-button value="1">Option 1</neo-radio-button>
-        <neo-radio-button value="2">Option 2</neo-radio-button>
-      </neo-radio-button-group>
     </div>
   </div>
 </neo-card>
@@ -851,6 +902,11 @@
     <neo-card>
       <neo-card-header>
         <div>Paginadores</div>
+        <small>
+          El componente <b>neo-paginator</b> es utilizado para paginar grandes
+          conjuntos de datos. Permite navegar entre diferentes páginas de datos
+          y controlar el número de elementos por página.
+        </small>
       </neo-card-header>
       <label>Paginador con rango izquierda</label>
       <neo-paginator [total]="100" [position]="'left'"></neo-paginator>
@@ -890,6 +946,11 @@
     <neo-card>
       <neo-card-header>
         <div>Tabs normales</div>
+        <small>
+          El componente <b>neo-tabs</b> permite crear pestañas para organizar el
+          contenido en secciones. Cada pestaña puede contener diferentes tipos
+          de contenido y se puede personalizar con títulos, iconos y HTML.
+        </small>
       </neo-card-header>
       <neo-tabs>
         <neo-tabs-item title="Tab 1">
@@ -908,6 +969,11 @@
     <neo-card>
       <neo-card-header>
         <div>Tab con iconos y html</div>
+        <small>
+          El componente <b>neo-tabs</b> permite crear pestañas con iconos y HTML
+          personalizado. Cada pestaña puede contener diferentes tipos de
+          contenido y se puede personalizar con títulos, iconos y HTML.
+        </small>
       </neo-card-header>
       <neo-tabs>
         <neo-tabs-item>
@@ -935,136 +1001,161 @@
   </div>
 </div>
 <hr />
-<div class="row">
-  <div class="col-12">
-    <neo-card>
-      <neo-card-header>
-        <div>Calendarios</div>
-      </neo-card-header>
-      <div class="row">
-        <div class="col-3">
-          <label>Calendario normal</label>
-          <small>Fecha: {{ (dateInfo1 | date: "YYYY/MM/dd") || "-" }}</small>
-          <neo-calendar (dateSelected)="dateInfo1 = $event"></neo-calendar>
-        </div>
-        <div class="col-3">
-          <label>Calendario semana</label>
-          <small
-            >Fecha: {{ (dateInfo2?.[0] | date: "YYYY/MM/dd") || "-" }} -
-            {{
-              (dateInfo2?.[dateInfo2?.length - 1] | date: "YYYY/MM/dd") || "-"
-            }}</small
-          >
-          <neo-calendar
-            [type]="'week'"
-            (dateSelected)="dateInfo2 = $event"
-          ></neo-calendar>
-        </div>
-        <div class="col-3">
-          <label>Calendario rango</label>
-          <small
-            >Fecha: {{ (dateInfo3?.[0] | date: "YYYY/MM/dd") || "-" }} -
-            {{
-              (dateInfo3?.[dateInfo3?.length - 1] | date: "YYYY/MM/dd") || "-"
-            }}</small
-          >
-          <neo-calendar
-            [type]="'range'"
-            (dateSelected)="dateInfo3 = $event"
-          ></neo-calendar>
-        </div>
-        <div class="col-3">
-          <label>Calendario con fechas deshabilitadas</label>
-          <small
-            >Fecha: {{ (dateInfo4?.[0] | date: "YYYY/MM/dd") || "-" }} -
-            {{
-              (dateInfo4?.[dateInfo4?.length - 1] | date: "YYYY/MM/dd") || "-"
-            }}</small
-          >
-          <neo-calendar
-            [type]="'range'"
-            (dateSelected)="dateInfo4 = $event"
-            [disabledDates]="disabledDates"
-          ></neo-calendar>
-        </div>
-      </div>
-    </neo-card>
+<neo-card>
+  <neo-card-header>
+    <div>Calendarios</div>
+    <small>
+      El componente <b>neo-calendar</b> permite seleccionar fechas de un
+      calendario. Soporta diferentes tipos de selección: normal, semana, rango y
+      fechas deshabilitadas.
+    </small>
+  </neo-card-header>
+  <div class="row">
+    <div class="col-3">
+      <label>Calendario normal</label>
+      <small>Fecha: {{ (dateInfo1 | date: "YYYY/MM/dd") || "-" }}</small>
+      <neo-calendar (dateSelected)="dateInfo1 = $event"></neo-calendar>
+    </div>
+    <div class="col-3">
+      <label>Calendario semana</label>
+      <small
+        >Fecha: {{ (dateInfo2?.[0] | date: "YYYY/MM/dd") || "-" }} -
+        {{
+          (dateInfo2?.[dateInfo2?.length - 1] | date: "YYYY/MM/dd") || "-"
+        }}</small
+      >
+      <neo-calendar
+        [type]="'week'"
+        (dateSelected)="dateInfo2 = $event"
+      ></neo-calendar>
+    </div>
+    <div class="col-3">
+      <label>Calendario rango</label>
+      <small
+        >Fecha: {{ (dateInfo3?.[0] | date: "YYYY/MM/dd") || "-" }} -
+        {{
+          (dateInfo3?.[dateInfo3?.length - 1] | date: "YYYY/MM/dd") || "-"
+        }}</small
+      >
+      <neo-calendar
+        [type]="'range'"
+        (dateSelected)="dateInfo3 = $event"
+      ></neo-calendar>
+    </div>
+    <div class="col-3">
+      <label>Calendario con fechas deshabilitadas</label>
+      <small
+        >Fecha: {{ (dateInfo4?.[0] | date: "YYYY/MM/dd") || "-" }} -
+        {{
+          (dateInfo4?.[dateInfo4?.length - 1] | date: "YYYY/MM/dd") || "-"
+        }}</small
+      >
+      <neo-calendar
+        [type]="'range'"
+        (dateSelected)="dateInfo4 = $event"
+        [disabledDates]="disabledDates"
+      ></neo-calendar>
+    </div>
   </div>
-  <div class="col-6 col-md-6 col-lg-12 mb-2 mt-2">
-    <neo-card>
-      <neo-card-header>
-        <div>Diferentes datepicker</div>
-      </neo-card-header>
-      <neo-input-date-picker label="Date picker"></neo-input-date-picker>
-      <br />
-      <neo-input-date-picker
+</neo-card>
+<hr />
+<neo-card>
+  <neo-card-header>
+    <div>Diferentes datepicker</div>
+    <small>
+      El componente <b>neo-date-picker</b> permite seleccionar fechas de un
+      calendario. Soporta diferentes tipos de selección: normal, semana, rango y
+      fechas deshabilitadas. También se puede utilizar con formularios reactivos
+      y ngModel para manejar la entrada de datos.
+    </small>
+  </neo-card-header>
+  <div class="row gy-3">
+    <div class="col-4">
+      <neo-date-picker [showClear]="true" label="Date picker"></neo-date-picker>
+    </div>
+
+    <div class="col-4">
+      <neo-date-picker
         label="Date picker requerido"
+        [(ngModel)]="datePickerValue"
         [required]="true"
-      ></neo-input-date-picker>
-      <br />
-      <neo-input-date-picker
+      ></neo-date-picker>
+    </div>
+
+    <div class="col-4">
+      <neo-date-picker
         label="Date picker deshabilitado"
         [disabled]="true"
-      ></neo-input-date-picker>
-      <br />
-      <neo-input-date-picker
+      ></neo-date-picker>
+    </div>
+
+    <div class="col-4">
+      <neo-date-picker
         [type]="'range'"
         label="Date picker de rango"
-      ></neo-input-date-picker>
-      <br />
-      <neo-input-date-picker
+      ></neo-date-picker>
+    </div>
+
+    <div class="col-4">
+      <neo-date-picker
         [type]="'week'"
         label="Date picker de semana"
-      ></neo-input-date-picker>
-      <br />
-      <neo-input-date-picker
+      ></neo-date-picker>
+    </div>
+
+    <div class="col-4">
+      <neo-date-picker
         label="Date de rango picker con fechas deshabilitadas y bloqueadas"
         [type]="'range'"
         [disabledDates]="disabledDates"
         [blockDisabledRanges]="true"
-      ></neo-input-date-picker>
-      <br />
+      ></neo-date-picker>
+    </div>
+
+    <div class="col-4">
       <form [formGroup]="testFormDate">
-        <neo-input-date-picker
+        <neo-date-picker
           formControlName="date"
           label="Date picker con ReactiveForm"
-        ></neo-input-date-picker>
+        ></neo-date-picker>
         @if (testFormDate.value.date !== "") {
-          <pre>
-            {{ testFormDate.value.date }}
-          </pre>
+          <pre>{{ testFormDate.value.date }}</pre>
         }
       </form>
-      <br />
+    </div>
+
+    <div class="col-4">
       <form [formGroup]="testFormDateRange">
-        <neo-input-date-picker
+        <neo-date-picker
           [type]="'range'"
           formControlName="dateRange"
           label="Date picker de rango con ReactiveForm"
-        ></neo-input-date-picker>
+        ></neo-date-picker>
         @if ((testFormDateRange.value.dateRange?.length ?? 0) > 0) {
           <pre>
-            @for (date of testFormDateRange.value.dateRange; track date) {
-              {{ date }}
-            }
-          </pre>
+          @for (date of testFormDateRange.value.dateRange; track date) {
+            {{ date }}
+          }
+        </pre>
         }
       </form>
-      <br />
+    </div>
+
+    <div class="col-4">
       <form [formGroup]="testFormDateWeek">
-        <neo-input-date-picker
+        <neo-date-picker
           [type]="'week'"
           formControlName="dateWeek"
           label="Date picker de semana con ReactiveForm"
-        ></neo-input-date-picker>
+        ></neo-date-picker>
         @if ((testFormDateWeek.value.dateWeek?.length ?? 0) > 0) {
           <pre>
-            @for (date of testFormDateWeek.value.dateWeek; track date) {
-              {{ date }}
-            }
-          </pre>
+          @for (date of testFormDateWeek.value.dateWeek; track date) {
+            {{ date }}
+          }
+        </pre>
         }
       </form>
-    </neo-card>
+    </div>
   </div>
-</div>
+</neo-card>
