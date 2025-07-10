@@ -1,4 +1,4 @@
-<div class="neo-textarea" [title]="label || ''">
+<div class="neo-textarea">
   @if (label) {
     <label [for]="_id()" [attr.id]="_labelId()" class="neo-textarea__label">
       <span [innerHtml]="label"></span>
@@ -15,6 +15,7 @@
         neo-textarea__wrapper__field--{{ inputSize }}
       "
       [class.neo-textarea__wrapper__field--no-resize]="!resize"
+      [class.neo-textarea__wrapper__field--disabled]="_disabled()"
       [class.neo-textarea__wrapper__field--has-error]="
         txArea?.errors && (txArea?.dirty || txArea?.touched)
       "

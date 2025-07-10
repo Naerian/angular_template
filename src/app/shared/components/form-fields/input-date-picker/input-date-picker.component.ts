@@ -37,6 +37,7 @@ import { InputAutocomplete, InputSize } from '../models/form-field.model';
 import { OVERLAY_POSITIONS } from './models/input-date-picker.model';
 import { DatePickerManagerService } from './services/date-picker-manager/date-picker-manager.service';
 import { ShowClearFieldDirective } from '@shared/directives/show-clear-field.directive';
+import { CalendarService } from '@shared/components/calendar/services/calendar.service';
 
 /**
  * @name
@@ -178,6 +179,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   private readonly overlay = inject(Overlay);
   private readonly _inputsUtilsService = inject(InputsUtilsService);
   private readonly _datePickerManagerService = inject(DatePickerManagerService);
+  private readonly _calendarService = inject(CalendarService);
 
   private destroy$ = new Subject<void>();
 
@@ -290,91 +292,223 @@ export class InputDatePickerComponent implements ControlValueAccessor {
 
   /**
    * Función para establecer el valor del campo de fecha
-   * @param {Date | Date[] | string | string[] | null} value - Fecha o rango de fechas seleccionadas
+   * @param {Date | Date[] | string | string[] | null} value - Fecha o rango de fechas a establecer
    */
   setValue(value: Date | Date[] | string | string[] | null) {
-    // Si no hay valor, lo establecemos a null
-    if (
+    // Si el valor es vacío, establecemos los valores como null
+    if (this.isEmpty(value)) {
+      this._setNullValues();
+      return;
+    }
+
+    // Comprobamos si el valor es un string o un array de strings
+    const isStringInput =
+      typeof value === 'string' ||
+      (Array.isArray(value) && typeof value[0] === 'string');
+
+    // Si el valor es un string o un array de strings, lo parseamos como fecha
+    // Si el valor es un Date o un array de Dates, lo parseamos como fecha
+    if (isStringInput) {
+      value = this.parseFromString(value as string | string[]);
+    } else {
+      value = this.parseFromDate(value as Date | Date[]);
+    }
+
+    // Si el valor es inválido, lo dejamos como null
+    if (value === null) {
+      this._setNullValues();
+      return;
+    }
+
+    // Establecemos el valor visual del campo
+    this.setVisualValue(value);
+  }
+
+  /**
+   * Función para comprobar si un valor es vacío
+   * @param {any} value - Valor a comprobar
+   */
+  private isEmpty(value: any): boolean {
+    return (
       value === '' ||
       value === null ||
       value === undefined ||
       (Array.isArray(value) && value.length === 0)
-    ) {
-      this._value.set(null); // Valor visual
-      this.realDateValue.set(null); // Valor real
-      return;
-    }
+    );
+  }
 
-    // VALOR REAL DEL CAMPO
-    // ---------------------------------
-    // Si el valor es de tipo `string`, lo convertimos a `Date` o `Date[]`
-    // dependiendo del tipo de calendario (rango, semana o día)
-    if (
-      typeof value === 'string' ||
-      (Array.isArray(value) && typeof value[0] === 'string')
-    ) {
-      // Si es un rango, formateamos cada valor de fecha y después los convertimos a Date[].
-      if (this.type === CalendarType.RANGE || this.type === CalendarType.WEEK) {
-        const parts = Array.isArray(value) ? value : [value];
-        const dates = parts
-          .map((part) => moment(part, this.format, true))
-          .filter((m) => m.isValid())
-          .map((m) => m.toDate());
-        value = dates.length > 0 ? dates : null;
-        this.realDateValue.set(value as Date[]); // Valor real
-      } else {
-        // Si es una sola fecha, la convertimos a Date
-        const m = moment(value as string, this.format, true);
-        value = m.isValid() ? m.toDate() : null;
-        this.realDateValue.set(value as Date); // Valor real
-      }
-    } else {
-      if (this.type === CalendarType.RANGE || this.type === CalendarType.WEEK) {
-        // Si es un rango de fechas, aseguramos que sea un array de Date[]
-        if (!Array.isArray(value)) value = [value as Date];
-        this.realDateValue.set(value as Date[]); // Valor real
-      } else {
-        this.realDateValue.set(value as Date);
-      }
-    }
+  /**
+   * Función para establecer los valores del campo como null
+   * Esto se usa cuando el valor es vacío o inválido
+   */
+  private _setNullValues() {
+    this._value.set(null);
+    this.realDateValue.set(null);
+  }
 
-    // VALOR VISUAL DEL CAMPO
-    // ----------------------------
-    // Ahora `value` es de tipo `Date` o `Date[]`
-    // Si es un rango de fechas, lo mostramos como 'aaaa-mm-dd - aaaa-mm-dd' (this.format)
-    // Si es una sola fecha, lo mostramos como 'aaaa-mm-dd' (this.format)
-    if (Array.isArray(value) && value.length > 1) {
-      const startDate = moment(value[0]).format(this.format);
-      const endDate = moment(value[value.length - 1]).format(this.format);
-      this._value.set(`${startDate} - ${endDate}`); // Valor visual
-    } else {
-      // Mostrar en el input como string (aunque sea rango)
-      const formatted = this.formatDate(value as Date, this.format);
-      this._value.set(formatted); // Valor visual
+  /**
+   * Función para parsear un valor desde un string o un array de strings
+   * y convertirlo a una fecha o rango de fechas de tipo Date.
+   * @param {string | string[]} value - Valor a parsear desde un string o un array de strings
+   * @returns {Date | Date[] | null} - Fecha o rango de fechas parseadas, o null si el valor es inválido
+   */
+  private parseFromString(value: string | string[]): Date | Date[] | null {
+    switch (this.type) {
+      // Si es de tipo `range`, aseguramos que el valor es un array de dos elementos
+      // y comprobamos que las fechas son válidas. Generaremos el rango completo
+      // de fechas entre las dos fechas, mediante el inicio y el fin del rango.
+      case CalendarType.RANGE:
+        // Aseguramos que el valor es un array de dos elementos
+        const range = this.ensureArrayOfTwo(value as string | string[]);
+        if (this.hasInvalidDates(range)) return null;
+
+        // Convertimos las fechas del rango a objetos Date
+        const rangeDates = range.map((d) =>
+          moment(d, this.format, true).toDate(),
+        );
+
+        // Obtenemos el rango completo de fechas entre las dos fechas,
+        // mediante el inicio y el fin del rango
+        const [start, end] = [
+          moment(rangeDates[0]),
+          moment(rangeDates[rangeDates.length - 1]),
+        ];
+        const fullRange = this._calendarService
+          .getDatesBetween(start, end)
+          .map((d) => d.toDate());
+
+        this.realDateValue.set(fullRange);
+        return fullRange;
+
+      // Si es de tipo `week`, obtenemos las fechas de la semana
+      // y las convertimos a objetos Date. Para ello usaremos el primer valor del array.
+      case CalendarType.WEEK:
+        const weekValue = Array.isArray(value) ? value[0] : value;
+        const week = this.getWeekDates(moment(weekValue, this.format, true));
+        this.realDateValue.set(week);
+        return week;
+
+      // Si es de tipo `day`, convertimos el valor a un objeto Date
+      // y lo establecemos como el valor real del campo.
+      default:
+        const date = moment(value as string, this.format, true);
+        if (!date.isValid()) return null;
+        const result = date.toDate();
+        this.realDateValue.set(result);
+        return result;
     }
   }
 
   /**
-   * Función para formatear una fecha o rango de fechas a un formato específico
-   * @param {string} format
-   * @param {Date | Date[]} date
-   * @returns {string}
+   * Función para parsear un valor desde un objeto Date o un array de objetos Date
+   * y convertirlo a una fecha o rango de fechas de tipo Date.
+   * @param {Date | Date[]} value - Valor a parsear desde un objeto Date o un array de objetos Date
+   * @returns {Date | Date[] | null} - Fecha o rango de fechas parseadas, o null si el valor es inválido
    */
-  formatDate(
-    date: Date | Date[],
-    format: string = DEFAULT_FORMAT,
-  ): string | string[] | null {
-    // Si es un rango de fechas, se formatea cada fecha por separado
-    if (Array.isArray(date)) {
-      return date
-        .map((d) => moment(d).format(format))
-        .filter((d) => d !== 'Invalid date')
-        .join(' - ');
+  private parseFromDate(value: Date | Date[]): Date | Date[] | null {
+    switch (this.type) {
+      // Si es de tipo `range`, aseguramos que el valor es un array de dos elementos
+      // y comprobamos que las fechas son válidas. Generaremos el rango completo
+      // de fechas entre las dos fechas, mediante el inicio y el fin del rango.
+      case CalendarType.RANGE:
+        const range = this.ensureArrayOfTwo(value as Date | Date[]);
+        if (this.hasInvalidDates(range)) return null;
+
+        const [start, end] = [
+          moment(range[0]),
+          moment(range[range.length - 1]),
+        ];
+        const fullRange = this._calendarService
+          .getDatesBetween(start, end)
+          .map((d) => d.toDate());
+
+        this.realDateValue.set(fullRange);
+        return fullRange;
+
+      // Si es de tipo `week`, obtenemos las fechas de la semana
+      // y las convertimos a objetos Date. Para ello usaremos el primer valor del array.
+      case CalendarType.WEEK:
+        const date = Array.isArray(value) ? value[0] : value;
+        const week = this.getWeekDates(moment(date));
+        this.realDateValue.set(week);
+        return week;
+
+      // Si es de tipo `day`, convertimos el valor a un objeto Date
+      // y lo establecemos como el valor real del campo.
+      default:
+        this.realDateValue.set(value as Date);
+        return value;
+    }
+  }
+
+  /**
+   * Función para asegurar que el valor es un array de dos elementos,
+   * si no lo es, lo convierte en un array con el mismo valor repetido dos veces.
+   * De este modo, un input de tipo `range` siempre tendrá un array de dos fechas.
+   * @param {string | Date | string[] | Date[]} value - Valor a asegurar que es un array de dos elementos
+   * @returns {string[] | Date[]} - Un array de dos elementos con el valor proporcionado
+   */
+  private ensureArrayOfTwo(
+    value: string | Date | string[] | Date[],
+  ): string[] | Date[] {
+    // Si no es un array o es un array de un solo elemento,
+    // lo convertimos en un array con el mismo valor repetido dos veces.
+    if (!Array.isArray(value) || value.length === 1) {
+      return [value as any, value as any];
     }
 
-    // Si es una sola fecha, se formatea directamente
-    const formattedDate = moment(date).format(format);
-    return formattedDate !== 'Invalid date' ? formattedDate : null;
+    // Si es un array normal, lo devolvemos tal cual.
+    return value as string[] | Date[];
+  }
+
+  /**
+   * Función para comprobar si hay fechas inválidas en un array de fechas
+   * @param {string[] | Date[]} dates - Array de fechas a comprobar
+   * @returns {boolean} - Devuelve true si hay fechas inválidas, false en
+   */
+  private hasInvalidDates(dates: string[] | Date[]): boolean {
+    return dates.some((d) => !moment(d, this.format, true).isValid());
+  }
+
+  /**
+   * Función para obtener las fechas de una semana a partir de una fecha dada
+   * @param {moment.Moment} date - Fecha de referencia para obtener la semana
+   * @return {Date[]} - Array de fechas de la semana
+   */
+  private getWeekDates(date: moment.Moment): Date[] {
+    // Obtenemos el inicio y fin de la semana a partir de la fecha proporcionada
+    const { start, end } = this._calendarService.getWeekStartEnd(date);
+
+    // Obtenemos todas las fechas entre el inicio y el fin de la semana
+    return this._calendarService
+      .getDatesBetween(start, end)
+      .map((d) => d.toDate());
+  }
+
+  /**
+   * Función para establecer el valor visual del campo de fecha
+   * Esto es lo que se muestra en el input, formateado según el formato especificado
+   * Si es un rango de fechas, se muestra como "start - end"
+   * Si es una sola fecha, se muestra como "YYYY-MM-DD"
+   * @param {Date | Date[]} value - Fecha o rango de fechas a establecer visualmente
+   */
+  private setVisualValue(value: Date | Date[]) {
+    // Si es un array y tiene más de un elemento,
+    // lo consideramos un rango de fechas y formateamos el inicio y fin del rango.
+    if (Array.isArray(value) && value.length > 1) {
+      const start = moment(value[0]).format(this.format);
+      const end = moment(value[value.length - 1]).format(this.format);
+      this._value.set(`${start} - ${end}`);
+    }
+    // Si no es un array o tiene un solo elemento,
+    // lo consideramos una sola fecha y la formateamos directamente.
+    else {
+      const formatted = this._calendarService.formatDate(
+        value as Date,
+        this.format,
+      );
+      this._value.set(formatted);
+    }
   }
 
   /**

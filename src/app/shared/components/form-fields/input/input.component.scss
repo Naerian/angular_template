@@ -20,8 +20,8 @@
       background-color: var(--bg-field-color);
       border: $border-width-base solid var(--border-field-color);
 
-      &:focus,
-      &:active {
+      &:focus:not(&--disabled),
+      &:active:not(&--disabled) {
         @include outline-focus;
       }
 
@@ -53,8 +53,9 @@
       }
 
       &[disabled],
-      &:disabled {
-        cursor: not-allowed;
+      &:disabled,
+      &--disabled {
+        @include disabled;
       }
     }
   }

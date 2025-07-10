@@ -24,6 +24,12 @@
       width: 0;
       margin: 0;
       z-index: -1;
+
+      &[disabled],
+      &:disabled,
+      &--disabled {
+        @include disabled;
+      }
     }
 
     &__input:checked ~ &__checkmark,

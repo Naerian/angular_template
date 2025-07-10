@@ -122,6 +122,12 @@ export class TestComponent implements OnInit {
   // Valor por defecto para el date picker
   datePickerValue: Date = new Date('2025/07/08');
 
+  // Valor por defecto para el date picker de rango
+  datePickerRangeValue: Date[] = [
+    new Date('2025/07/08'),
+    new Date('2025/07/15'),
+  ];
+
   // Array de 5 fechas a partir de hoy para simular pasarle unas fechas predefinidas al calendario
   customDates: Date[] = [];
 

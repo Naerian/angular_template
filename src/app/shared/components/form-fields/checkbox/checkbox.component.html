@@ -12,6 +12,7 @@
     <input
       #input
       class="neo-checkbox__control__input"
+      [class.neo-checkbox__control__input--disabled]="_disabled()"
       type="checkbox"
       [id]="_id()"
       [tabIndex]="disabled ? -1 : 0"

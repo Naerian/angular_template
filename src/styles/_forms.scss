@@ -53,6 +53,12 @@ label abbr {
     color: var(--icon-field-color);
   }
 
+  &:focus,
+  &:active {
+    @include outline-focus;
+    border-radius: $border-radius-md;
+  }
+
   &:hover,
   &:focus {
     opacity: 0.8;

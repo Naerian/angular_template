@@ -12,6 +12,11 @@ export enum CalendarType {
   RANGE = 'range',
 }
 
+export interface StarEndWeek {
+  start: moment.Moment; // Inicio de la semana
+  end: moment.Moment; // Fin de la semana
+}
+
 export type ViewMode = CalendarViewMode | `${CalendarViewMode}`;
 export type SelectionType = CalendarType | `${CalendarType}`;
 

@@ -117,6 +117,18 @@
   border: 0;
 }
 
+// Mixin para aplicar estilo a un elemento deshabilitado
+// Utiliza este mixin para aplicar estilos a elementos que están deshabilitados
+@mixin disabled {
+  opacity: 0.6;
+  filter: grayscale(30%);
+  cursor: default;
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
 // Mixin para centrar elementos con flexbox
 // Utiliza este mixin para centrar elementos dentro de un contenedor flex
 @mixin flex-center {

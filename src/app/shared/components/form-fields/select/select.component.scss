@@ -41,29 +41,13 @@
     background-color: var(--bg-field-color);
     border: $border-width-base solid var(--border-field-color);
 
-    &:focus,
-    &:active {
+    &:focus:not(&--disabled),
+    &:active:not(&--disabled) {
       @include outline-focus;
     }
 
     &--clear {
       padding-right: calc(#{$spacing-m} * 2 + #{$spacing-xxs} + #{$spacing-s});
-    }
-
-    &--disabled,
-    &--empty {
-      cursor: not-allowed;
-      border: $border-width-base solid var(--border-field-disabled-color);
-      pointer-events: none;
-      opacity: 0.7;
-    }
-
-    &--has-error {
-      border: $border-width-base solid var(--color-danger);
-    }
-
-    &--transparent {
-      background-color: transparent;
     }
 
     &__arrow-dropdown {
@@ -81,6 +65,20 @@
       &::before {
         color: var(--icon-field-color);
       }
+    }
+
+    &--has-error {
+      border: $border-width-base solid var(--color-danger);
+    }
+
+    &--transparent {
+      background-color: transparent;
+    }
+
+    &[disabled],
+    &:disabled,
+    &--disabled {
+      @include disabled;
     }
 
     .neo-clear-field-button {

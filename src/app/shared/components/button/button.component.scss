@@ -57,14 +57,6 @@
   @include transition(opacity 0.2s ease-in-out);
 }
 
-[disabled],
-.neo-btn--disabled {
-  pointer-events: none;
-  cursor: default;
-  opacity: 0.6;
-  filter: grayscale(30%);
-}
-
 .neo-btn {
   display: flex;
   justify-content: center;
@@ -289,5 +281,9 @@
       var(--icon-btn-warning-transparent-color),
       var(--hover-bg-btn-warning-transparent-color)
     );
+  }
+
+  &--disabled {
+    @include disabled;
   }
 }

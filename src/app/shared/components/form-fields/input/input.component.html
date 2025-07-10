@@ -1,8 +1,4 @@
-<div
-  class="neo-input"
-  [title]="label || ''"
-  [class.neo-input--disabled]="_disabled()"
->
+<div class="neo-input">
   @if (label) {
     <label [attr.for]="_id()" [attr.id]="_labelId()" class="neo-input__label">
       <span [innerHtml]="label"></span>
@@ -21,6 +17,7 @@
       [class.neo-input__wrapper__field--has-error]="
         input?.errors && (input?.dirty || input?.touched)
       "
+      [class.neo-input__wrapper__field--disabled]="_disabled()"
       [class.neo-input__wrapper__field--clear]="showClear"
       [(ngModel)]="value"
       (input)="onInput(input.value)"

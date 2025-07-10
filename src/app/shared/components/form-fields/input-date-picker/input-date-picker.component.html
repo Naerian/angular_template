@@ -1,8 +1,4 @@
-<div
-  class="neo-date-picker"
-  [title]="label || ''"
-  [class.neo-date-picker--disabled]="_disabled()"
->
+<div class="neo-date-picker">
   @if (label) {
     <label
       class="neo-date-picker__label"
@@ -66,7 +62,7 @@
         neo-date-picker__wrapper__icon--{{ inputSize }}
         {{ icon }}
         "
-        [class.disabled]="_disabled()"
+        [class.neo-date-picker__wrapper__icon--disabled]="_disabled()"
         [tabindex]="!_disabled() ? 0 : -1"
         (click)="toogleCalendar($event)"
         (keydown.enter)="toogleCalendar($event)"

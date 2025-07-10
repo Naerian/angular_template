@@ -1092,6 +1092,8 @@
     <div class="col-4">
       <neo-date-picker
         [type]="'range'"
+        [(ngModel)]="datePickerRangeValue"
+        [required]="true"
         label="Date picker de rango"
       ></neo-date-picker>
     </div>
@@ -1100,6 +1102,8 @@
       <neo-date-picker
         [type]="'week'"
         label="Date picker de semana"
+        [(ngModel)]="datePickerValue"
+        [required]="true"
       ></neo-date-picker>
     </div>
 

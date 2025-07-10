@@ -11,7 +11,9 @@ export class CalendarService {
    * @param {Date | string | null} value
    * @returns {moment.Moment | null}
    */
-  convertToMoment(value: Date | string | null): moment.Moment | null {
+  convertToMoment(
+    value: Date | string | moment.Moment | null,
+  ): moment.Moment | null {
     // Si el valor es null o undefined, devolvemos null
     if (value === null || value === undefined) return null;
 
@@ -88,5 +90,46 @@ export class CalendarService {
     }
 
     return dates;
+  }
+
+  /**
+   * Función para obtener el inicio y fin de una semana en base a una fecha dada
+   * @param {string | Date | moment.Moment} date - Fecha de referencia
+   */
+  getWeekStartEnd(date: string | Date | moment.Moment): {
+    start: moment.Moment;
+    end: moment.Moment;
+  } {
+    const mDate = this.convertToMoment(date) as moment.Moment;
+
+    // Obtenemos el inicio de la semana (lunes)
+    const startOfWeek = mDate.clone().startOf('isoWeek');
+    // Obtenemos el fin de la semana (domingo)
+    const endOfWeek = mDate.clone().endOf('isoWeek');
+
+    return { start: startOfWeek, end: endOfWeek };
+  }
+
+  /**
+   * Función para formatear una fecha o un rango de fechas
+   * @param {Date | Date[]} date - Fecha o rango de fechas a formate
+   * @param {string} format - Formato de fecha a aplicar, por defecto 'YYYY-MM-DD'
+   * @returns {string | string[] | null} - Fecha formateada o rango de fechas formateadas
+   */
+  formatDate(
+    date: Date | Date[],
+    format: string = DEFAULT_FORMAT,
+  ): string | string[] | null {
+    // Si es un rango de fechas, se formatea cada fecha por separado
+    if (Array.isArray(date)) {
+      return date
+        .map((d) => moment(d).format(format))
+        .filter((d) => d !== 'Invalid date')
+        .join(' - ');
+    }
+
+    // Si es una sola fecha, se formatea directamente
+    const formattedDate = moment(date).format(format);
+    return formattedDate !== 'Invalid date' ? formattedDate : null;
   }
 }
