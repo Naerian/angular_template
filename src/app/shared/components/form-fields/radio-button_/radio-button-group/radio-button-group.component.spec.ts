@@ -21,5 +21,4 @@ describe('RadioButtonGroupComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

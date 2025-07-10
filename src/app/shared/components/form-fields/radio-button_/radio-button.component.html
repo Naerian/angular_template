@@ -1,0 +1,29 @@
+<label
+  class="neo-radio neo-radio--{{ inputSize }}"
+  [class.neo-radio--disabled]="disabled"
+  [class.neo-radio--checked]="checked"
+  [attr.title]="computedTitle"
+>
+  <input
+    type="radio"
+    class="neo-radio__input"
+    [name]="name"
+    [value]="value"
+    [checked]="checked"
+    [disabled]="disabled"
+    [attr.id]="_id()"
+    [attr.aria-checked]="checked"
+    [attr.aria-disabled]="disabled"
+    (change)="onInputChange($event)"
+  />
+  <span class="neo-radio__mark neo-radio__mark--{{ inputSize }}"></span>
+  <div
+    class="neo-radio__label neo-radio__label--{{ inputSize }}"
+    #contentWrapper
+  >
+    <ng-content></ng-content>
+    @if (!hasProjectedContent) {
+      {{ label || "" }}
+    }
+  </div>
+</label>

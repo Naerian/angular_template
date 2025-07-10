@@ -1,61 +1,44 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
-  ElementRef,
-  EventEmitter,
   Input,
   Output,
-  ViewChild,
-  WritableSignal,
+  EventEmitter,
   forwardRef,
-  inject,
+  WritableSignal,
   signal,
+  inject,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
 } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormsModule,
-  NG_VALUE_ACCESSOR,
-} from '@angular/forms';
-import { InputSize } from '../models/form-field.model';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
+import { InputSize } from '../models/form-field.model';
 
-/**
- * @name
- * neo-checkbox
- * @description
- * Componente para crear un checkbox con funcionalidad de control de formulario
- * @example
- * <neo-checkbox [(ngModel)]="checked"></neo-checkbox>
- * <neo-checkbox formControlName="check_name"></neo-checkbox>
- * <neo-checkbox [checked]="true"></neo-checkbox>
- * <neo-checkbox [indeterminate]="true"></neo-checkbox>
- * <neo-checkbox [disabled]="true"></neo-checkbox>
- */
 @Component({
-  selector: 'neo-checkbox',
-  templateUrl: './checkbox.component.html',
-  styleUrls: ['./checkbox.component.scss'],
-  standalone: true,
-  imports: [CommonModule, FormsModule],
+  selector: 'neo-radio-button',
+  templateUrl: './radio-button.component.html',
+  styleUrls: ['./radio-button.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => CheckboxComponent),
+      useExisting: forwardRef(() => RadioButtonComponent),
       multi: true,
     },
   ],
 })
-export class CheckboxComponent implements ControlValueAccessor {
+export class RadioButtonComponent
+  implements ControlValueAccessor, AfterViewInit
+{
   @ViewChild('contentWrapper', { static: true })
   contentWrapper!: ElementRef<HTMLDivElement>;
 
-  @Input() showHeader: boolean = true;
-  @Input() checked: boolean = false;
-  @Input() disabled: boolean = false;
-  @Input() indeterminate: boolean = false;
+  @Input() checked = false;
+  @Input() disabled = false;
   @Input() inputSize: InputSize = 'm';
   @Input() label?: string;
   @Input() name?: string;
+  @Input() value?: string | number;
 
   _id: WritableSignal<string> = signal('');
   _labelId: WritableSignal<string> = signal('');
@@ -83,11 +66,11 @@ export class CheckboxComponent implements ControlValueAccessor {
   // Se inicializa en false y se comprueba en ngAfterViewInit
   hasProjectedContent = false;
 
-  @Output() changed = new EventEmitter<boolean>();
+  @Output() changed = new EventEmitter<any>();
 
   private readonly _inputsUtilsService = inject(InputsUtilsService);
 
-  onChange = (_: boolean) => {};
+  onChange = (_: any) => {};
   onTouched = () => {};
 
   ngAfterViewInit() {
@@ -111,6 +94,16 @@ export class CheckboxComponent implements ControlValueAccessor {
   }
 
   /**
+   * Función para crear un id único para el label del checkbox
+   */
+  createUniqueId() {
+    if (this._id()) return; // Si ya existe, no generamos otro
+    const uniqueId = this._inputsUtilsService.createUniqueId('checkbox_');
+    this._id.set(uniqueId);
+    this._labelId.set(`${uniqueId}__label`);
+  }
+
+  /**
    * Función para obtener el título del checkbox
    * Si se ha definido un título, se usa ese
    * Si no, se usa el contenido proyectado o el label
@@ -130,39 +123,29 @@ export class CheckboxComponent implements ControlValueAccessor {
   }
 
   /**
-   * Función para crear un id único para el label del checkbox
-   */
-  createUniqueId() {
-    if (this._id()) return; // Si ya existe, no generamos otro
-    const uniqueId = this._inputsUtilsService.createUniqueId('checkbox_');
-    this._id.set(uniqueId);
-    this._labelId.set(`${uniqueId}__label`);
-  }
-
-  /**
-   * Función para alternar el estado checked del checkbox
-   * Si el checkbox está deshabilitado, no hace nada
+   * Función para alternar el estado checked del radio button
+   * Si el radio button está deshabilitado, no hace nada
    * Si no, alterna el estado checked y emite el evento changed
    * @param {Event} event - Evento del input
    */
-  toggleChecked() {
+  onInputChange(event: Event) {
     if (this.disabled) return;
-    this.checked = !this.checked;
-    this.indeterminate = false;
-    this.onChange(this.checked);
-    this.changed.emit(this.checked);
+    const input = event.target as HTMLInputElement;
+    this.checked = input.checked;
+    this.onChange(this.value);
+    this.changed.emit(this.value);
     this.onTouched();
   }
 
-  writeValue(value: boolean): void {
-    this.checked = !!value;
+  writeValue(value: any): void {
+    this.checked = value === this.value;
   }
 
-  registerOnChange(fn: (val: boolean) => void): void {
+  registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: () => void): void {
+  registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 

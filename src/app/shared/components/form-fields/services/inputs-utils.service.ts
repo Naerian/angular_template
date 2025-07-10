@@ -15,7 +15,7 @@ export class InputsUtilsService {
    * @param {string} name - Nombre o label del campo a convertir en labelId
    * @returns {string} - LabelId creado a partir del nombre o label del campo
    */
-  createUniqueId(name: string): string {
+  createUniqueId(name?: string): string {
     return `${this._utilsService.stringToSlug(name, '_')}_${this.counter}_${crypto.randomUUID()}`;
   }
 

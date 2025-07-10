@@ -1,257 +1,188 @@
-import { Component, ContentChildren, EventEmitter, Input, Output, QueryList, WritableSignal, forwardRef, signal } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { InputSize } from '../../models/form-field.model';
+import {
+  Component,
+  ContentChildren,
+  QueryList,
+  AfterContentInit,
+  forwardRef,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+  WritableSignal,
+  inject,
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { RadioButtonComponent } from '../radio-button.component';
-import { DirectionRadioButtonGroup, NEO_RADIO_BUTTON_GROUP } from '../models/radio-button.model';
+import { InputsUtilsService } from '../../services/inputs-utils.service';
+import { RadioButtonsOrientation } from '../models/radio-button.model';
 
 /**
  * @name
  * neo-radio-button-group
  * @description
- * Componente para crear un grupo de radio buttons con funcionalidad de control de formulario mediante el componente `neo-radio-button`
+ * Componente que actúa como un grupo de botones de radio, gestionando la selección de sus hijos 'neo-radio-button'.
+ * Implementa ControlValueAccessor para integración con formularios reactivos y basados en plantillas.
  * @example
- * <neo-radio-button-group formControlName="radio_name" inputSize='m' label="Grupo de radio buttons" direction="horizontal">
- *   <neo-radio-button [value]="1">Opción 1</neo-radio-button>
- *   <neo-radio-button [value]="2">Opción 2</neo-radio-button>
- *   <neo-radio-button [value]="3">Opción 3</neo-radio-button>
- * </neo-radio-button-group>
- *
- * <neo-radio-button-group [(ngModel)]="value" inputSize='m' label="Grupo de radio buttons" direction="horizontal">
- *   <neo-radio-button [value]="1">Opción 1</neo-radio-button>
- *   <neo-radio-button [value]="2">Opción 2</neo-radio-button>
- *   <neo-radio-button [value]="3">Opción 3</neo-radio-button>
+ * <neo-radio-button-group [(ngModel)]="selectedOption">
+ *      <neo-radio-button value="option1">Opción 1</neo-radio-button>
+ *      <neo-radio-button value="option2">Opción 2</neo-radio-button>
+ *      <neo-radio-button value="option3">Opción 3</neo-radio-button>
  * </neo-radio-button-group>
  */
 @Component({
   selector: 'neo-radio-button-group',
   templateUrl: './radio-button-group.component.html',
-  styleUrl: './radio-button-group.component.scss',
+  styleUrls: ['./radio-button-group.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => RadioButtonGroupComponent),
       multi: true,
     },
-    {
-      provide: NEO_RADIO_BUTTON_GROUP,
-      useExisting: RadioButtonGroupComponent
-    }
-  ]
+  ],
 })
-export class RadioButtonGroupComponent implements ControlValueAccessor {
-
-  @ContentChildren(forwardRef(() => RadioButtonComponent), { descendants: true }) radioButtons!: QueryList<RadioButtonComponent>;
-
-  /**
-   * Input para asignar el título del grupo de radio buttons
-   */
-  @Input() label?: string;
-
-  /**
-   * Input para ocultar el título del grupo de radio buttons
-   */
-  @Input() hideLabel: boolean = false;
+export class RadioButtonGroupComponent
+  implements ControlValueAccessor, AfterContentInit
+{
+  @ContentChildren(RadioButtonComponent)
+  radioButtons!: QueryList<RadioButtonComponent>;
 
   /**
    * Input para asignar la dirección del grupo de radio buttons (horizontal | vertical)
    */
-  @Input() direction: DirectionRadioButtonGroup = 'horizontal';
-
-  /**
-   * Input para asignar el tamaño del grupo de radio buttons
-   */
+  _orientation: WritableSignal<RadioButtonsOrientation> = signal('horizontal');
   @Input()
-  get inputSize() {
-    return this._inputSize;
+  set orientation(val: RadioButtonsOrientation) {
+    this._orientation.set(val);
   }
-  set inputSize(value: InputSize) {
-
-    this._inputSize = value || 'm';
-
-    // Actualizamos el nombre de cada radio button del grupo
-    this.updateInputSizeRadioButtons();
+  get orientation(): RadioButtonsOrientation {
+    return this._orientation();
   }
 
   /**
-   * Input para asignar el nombre del grupo de radio buttons
+   * Nombre del grupo de radio buttons. Esto es importante para que solo uno pueda ser seleccionado a la vez.
    */
+  _name: WritableSignal<string> = signal('');
   @Input()
-  get name() {
+  set name(val: string) {
+    this._name.set(val);
+  }
+  get name(): string {
     return this._name();
   }
-  set name(value: string) {
-    this._name.set(value);
-
-    // Actualizamos el nombre de cada radio button del grupo
-    this.updateRadioButtonsName();
-  }
 
   /**
-   * Input para deshabilitar el grupo de radio buttons
+   * Valor actualmente seleccionado en el grupo.
    */
-  @Input()
-  set disabled(status: boolean) {
-    this._disabled.set(status);
-
-    // Deshabilitamos cada radio button del grupo si el grupo está deshabilitado
-    this.disableRadioButtons();
-  }
-  get disabled() {
-    return this._disabled();
-  }
-
-  /**
-   * Input para seleccionar el radio button del grupo
-   */
-  @Input()
-  get selected() {
-    return this._selected;
-  }
-  set selected(selected: RadioButtonComponent | null) {
-    this._selected = selected;
-    this.value = selected ? selected.value : null;
-    this.checkSelectedRadioButton();
-  }
-
-  /**
-   * Input para asignar el valor del grupo de radio buttons
-   */
-  @Input()
+  _value: WritableSignal<any> = signal(null);
   get value(): any {
-    return this._value;
+    return this._value();
   }
-  set value(newValue: any) {
-    if (this._value !== newValue) {
-
-      this._value = newValue;
-
-      // Actualizamos el radio button seleccionado a partir del valor
-      this.updateSelectedRadioFromValue();
-      this.checkSelectedRadioButton();
-    }
+  @Input() set value(val: any) {
+    this._value.set(val);
+    this.updateRadioButtons();
   }
 
   /**
-   * Evento emitido cuando cambia el estado marcado del grupo de radio buttons.
-   * Los eventos `change` solo se emiten cuando el valor cambia debido a la interacción del usuario con
-   * el radio button (el mismo comportamiento que `<input type="radio">`).
+   * Emite el valor seleccionado cuando hay un cambio.
    */
-  @Output() readonly change: EventEmitter<any> = new EventEmitter<any>();
+  @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
-  _title: WritableSignal<string> = signal('');
-  private _selected: RadioButtonComponent | null = null;
-  private _disabled: WritableSignal<boolean> = signal(false);
-  private _value: any = null;
-  private _inputSize: InputSize = 'm';
-  private _name: WritableSignal<string> = signal('');
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
 
-  constructor(
-    private readonly _inputsUtilsService: InputsUtilsService
-  ) { }
+  // Funciones internas para ControlValueAccessor
+  onChange: (value: any) => void = () => {};
+  onTouched: () => void = () => {};
 
-  ngAfterViewInit(): void {
-
-    this.createTitle();
-
-    if (!this._name() || this._name() === '' || this._name() === null || this._name() === undefined) {
-      this._name.set(this._inputsUtilsService.createUniqueId('radiobutton-group'));
-      this.updateRadioButtonsName();
-    }
-
+  ngOnInit(): void {
+    const uniqueId = this._inputsUtilsService.createUniqueId('radio-group_');
+    this._name.set(uniqueId); // Asigna un nombre único al grupo
   }
 
-  createTitle() {
-    this._title.set(this.label?.replace(/(<([^>]+)>)/gi, "") || '');
-  }
+  ngAfterContentInit(): void {
+    // Suscribirse a los cambios de los radio buttons hijos
+    this.radioButtons.forEach((button) => {
+      this.setRadioButtonAttributes(button);
+    });
 
-  /**
-   * Actualiza el radio button seleccionado
-   */
-  checkSelectedRadioButton() {
-    if (this._selected && !this._selected.checked) {
-      this._selected.checked = true;
-    }
+    // En caso de que se añadan dinámicamente, re-suscribirse
+    this.radioButtons?.changes.subscribe(
+      (buttons: QueryList<RadioButtonComponent>) => {
+        buttons.forEach((button) => {
+          this.setRadioButtonAttributes(button);
+        });
+        this.updateRadioButtons();
+      },
+    );
+
+    this.updateRadioButtons();
   }
 
   /**
-   * Actualiza el radio button seleccionado a partir del valor
+   * Función para estlabecer los atributos de los radio buttons hijos
    */
-  updateSelectedRadioFromValue(): void {
-
-    // Si el valor es null, no seleccionamos ningún radio button
-    const isAlreadySelected = this._selected !== null && this._selected.value === this._value;
-
-    // Si hay un radio button seleccionado y no es el mismo que el valor, lo deseleccionamos
-    if (this.radioButtons && !isAlreadySelected) {
-      this._selected = null;
-      this.radioButtons.forEach(radio => {
-        radio.checked = this.value === radio.value;
-        if (radio.checked) {
-          this._selected = radio;
-        }
+  private setRadioButtonAttributes(button: RadioButtonComponent): void {
+    if (this.radioButtons && this.radioButtons.length > 0 && button) {
+      const uniqueId = this._inputsUtilsService.createUniqueId('radio-button_');
+      button.id = uniqueId; // Asigna un ID único basado en el valor
+      button.name = this.name; // Asegura que todos los radios tienen el mismo nombre
+      button.checked = button.value === this.value; // Inicializa el estado
+      button.change.subscribe((selectedVal) => {
+        this.writeValue(selectedVal); // Actualiza el valor del grupo
+        this.onChange(selectedVal); // Notifica el cambio al formulario
+        this.onTouched(); // Marca el control como 'touched'
+        this.change.emit(selectedVal); // Emite el evento de cambio
       });
     }
   }
 
   /**
-   * Actualiza el inputSize de cada radio button del grupo
+   * Escribe un nuevo valor desde el control del formulario al componente.
+   * @param value El valor a escribir.
    */
-  updateInputSizeRadioButtons(): void {
-    if (!this.radioButtons) return;
-    this.radioButtons.forEach(radioButton => radioButton.inputSize = this._inputSize || 'm');
+  writeValue(value: any): void {
+    if (value !== this._value()) {
+      this._value.set(value);
+      this.updateRadioButtons();
+    }
   }
 
   /**
-   * Actualiza el nombre de cada radio button del grupo
+   * Registra una función a llamar cuando el valor del control cambia.
+   * @param fn La función a registrar.
    */
-  updateRadioButtonsName(): void {
-    if (!this.radioButtons) return;
-    this.radioButtons.forEach(radioButton => radioButton.name = this._name());
-  }
-
-  /**
-   * Función para deshabilitar cada radio button del grupo
-   */
-  disableRadioButtons(): void {
-    if (!this.radioButtons) return;
-    this.radioButtons.forEach(radioButton => radioButton.disabled = this._disabled());
-  }
-
-  /**
-   * Función para emitir el evento de cambio del grupo de radio buttons con el valor actual
-   */
-  emitChangeEvent(): void {
-    this.change.emit(this._value);
-  }
-
-  /**
-   * Función para cambiar el valor del grupo de radio buttons y emitir el evento de cambio
-   * @param {any} value
-   */
-  changeValue(value: any) {
-    this.onChange(value);
-    this.onTouched();
-    this.emitChangeEvent();
-  }
-
-  onChange: any = () => { };
-  onTouched: any = () => { };
-
-  writeValue(value: any) {
-    this.value = value;
-  }
-
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
+  /**
+   * Registra una función a llamar cuando el control es 'tocado' (blur).
+   * @param fn La función a registrar.
+   */
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
-  setDisabledState(isDisabled: boolean) {
-    this._disabled.set(isDisabled);
+  /**
+   * Actualiza el estado 'checked' de los radio buttons hijos según el valor del grupo.
+   */
+  private updateRadioButtons(): void {
+    if (this.radioButtons) {
+      this.radioButtons.forEach((button) => {
+        button.checked = button.value === this._value();
+      });
+    }
   }
 
+  /**
+   * Establece el estado deshabilitado del control.
+   * @param isDisabled Si el control debe estar deshabilitado.
+   */
+  setDisabledState?(isDisabled: boolean): void {
+    if (this.radioButtons) {
+      this.radioButtons.forEach((button) => {
+        button.disabled = isDisabled;
+      });
+    }
+  }
 }

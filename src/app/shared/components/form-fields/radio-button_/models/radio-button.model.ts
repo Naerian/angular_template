@@ -1,6 +1,5 @@
 import { InjectionToken } from "@angular/core";
 import { RadioButtonGroupComponent } from "../radio-button-group/radio-button-group.component";
-import { RadioButtonComponent } from "../radio-button.component";
 
 export type RadioButtonsOrientation = 'horizontal' | 'vertical';
 
@@ -10,9 +9,3 @@ export type RadioButtonsOrientation = 'horizontal' | 'vertical';
  */
 export const NEO_RADIO_BUTTON_GROUP =
   new InjectionToken<RadioButtonGroupComponent>('RadioButtonGroupComponent');
-/**
- * Permite inyectar el componente RadioButtonComponent en el componente RadioButtonGroupComponent
- * para poder acceder a sus propiedades y métodos desde el componente RadioButtonGroupComponent padre
- */
-export const NEO_RADIO_BUTTON =
-  new InjectionToken<RadioButtonComponent>('RadioButtonComponent');

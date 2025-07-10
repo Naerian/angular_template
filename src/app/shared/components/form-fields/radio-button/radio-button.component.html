@@ -1,32 +1,44 @@
-<div class="neo-radiobutton">
-  <div class="neo-radiobutton__control size-{{ inputSize }}">
-    <input
-      class="neo-radiobutton__control__input"
-      #input
-      type="radio"
-      [id]="_id()"
-      [checked]="checked"
-      [disabled]="disabled"
-      [attr.name]="name"
-      [attr.value]="value"
-      [tabIndex]="disabled ? -1 : 0"
-      [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
-      [attr.aria-labelledby]="_labelId()"
-      [attr.aria-disabled]="disabled"
-      (change)="onChangeRadioButton($event)"
-    />
+<div
+  class="neo-radio-button neo-radio-button--{{ inputSize }}"
+  [class.neo-radio-button--checked]="checked"
+  [class.neo-radio-button--disabled]="disabled"
+  (click)="onClick()"
+>
+  <input
+    class="neo-radio-button__input"
+    type="radio"
+    [id]="_id()"
+    [name]="_name()"
+    [attr.aria-labelledby]="_labelId()"
+    [attr.aria-disabled]="disabled"
+    [attr.aria-checked]="checked"
+    [attr.title]="_title()"
+    [value]="value"
+    [checked]="checked"
+    [disabled]="disabled"
+    tabindex="-1"
+    aria-hidden="true"
+  />
+  <div
+    class="neo-radio-button__outer-circle neo-radio-button__outer-circle--{{
+      inputSize
+    }}"
+  >
     <div
-      class="neo-radiobutton__control__checkmark"
-      (click)="onClickTargetRadioButton($event)"
+      class="neo-radio-button__inner-circle neo-radio-button__inner-circle--{{
+        inputSize
+      }}"
     ></div>
-    <label
-      class="neo-radiobutton__control__label size-{{ inputSize }}"
-      [for]="_id()"
-      [title]="_title()"
-      [attr.id]="_labelId()"
-      #radioButtonContent
-    >
-      <ng-content></ng-content>
-    </label>
   </div>
+  <label
+    class="neo-radio-button__label neo-radio-button__label--{{ inputSize }}"
+    [for]="_id()"
+    [attr.id]="_labelId()"
+    #contentWrapper
+  >
+    <ng-content></ng-content>
+    @if (!hasProjectedContent) {
+      {{ label || "" }}
+    }
+  </label>
 </div>

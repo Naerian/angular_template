@@ -45,6 +45,10 @@
       &--disabled {
         @include disabled;
       }
+
+      &:hover:not(&--disabled) {
+        border-color: var(--hover-border-field-color);
+      }
     }
   }
 }

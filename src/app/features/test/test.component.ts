@@ -92,7 +92,7 @@ export class TestComponent implements OnInit {
   dateInfo4: any;
 
   checkboxValue: boolean = false;
-  radioButtonValue: string | null | number = null;
+  radioButtonValue: string | null | number = 1;
   inputvalue: string = '';
   inputFormFieldValue: string = '';
   inputFormField2Value: string = '';
@@ -148,6 +148,10 @@ export class TestComponent implements OnInit {
 
   public readonly testFormDate = new FormGroup({
     date: new FormControl<string>(''),
+  });
+
+  public readonly testFormRadioButton = new FormGroup({
+    radioButtonControl: new FormControl<number>(2),
   });
 
   constructor(

@@ -1,286 +1,147 @@
 import {
   Component,
-  ElementRef,
-  EventEmitter,
-  Inject,
   Input,
-  Optional,
   Output,
-  ViewChild,
+  EventEmitter,
   WritableSignal,
-  booleanAttribute,
-  inject,
   signal,
+  ElementRef,
+  ViewChild,
 } from '@angular/core';
-import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { RadioButtonGroupComponent } from './radio-button-group/radio-button-group.component';
-import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
+import { CommonModule } from '@angular/common';
 import { InputSize } from '../models/form-field.model';
-import { NEO_RADIO_BUTTON_GROUP } from './models/radio-button.model';
 
 /**
  * @name
  * neo-radio-button
  * @description
- * Componente para crear un radio button con funcionalidad de control de formulario
+ * Componente individual de botón de radio que debe ser utilizado dentro de 'neo-radio-button-group'.
+ * Emite un evento 'change' cuando es seleccionado.
  * @example
- * <neo-radio-button [(ngModel)]="value"></neo-radio-button>
- * <neo-radio-button formControlName="radio_name"></neo-radio-button>
- * <neo-radio-button [checked]="true"></neo-radio-button>
- * <neo-radio-button [disabled]="true"></neo-radio-button>
- * <neo-radio-button [value]="1"></neo-radio-button>
+ * <neo-radio-button value="option1">Opción 1</neo-radio-button>
  */
 @Component({
   selector: 'neo-radio-button',
   templateUrl: './radio-button.component.html',
   styleUrls: ['./radio-button.component.scss'],
-  host: {
-    '(focus)': '_inputElement.nativeElement.focus()',
-  },
 })
 export class RadioButtonComponent {
-  @ViewChild('input') _inputElement!: ElementRef<HTMLInputElement>;
-  @ViewChild('radioButtonContent') radioButtonContent!: ElementRef;
+  @ViewChild('contentWrapper', { static: true })
+  contentWrapper!: ElementRef<HTMLDivElement>;
 
   /**
-   * Input para asignar el tamaño del radio button
+   * Valor único asociado a este radio button.
    */
-  _inputSize: WritableSignal<InputSize> = signal('m');
-  @Input() set inputSize(value: InputSize) {
-    this._inputSize.set(value || 'm');
-  }
-
-  get inputSize() {
-    return this._inputSize();
-  }
+  @Input({ required: true }) value: any;
 
   /**
-   * Input para asignar el ID del radio button
+   * Etiqueta o texto que se muestra junto al radio button.
    */
-  @Input() set id(value: string) {
-    this._id.set(value);
-    this._labelId.set(`label_${value}`);
-  }
-  _id: WritableSignal<string> = signal('');
-  _labelId: WritableSignal<string> = signal('');
-
-  get id() {
-    return this._id();
-  }
+  @Input() label?: string;
 
   /**
-   * Input para asignar el valor del radio button y asignar el valor al grupo de radio buttons
+   * Tamaño del input del radio button.
    */
-  _value: any = null;
-  @Input() set value(value: any) {
-    if (this._value !== value) {
-      this._value = value;
-      if (this.radioGroup !== null) {
-        // Si no está marcado y el valor del grupo es el mismo que el valor del radio button, lo marcamos
-        if (!this.checked) this.checked = this.radioGroup.value === value;
-
-        // Si el radio button está seleccionado, actualiza el valor del grupo de radio buttons
-        if (this.checked) this.radioGroup.selected = this;
-      }
-    }
-  }
-
-  get value(): any {
-    return this._value;
-  }
+  @Input() inputSize: InputSize = 'm';
 
   /**
-   * Input para asignar el estado deshabilitado del radio button
-   */
-  _disabled: WritableSignal<boolean> = signal(false);
-
-  @Input({ transform: booleanAttribute }) set disabled(value: boolean) {
-    if (this._disabled() !== value) this._disabled.set(value);
-  }
-
-  get disabled(): boolean {
-    return (
-      this._disabled() || (this.radioGroup !== null && this.radioGroup.disabled)
-    );
-  }
-
-  /**
-   * Input para asignar el nombre del radio buttons
-   */
-  @Input() set name(value: string) {
-    this._name.set(value);
-
-    // Actualizamos el ID del radio button
-    this.createUniqueId();
-  }
-
-  _name: WritableSignal<string> = signal('');
-  get name() {
-    return this._name();
-  }
-
-  /**
-   * Input para asignar el estado marcado del radio button
+   * Indica si el radio button está seleccionado.
    */
   _checked: WritableSignal<boolean> = signal(false);
-  @Input({ transform: booleanAttribute }) set checked(value: boolean) {
-    if (this.checked !== value) {
-      this._checked.set(value);
-
-      // Si el radio button está marcado y el grupo de radio buttons tiene un valor diferente, actualiza el valor del grupo
-      if (value && this.radioGroup && this.radioGroup.value !== this.value)
-        this.radioGroup.selected = this;
-      else if (
-        !value &&
-        this.radioGroup &&
-        this.radioGroup.value === this.value
-      )
-        this.radioGroup.selected = null;
-
-      // Si el radio button está marcado, notifica al dispatcher para desmarcar otros radio buttons con el mismo nombre
-      if (value) this._radioDispatcher.notify(this.id, this.name);
-    }
+  @Input() set checked(val: boolean) {
+    this._checked.set(val);
   }
-
   get checked(): boolean {
     return this._checked();
   }
 
   /**
-   * Input para añadir un aria-describedby al campo
+   * Nombre del grupo al que pertenece este radio button (establecido por el padre).
    */
-  @Input('aria-describedby') ariaDescribedBy!: string;
+  _name: WritableSignal<string> = signal('');
+  @Input()
+  set name(value: string) {
+    this._name.set(value);
+  }
+  get name(): string {
+    return this._name();
+  }
 
   /**
-   * Evento emitido cuando cambia el estado marcado del radio button.
-   * Los eventos `change` solo se emiten cuando el valor cambia debido a la interacción del usuario con
-   * el radio button (el mismo comportamiento que `<input type="radio">`).
+   * Nombre del grupo al que pertenece este radio button (establecido por el padre).
    */
-  @Output() readonly change: EventEmitter<any> = new EventEmitter<any>();
+  _id: WritableSignal<string> = signal('');
+  _labelId: WritableSignal<string> = signal('');
+  @Input()
+  set id(value: string) {
+    this._id.set(value);
+  }
+  get id(): string {
+    return this._id();
+  }
 
+  /**
+   * Indica si el radio button está deshabilitado.
+   */
+  _disabled: WritableSignal<boolean> = signal(false);
+  @Input() set disabled(val: boolean) {
+    this._disabled.set(val);
+  }
+  get disabled(): boolean {
+    return this._disabled();
+  }
+
+  /**
+   * Título o tooltip que se muestra al pasar el mouse sobre el radio button.
+   */
   _title: WritableSignal<string> = signal('');
-
-  // Nos servirá para desuscribirnos del _radioDispatcher
-  private _removeUniqueSelectionListener: () => void = () => {};
-
-  private readonly radioGroup = inject(NEO_RADIO_BUTTON_GROUP, {
-    optional: true,
-  });
-  private readonly _radioDispatcher = inject(UniqueSelectionDispatcher);
-  private readonly _inputsUtilsService = inject(InputsUtilsService);
-
-  ngAfterViewInit(): void {
-    this.createTitle();
-    this.createUniqueName();
-    this.updateSize();
+  @Input()
+  set title(value: string) {
+    this._title.set(value);
+  }
+  get title(): string {
+    return this._title();
   }
 
-  ngOnInit() {
-    if (this.radioGroup) {
-      // Si el radio está dentro de un grupo de radio, determina si debe estar marcado
-      this.checked = this.radioGroup.value === this.value;
+  // Variable para comprobar si el checkbox tiene contenido proyectado
+  // Se usa para mostrar el contenido proyectado en el label del checkbox
+  // Si no hay contenido proyectado, se usa el label o una cadena vacía
+  // Se inicializa en false y se comprueba en ngAfterViewInit
+  hasProjectedContent = false;
 
-      // Si el radio button está marcado, actualiza el radio button seleccionado del grupo
-      if (this.checked) this.radioGroup.selected = this;
+  /**
+   * Emite el valor de este radio button cuando es seleccionado.
+   */
+  @Output() change: EventEmitter<any> = new EventEmitter<any>();
+
+  /**
+   * Función para obtener el título del checkbox
+   * Si se ha definido un título, se usa ese
+   * Si no, se usa el contenido proyectado o el label
+   */
+  computedTitle() {
+    setTimeout(() => {
+      // Si ya se ha definido un título, lo usamos
+      if (this._title()?.length > 0) return;
+
+      // Si hay contenido proyectado, lo usamos como título,
+      // si no, usamos el label o una cadena vacía
+      const contentText =
+        this.contentWrapper?.nativeElement?.textContent?.trim() || '';
+      if (contentText?.length > 0) this._title.set(contentText);
+      else this._title.set(this.label ?? '');
+    });
+  }
+
+  /**
+   * Maneja el evento de click en el radio button.
+   */
+  onClick(): void {
+    if (this._disabled()) return;
+
+    if (!this._checked()) {
+      this._checked.set(true);
+      this.change.emit(this.value);
     }
-
-    // Utilizamos `_radioDispatcher` para notificar a otros radio buttons con el mismo nombre para desmarcar.
-    this._removeUniqueSelectionListener = this._radioDispatcher.listen(
-      (id, name) => {
-        if (id !== this.id && name === this.name) this.checked = false;
-      },
-    );
-  }
-
-  /**
-   * Función para crear el título del radio button
-   */
-  createTitle() {
-    this._title.set(
-      this.radioButtonContent?.nativeElement?.innerHTML.replace(
-        /(<([^>]+)>)/gi,
-        '',
-      ) || '',
-    );
-  }
-
-  /**
-   * Función para crear name único a partir del label del radio button
-   */
-  createUniqueName(): void {
-    // Copia el nombre del grupo de radio padre si no tiene nombre y el grupo de radio tiene nombre
-    if (this.radioGroup?.name) this.name = this.radioGroup.name;
-
-    // Si no tiene nombre, crea un nombre único
-    if (!this._name() && !this.radioGroup?.name) {
-      this.name = this._inputsUtilsService.createUniqueId('radiobutton');
-    }
-  }
-
-  /**
-   * Función para asignar el tamaño del radio button group al hijo
-   */
-  updateSize(): void {
-    if (this.radioGroup) {
-      this._inputSize.set(this.radioGroup.inputSize || 'm');
-    }
-  }
-
-  /**
-   * Función para crear un ID único a partir del nombre
-   */
-  createUniqueId(): void {
-    this._id?.set(this._inputsUtilsService.createUniqueId('radiobutton'));
-    this._labelId?.set(`label_${this._id()}`);
-  }
-
-  /**
-   * Función para obtener el aria-describedby personalizado
-   * que incluye el hint y el error del campo.
-   * @return {string}
-   */
-  get ariaDescribedByCustom(): string {
-    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
-  }
-
-  /**
-   * Función para emitir el evento de cambio del radio button con el valor actual
-   */
-  _emitChangeEvent(): void {
-    this.change.emit(this._value);
-  }
-
-  /**
-   * Función para determinar si el radio button está marcado
-   * @param {Event} event
-   */
-  onChangeRadioButton(event: Event) {
-    event?.stopPropagation();
-
-    // Si el radio button no está marcado y no está deshabilitado, lo marcamos
-    // y emitimos el evento de cambio al grupo de radio buttons
-    if (!this.checked && !this.disabled) {
-      this.checked = true;
-
-      this._emitChangeEvent();
-
-      // Actualiza el radio button seleccionado del grupo
-      if (this.radioGroup) this.radioGroup.changeValue(this.value);
-    }
-  }
-
-  /**
-   * Función lanzada cuando el usuario hace clic en el radio button
-   * @param {Event} event
-   */
-  onClickTargetRadioButton(event: Event) {
-    this.onChangeRadioButton(event);
-
-    // Si el radio button no está deshabilitado, enfocamos el input
-    if (!this._disabled()) this._inputElement.nativeElement.focus();
-  }
-
-  ngOnDestroy() {
-    this._removeUniqueSelectionListener();
   }
 }

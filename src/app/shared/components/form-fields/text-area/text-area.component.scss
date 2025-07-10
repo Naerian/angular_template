@@ -41,6 +41,10 @@
       &--no-resize {
         resize: none;
       }
+
+      &:hover:not(&--disabled) {
+        border-color: var(--hover-border-field-color);
+      }
     }
   }
 }

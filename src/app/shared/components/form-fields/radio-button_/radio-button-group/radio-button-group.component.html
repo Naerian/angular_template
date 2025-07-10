@@ -1,0 +1,9 @@
+@if (label) {
+  <label class="neo-radio-button-group__label">{{ label }}</label>
+}
+<div class="neo-radio-button-group">
+  <ng-content
+    select="neo-radio-button"
+    (selected)="select($event)"
+  ></ng-content>
+</div>

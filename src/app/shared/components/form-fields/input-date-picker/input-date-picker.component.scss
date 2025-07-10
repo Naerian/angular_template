@@ -44,6 +44,14 @@
       &--disabled {
         @include disabled;
       }
+
+      &:hover:not(&--disabled) {
+        border-color: var(--hover-border-field-color);
+      }
+
+      &:hover:not(&--disabled) ~ .neo-date-picker__wrapper__icon::before {
+        color: var(--hover-border-field-color);
+      }
     }
 
     &__icon {

@@ -26,7 +26,10 @@
     (change)="toggleChecked()"
     class="neo-checkbox__input"
   />
-  <span class="neo-checkbox__mark neo-checkbox__mark--{{ inputSize }}"></span>
+  <span
+    class="neo-checkbox__mark neo-checkbox__mark--{{ inputSize }}"
+    [class.neo-checkbox__mark--disabled]="disabled"
+  ></span>
   <div
     class="neo-checkbox__label neo-checkbox__label--{{ inputSize }}"
     #contentWrapper

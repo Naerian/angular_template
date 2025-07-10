@@ -1,10 +1,6 @@
-<div class="neo-radio-button-group" [title]="_title()">
-  @if (label && !hideLabel) {
-    <label class="neo-checkbox__label">
-      <span [innerHtml]="label"></span>
-    </label>
-  }
-  <div class="neo-radio-button-group__items {{ direction }}">
-    <ng-content></ng-content>
-  </div>
+<div
+  class="neo-radio-button-group neo-radio-button-group--{{ _orientation() }}"
+  role="radiogroup"
+>
+  <ng-content></ng-content>
 </div>

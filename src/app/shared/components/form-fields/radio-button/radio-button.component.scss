@@ -1,79 +1,101 @@
-// src/app/shared/components/form-fields/radio-button/radio-button.component.scss
-
 @import "config";
 @import "mixins";
-@import "functions";
 
-.neo-radiobutton {
+.neo-radio-button {
   display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  @include transition(opacity 0.2s ease);
+  color: var(--color-text);
 
-  &__control {
-    display: flex;
-    position: relative;
-    cursor: pointer;
-    align-items: center;
-
-    &__input {
-      position: absolute;
-      opacity: 0;
-      cursor: pointer;
-      height: 0;
-      width: 0;
-      margin: 0;
-      z-index: -1;
+  &--disabled {
+    cursor: default;
+    opacity: 0.6;
+    .neo-radio-button__label {
+      cursor: default;
     }
+  }
 
-    &__input:checked ~ &__checkmark {
-      border-color: var(--border-field-color);
-      box-shadow: none;
-    }
+  &__input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+    white-space: nowrap;
+  }
 
-    &__input:focus ~ &__checkmark {
-      outline-color: var(--outline-color);
-      outline-style: solid;
-      outline-width: $border-width-xs;
-      box-shadow: 0px 0px 2px $border-width-xs var(--bg-field-color);
-    }
+  &__input:focus ~ &__outer-circle,
+  &__input:checked ~ &__outer-circle,
+  &__input:focus-visible:not([disabled]) ~ &__outer-circle,
+  &__input:active:not([disabled]) ~ &__outer-circle {
+    @include outline-focus;
+  }
 
-    &__input:checked ~ &__checkmark::after {
-      opacity: 1;
-    }
+  &__outer-circle {
+    @include flex-center;
+    @include transition(border-color 0.2s ease, background-color 0.2s ease);
+    border: $border-width-base solid var(--border-field-color);
+    border-radius: 50%;
+    box-sizing: border-box;
 
-    &__checkmark {
-      height: $checkbox-size;
-      width: $checkbox-size;
-      border: $border-width-xs solid var(--border-field-color);
-      background-color: var(--bg-field-color);
-      transition: background-color $transition-duration-base
-        $transition-timing-function-ease;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
-      &::after {
-        content: "";
-        display: block;
-        width: $radiobutton-dot-size;
-        height: $radiobutton-dot-size;
-        border-radius: 50%;
-        background: var(--color-primary);
-        opacity: 0;
-        transition: opacity $transition-duration-base
-          $transition-timing-function-ease;
+    // Tamaño dinámico para el radio button según el tamaño del componente
+    @each $size-key, $size in $checkbox-box-sizes {
+      &--#{$size-key} {
+        @include component-checkbox-size($size-key);
       }
     }
+  }
 
-    &__label {
-      color: var(--text-color);
-      margin: 0;
-      cursor: pointer;
-      padding-left: calc(#{$spacing-xs} / 1.6);
+  &__inner-circle {
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    @include transition(width 0.2s ease, height 0.2s ease);
+  }
+
+  &__label {
+    color: var(--color-text);
+    margin: 0 !important;
+    padding-left: $spacing-xs;
+    cursor: pointer;
+
+    // Tamaño dinámico para la fuente según el tamaño del componente
+    @each $size-key, $font-size in $component-font-sizes {
+      &--#{$size-key} {
+        font-size: map-get($component-font-sizes, $size-key);
+        line-height: map-get($component-font-sizes, $size-key);
+      }
+    }
+  }
+
+  // Estilos cuando el radio button está seleccionado
+  &--checked {
+    .neo-radio-button__outer-circle {
+      border-color: var(--color-primary);
+      background-color: var(--bg-field-color);
+    }
+    .neo-radio-button__inner-circle {
+      // Tamaño dinámico para el radio button según el tamaño del componente
+      @each $key, $size in $checkbox-box-sizes {
+        &--#{$key} {
+          width: $size * 0.55; // 80% del tamaño del radio button
+          height: $size * 0.55; // 80% del tamaño del radio button
+        }
+      }
+    }
+  }
+
+  // Efecto hover
+  &:not(&--disabled):hover {
+    .neo-radio-button__outer-circle {
+      border-color: var(--hover-border-field-color);
     }
   }
 }

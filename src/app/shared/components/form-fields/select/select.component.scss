@@ -69,15 +69,23 @@
       @include disabled;
     }
 
-    .neo-clear-field-button {
-      right: calc(#{$spacing-xs} * 2) !important;
-    }
-
     &__value {
       display: block;
       width: 100%;
       line-height: normal;
       @include ellipsis-text;
+    }
+
+    &:hover:not(&--disabled) {
+      border-color: var(--hover-border-field-color);
+    }
+
+    &:hover:not(&--disabled) ~ .neo-select__field__arrow-dropdown::before {
+      color: var(--hover-border-field-color);
+    }
+
+    .neo-clear-field-button {
+      right: calc(#{$spacing-xs} * 2) !important;
     }
   }
 
@@ -115,6 +123,14 @@
         &:focus,
         &:active {
           @include outline-focus;
+        }
+
+        &:hover {
+          border-color: var(--hover-border-field-color);
+        }
+
+        &:hover ~ .neo-select__dropdown__search__icon::before {
+          color: var(--hover-border-field-color);
         }
       }
 

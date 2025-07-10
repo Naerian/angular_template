@@ -529,13 +529,30 @@
   <hr />
   <div class="row">
     <div class="col-3">
-      <neo-radio-button-group
-        [label]="'Label del radiobutton'"
-        [name]="'testRadiobutton'"
-        [(ngModel)]="radioButtonValue"
-      >
-        <neo-radio-button value="1">Option 1</neo-radio-button>
-        <neo-radio-button value="2">Option 2</neo-radio-button>
+      <neo-radio-button-group [(ngModel)]="radioButtonValue">
+        <neo-radio-button [value]="1">Opción 1</neo-radio-button>
+        <neo-radio-button [value]="2">Opción 2</neo-radio-button>
+        <neo-radio-button [value]="3">Opción 3</neo-radio-button>
+      </neo-radio-button-group>
+      <small>{{ radioButtonValue | json }}</small>
+    </div>
+    <div class="col-3">
+      <form [formGroup]="testFormRadioButton">
+        <neo-radio-button-group formControlName="radioButtonControl">
+          <neo-radio-button [value]="1">Opción 1</neo-radio-button>
+          <neo-radio-button [value]="2">Opción 2</neo-radio-button>
+          <neo-radio-button [value]="3">Opción 3</neo-radio-button>
+        </neo-radio-button-group>
+      </form>
+      <small>{{ testFormRadioButton.value | json }}</small>
+    </div>
+    <div class="col-3">
+      <neo-radio-button-group [orientation]="'vertical'">
+        <neo-radio-button [value]="1">Opción 1</neo-radio-button>
+        <neo-radio-button [value]="2">Opción 2</neo-radio-button>
+        <neo-radio-button [value]="3" [disabled]="true"
+          >Opción 3</neo-radio-button
+        >
       </neo-radio-button-group>
     </div>
   </div>

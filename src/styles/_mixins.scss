@@ -163,12 +163,19 @@
   align-items: center;
 }
 
+@mixin flex-inline-center {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @mixin flex-row-center {
   @include flex-row;
   align-items: center;
 }
 
 @mixin flex-row-center-start {
+  display: flex;
   align-items: center;
   justify-content: flex-start;
 }

@@ -2,17 +2,13 @@
 @import "mixins";
 
 .neo-radio-button-group {
-  &__items {
-    display: flex;
+  gap: $spacing-xm;
 
-    &.horizontal {
-      @include flex-row-center-start;
-      gap: $spacing-m;
-    }
+  &--horizontal {
+    @include flex-row-center-start;
+  }
 
-    &.vertical {
-      @include flex-col-start-center;
-      gap: $spacing-s;
-    }
+  &--vertical {
+    @include flex-col-start;
   }
 }
