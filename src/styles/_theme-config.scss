@@ -24,12 +24,19 @@
   --font-weight-semibold: #{$font-weight-semibold};
   --font-weight-bold: #{$font-weight-bold};
 
+  --line-height-h1: #{$line-height-h1};
+  --line-height-h2: #{$line-height-h2};
+  --line-height-h3: #{$line-height-h3};
+  --line-height-h4: #{$line-height-h4};
+  --line-height-h5: #{$line-height-h5};
+  --line-height-h6: #{$line-height-h6};
+
+  --line-height-xs: #{$line-height-xs};
+  --line-height-s: #{$line-height-s};
+  --line-height-xm: #{$line-height-xm};
   --line-height-m: #{$line-height-m};
   --line-height-l: #{$line-height-l};
   --line-height-xl: #{$line-height-xl};
-  --line-height-xxl: #{$line-height-xxl};
-  --line-height-xxxl: #{$line-height-xxxl};
-  --line-height-xxxxl: #{$line-height-xxxxl};
 
   --line-height-base: #{$line-height-base};
 
@@ -126,4 +133,16 @@
   --checkbox-mark-size-m: #{map-get($checkbox-mark-sizes, m)};
   --checkbox-mark-size-l: #{map-get($checkbox-mark-sizes, l)};
   --checkbox-mark-size-xl: #{map-get($checkbox-mark-sizes, xl)};
+
+  // =======================
+  // CALENDARIO
+  // =======================
+  --calendar-header-height: #{$calendar-header-height}; // Altura del encabezado del
+  --calendar-weekdays-height: #{$calendar-weekdays-height}; // Altura de la fila de días de la semana
+  --calendar-day-size: #{$calendar-day-size}; // Tamaño de cada celda del calendario
+  --calendar-grid-height: #{$calendar-grid-height}; // Altura mínima del grid del calendario
+  --calendar-grid-width: #{$calendar-grid-width}; // Ancho mínimo del grid del calendario
+  --calendar-grid-gap: #{$calendar-grid-gap}; // Espacio entre celdas del calendario
+  --calendar-width: #{$calendar-width}; // Ancho del calendario
+  --calendar-height: #{$calendar-height}; // Altura del calendario
 }

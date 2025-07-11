@@ -3,13 +3,12 @@
 @import "functions";
 
 .calendar-picker {
-  // box-shadow: var(--box-shadow-m);
   border-radius: var(--border-radius-md);
   background-color: var(--color-white);
   border: var(--border-width-base) solid var(--border-color-base);
   overflow: hidden;
-  width: 310px;
-  height: 375px;
+  width: var(--calendar-width);
+  height: var(--calendar-height);
   font-size: var(--component-font-size-m);
   color: var(--color-text);
   box-shadow: var(--box-shadow-component);
@@ -20,6 +19,7 @@
     align-items: center;
     padding: var(--spacing-xs) var(--spacing-m);
     border-bottom: var(--border-width-base) solid var(--border-color-base);
+    height: var(--calendar-header-height);
   }
 
   &__header-btn {
@@ -88,34 +88,35 @@
   }
 
   &__content {
-    padding: var(--spacing-xxs) var(--spacing-m);
+    padding: var(--spacing-xs) var(--spacing-m);
   }
 
   &__weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: var(--spacing-xxs);
+    gap: var(--calendar-grid-gap);
     border-bottom: var(--border-width-base) solid var(--border-color-base);
-    font-size: var(--component-font-size-s);
+    font-size: var(--component-font-size-m);
     font-weight: var(--font-weight-bold);
     color: var(--color-gray-600);
-    padding-bottom: var(--spacing-xs);
-    padding-top: var(--spacing-xxs);
+    padding: var(--spacing-xs) 0;
     text-align: center;
+    height: var(--calendar-weekdays-height);
   }
 
   &__weekday {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: var(--component-height-xm);
+    @include flex-center;
+    width: var(--calendar-day-size);
   }
 
   &__grid {
     display: grid;
-    gap: var(--spacing-xxs);
+    gap: var(--calendar-grid-gap);
     text-align: center;
-    min-height: calc(6 * (var(--component-height-m) + var(--spacing-xxs)));
+    height: var(--calendar-grid-height);
+    width: var(--calendar-grid-width);
+    min-height: var(--calendar-grid-height);
+    min-width: var(--calendar-grid-width);
     align-content: center;
     justify-content: center;
 
@@ -135,9 +136,9 @@
   &__grid-day,
   &__grid-month,
   &__grid-year {
-    width: 100%;
-    min-width: 2.3rem;
-    min-height: 2.3rem;
+    @include flex-center;
+    width: var(--calendar-day-size);
+    height: var(--calendar-day-size);
     background-color: transparent;
     border: none;
     font-size: var(--component-font-size-m);
@@ -151,7 +152,6 @@
       border-color 0.2s ease-in-out,
       box-shadow 0.2s ease
     );
-    @include flex-center;
 
     &:hover:not(&--disabled):not(&--selected),
     &:hover:not(&--inactive):not(&--selected) {

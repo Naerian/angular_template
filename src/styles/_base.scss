@@ -7,6 +7,7 @@ html,
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
   tab-size: 4;
+  font-size: 14px; // Fuente base para navegadores que no soportan variables CSS (Ahora: 1rem = 14px)
   line-height: 1.5;
   font-feature-settings: normal;
   -webkit-tap-highlight-color: transparent;
