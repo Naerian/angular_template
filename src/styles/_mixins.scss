@@ -1,114 +1,96 @@
 // Mixin para definir tamaños de componentes
 // Utiliza este mixin para aplicar tamaños consistentes a los componentes de la aplicación
 @mixin component-size($size) {
-  $height: map-get($component-heights, $size);
-  $padding: map-get($component-paddings, $size);
-  $font-size: map-get($component-font-sizes, $size);
-
-  @if ($height) {
-    height: $height;
-  } @else {
-    height: map-get($component-heights, m);
-  }
-
-  @if ($padding) {
-    padding: $padding;
-  } @else {
-    padding: map-get($component-paddings, m);
-  }
-
-  @if ($font-size) {
-    font-size: $font-size;
-    line-height: $font-size;
-  } @else {
-    font-size: map-get($component-font-sizes, m);
-    line-height: map-get($component-font-sizes, m);
-  }
+  height: var(
+    --component-height-#{$size},
+    #{map-get($component-heights, $size)}
+  );
+  padding: var(
+    --component-padding-#{$size},
+    #{map-get($component-paddings, $size)}
+  );
+  font-size: var(
+    --component-font-size-#{$size},
+    #{map-get($component-font-sizes, $size)}
+  );
+  line-height: var(
+    --component-font-size-#{$size},
+    #{map-get($component-font-sizes, $size)}
+  );
+  font-weight: var(
+    --component-font-weight-#{$size},
+    #{map-get($component-font-weights, $size)}
+  );
 }
 
 // Mixin para definir tamaños de componentes de textarea
 // Utiliza este mixin para aplicar tamaños consistentes a los componentes de textarea de la aplicación
 @mixin component-textarea-size($size) {
-  $padding: map-get($component-paddings, $size);
-  $font-size: map-get($component-font-sizes, $size);
-
-  @if ($padding) {
-    padding: $padding;
-  } @else {
-    padding: map-get($component-paddings, m);
-  }
-
-  @if ($font-size) {
-    font-size: $font-size;
-    line-height: $font-size;
-  } @else {
-    font-size: map-get($component-font-sizes, m);
-    line-height: map-get($component-font-sizes, m);
-  }
+  padding: var(
+    --component-padding-#{$size},
+    #{map-get($component-paddings, $size)}
+  );
+  font-size: var(
+    --component-font-size-#{$size},
+    #{map-get($component-font-sizes, $size)}
+  );
+  line-height: var(
+    --component-font-size-#{$size},
+    #{map-get($component-font-sizes, $size)}
+  );
 }
 
 // Mixin para aplicar tamaño de fuente según el tamaño del componente
 // Utiliza este mixin para aplicar un tamaño de fuente específico a los componentes
 @mixin component-font-size($size) {
-  $font-size: map-get($component-font-sizes, $size);
-
-  @if ($font-size) {
-    font-size: $font-size;
-    line-height: $font-size *
-      1.5; // Ajuste de line-height basado en el tamaño de fuente
-  } @else {
-    // Manejo de error o valor por defecto si el tamaño no existe
-    font-size: map-get($component-font-sizes, m); // Tamaño medio como fallback
-    line-height: map-get($component-font-sizes, m) *
-      1.5; // Ajuste de line-height para tamaño medio
-  }
+  font-size: var(
+    --component-font-size-#{$size},
+    #{map-get($component-font-sizes, $size)}
+  );
+  line-height: calc(
+    var(
+        --component-font-size-#{$size},
+        #{map-get($component-font-sizes, $size)}
+      ) * 1.5
+  );
 }
 
 // Mixin para aplicar tamaño de fuente a los iconos de los componentes
 // Utiliza este mixin para aplicar un tamaño de fuente específico a los iconos de los componentes
 @mixin component-icon-size($size) {
-  $height: map-get($component-heights, $size);
-  $padding: map-get($component-paddings, $size);
-  $font-size: map-get($component-font-sizes, $size);
-
-  @if ($height) {
-    height: $height;
-  } @else {
-    height: map-get($component-heights, m);
-  }
-
-  @if ($padding) {
-    padding: $padding;
-  } @else {
-    padding: map-get($component-paddings, m);
-  }
-
-  @if ($font-size) {
-    font-size: $font-size * 1.2;
-    line-height: $font-size * 1.2;
-  } @else {
-    font-size: map-get($component-font-sizes, m) * 1.2;
-    line-height: map-get($component-font-sizes, m) * 1.2;
-  }
+  height: var(
+    --component-height-#{$size},
+    #{map-get($component-heights, $size)}
+  );
+  padding: var(
+    --component-padding-#{$size},
+    #{map-get($component-paddings, $size)}
+  );
+  font-size: calc(
+    var(
+        --component-font-size-#{$size},
+        #{map-get($component-font-sizes, $size)}
+      ) * 1.2
+  );
+  line-height: calc(
+    var(
+        --component-font-size-#{$size},
+        #{map-get($component-font-sizes, $size)}
+      ) * 1.2
+  );
 }
 
 // Mixin para aplicar tamaño al checkbox
 // Utiliza este mixin para aplicar un tamaño específico al checkbox
 @mixin component-checkbox-size($size) {
-  $height: map-get($checkbox-box-sizes, $size);
-  $width: map-get($checkbox-box-sizes, $size);
-
-  @if ($height) {
-    height: $height;
-  } @else {
-    height: map-get($component-heights, m);
-  }
-
-  @if ($width) {
-    width: $width;
-  } @else {
-    width: map-get($component-paddings, m);
-  }
+  height: var(
+    --checkbox-box-size-#{$size},
+    #{map-get($checkbox-box-sizes, $size)}
+  );
+  width: var(
+    --checkbox-box-size-#{$size},
+    #{map-get($checkbox-box-sizes, $size)}
+  );
 }
 
 // Mixin aplicar una transición suave a las propiedades CSS
@@ -154,13 +136,18 @@
 @mixin flex-col {
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 @mixin flex-center {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@mixin flex-start-between {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
 @mixin flex-inline-center {
@@ -207,22 +194,11 @@
   text-overflow: ellipsis;
 }
 
-@mixin outline-focus($color: var(--outline-color), $width: $border-width-xs) {
+// Mixin para aplicar un foco de contorno
+// Utiliza este mixin para aplicar un estilo de contorno al enfocar
+@mixin outline-focus($color: var(--outline-color)) {
   outline-color: $color;
   outline-style: solid;
-  outline-width: $width;
-  box-shadow: 0px 0px 2px $width var(--focus-ring-color);
-}
-
-// Este mixin es específico del spinner, lo mantendremos aquí.
-// Asegúrate de que $spinner-border-width esté en _config.scss o pásalo como parámetro por defecto.
-@mixin spinner-pseudo-elements(
-  $color: var(--primary-color),
-  $border-width: $spinner-border-width
-) {
-  border: $border-width solid $color;
-  border-radius: 50%;
-  position: absolute;
-  content: "";
-  display: block;
+  outline-width: var(--border-width-xs);
+  box-shadow: 0px 0px 2px var(--border-width-xs) var(--focus-ring-color);
 }

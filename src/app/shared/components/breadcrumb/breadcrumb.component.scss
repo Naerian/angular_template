@@ -1,5 +1,3 @@
-// src/app/shared/components/breadcrumb/breadcrumb.component.scss
-
 @import "config";
 @import "mixins";
 @import "functions";
@@ -9,33 +7,41 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: $spacing-xs;
-  font-weight: $font-weight-regular;
-  border-radius: $border-radius-md;
-  min-height: map-get($component-heights, s);
-  box-shadow: inset 0 1px 2px rgba(var(-color-black), 0.05);
+  gap: var(--spacing-xs);
+  font-weight: var(--font-weight-regular);
+  border-radius: var(--border-radius-md);
+  min-height: var(
+    --component-height-s
+  );
+  box-shadow: inset 0 1px 2px rgba(var(--color-black, #000), 0.05);
 
   &__separator {
     display: inline-flex;
     align-items: center;
     color: var(--separator-breadcrumb-color);
-    margin: 0 $spacing-xxs;
-    margin-top: $spacing-xxs;
-    @include component-font-size(xm);
+    margin: 0 var(--spacing-xxs);
+    margin-top: var(--spacing-xxs);
+    @include component-font-size(
+      xm
+    );
   }
 
   &__item {
     cursor: pointer;
     text-decoration: none;
     color: var(--text-breadcrumb-color);
-    @include transition(all 0.2s ease-in-out);
-    padding: $spacing-xxs $spacing-xs;
-    border-radius: $border-radius-md;
+    @include transition(
+      all 0.2s ease-in-out
+    );
+    padding: var(--spacing-xxs) var(--spacing-xs);
+    border-radius: var(--border-radius-md);
     display: inline-flex;
-    @include component-font-size(xm);
+    @include component-font-size(
+      xm
+    );
 
     &--active {
-      font-weight: $font-weight-semibold;
+      font-weight: var(--font-weight-semibold);
       color: var(--active-breadcrumb-text-color);
       background-color: var(--active-breadcrumb-bg);
       cursor: default;
@@ -47,7 +53,7 @@
       outline: none;
       color: var(--text-breadcrumb-color-hover);
       background-color: var(--bg-color-hover);
-      box-shadow: $box-shadow-sm;
+      box-shadow: var(--box-shadow-sm);
     }
 
     @media (max-width: 768px) {
@@ -59,9 +65,13 @@
   }
 
   @media (max-width: 768px) {
-    gap: calc($spacing-xs / 2);
-    font-size: $font-size-base * 0.8;
-    padding: $spacing-xs;
+    gap: calc(
+      var(--spacing-xs) / 2
+    );
+    font-size: calc(
+      var(--font-size-base) * 0.8
+    );
+    padding: var(--spacing-xs);
   }
 
   @media (max-width: 576px) {

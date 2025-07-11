@@ -1,46 +1,75 @@
 @import "colors";
 
-// --- Variables de Bordes y Radios ---
-$border-radius-sm: 4px;
-$border-radius-md: 6px;
-$border-radius-lg: 12px;
-$border-radius-circle: 50%;
-$border-width-base: 1px;
-$border-color-base: $color-gray-300;
-
-// -----------------------------------------
-
-// --- Base de Tipografía ---
-// Fuentes
+// =======================
+// TIPOGRAFÍA
+// =======================
 $font-family-base: "Hellix", sans-serif;
-$font-size-base: 1rem; // 16px por defecto (para el html/body)
-$line-height-base: 1.5; // Altura de línea estándar para el texto general
+$font-size-base: 1rem;
+$line-height-base: 1.5;
 $font-weight-regular: 400;
 $font-weight-medium: 500;
 $font-weight-semibold: 600;
 $font-weight-bold: 700;
 
-// -----------------------------------------
+// =======================
+// BORDES Y RADIOS
+// =======================
+$border-width-base: 1px;
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-circle: 50%;
 
-// --- Sombras (Box Shadows) ---
-// Para efectos de elevación o profundidad
-$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05); // Sombra sutil para componentes (la usaremos como default)
-$box-shadow-md:
-  0 4px 6px rgba(0, 0, 0, 0.1),
-  0 1px 3px rgba(0, 0, 0, 0.08); // Sombra mediana
-$box-shadow-lg:
-  0 10px 15px rgba(0, 0, 0, 0.1),
-  0 4px 6px rgba(0, 0, 0, 0.05); // Sombra grande
-$box-shadow-button-hover: 0 2px 6px rgba(0, 0, 0, 0.08); // Sombra específica para el hover de botones, más sutil
+$border-width-xs: 1px;
 
-// -----------------------------------------
+// =======================
+// ESPACIADOS
+// =======================
+$spacing-xxs: 0.25rem; // 4px
+$spacing-xs: 0.5rem; // 8px
+$spacing-s: 0.75rem; // 12px
+$spacing-xm: 0.8125rem; // 13px
+$spacing-m: 0.9375rem; // 15px
+$spacing-l: 1.5rem; // 24px
+$spacing-xl: 2.25rem; // 36px
+$spacing-xxl: 3rem; // 48px
 
-$spinner-border-width: 2.9px; // O un valor más genérico si lo usas en otros loaders
+// =======================
+// COMPONENTES
+// =======================
 
-// -----------------------------------------
+// Alturas
+$component-heights: (
+  xs: 1.75rem,
+  // 28px
+  s: 2rem,
+  // 32px
+  xm: 2.25rem,
+  // 36px
+  m: 2.5rem,
+  // 40px
+  l: 3rem,
+  // 48px
+  xl: 3.5rem,
+  // 56px
+);
 
-// --- Mapas de Tamaños de Fuente de Componentes (ACTUALIZADO: 'm' a 0.875rem) ---
-// Controla el font-size de los componentes por su tamaño (xs, s, xm, m, l, xl)
+$component-paddings: (
+  xs: 0.4375rem $spacing-xs,
+  // 7px
+  s: 0.5rem $spacing-s,
+  // 8px
+  xm: 0.59375rem $spacing-m,
+  // 9.5px
+  m: 0.6875rem $spacing-m,
+  // 11px
+  l: 0.75rem $spacing-m,
+  // 12px
+  xl: 0.8125rem $spacing-m,
+  // 13px
+);
+
+// Tamaños de fuente por tamaño de componente
 $component-font-sizes: (
   xs: 0.75rem,
   s: 0.8125rem,
@@ -50,8 +79,7 @@ $component-font-sizes: (
   xl: 1.25rem,
 );
 
-// --- Mapas de Peso de Fuente de Componentes ---
-// Controla el font-weight de los componentes por su tamaño (xs, s, xm,
+// Pesos de fuente por tamaño
 $component-font-weights: (
   xs: $font-weight-regular,
   s: $font-weight-regular,
@@ -61,9 +89,9 @@ $component-font-weights: (
   xl: $font-weight-semibold,
 );
 
-// -----------------------------------------
-
-// Define el tamaño del cuadrado visible del checkbox
+// =======================
+// CHECKBOXES
+// =======================
 $checkbox-box-sizes: (
   xs: 1rem,
   s: 1.125rem,
@@ -73,75 +101,32 @@ $checkbox-box-sizes: (
   xl: 1.625rem,
 );
 
-// --- Mapas de Tamaños del checkmark dentro del checkbox ---
 $checkbox-mark-sizes: (
-  xs: 0.5rem,    // 50% de 1rem
-  s: 0.625rem,   // ~55% de 1.125rem
-  xm: 0.75rem,   // 60% de 1.25rem
-  m: 0.875rem,   // ~64% de 1.375rem
-  l: 1rem,       // ~67% de 1.5rem
-  xl: 1.125rem,  // ~69% de 1.625rem
+  xs: 0.5rem,
+  s: 0.625rem,
+  xm: 0.75rem,
+  m: 0.875rem,
+  l: 1rem,
+  xl: 1.125rem,
 );
 
-// -----------------------------------------
+// =======================
+// SOMBRAS
+// =======================
+$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$box-shadow-md:
+  0 4px 6px rgba(0, 0, 0, 0.1),
+  0 1px 3px rgba(0, 0, 0, 0.08);
+$box-shadow-lg:
+  0 10px 15px rgba(0, 0, 0, 0.1),
+  0 4px 6px rgba(0, 0, 0, 0.05);
+$box-shadow-button-hover: 0 2px 6px rgba(0, 0, 0, 0.08);
 
-// --- Variables de Espaciado ---
-// Utilizadas para paddings, margins, gaps, etc.
-$spacing-xxs: 4px;
-$spacing-xs: 8px;
-$spacing-s: 12px;
-$spacing-xm: 13px;
-$spacing-m: 15px;
-$spacing-l: 24px;
-$spacing-xl: 36px;
-$spacing-xxl: 48px;
-
-// -----------------------------------------
-
-// --- Mapas de Alturas de Componentes ---
-// Define las alturas fijas para los componentes, como botones e inputs
-$component-heights: (
-  xs: 1.75rem,
-  s: 2rem,
-  xm: 2.25rem,
-  m: 2.5rem,
-  l: 3rem,
-  xl: 3.5rem,
-);
-
-// --- Mapas de Padding de Componentes ---
-// Define el padding interno de los componentes, el primer valor es vertical (top/bottom), el segundo horizontal (left/right)
-$component-paddings: (
-  xs: 7px $spacing-xs,
-  s: 8px $spacing-s,
-  xm: 9.5px $spacing-m,
-  m: 11px $spacing-m,
-  l: 12px $spacing-m,
-  xl: 13px $spacing-m,
-);
-
-// -----------------------------------------
-
-// --- Variables para transiciones ---
-$transition-duration-fast: 0.1s; // 100ms
-$transition-duration-normal: 0.15s; // 150ms
-$transition-duration-slow: 0.2s; // 200ms
-$transition-duration-base: 0.25s; // 250ms
+// =======================
+// TRANSICIONES
+// =======================
+$transition-duration-fast: 0.1s;
+$transition-duration-normal: 0.15s;
+$transition-duration-slow: 0.2s;
+$transition-duration-base: 0.25s;
 $transition-timing-function-ease: ease;
-
-// -----------------------------------------
-
-// --- Variables de tamaño y borde para Checkbox ---
-$checkbox-size: 18px;
-$border-width-xs: 1px; // Si no tienes una variable para 1px
-$border-radius-checkbox: 2px; // Específico para el radio del checkbox, o usar $border-radius-xxs si tienes
-
-// --- Variables para el diseño del checkmark (dentro del cuadrado) ---
-$checkmark-border-width: 5px; // Grosor del borde del checkmark para el estado 'checked'
-$checkmark-indeterminate-border-vertical-width: 2px; // Grosor vertical para el estado 'indeterminate'
-$checkmark-indeterminate-border-horizontal-width: 5px; // Grosor horizontal para el estado 'indeterminate'
-
-// -----------------------------------------
-
-// --- Variables para Radiobuttons ---
-$radiobutton-dot-size: 10px;

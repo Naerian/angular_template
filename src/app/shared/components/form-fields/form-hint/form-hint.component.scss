@@ -3,7 +3,7 @@
 
 .neo-form-hint {
   @include flex-col-start;
-  margin-top: $spacing-xxs;
-  font-size: #{component-font-size(xs)};
+  margin-top: var(--spacing-xxs);
+  font-size: var(--component-font-size-xs);
   color: var(--color-text-secondary);
 }

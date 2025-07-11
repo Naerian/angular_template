@@ -2,6 +2,11 @@
 @import "mixins";
 @import "functions";
 
+:host {
+  display: block;
+  width: 100%;
+}
+
 .neo-textarea {
   position: relative;
 
@@ -10,11 +15,11 @@
 
     &__field {
       width: 100%;
-      border-radius: $border-radius-md;
+      border-radius: var(--border-radius-md);
       box-sizing: border-box;
-      padding: $spacing-s;
+      padding: var(--spacing-s);
       background-color: var(--bg-field-color);
-      border: $border-width-base solid var(--border-field-color);
+      border: var(--border-width-base) solid var(--border-field-color);
 
       &:focus:not(&--disabled),
       &:active:not(&--disabled) {
@@ -29,7 +34,7 @@
       }
 
       &--has-error {
-        border: $border-width-xs solid var(--color-danger);
+        border: var(--border-width-xs) solid var(--color-danger);
       }
 
       &[disabled],

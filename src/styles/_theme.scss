@@ -1,5 +1,3 @@
-// src/styles/_theme.scss (añade esto al final del archivo)
-
 @import "config";
 @import "mixins";
 
@@ -13,7 +11,7 @@
   --color-success: #{$color-success}; // Color de éxito
   --color-info: #{$color-info}; // Color de información
   --color-warning: #{$color-warning}; // Color de advertencia
-  --color-danger: #{$color-danger}; // Color de peligro/error
+  --color-danger: #{$color-danger}; // Color de peligro / error
 
   // Versiones tintadas de colores principales
   --color-primary-tint-50: #{tint($color-primary, 50%)};
@@ -72,17 +70,17 @@
   --color-danger-tint-95: #{tint($color-danger, 95%)};
 
   // Borde base (si quieres que sea tematizable)
-  --border-color-base: #{$border-color-base};
+  --border-color-base: #{$color-gray-300};
 
   // -------------------------------------------------
   // --- COLORES Y VARIABLES PARA LAS FORMS ---
   // -------------------------------------------------
-  --border-field-color: #{$border-color-base};
+  --border-field-color: #{$color-gray-300};
   --bg-field-color: #{$color-white};
-  --border-field-disabled-color: #{$color-gray-400}; // Asume un color gris para campos deshabilitados
-  --icon-field-color: #{$color-gray-600}; // Color para iconos dentro de campos (flechas, lupa)
-  --bg-scroll-field-color: #{$color-gray-200}; // Color del pulgar del scrollbar
-  --bg-options-field-color: #{$color-gray-100}; // Color de fondo para opciones hover/seleccionadas
+  --border-field-disabled-color: #{$color-gray-400};
+  --icon-field-color: #{$color-gray-600};
+  --bg-scroll-field-color: #{$color-gray-200};
+  --bg-options-field-color: #{$color-gray-100};
 
   // -------------------------------------------------
   // --- COLORES Y VARIABLES PARA LAS CARDS ---
@@ -108,23 +106,23 @@
   // --- COLORES Y VARIABLES PARA BOTONES ---
   // -------------------------------------------------
   // Sombras comunes para botones
-  --shadow-btn: 0 2px 4px rgba(0, 0, 0, 0.1); // Una sombra sutil para botones
+  --shadow-btn: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   // Colores para el botón PRIMARIO
-  --bg-btn-primary-color: #{$color-primary}; // Fondo del botón primario
-  --border-btn-primary-color: #{$color-primary}; // Borde del botón primario
-  --text-btn-primary-color: #{$color-gray-100}; // Color del texto del botón primario (blanco/gris muy claro)
-  --hover-btn-primary-color: #{shade($color-primary, 10%)}; // Fondo del primario al hover (ligeramente más oscuro)
+  --bg-btn-primary-color: #{$color-primary};
+  --border-btn-primary-color: #{$color-primary};
+  --text-btn-primary-color: #{$color-gray-100};
+  --hover-btn-primary-color: #{shade($color-primary, 10%)};
 
-  --text-btn-primary-transparent-color: #{$color-primary}; // Texto del primario transparente
-  --icon-btn-primary-color: #{$color-gray-100}; // Icono del primario (sólido)
-  --icon-btn-primary-transparent-color: #{$color-primary}; // Icono del primario transparente
-  --hover-bg-btn-primary-transparent-color: #{tint($color-primary, 90%)}; // Fondo del transparente al hover
+  --text-btn-primary-transparent-color: #{$color-primary};
+  --icon-btn-primary-color: #{$color-gray-100};
+  --icon-btn-primary-transparent-color: #{$color-primary};
+  --hover-bg-btn-primary-transparent-color: #{tint($color-primary, 90%)};
 
   // Colores para el botón SECUNDARIO
   --bg-btn-secondary-color: #{$color-secondary};
   --border-btn-secondary-color: #{$color-secondary};
-  --text-btn-secondary-color: #{$color-text}; // Texto del secundario (gris oscuro)
+  --text-btn-secondary-color: #{$color-text};
   --hover-btn-secondary-color: #{shade($color-secondary, 5%)};
 
   --text-btn-secondary-transparent-color: #{$color-text};
@@ -168,7 +166,7 @@
   // Colores para el botón WARNING
   --bg-btn-warning-color: #{$color-warning};
   --border-btn-warning-color: #{$color-warning};
-  --text-btn-warning-color: #{$color-gray-100}; // Texto más oscuro para warning (amarillo/naranja)
+  --text-btn-warning-color: #{$color-gray-100};
   --hover-btn-warning-color: #{shade($color-warning, 10%)};
 
   --text-btn-warning-transparent-color: #{$color-warning};

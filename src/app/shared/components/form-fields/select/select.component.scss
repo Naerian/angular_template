@@ -20,14 +20,14 @@
 
     @include flex-row-center;
     justify-content: space-between;
-    border-radius: $border-radius-md;
+    border-radius: var(--border-radius-md);
     box-sizing: border-box;
-    padding-right: calc(#{$spacing-m} * 2 + #{$spacing-xxs}) !important;
+    padding-right: calc(var(--spacing-m) * 2 + var(--spacing-xxs)) !important;
     cursor: pointer;
     position: relative;
-    gap: $spacing-xs;
+    gap: var(--spacing-xs);
     background-color: var(--bg-field-color);
-    border: $border-width-base solid var(--border-field-color);
+    border: var(--border-width-base) solid var(--border-field-color);
 
     &:focus:not(&--disabled),
     &:active:not(&--disabled) {
@@ -35,16 +35,18 @@
     }
 
     &--clear {
-      padding-right: calc(#{$spacing-m} * 2 + #{$spacing-xxs} + #{$spacing-s});
+      padding-right: calc(
+        var(--spacing-m) * 2 + var(--spacing-xxs) + var(--spacing-s)
+      );
     }
 
     &__arrow-dropdown {
       position: absolute;
-      right: $spacing-xs;
-      font-size: map-get($component-font-sizes, m);
-      line-height: map-get($component-font-sizes, m);
-      transition: transform $transition-duration-normal
-        $transition-timing-function-ease;
+      right: var(--spacing-xs);
+      font-size: var(--component-font-size-m);
+      line-height: var(--component-font-size-m);
+      transition: transform var(--transition-duration-normal)
+        var(--transition-timing-function-ease);
 
       &.open {
         transform: rotate(180deg);
@@ -56,7 +58,7 @@
     }
 
     &--has-error {
-      border: $border-width-base solid var(--color-danger);
+      border: var(--border-width-base) solid var(--color-danger);
     }
 
     &--transparent {
@@ -85,31 +87,32 @@
     }
 
     .neo-clear-field-button {
-      right: calc(#{$spacing-xs} * 2) !important;
+      right: calc(var(--spacing-xs) * 2) !important;
     }
   }
 
   &__dropdown {
     @include flex-col-center;
-    border: calc(#{$border-width-base} / 2) solid var(--border-field-color);
+    border: calc(var(--border-width-base) / 2) solid var(--border-field-color);
     background-color: var(--bg-field-color);
 
     &__search {
       @include flex-row-center;
       justify-content: center;
-      padding: 0 $spacing-xs;
-      margin-top: $spacing-xs;
-      padding-bottom: $spacing-xs;
+      padding: 0 var(--spacing-xs);
+      margin-top: var(--spacing-xs);
+      padding-bottom: var(--spacing-xs);
       position: relative;
       width: 100%;
 
       &__input {
         width: 100%;
-        border-radius: $border-radius-md;
+        border-radius: var(--border-radius-md);
         border: none;
         box-sizing: border-box;
-        padding: $spacing-xs $spacing-s;
-        border: calc(#{$border-width-base} / 2) solid var(--border-field-color);
+        padding: var(--spacing-xs) var(--spacing-s);
+        border: calc(var(--border-width-base) / 2) solid
+          var(--border-field-color);
         background-color: var(--bg-field-color);
         color: var(--text-color);
 
@@ -136,7 +139,7 @@
 
       &__icon {
         position: absolute;
-        right: $spacing-m;
+        right: var(--spacing-m);
         cursor: default;
 
         &::before {
@@ -149,11 +152,11 @@
       width: 100%;
       max-height: 150px;
       overflow: auto;
-      padding: $spacing-xs;
+      padding: var(--spacing-xs);
       scrollbar-width: thin;
       scrollbar-color: var(--bg-scroll-field-color) var(--bg-field-color);
-      gap: $spacing-xxs;
-      box-shadow: $box-shadow-md;
+      gap: var(--spacing-xxs);
+      box-shadow: var(--box-shadow-md);
 
       &--empty {
         display: none;
@@ -163,15 +166,15 @@
         @include flex-col-center;
         align-items: flex-start;
         justify-content: center;
-        padding: 0 $spacing-xs;
-        gap: $spacing-xxs;
+        padding: 0 var(--spacing-xs);
+        gap: var(--spacing-xxs);
 
         &__label {
-          font-weight: $font-weight-bold;
-          border-bottom: $border-width-xs solid var(--border-field-color);
+          font-weight: var(--font-weight-bold);
+          border-bottom: var(--border-width-xs) solid var(--border-field-color);
           cursor: default;
           width: 100%;
-          padding: $spacing-xs 0;
+          padding: var(--spacing-xs) 0;
 
           // Tamaño dinámico para la fuente según el tamaño del componente
           @each $size-key, $font-size in $component-font-sizes {
@@ -184,7 +187,7 @@
         &__options {
           @include flex-col-center;
           width: 100%;
-          gap: $spacing-xxs;
+          gap: var(--spacing-xxs);
         }
 
         &--hidden {
@@ -195,7 +198,7 @@
       &__option {
         @include flex-row-center;
         cursor: pointer;
-        padding: $spacing-s;
+        padding: var(--spacing-s);
         width: 100%;
 
         &--xs {
@@ -220,14 +223,14 @@
         &:focus:not(&--disabled),
         &:active:not(&--disabled) {
           @include outline-focus;
-          border-radius: $border-radius-md;
+          border-radius: var(--border-radius-md);
         }
 
         &:hover:not(&--disabled),
         &--selected {
           color: var(--text-color);
           background-color: var(--bg-options-field-color);
-          border-radius: $border-radius-md;
+          border-radius: var(--border-radius-md);
         }
 
         &--hidden {
@@ -237,12 +240,12 @@
         &__label {
           @include ellipsis-text;
           width: 100%;
-          font-weight: $font-weight-medium;
+          font-weight: var(--font-weight-medium);
         }
 
         &--selected {
           .neo-select__dropdown__options__item__label {
-            font-weight: $font-weight-semibold;
+            font-weight: var(--font-weight-semibold);
           }
         }
 
@@ -260,47 +263,6 @@
         &:last-child {
           border-bottom: none;
         }
-      }
-    }
-  }
-
-  &__loading {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    @include flex-col-center;
-    justify-content: center;
-
-    &__spinner {
-      position: relative;
-      width: $spacing-m;
-      height: $spacing-m;
-      @include flex-row-center;
-      justify-content: center;
-
-      &::before {
-        @include spinner-pseudo-elements;
-        width: calc(#{$spacing-m} / 2);
-        height: calc(#{$spacing-m} / 2);
-        border-bottom-color: transparent;
-        border-left-color: transparent;
-        animation: spinner-dropdown 0.75s infinite linear reverse;
-      }
-
-      &::after {
-        @include spinner-pseudo-elements;
-        animation: spinner-dropdown 0.5s infinite linear;
-        height: $spacing-m;
-        width: $spacing-m;
-        border-right-color: transparent;
-        border-top-color: transparent;
-      }
-    }
-
-    @keyframes spinner-dropdown {
-      to {
-        transform: rotate(360deg);
       }
     }
   }

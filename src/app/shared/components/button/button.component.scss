@@ -1,35 +1,24 @@
-// src/app/shared/components/button/button.component.scss
-
 @import "config";
 @import "mixins";
 @import "functions";
 
 // Mixin para aplicar estilos de color a botones
 // Utiliza este mixin para definir los estilos de color de los botones en la aplicación
-@mixin button-color-styles(
-  $bg,
-  $border,
-  $text,
-  $hover-bg,
-  $transparent-text,
-  $icon-solid,
-  $icon-transparent,
-  $hover-bg-transparent
-) {
+@mixin button-color-styles {
   &:not(.neo-btn--transparent):not(.neo-btn--icon),
   &.neo-btn--icon:not(.neo-btn--transparent) {
-    background-color: $bg;
-    border-color: $border;
-    color: $text;
+    background-color: var(--bg-btn-color);
+    border-color: var(--border-btn-color);
+    color: var(--text-btn-color);
 
     &:hover,
     &:focus,
     &:active {
-      background-color: $hover-bg;
+      background-color: var(--hover-btn-color);
     }
 
     &.neo-btn--icon i::before {
-      color: $icon-solid;
+      color: var(--icon-btn-color);
     }
   }
 
@@ -37,16 +26,16 @@
   &.neo-btn--transparent {
     background-color: transparent;
     border-color: transparent;
-    color: $transparent-text;
+    color: var(--text-btn-transparent-color);
 
     &:hover,
     &:focus,
     &:active {
-      background-color: $hover-bg-transparent;
+      background-color: var(--hover-bg-btn-transparent-color);
     }
 
     i::before {
-      color: $icon-transparent;
+      color: var(--icon-btn-transparent-color);
     }
   }
 }
@@ -65,41 +54,42 @@
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
-  border-radius: $border-radius-md;
-  font-weight: $font-weight-medium;
+  border-radius: var(--border-radius-md);
+  font-weight: var(--font-weight-medium);
   text-decoration: none;
   @include transition(all 0.2s ease-in-out);
   transition: box-shadow 0.2s ease;
-  font-family: $font-family-base;
+  font-family: var(--font-family-base);
 
   &:focus,
   &:active {
     @include outline-focus;
   }
 
+  // Clases de tamaño que usan el mixin component-size
   &--xs {
     @include component-size(xs);
-    font-weight: $font-weight-regular;
+    font-weight: var(--component-font-weight-xs);
   }
   &--s {
     @include component-size(s);
-    font-weight: $font-weight-regular;
+    font-weight: var(--component-font-weight-s);
   }
   &--xm {
     @include component-size(xm);
-    font-weight: $font-weight-medium;
+    font-weight: var(--component-font-weight-xm);
   }
   &--m {
     @include component-size(m);
-    font-weight: $font-weight-medium;
+    font-weight: var(--component-font-weight-m);
   }
   &--l {
     @include component-size(l);
-    font-weight: $font-weight-semibold;
+    font-weight: var(--component-font-weight-l);
   }
   &--xl {
     @include component-size(xl);
-    font-weight: $font-weight-semibold;
+    font-weight: var(--component-font-weight-xl);
   }
 
   &--all-width {
@@ -116,27 +106,27 @@
   }
 
   i {
-    font-size: $font-size-base;
+    font-size: var(--font-size-base);
     line-height: 1;
     &:not(:last-child) {
-      margin-right: $spacing-xxs;
+      margin-right: var(--spacing-xxs);
     }
     &:not(:first-child) {
-      margin-left: $spacing-xxs;
+      margin-left: var(--spacing-xxs);
     }
   }
 
   &:not(&--transparent) {
-    border-width: 1px;
+    border-width: var(--border-width-base);
     border-style: solid;
-    box-shadow: $box-shadow-sm;
+    box-shadow: var(--box-shadow-sm);
 
     &:hover {
-      box-shadow: $box-shadow-button-hover;
+      box-shadow: var(--box-shadow-button-hover);
     }
 
     &:active {
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset;
+      box-shadow: var(--box-shadow-button-hover);
     }
   }
 
@@ -150,46 +140,48 @@
       margin: 0;
     }
 
+    // Ajuste de tamaño para botones de icono
+    // Usamos las variables CSS de component-height y component-font-size
     &.neo-btn--xs {
-      height: map-get($component-heights, xs);
-      width: map-get($component-heights, xs);
+      height: var(--component-height-xs);
+      width: var(--component-height-xs);
       i {
-        font-size: map-get($component-font-sizes, xs);
+        font-size: var(--component-font-size-xs);
       }
     }
     &.neo-btn--s {
-      height: map-get($component-heights, s);
-      width: map-get($component-heights, s);
+      height: var(--component-height-s);
+      width: var(--component-height-s);
       i {
-        font-size: map-get($component-font-sizes, s);
+        font-size: var(--component-font-size-s);
       }
     }
     &.neo-btn--xm {
-      height: map-get($component-heights, xm);
-      width: map-get($component-heights, xm);
+      height: var(--component-height-xm);
+      width: var(--component-height-xm);
       i {
-        font-size: map-get($component-font-sizes, xm);
+        font-size: var(--component-font-size-xm);
       }
     }
     &.neo-btn--m {
-      height: map-get($component-heights, m);
-      width: map-get($component-heights, m);
+      height: var(--component-height-m);
+      width: var(--component-height-m);
       i {
-        font-size: map-get($component-font-sizes, m);
+        font-size: var(--component-font-size-m);
       }
     }
     &.neo-btn--l {
-      height: map-get($component-heights, l);
-      width: map-get($component-heights, l);
+      height: var(--component-height-l);
+      width: var(--component-height-l);
       i {
-        font-size: map-get($component-font-sizes, l);
+        font-size: var(--component-font-size-l);
       }
     }
     &.neo-btn--xl {
-      height: map-get($component-heights, xl);
-      width: map-get($component-heights, xl);
+      height: var(--component-height-xl);
+      width: var(--component-height-xl);
       i {
-        font-size: map-get($component-font-sizes, xl);
+        font-size: var(--component-font-size-xl);
       }
     }
   }
@@ -205,85 +197,97 @@
     }
   }
 
+  // ====================================================================
+  // Definiciones de color para cada modo (primary, secondary, etc.)
+  // Ahora, cada bloque de color define las variables CSS específicas para ese modo.
+  // El mixin `button-color-styles` leerá estas variables.
+  // ====================================================================
+
   &--primary {
-    @include button-color-styles(
-      var(--bg-btn-primary-color),
-      var(--border-btn-primary-color),
-      var(--text-btn-primary-color),
-      var(--hover-btn-primary-color),
-      var(--text-btn-primary-transparent-color),
-      var(--icon-btn-primary-color),
-      var(--icon-btn-primary-transparent-color),
-      var(--hover-bg-btn-primary-transparent-color)
+    --bg-btn-color: var(--bg-btn-primary-color);
+    --border-btn-color: var(--border-btn-primary-color);
+    --text-btn-color: var(--text-btn-primary-color);
+    --hover-btn-color: var(--hover-btn-primary-color);
+    --text-btn-transparent-color: var(--text-btn-primary-transparent-color);
+    --icon-btn-color: var(--icon-btn-primary-color);
+    --icon-btn-transparent-color: var(--icon-btn-primary-transparent-color);
+    --hover-bg-btn-transparent-color: var(
+      --hover-bg-btn-primary-transparent-color
     );
+    @include button-color-styles;
   }
 
   &--secondary {
-    @include button-color-styles(
-      var(--bg-btn-secondary-color),
-      var(--border-btn-secondary-color),
-      var(--text-btn-secondary-color),
-      var(--hover-btn-secondary-color),
-      var(--text-btn-secondary-transparent-color),
-      var(--icon-btn-secondary-color),
-      var(--icon-btn-secondary-transparent-color),
-      var(--hover-bg-btn-secondary-transparent-color)
+    --bg-btn-color: var(--bg-btn-secondary-color);
+    --border-btn-color: var(--border-btn-secondary-color);
+    --text-btn-color: var(--text-btn-secondary-color);
+    --hover-btn-color: var(--hover-btn-secondary-color);
+    --text-btn-transparent-color: var(--text-btn-secondary-transparent-color);
+    --icon-btn-color: var(--icon-btn-secondary-color);
+    --icon-btn-transparent-color: var(--icon-btn-secondary-transparent-color);
+    --hover-bg-btn-transparent-color: var(
+      --hover-bg-btn-secondary-transparent-color
     );
+    @include button-color-styles;
   }
 
   &--success {
-    @include button-color-styles(
-      var(--bg-btn-success-color),
-      var(--border-btn-success-color),
-      var(--text-btn-success-color),
-      var(--hover-btn-success-color),
-      var(--text-btn-success-transparent-color),
-      var(--icon-btn-success-color),
-      var(--icon-btn-success-transparent-color),
-      var(--hover-bg-btn-success-transparent-color)
+    --bg-btn-color: var(--bg-btn-success-color);
+    --border-btn-color: var(--border-btn-success-color);
+    --text-btn-color: var(--text-btn-success-color);
+    --hover-btn-color: var(--hover-btn-success-color);
+    --text-btn-transparent-color: var(--text-btn-success-transparent-color);
+    --icon-btn-color: var(--icon-btn-success-color);
+    --icon-btn-transparent-color: var(--icon-btn-success-transparent-color);
+    --hover-bg-btn-transparent-color: var(
+      --hover-bg-btn-success-transparent-color
     );
+    @include button-color-styles;
   }
 
   &--info {
-    @include button-color-styles(
-      var(--bg-btn-info-color),
-      var(--border-btn-info-color),
-      var(--text-btn-info-color),
-      var(--hover-btn-info-color),
-      var(--text-btn-info-transparent-color),
-      var(--icon-btn-info-color),
-      var(--icon-btn-info-transparent-color),
-      var(--hover-bg-btn-info-transparent-color)
+    --bg-btn-color: var(--bg-btn-info-color);
+    --border-btn-color: var(--border-btn-info-color);
+    --text-btn-color: var(--text-btn-info-color);
+    --hover-btn-color: var(--hover-btn-info-color);
+    --text-btn-transparent-color: var(--text-btn-info-transparent-color);
+    --icon-btn-color: var(--icon-btn-info-color);
+    --icon-btn-transparent-color: var(--icon-btn-info-transparent-color);
+    --hover-bg-btn-transparent-color: var(
+      --hover-bg-btn-info-transparent-color
     );
+    @include button-color-styles;
   }
 
   &--danger {
-    @include button-color-styles(
-      var(--bg-btn-danger-color),
-      var(--border-btn-danger-color),
-      var(--text-btn-danger-color),
-      var(--hover-btn-danger-color),
-      var(--text-btn-danger-transparent-color),
-      var(--icon-btn-danger-color),
-      var(--icon-btn-danger-transparent-color),
-      var(--hover-bg-btn-danger-transparent-color)
+    --bg-btn-color: var(--bg-btn-danger-color);
+    --border-btn-color: var(--border-btn-danger-color);
+    --text-btn-color: var(--text-btn-danger-color);
+    --hover-btn-color: var(--hover-btn-danger-color);
+    --text-btn-transparent-color: var(--text-btn-danger-transparent-color);
+    --icon-btn-color: var(--icon-btn-danger-color);
+    --icon-btn-transparent-color: var(--icon-btn-danger-transparent-color);
+    --hover-bg-btn-transparent-color: var(
+      --hover-bg-btn-danger-transparent-color
     );
+    @include button-color-styles;
   }
 
   &--warning {
-    @include button-color-styles(
-      var(--bg-btn-warning-color),
-      var(--border-btn-warning-color),
-      var(--text-btn-warning-color),
-      var(--hover-btn-warning-color),
-      var(--text-btn-warning-transparent-color),
-      var(--icon-btn-warning-color),
-      var(--icon-btn-warning-transparent-color),
-      var(--hover-bg-btn-warning-transparent-color)
+    --bg-btn-color: var(--bg-btn-warning-color);
+    --border-btn-color: var(--border-btn-warning-color);
+    --text-btn-color: var(--text-btn-warning-color);
+    --hover-btn-color: var(--hover-btn-warning-color);
+    --text-btn-transparent-color: var(--text-btn-warning-transparent-color);
+    --icon-btn-color: var(--icon-btn-warning-color);
+    --icon-btn-transparent-color: var(--icon-btn-warning-transparent-color);
+    --hover-bg-btn-transparent-color: var(
+      --hover-bg-btn-warning-transparent-color
     );
+    @include button-color-styles;
   }
 
   &--disabled {
-    @include disabled;
+    @include disabled; // Ya modificado para usar variables CSS
   }
 }

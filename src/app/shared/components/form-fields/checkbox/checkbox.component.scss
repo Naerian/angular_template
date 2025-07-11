@@ -21,6 +21,12 @@
     }
   }
 
+  &:hover:not(&--disabled) {
+    .neo-checkbox__mark {
+      border-color: var(--hover-border-field-color);
+    }
+  }
+
   &__input {
     position: absolute;
     opacity: 0;
@@ -34,16 +40,16 @@
     white-space: nowrap;
   }
 
-  &__input:focus:not([disabled]) + &__mark,
-  &__input:focus-visible:not([disabled]) + &__mark,
-  &__input:active:not([disabled]) + &__mark {
+  &__input:focus:not([disabled]) ~ &__mark,
+  &__input:focus-visible:not([disabled]) ~ &__mark,
+  &__input:active:not([disabled]) ~ &__mark {
     @include outline-focus;
   }
 
   &__mark {
-    border: $border-width-base solid var(--border-field-color);
+    border: var(--border-width-base) solid var(--border-field-color);
     background-color: var(--bg-field-color);
-    border-radius: $border-radius-md;
+    border-radius: var(--border-radius-md);
     @include flex-inline-center;
     @include transition(all 0.2s ease);
     position: relative;
@@ -65,18 +71,17 @@
     // Tamaño dinámico para la marca (aspa) según el tamaño del componente
     @each $key, $size in $checkbox-box-sizes {
       &--#{$key} {
-        height: $size;
-        width: $size;
+        height: var(--checkbox-box-size-#{$key});
+        width: var(--checkbox-box-size-#{$key});
 
         &::after {
           // Tamaño del aspa en proporción a la caja
-          $mark-width: $size * 0.15; // 15% del tamaño del checkbox
-          $mark-height: $size * 0.5; // 50% del tamaño del checkbox
-          $border-thickness: $size * 0.15; // 15% del tamaño del checkbox
-
-          width: $mark-width;
-          height: $mark-height;
-          border-width: 0 $border-thickness $border-thickness 0;
+          width: calc(var(--checkbox-box-size-#{$key}) * 0.15);
+          height: calc(var(--checkbox-box-size-#{$key}) * 0.5);
+          border-width: 0
+            calc(var(--checkbox-box-size-#{$key}) * 0.15)
+            calc(var(--checkbox-box-size-#{$key}) * 0.15)
+            0;
         }
       }
     }
@@ -98,16 +103,13 @@
     // Tamaño para la línea de indeterminación
     @each $key, $size in $checkbox-box-sizes {
       &--#{$key} {
-        height: $size;
-        width: $size;
+        height: var(--checkbox-box-size-#{$key});
+        width: var(--checkbox-box-size-#{$key});
 
         &::after {
           // Tamaño del aspa en proporción a la caja
-          $mark-width: $size * 0.55; // 55% del tamaño del checkbox
-          $mark-height: $size * 0.2; // 20% del tamaño del checkbox
-
-          width: $mark-width;
-          height: $mark-height;
+          width: calc(var(--checkbox-box-size-#{$key}) * 0.55);
+          height: calc(var(--checkbox-box-size-#{$key}) * 0.2);
         }
       }
     }
@@ -123,14 +125,13 @@
   &__label {
     color: var(--color-text);
     margin: 0 !important;
-    padding-left: $spacing-xs;
-    cursor: pointer;
+    padding-left: var(--spacing-xs);
 
     // Tamaño dinámico para la fuente según el tamaño del componente
     @each $size-key, $font-size in $component-font-sizes {
       &--#{$size-key} {
-        font-size: map-get($component-font-sizes, $size-key);
-        line-height: map-get($component-font-sizes, $size-key);
+        font-size: var(--component-font-size-#{$size-key});
+        line-height: var(--component-font-size-#{$size-key});
       }
     }
   }

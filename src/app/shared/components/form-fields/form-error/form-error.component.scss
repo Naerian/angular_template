@@ -3,12 +3,12 @@
 
 .neo-form-error {
   @include flex-col-start;
-  margin-top: $spacing-xxs;
-  
+  margin-top: var(--spacing-xxs);
+
   &__error {
     @include flex-col-center;
-    gap: $spacing-xxs;
-    font-size: #{component-font-size(xs)};
+    gap: var(--spacing-xxs);
+    font-size: var(--component-font-size-xs);
     font-style: italic;
     color: var(--color-danger);
   }

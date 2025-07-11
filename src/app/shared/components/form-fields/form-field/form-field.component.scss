@@ -3,5 +3,5 @@
 
 .neo-form-field {
   @include flex-col-stretch;
-  margin-top: $spacing-xxs;
+  margin-top: var(--spacing-xxs);
 }

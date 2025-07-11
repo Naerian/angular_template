@@ -40,7 +40,7 @@
   &__outer-circle {
     @include flex-center;
     @include transition(border-color 0.2s ease, background-color 0.2s ease);
-    border: $border-width-base solid var(--border-field-color);
+    border: var(--border-width-base) solid var(--border-field-color);
     border-radius: 50%;
     box-sizing: border-box;
 
@@ -55,7 +55,7 @@
   &__inner-circle {
     width: 0;
     height: 0;
-    border-radius: 50%;
+    border-radius: var(--border-radius-circle);
     background-color: var(--color-primary);
     @include transition(width 0.2s ease, height 0.2s ease);
   }
@@ -63,14 +63,13 @@
   &__label {
     color: var(--color-text);
     margin: 0 !important;
-    padding-left: $spacing-xs;
-    cursor: pointer;
+    padding-left: var(--spacing-xs);
 
     // Tamaño dinámico para la fuente según el tamaño del componente
     @each $size-key, $font-size in $component-font-sizes {
       &--#{$size-key} {
-        font-size: map-get($component-font-sizes, $size-key);
-        line-height: map-get($component-font-sizes, $size-key);
+        font-size: var(--component-font-size-#{$size-key});
+        line-height: var(--component-font-size-#{$size-key});
       }
     }
   }
@@ -85,8 +84,8 @@
       // Tamaño dinámico para el radio button según el tamaño del componente
       @each $key, $size in $checkbox-box-sizes {
         &--#{$key} {
-          width: $size * 0.55; // 80% del tamaño del radio button
-          height: $size * 0.55; // 80% del tamaño del radio button
+          width: calc(var(--checkbox-size-#{$key}) * 0.55);
+          height: calc(var(--checkbox-size-#{$key}) * 0.55);
         }
       }
     }

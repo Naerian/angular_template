@@ -1,0 +1,108 @@
+@import "config";
+@import "mixins";
+
+:root {
+  // =======================
+  // TIPOGRAFÍA
+  // =======================
+  --font-family-base: #{$font-family-base};
+  --font-size-base: #{$font-size-base};
+  --line-height-base: #{$line-height-base};
+  --font-weight-regular: #{$font-weight-regular};
+  --font-weight-medium: #{$font-weight-medium};
+  --font-weight-semibold: #{$font-weight-semibold};
+  --font-weight-bold: #{$font-weight-bold};
+
+  // =======================
+  // BORDES Y RADIOS
+  // =======================
+  --border-width-base: #{$border-width-base};
+  --border-radius-sm: #{$border-radius-sm};
+  --border-radius-md: #{$border-radius-md};
+  --border-radius-lg: #{$border-radius-lg};
+  --border-radius-circle: #{$border-radius-circle};
+  --border-width-xs: #{$border-width-xs};
+
+  // =======================
+  // ESPACIADOS
+  // =======================
+  --spacing-xxs: #{$spacing-xxs};
+  --spacing-xs: #{$spacing-xs};
+  --spacing-s: #{$spacing-s};
+  --spacing-xm: #{$spacing-xm};
+  --spacing-m: #{$spacing-m};
+  --spacing-l: #{$spacing-l};
+  --spacing-xl: #{$spacing-xl};
+  --spacing-xxl: #{$spacing-xxl};
+
+  // =======================
+  // SOMBRAS
+  // =======================
+  --box-shadow-sm: #{$box-shadow-sm};
+  --box-shadow-md: #{$box-shadow-md};
+  --box-shadow-lg: #{$box-shadow-lg};
+  --box-shadow-button-hover: #{$box-shadow-button-hover};
+
+  // =======================
+  // TRANSICIONES
+  // =======================
+  --transition-duration-fast: #{$transition-duration-fast};
+  --transition-duration-normal: #{$transition-duration-normal};
+  --transition-duration-slow: #{$transition-duration-slow};
+  --transition-duration-base: #{$transition-duration-base};
+  --transition-timing-function-ease: #{$transition-timing-function-ease};
+
+  // =======================
+  // COMPONENTES (VALORES INDIVIDUALES DE MAPAS)
+  // =======================
+  // Alturas de componentes
+  --component-height-xs: #{map-get($component-heights, xs)};
+  --component-height-s: #{map-get($component-heights, s)};
+  --component-height-xm: #{map-get($component-heights, xm)};
+  --component-height-m: #{map-get($component-heights, m)};
+  --component-height-l: #{map-get($component-heights, l)};
+  --component-height-xl: #{map-get($component-heights, xl)};
+
+  // Padding de componentes
+  --component-padding-xs: #{map-get($component-paddings, xs)};
+  --component-padding-s: #{map-get($component-paddings, s)};
+  --component-padding-xm: #{map-get($component-paddings, xm)};
+  --component-padding-m: #{map-get($component-paddings, m)};
+  --component-padding-l: #{map-get($component-paddings, l)};
+  --component-padding-xl: #{map-get($component-paddings, xl)};
+
+  // Tamaños de fuente de componentes
+  --component-font-size-xs: #{map-get($component-font-sizes, xs)};
+  --component-font-size-s: #{map-get($component-font-sizes, s)};
+  --component-font-size-xm: #{map-get($component-font-sizes, xm)};
+  --component-font-size-m: #{map-get($component-font-sizes, m)};
+  --component-font-size-l: #{map-get($component-font-sizes, l)};
+  --component-font-size-xl: #{map-get($component-font-sizes, xl)};
+
+  // Pesos de fuente de componentes
+  --component-font-weight-xs: #{map-get($component-font-weights, xs)};
+  --component-font-weight-s: #{map-get($component-font-weights, s)};
+  --component-font-weight-xm: #{map-get($component-font-weights, xm)};
+  --component-font-weight-m: #{map-get($component-font-weights, m)};
+  --component-font-weight-l: #{map-get($component-font-weights, l)};
+  --component-font-weight-xl: #{map-get($component-font-weights, xl)};
+
+  // =======================
+  // CHECKBOXES (VALORES INDIVIDUALES DE MAPAS)
+  // =======================
+  // Tamaños de caja de checkbox
+  --checkbox-box-size-xs: #{map-get($checkbox-box-sizes, xs)};
+  --checkbox-box-size-s: #{map-get($checkbox-box-sizes, s)};
+  --checkbox-box-size-xm: #{map-get($checkbox-box-sizes, xm)};
+  --checkbox-box-size-m: #{map-get($checkbox-box-sizes, m)};
+  --checkbox-box-size-l: #{map-get($checkbox-box-sizes, l)};
+  --checkbox-box-size-xl: #{map-get($checkbox-box-sizes, xl)};
+
+  // Tamaños de marca de checkbox (checkmark)
+  --checkbox-mark-size-xs: #{map-get($checkbox-mark-sizes, xs)};
+  --checkbox-mark-size-s: #{map-get($checkbox-mark-sizes, s)};
+  --checkbox-mark-size-xm: #{map-get($checkbox-mark-sizes, xm)};
+  --checkbox-mark-size-m: #{map-get($checkbox-mark-sizes, m)};
+  --checkbox-mark-size-l: #{map-get($checkbox-mark-sizes, l)};
+  --checkbox-mark-size-xl: #{map-get($checkbox-mark-sizes, xl)};
+}

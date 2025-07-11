@@ -1,37 +1,35 @@
-// src/app/shared/components/calendar/calendar.component.scss
-
 @import "config";
 @import "mixins";
 @import "functions";
 
 .calendar-picker {
-  box-shadow: $box-shadow-md;
-  border-radius: $border-radius-md;
+  box-shadow: var(--box-shadow-md);
+  border-radius: var(--border-radius-md);
   background-color: var(--color-white);
-  border: $border-width-base solid var(--border-color-base);
+  border: var(--border-width-base) solid var(--border-color-base);
   overflow: hidden;
   width: 310px;
   height: 375px;
-  font-size: map-get($component-font-sizes, m);
+  font-size: var(--component-font-size-m);
   color: var(--color-text);
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: $spacing-xs $spacing-s;
-    border-bottom: $border-width-base solid var(--border-color-base);
+    padding: var(--spacing-xs) var(--spacing-m);
+    border-bottom: var(--border-width-base) solid var(--border-color-base);
   }
 
   &__header-btn {
     background: transparent;
     border: none;
     color: var(--color-gray-600);
-    font-size: map-get($component-font-sizes, l);
+    font-size: var(--component-font-size-l);
     cursor: pointer;
-    padding: $spacing-xxs;
-    border-radius: $border-radius-md;
-    height: #{map-get($component-heights, m)};
+    padding: var(--spacing-xxs);
+    border-radius: var(--border-radius-md);
+    height: var(--component-height-m);
     aspect-ratio: 1 / 1;
     @include transition(all 0.2s ease-in-out);
     @include flex-center;
@@ -47,25 +45,25 @@
 
   &__selectors {
     display: flex;
-    gap: $spacing-xs;
+    gap: var(--spacing-xs);
   }
 
   &__selector {
     background: transparent;
     border: none;
-    font-size: map-get($component-font-sizes, m);
-    font-weight: $font-weight-semibold;
+    font-size: var(--component-font-size-m);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-text);
     cursor: pointer;
-    padding: $spacing-xxs $spacing-s;
-    border-radius: $border-radius-md;
-    height: #{map-get($component-heights, m)};
+    padding: var(--spacing-xxs) var(--spacing-m);
+    border-radius: var(--border-radius-md);
+    height: var(--component-height-m);
     @include transition(all 0.2s ease-in-out);
     @include flex-center;
 
     .arrow-dropdown {
-      margin-left: $spacing-xxs;
-      font-size: map-get($component-font-sizes, s);
+      margin-left: var(--spacing-xxs);
+      font-size: var(--component-font-size-s);
       color: var(--color-gray-500);
     }
 
@@ -82,26 +80,26 @@
   }
 
   &__title {
-    font-size: map-get($component-font-sizes, l);
-    font-weight: $font-weight-bold;
+    font-size: var(--component-font-size-l);
+    font-weight: var(--font-weight-bold);
     color: var(--color-text);
-    padding: $spacing-xxs $spacing-s;
+    padding: var(--spacing-xxs) var(--spacing-m);
   }
 
   &__content {
-    padding: $spacing-xxs $spacing-s;
+    padding: var(--spacing-xxs) var(--spacing-m);
   }
 
   &__weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: $spacing-xxs;
-    border-bottom: $border-width-base solid var(--border-color-base);
-    font-size: map-get($component-font-sizes, s);
-    font-weight: $font-weight-bold;
+    gap: var(--spacing-xxs);
+    border-bottom: var(--border-width-base) solid var(--border-color-base);
+    font-size: var(--component-font-size-s);
+    font-weight: var(--font-weight-bold);
     color: var(--color-gray-600);
-    padding-bottom: $spacing-xs;
-    padding-top: $spacing-xxs;
+    padding-bottom: var(--spacing-xs);
+    padding-top: var(--spacing-xxs);
     text-align: center;
   }
 
@@ -109,15 +107,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: map-get($component-heights, xm);
+    height: var(--component-height-xm);
   }
 
   &__grid {
     display: grid;
-    gap: $spacing-xxs;
-    padding: $spacing-xs;
+    gap: var(--spacing-xxs);
     text-align: center;
-    min-height: calc(6 * (#{map-get($component-heights, m)} + #{$spacing-xxs}));
+    min-height: calc(6 * (var(--component-height-m) + var(--spacing-xxs)));
     align-content: center;
     justify-content: center;
 
@@ -125,11 +122,11 @@
       grid-template-columns: repeat(7, 1fr);
     }
     &--months {
-      gap: $spacing-xs;
+      gap: var(--spacing-xs);
       grid-template-columns: repeat(3, 1fr);
     }
     &--years {
-      gap: $spacing-xs;
+      gap: var(--spacing-xs);
       grid-template-columns: repeat(4, 1fr);
     }
   }
@@ -138,16 +135,15 @@
   &__grid-month,
   &__grid-year {
     width: 100%;
-    min-width: 38px;
-    min-height: 38px;
+    min-width: 2.3rem;
+    min-height: 2.3rem;
     background-color: transparent;
     border: none;
-    font-size: map-get($component-font-sizes, m);
-    font-weight: $font-weight-regular;
+    font-size: var(--component-font-size-m);
+    font-weight: var(--font-weight-regular);
     color: var(--color-text);
     cursor: pointer;
-    padding: $spacing-xxs;
-    border-radius: $border-radius-md;
+    border-radius: var(--border-radius-md);
     @include transition(
       background-color 0.2s ease-in-out,
       color 0.2s ease-in-out,
@@ -164,7 +160,7 @@
     &--today {
       border: 1px solid var(--color-accent);
       color: var(--color-accent);
-      font-weight: $font-weight-bold;
+      font-weight: var(--font-weight-bold);
       background-color: var(--color-accent-tint-95);
     }
 
@@ -172,7 +168,7 @@
     &:focus {
       background-color: var(--color-accent);
       color: var(--color-white);
-      font-weight: $font-weight-bold;
+      font-weight: var(--font-weight-bold);
     }
 
     &:focus:not(&--disabled),
@@ -216,24 +212,23 @@
 
   &__grid-month,
   &__grid-year {
-    height: map-get($component-heights, m);
+    height: var(--component-height-m);
   }
 
   &__back {
     display: flex;
     justify-content: center;
-    padding: $spacing-s $spacing-m;
-    border-top: $border-width-base solid var(--border-color-base);
+    padding: var(--spacing-xxs);
+    border-top: var(--border-width-base) solid var(--border-color-base);
 
     .calendar-picker__back-btn {
       @extend .calendar-picker__header-btn;
-      font-size: map-get($component-font-sizes, m);
+      font-size: var(--component-font-size-m);
       color: var(--color-text);
-      font-weight: $font-weight-medium;
-      padding: $spacing-xs $spacing-m;
+      font-weight: var(--font-weight-medium);
+      padding: var(--spacing-xs) var(--spacing-m);
       i {
-        margin-right: $spacing-xxs;
-        font-size: map-get($component-font-sizes, m);
+        font-size: var(--component-font-size-m);
         color: var(--color-gray-600);
       }
       &:hover {

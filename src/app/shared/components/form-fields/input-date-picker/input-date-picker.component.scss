@@ -17,12 +17,12 @@
       }
 
       width: 100%;
-      border-radius: $border-radius-md;
+      border-radius: var(--border-radius-md);
       box-sizing: border-box;
-      padding-right: calc(#{$spacing-m} * 2 + #{$spacing-xs}) !important;
+      padding-right: calc(var(--spacing-m) * 2 + var(--spacing-xs)) !important;
       cursor: pointer;
       background-color: var(--bg-field-color);
-      border: $border-width-base solid var(--border-field-color);
+      border: var(--border-width-base) solid var(--border-field-color);
 
       &:focus:not(&--disabled),
       &:active:not(&--disabled) {
@@ -31,12 +31,12 @@
 
       &--clear {
         padding-right: calc(
-          #{$spacing-m} * 2 + #{$spacing-xxs} + #{$spacing-s}
+          var(--spacing-m) * 2 + var(--spacing-xxs) + var(--spacing-s)
         );
       }
 
       &--has-error {
-        border: $border-width-xs solid var(--color-danger);
+        border: var(--border-width-xs) solid var(--color-danger);
       }
 
       &[disabled],
@@ -75,7 +75,7 @@
       &:focus:not(&--disabled),
       &:active:not(&--disabled) {
         @include outline-focus;
-        border-radius: $border-radius-md;
+        border-radius: var(--border-radius-md);
       }
 
       &[disabled],
@@ -86,7 +86,7 @@
     }
 
     .neo-clear-field-button {
-      right: calc(#{$spacing-s} * 2) !important;
+      right: calc(var(--spacing-s) * 2) !important;
     }
   }
 }
