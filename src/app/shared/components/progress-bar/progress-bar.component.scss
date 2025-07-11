@@ -1,82 +1,155 @@
+@import "config";
+@import "mixins";
 
-
-:host {
+.neo-progress-bar-container {
   display: flex;
-  justify-content: center;
-}
-
-.progress-bar {
-  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   width: 100%;
-  align-items: center;
-  gap: 10px;
-  justify-content: flex-start;
-
-  &__value {
-    font-size: 13px;
-    font-weight: 600;
-    display: flex;
+  gap: var(--spacing-xxs);
+  &--left-label {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    width: 75px;
-    color: var(--text-color);
   }
 
-  &__container {
-    border-width: 0.5px;
-    border-style: solid;
-    border-radius: 5px;
+  &--right-label {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  &--no-label {
+    gap: 0;
+  }
+}
+
+.neo-progress-bar {
+  @include flex-center;
+  position: relative;
+  width: 100%;
+  gap: var(--spacing-xxs);
+
+  // Tamaños dinámicos
+  @each $size-key, $height in $progress-bar-heights {
+    &--#{$size-key} {
+      .neo-progress-bar__track {
+        height: var(--progress-bar-heights-#{$size-key});
+      }
+      .neo-progress-bar__value {
+        font-size: var(--component-font-size-#{$size-key});
+      }
+    }
+  }
+
+  // Alineación del contenedor principal según la posición del valor
+  &--value-top {
+    flex-direction: column;
+    align-items: flex-start;
+    .neo-progress-bar__track {
+      order: 2;
+    }
+    .neo-progress-bar__value--outside {
+      order: 1;
+    }
+  }
+
+  &--value-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    .neo-progress-bar__track {
+      order: 1
+    }
+    .neo-progress-bar__value--outside {
+      order: 2;
+    }
+  }
+
+  &--value-left {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  &--value-right {
+    flex-direction: row;
+    justify-content: flex-end;
+    .neo-progress-bar__track {
+      order: -1;
+    }
+  }
+
+  &__value {
+    color: var(--color-text);
+    white-space: nowrap;
+
+    &--outside {
+      padding: 0 var(--spacing-xxs);
+    }
+
+    &--inside {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-weight: var(--font-weight-semibold);
+    }
+  }
+
+  &__track {
     width: 100%;
+    border-width: var(--border-width-base);
+    border-style: solid;
+    box-shadow: var(--box-shadow-component);
+    border-radius: var(--border-radius-md);
     overflow: hidden;
-    background-color: var(--bg-field-color);
-    border-color: var(--border-field-disabled-color);
+    position: relative;
+  }
 
-    &__bar {
-      height: 100%;
-      background-color: var(--primary-color);
-    }
+  &__fill {
+    height: 100%;
+    transition: width 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
 
-    &__value {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      height: 100%;
+  &--indeterminate {
+    .neo-progress-bar__fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
       width: 100%;
-      color: #FFFFFF;
-    }
-
-    &--size-xs {
-      height: 15px;
-      font-size: 10px;
-    }
-
-    &--size-s {
-      height: 20px;
-      font-size: 11px;
-    }
-
-    &--size-xm {
-      height: 22px;
-      font-size: 12px;
-    }
-
-    &--size-m {
-      height: 26px;
-      font-size: 12px;
-    }
-
-    &--size-l {
-      height: 32px;
-      font-size: 14px;
-    }
-
-    &--size-xl {
-      height: 38px;
-      font-size: 14px;
+      animation: indeterminate-progress 1.5s infinite linear;
+      transform-origin: 0% 50%; // Inicia desde el borde izquierdo
     }
   }
 
+  &__label {
+    color: var(--color-text);
+    font-family: var(--font-family-base);
+    margin-bottom: 0;
+    white-space: nowrap;
+
+    @each $size-key, $size in $component-font-sizes {
+      &--#{$size-key} {
+        font-size: var(--component-font-size-#{$size-key});
+      }
+    }
+  }
+}
+
+// Animación para la barra de progreso indeterminada
+// Esta animación simula un movimiento de carga continuo
+// Se utiliza para indicar que una tarea está en progreso sin un porcentaje específico
+@keyframes indeterminate-progress {
+  0% {
+    transform: translateX(0) scaleX(0);
+  }
+  40% {
+    transform: translateX(0) scaleX(0.4);
+  }
+  100% {
+    transform: translateX(100%) scaleX(0.5);
+  }
 }

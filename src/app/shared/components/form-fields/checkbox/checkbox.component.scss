@@ -126,6 +126,11 @@
     color: var(--color-text);
     margin: 0 !important;
     padding-left: var(--spacing-xs);
+    font-weight: var(--font-weight-semibold);
+
+    &--labeled {
+      font-weight: var(--font-weight-medium);
+    }
 
     // Tamaño dinámico para la fuente según el tamaño del componente
     @each $size-key, $font-size in $component-font-sizes {

@@ -116,6 +116,16 @@
   --component-font-weight-xl: #{map-get($component-font-weights, xl)};
 
   // =======================
+  // PROGRESS BARS
+  // =======================
+  --progress-bar-heights-xs: #{map-get($progress-bar-heights, xs)};
+  --progress-bar-heights-s: #{map-get($progress-bar-heights, s)};
+  --progress-bar-heights-xm: #{map-get($progress-bar-heights, xm)};
+  --progress-bar-heights-m: #{map-get($progress-bar-heights, m)};
+  --progress-bar-heights-l: #{map-get($progress-bar-heights, l)};
+  --progress-bar-heights-xl: #{map-get($progress-bar-heights, xl)};
+
+  // =======================
   // CHECKBOXES / RADIOBUTTONS (VALORES INDIVIDUALES DE MAPAS)
   // =======================
   // Tamaños de caja de checkbox / radiobutton

@@ -1,6 +1,11 @@
 @import "config";
 @import "mixins";
 
+.neo-radio-button-group-container {
+  display: flex;
+  flex-direction: column; // Para apilar la etiqueta y el grupo de radios
+}
+
 .neo-radio-button-group {
   gap: $spacing-xm;
 

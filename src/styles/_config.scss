@@ -33,6 +33,7 @@ $font-weight-medium: 500;
 $font-weight-semibold: 600;
 $font-weight-bold: 700;
 
+
 $line-height-h6: 1.5;
 $line-height-h5: 1.4;
 $line-height-h4: 1.35;
@@ -80,7 +81,7 @@ $spacing-xl: 1.5rem;
 $spacing-xxl: 2rem;
 
 // =======================
-// COMPONENTES
+// COMPONENTES GENERALES
 // =======================
 
 // Alturas
@@ -129,6 +130,18 @@ $component-font-weights: (
   m: $font-weight-medium,
   l: $font-weight-semibold,
   xl: $font-weight-semibold,
+);
+
+// =======================
+// PROGRESS BARS
+// =======================
+$progress-bar-heights: (
+  xs: 0.85rem,
+  s: 1rem,
+  xm: 1.2rem,
+  m: 2rem,
+  l: 2.5rem,
+  xl: 3rem,
 );
 
 // =======================

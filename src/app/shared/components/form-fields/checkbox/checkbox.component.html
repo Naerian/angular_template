@@ -32,6 +32,9 @@
   ></span>
   <div
     class="neo-checkbox__label neo-checkbox__label--{{ inputSize }}"
+    [class.neo-checkbox__label--labeled]="
+      label !== undefined && label !== null && label !== ''
+    "
     #contentWrapper
   >
     <ng-content></ng-content>

@@ -7,6 +7,7 @@ import {
   signal,
   ElementRef,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputSize } from '../models/form-field.model';
@@ -24,6 +25,7 @@ import { InputSize } from '../models/form-field.model';
   selector: 'neo-radio-button',
   templateUrl: './radio-button.component.html',
   styleUrls: ['./radio-button.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class RadioButtonComponent {
   @ViewChild('contentWrapper', { static: true })

@@ -64,6 +64,7 @@
     color: var(--color-text);
     margin: 0 !important;
     padding-left: var(--spacing-xs);
+    cursor: pointer;
 
     // Tamaño dinámico para la fuente según el tamaño del componente
     @each $size-key, $font-size in $component-font-sizes {
@@ -96,5 +97,12 @@
     .neo-radio-button__outer-circle {
       border-color: var(--hover-border-field-color);
     }
+  }
+}
+
+// Si el group tiene "label" se aplica un estilo especial
+.neo-radio-button-group {
+  .neo-radio-button__label {
+    font-weight: var(--font-weight-medium) !important;
   }
 }

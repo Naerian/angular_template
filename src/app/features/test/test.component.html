@@ -529,7 +529,10 @@
   <hr />
   <div class="row">
     <div class="col-3">
-      <neo-radio-button-group [(ngModel)]="radioButtonValue">
+      <neo-radio-button-group
+        [(ngModel)]="radioButtonValue"
+        [label]="'Radiobutton ngModel'"
+      >
         <neo-radio-button [value]="1">Opción 1</neo-radio-button>
         <neo-radio-button [value]="2">Opción 2</neo-radio-button>
         <neo-radio-button [value]="3">Opción 3</neo-radio-button>
@@ -538,7 +541,10 @@
     </div>
     <div class="col-3">
       <form [formGroup]="testFormRadioButton">
-        <neo-radio-button-group formControlName="radioButtonControl">
+        <neo-radio-button-group
+          formControlName="radioButtonControl"
+          [label]="'Radiobutton ReactiveForm'"
+        >
           <neo-radio-button [value]="1">Opción 1</neo-radio-button>
           <neo-radio-button [value]="2">Opción 2</neo-radio-button>
           <neo-radio-button [value]="3">Opción 3</neo-radio-button>
@@ -547,7 +553,17 @@
       <small>{{ testFormRadioButton.value | json }}</small>
     </div>
     <div class="col-3">
-      <neo-radio-button-group [orientation]="'vertical'">
+      <neo-radio-button-group
+        [orientation]="'vertical'"
+        [label]="'Radiobutton vertical'"
+      >
+        <neo-radio-button [value]="1">Opción 1</neo-radio-button>
+        <neo-radio-button [value]="2">Opción 2</neo-radio-button>
+        <neo-radio-button [value]="3">Opción 3</neo-radio-button>
+      </neo-radio-button-group>
+    </div>
+    <div class="col-3">
+      <neo-radio-button-group [orientation]="'vertical'" [label]="'Radiobutton vertical con disabled'">
         <neo-radio-button [value]="1">Opción 1</neo-radio-button>
         <neo-radio-button [value]="2">Opción 2</neo-radio-button>
         <neo-radio-button [value]="3" [disabled]="true"
@@ -752,105 +768,188 @@
       <div class="row">
         <div class="col-3">
           <label>Barra de progreso normal</label>
-          <neo-progress-bar
-            [progressNumber]="80"
-            [isProgressInteger]="true"
-          ></neo-progress-bar>
+          <neo-progress-bar [value]="75"></neo-progress-bar>
         </div>
         <div class="col-3">
           <label>Barra de progreso partido</label>
-          <neo-progress-bar [progressSplit]="[20, 75]"></neo-progress-bar>
+          <neo-progress-bar
+            [value]="7"
+            [maxValue]="10"
+            valueFormat="fractional"
+          ></neo-progress-bar>
         </div>
         <div class="col-3">
           <label>Barra de progreso sin texto</label>
           <neo-progress-bar
-            [progressNumber]="80"
-            [showProgress]="false"
+            [value]="7"
+            [maxValue]="10"
+            [valuePosition]="'hidden'"
           ></neo-progress-bar>
         </div>
         <div class="col-3">
           <label>Barra de progreso con color custom</label>
           <neo-progress-bar
-            [progressNumber]="65"
-            [isProgressInteger]="true"
-            [color]="'#5CAD4B'"
+            [value]="60"
+            color="green"
+            valuePosition="left"
           ></neo-progress-bar>
         </div>
       </div>
     </div>
-    <div class="col-12 mt-4">
-      <div class="row">
-        <div class="col-2">
-          <label>Barra de progreso XS</label>
-          <neo-progress-bar
-            [size]="'xs'"
-            [progressNumber]="80"
-            [isProgressInteger]="true"
-          ></neo-progress-bar>
-        </div>
-        <div class="col-2">
-          <label>Barra de progreso S</label>
-          <neo-progress-bar
-            [size]="'s'"
-            [progressNumber]="80"
-            [isProgressInteger]="true"
-          ></neo-progress-bar>
-        </div>
-        <div class="col-2">
-          <label>Barra de progreso XM</label>
-          <neo-progress-bar
-            [size]="'xm'"
-            [progressNumber]="80"
-            [isProgressInteger]="true"
-          ></neo-progress-bar>
-        </div>
-        <div class="col-2">
-          <label>Barra de progreso M</label>
-          <neo-progress-bar
-            [size]="'m'"
-            [progressNumber]="80"
-            [isProgressInteger]="true"
-          ></neo-progress-bar>
-        </div>
-        <div class="col-2">
-          <label>Barra de progreso L</label>
-          <neo-progress-bar
-            [size]="'l'"
-            [progressNumber]="80"
-            [isProgressInteger]="true"
-          ></neo-progress-bar>
-        </div>
-        <div class="col-2">
-          <label>Barra de progreso XL</label>
-          <neo-progress-bar
-            [size]="'xl'"
-            [progressNumber]="80"
-            [isProgressInteger]="true"
-          ></neo-progress-bar>
-        </div>
-      </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-6">
+      <label>Barra de progreso (%) con valor fuera (arriba)</label>
+      <neo-progress-bar [value]="25" valuePosition="top"></neo-progress-bar>
     </div>
-    <div class="col-12 mt-4">
-      <div class="row">
-        <div class="col-6">
-          <label>Barra de progreso (%) con valor fuera</label>
-          <neo-progress-bar
-            [size]="'m'"
-            [progressNumber]="65"
-            [valueInside]="false"
-            [isProgressInteger]="true"
-          ></neo-progress-bar>
-        </div>
-        <div class="col-6">
-          <label>Barra de progreso (X,Y) con valor fuera</label>
-          <neo-progress-bar
-            [size]="'m'"
-            [progressSplit]="[12, 78]"
-            [valueInside]="false"
-            [isProgressInteger]="true"
-          ></neo-progress-bar>
-        </div>
-      </div>
+    <div class="col-6">
+      <label>Barra de progreso (X,Y) con valor fuera (arriba)</label>
+      <neo-progress-bar
+        [value]="7"
+        [maxValue]="10"
+        valuePosition="top"
+        valueFormat="fractional"
+      ></neo-progress-bar>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-2">
+      <label>Barra de progreso XS</label>
+      <neo-progress-bar
+        [value]="75"
+        size="xs"
+        valuePosition="inside"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-2">
+      <label>Barra de progreso S</label>
+      <neo-progress-bar
+        [value]="75"
+        size="s"
+        valuePosition="inside"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-2">
+      <label>Barra de progreso XM</label>
+      <neo-progress-bar
+        [value]="75"
+        size="xm"
+        valuePosition="inside"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-2">
+      <label>Barra de progreso M</label>
+      <neo-progress-bar
+        [value]="75"
+        size="m"
+        valuePosition="inside"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-2">
+      <label>Barra de progreso L</label>
+      <neo-progress-bar
+        [value]="75"
+        size="l"
+        valuePosition="inside"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-2">
+      <label>Barra de progreso XL</label>
+      <neo-progress-bar
+        [value]="75"
+        size="xl"
+        valuePosition="inside"
+      ></neo-progress-bar>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12">
+      <label>Barra de progreso indeterminada con color personalizado</label>
+      <neo-progress-bar
+        [indeterminate]="true"
+        [size]="'s'"
+        color="orange"
+      ></neo-progress-bar>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-3">
+      <label>Barra de progreso con label arriba y valor inside</label>
+      <neo-progress-bar
+        [value]="75"
+        [label]="'Cargando datos...'"
+        [labelPosition]="'top'"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-3">
+      <label>Barra de progreso con label abajo y valor inside</label>
+      <neo-progress-bar
+        [value]="75"
+        [label]="'Cargando datos...'"
+        [labelPosition]="'bottom'"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-3">
+      <label>Barra de progreso con label izquierda y value inside</label>
+      <neo-progress-bar
+        [value]="75"
+        [label]="'Cargando datos...'"
+        [labelPosition]="'left'"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-3">
+      <label>Barra de progreso con label y value a la izquierda</label>
+      <neo-progress-bar
+        label="Instalando:"
+        [value]="25"
+        [maxValue]="50"
+        valueFormat="fractional"
+        labelPosition="left"
+        [combineLabelValue]="true"
+        inputSize="s"
+      ></neo-progress-bar>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-3">
+      <label>Barra de progreso tamaño "s" con label abajo y value arriba</label>
+      <neo-progress-bar
+        [value]="75"
+        [size]="'s'"
+        [valuePosition]="'top'"
+        [label]="'Cargando datos...'"
+        [labelPosition]="'bottom'"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-3">
+      <label>Barra de progreso tamaño "xm" con label HTML (izquierda)</label>
+      <neo-progress-bar
+        [value]="75"
+        [size]="'xm'"
+        [valuePosition]="'inside'"
+        label="<i class='ri-home-4-fill'></i>"
+        [labelPosition]="'left'"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-3">
+      <label>Barra de progreso tamaño "l" con label derecha</label>
+      <neo-progress-bar
+        [value]="75"
+        [size]="'l'"
+        [valuePosition]="'inside'"
+        label="Cargando..."
+        [labelPosition]="'right'"
+      ></neo-progress-bar>
+    </div>
+    <div class="col-3">
+      <label>Barra de progreso tamaño "xl" con label arriba</label>
+      <neo-progress-bar
+        [value]="75"
+        [size]="'xl'"
+        [valuePosition]="'inside'"
+        label="Analizando datos..."
+        [labelPosition]="'top'"
+      ></neo-progress-bar>
     </div>
   </div>
 </neo-card>

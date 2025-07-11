@@ -1,21 +1,109 @@
-<div class="progress-bar">
+<div
+  class="neo-progress-bar-container"
+  [class.neo-progress-bar-container--top-label]="
+    _finalLabelText() && labelPosition() === 'top'
+  "
+  [class.neo-progress-bar-container--left-label]="
+    _finalLabelText() && labelPosition() === 'left'
+  "
+  [class.neo-progress-bar-container--right-label]="
+    _finalLabelText() && labelPosition() === 'right'
+  "
+  [class.neo-progress-bar-container--bottom-label]="
+    _finalLabelText() && labelPosition() === 'bottom'
+  "
+  [class.neo-progress-bar-container--no-label]="!_finalLabelText()"
+>
+  @if (_finalLabelText() && labelPosition() === "top") {
+    <label
+      class="neo-progress-bar__label"
+      [class]="'neo-progress-bar__label--' + size()"
+      [attr.id]="_labelId()"
+      ><span [innerHtml]="_finalLabelText()"></span
+    ></label>
+  }
+
   <div
-    class="progress-bar__container progress-bar__container--size-{{ size }}"
-    [title]="title ? title + ': ' + progressValue : progressValue"
+    class="neo-progress-bar"
+    [class]="'neo-progress-bar--' + size()"
+    [class.neo-progress-bar--indeterminate]="indeterminate()"
+    [class.neo-progress-bar--hidden-value]="valuePosition() === 'hidden'"
+    [class.neo-progress-bar--value-inside]="valuePosition() === 'inside'"
+    [class.neo-progress-bar--value-top]="
+      valuePosition() === 'top' && !combineLabelValue()
+    "
+    [class.neo-progress-bar--value-bottom]="
+      valuePosition() === 'bottom' && !combineLabelValue()
+    "
+    [class.neo-progress-bar--value-left]="
+      valuePosition() === 'left' && !combineLabelValue()
+    "
+    [class.neo-progress-bar--value-right]="
+      valuePosition() === 'right' && !combineLabelValue()
+    "
+    role="progressbar"
+    [attr.aria-valuenow]="!indeterminate() ? value() : null"
+    [attr.aria.valuemin]="0"
+    [attr.aria-valuemax]="!indeterminate() ? maxValue() : null"
+    [attr.aria-valuetext]="_ariaValueText()"
+    [attr.aria-labelledby]="label() ? _labelId() : null"
   >
+    @if (_finalLabelText() && labelPosition() === "left") {
+      <label
+        class="neo-progress-bar__label"
+        [class]="'neo-progress-bar__label--' + size()"
+        [attr.id]="_labelId()"
+        ><span [innerHtml]="_finalLabelText()"></span
+      ></label>
+    }
+
+    @if (
+      !combineLabelValue() &&
+      valuePosition() !== "hidden" &&
+      valuePosition() !== "inside" &&
+      _computedValueOnlyText()
+    ) {
+      <span class="neo-progress-bar__value neo-progress-bar__value--outside">
+        {{ _computedValueOnlyText() }}
+      </span>
+    }
+
     <div
-      class="progress-bar__container__bar"
-      [ngStyle]="{
-        'background-color': color,
-        width: progressBarWidth + '%'
-      }"
+      class="neo-progress-bar__track"
+      [style.background-color]="backgroundColor()"
+      [style.border-color]="backgroundColor()"
     >
-      @if (showProgress && valueInside) {
-        <span class="progress-bar__container__value">{{ progressValue }}</span>
-      }
+      <div
+        class="neo-progress-bar__fill"
+        [style.width]="indeterminate() ? '100%' : _progressBarWidth()"
+        [style.background-color]="color()"
+      >
+        @if (valuePosition() === "inside" && _computedValueOnlyText()) {
+          <span
+            class="neo-progress-bar__value neo-progress-bar__value--inside"
+            [style.color]="valueColor()"
+          >
+            {{ _computedValueOnlyText() }}
+          </span>
+        }
+      </div>
     </div>
+    @if (_finalLabelText() && labelPosition() === "right") {
+      <label
+        class="neo-progress-bar__label"
+        [class]="'neo-progress-bar__label--' + size()"
+        [attr.id]="_labelId()"
+        ><span [innerHtml]="_finalLabelText()"></span
+      ></label>
+    }
   </div>
-  @if (showProgress && !valueInside) {
-    <span class="progress-bar__value">{{ progressValue }}</span>
+
+  @if (_finalLabelText() && labelPosition() === "bottom") {
+    <label
+      class="neo-progress-bar__label"
+      [class]="'neo-progress-bar__label--' + size()"
+      [attr.id]="_labelId()"
+      ><span [innerHtml]="_finalLabelText()"></span
+    ></label>
   }
 </div>

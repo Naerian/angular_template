@@ -1,6 +1,20 @@
-<div
-  class="neo-radio-button-group neo-radio-button-group--{{ _orientation() }}"
-  role="radiogroup"
->
-  <ng-content></ng-content>
+<div class="neo-radio-button-group-container">
+  @if (label) {
+    <label
+      class="neo-radio-button-group__label"
+      [for]="_groupId()"
+      [attr.id]="_labelId()"
+    >
+      <span [innerHtml]="label!"></span>
+    </label>
+  }
+  <div
+    class="neo-radio-button-group neo-radio-button-group--{{ _orientation() }}"
+    [class.neo-radio-button-group--labeled]="
+      label !== undefined && label !== null && label !== ''
+    "
+    role="radiogroup"
+  >
+    <ng-content></ng-content>
+  </div>
 </div>

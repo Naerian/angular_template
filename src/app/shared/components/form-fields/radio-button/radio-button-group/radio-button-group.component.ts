@@ -10,11 +10,13 @@ import {
   signal,
   WritableSignal,
   inject,
+  ViewEncapsulation,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { RadioButtonComponent } from '../radio-button.component';
 import { InputsUtilsService } from '../../services/inputs-utils.service';
 import { RadioButtonsOrientation } from '../models/radio-button.model';
+import { Subject, take, takeUntil } from 'rxjs';
 
 /**
  * @name
@@ -40,12 +42,18 @@ import { RadioButtonsOrientation } from '../models/radio-button.model';
       multi: true,
     },
   ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class RadioButtonGroupComponent
   implements ControlValueAccessor, AfterContentInit
 {
   @ContentChildren(RadioButtonComponent)
   radioButtons!: QueryList<RadioButtonComponent>;
+
+  /**
+   * Input para asignar un label al grupo de radio buttons
+   */
+  @Input() label?: string;
 
   /**
    * Input para asignar la dirección del grupo de radio buttons (horizontal | vertical)
@@ -88,15 +96,26 @@ export class RadioButtonGroupComponent
    */
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
+  /**
+   * Señal para generar un ID único para el contenedor principal del grupo (el div con role="radiogroup").
+   */
+  _groupId: WritableSignal<string> = signal('');
+
+  /**
+   * Señal para generar un ID único para la etiqueta (<label>).
+   */
+  _labelId: WritableSignal<string> = signal('');
+
   private readonly _inputsUtilsService = inject(InputsUtilsService);
+  private readonly ngUnsubscribe$: Subject<any> = new Subject<any>();
 
   // Funciones internas para ControlValueAccessor
   onChange: (value: any) => void = () => {};
   onTouched: () => void = () => {};
 
   ngOnInit(): void {
-    const uniqueId = this._inputsUtilsService.createUniqueId('radio-group_');
-    this._name.set(uniqueId); // Asigna un nombre único al grupo
+    // Crear un ID único para el grupo de radio buttons
+    this.createUniqueId();
   }
 
   ngAfterContentInit(): void {
@@ -118,6 +137,22 @@ export class RadioButtonGroupComponent
     this.updateRadioButtons();
   }
 
+  ngOnDestroy(): void {
+    this.ngUnsubscribe$.next(null);
+    this.ngUnsubscribe$.complete();
+  }
+
+  /**
+   * Función para crear un ID único para el grupo de radio buttons.
+   * Este ID se puede usar para asociar el grupo con su etiqueta.
+   */
+  createUniqueId(): void {
+    const uniqueId = this._inputsUtilsService.createUniqueId('radio-group_');
+    this._name.set(uniqueId); // Asigna un nombre único al grupo
+    this._groupId.set(uniqueId);
+    this._labelId.set(`label_${uniqueId}`);
+  }
+
   /**
    * Función para estlabecer los atributos de los radio buttons hijos
    */
@@ -127,7 +162,9 @@ export class RadioButtonGroupComponent
       button.id = uniqueId; // Asigna un ID único basado en el valor
       button.name = this.name; // Asegura que todos los radios tienen el mismo nombre
       button.checked = button.value === this.value; // Inicializa el estado
-      button.change.subscribe((selectedVal) => {
+      button.change.pipe(
+        takeUntil(this.ngUnsubscribe$),
+      ).subscribe((selectedVal) => {
         this.writeValue(selectedVal); // Actualiza el valor del grupo
         this.onChange(selectedVal); // Notifica el cambio al formulario
         this.onTouched(); // Marca el control como 'touched'
