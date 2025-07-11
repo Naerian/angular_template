@@ -60,6 +60,7 @@
   @include transition(all 0.2s ease-in-out);
   transition: box-shadow 0.2s ease;
   font-family: var(--font-family-base);
+  box-shadow: var(--box-shadow-component);
 
   &:focus,
   &:active {
@@ -69,27 +70,21 @@
   // Clases de tamaño que usan el mixin component-size
   &--xs {
     @include component-size(xs);
-    font-weight: var(--component-font-weight-xs);
   }
   &--s {
     @include component-size(s);
-    font-weight: var(--component-font-weight-s);
   }
   &--xm {
     @include component-size(xm);
-    font-weight: var(--component-font-weight-xm);
   }
   &--m {
     @include component-size(m);
-    font-weight: var(--component-font-weight-m);
   }
   &--l {
     @include component-size(l);
-    font-weight: var(--component-font-weight-l);
   }
   &--xl {
     @include component-size(xl);
-    font-weight: var(--component-font-weight-xl);
   }
 
   &--all-width {
@@ -119,15 +114,6 @@
   &:not(&--transparent) {
     border-width: var(--border-width-base);
     border-style: solid;
-    box-shadow: var(--box-shadow-s);
-
-    &:hover {
-      box-shadow: var(--box-shadow-button-hover);
-    }
-
-    &:active {
-      box-shadow: var(--box-shadow-button-hover);
-    }
   }
 
   &--icon {

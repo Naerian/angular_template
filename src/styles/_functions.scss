@@ -1,4 +1,4 @@
-// src/styles/_functions.scss
+@import "colors";
 
 // Función para oscurecer o aclarar un color
 @function tint($color, $percentage) {

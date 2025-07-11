@@ -62,6 +62,7 @@
   --box-shadow-m: #{$box-shadow-m};
   --box-shadow-l: #{$box-shadow-l};
   --box-shadow-button-hover: #{$box-shadow-button-hover};
+  --box-shadow-component: #{$box-shadow-component};
 
   // =======================
   // TRANSICIONES
@@ -108,15 +109,15 @@
   --component-font-weight-xl: #{map-get($component-font-weights, xl)};
 
   // =======================
-  // CHECKBOXES (VALORES INDIVIDUALES DE MAPAS)
+  // CHECKBOXES / RADIOBUTTONS (VALORES INDIVIDUALES DE MAPAS)
   // =======================
-  // Tamaños de caja de checkbox
-  --checkbox-box-size-xs: #{map-get($checkbox-box-sizes, xs)};
-  --checkbox-box-size-s: #{map-get($checkbox-box-sizes, s)};
-  --checkbox-box-size-xm: #{map-get($checkbox-box-sizes, xm)};
-  --checkbox-box-size-m: #{map-get($checkbox-box-sizes, m)};
-  --checkbox-box-size-l: #{map-get($checkbox-box-sizes, l)};
-  --checkbox-box-size-xl: #{map-get($checkbox-box-sizes, xl)};
+  // Tamaños de caja de checkbox / radiobutton
+  --control-box-size-xs: #{map-get($control-box-sizes, xs)};
+  --control-box-size-s: #{map-get($control-box-sizes, s)};
+  --control-box-size-xm: #{map-get($control-box-sizes, xm)};
+  --control-box-size-m: #{map-get($control-box-sizes, m)};
+  --control-box-size-l: #{map-get($control-box-sizes, l)};
+  --control-box-size-xl: #{map-get($control-box-sizes, xl)};
 
   // Tamaños de marca de checkbox (checkmark)
   --checkbox-mark-size-xs: #{map-get($checkbox-mark-sizes, xs)};

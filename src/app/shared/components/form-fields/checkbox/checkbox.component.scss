@@ -69,18 +69,18 @@
     }
 
     // Tamaño dinámico para la marca (aspa) según el tamaño del componente
-    @each $key, $size in $checkbox-box-sizes {
+    @each $key, $size in $control-box-sizes {
       &--#{$key} {
-        height: var(--checkbox-box-size-#{$key});
-        width: var(--checkbox-box-size-#{$key});
+        height: var(--control-box-size-#{$key});
+        width: var(--control-box-size-#{$key});
 
         &::after {
           // Tamaño del aspa en proporción a la caja
-          width: calc(var(--checkbox-box-size-#{$key}) * 0.15);
-          height: calc(var(--checkbox-box-size-#{$key}) * 0.5);
+          width: calc(var(--control-box-size-#{$key}) * 0.15);
+          height: calc(var(--control-box-size-#{$key}) * 0.5);
           border-width: 0
-            calc(var(--checkbox-box-size-#{$key}) * 0.15)
-            calc(var(--checkbox-box-size-#{$key}) * 0.15)
+            calc(var(--control-box-size-#{$key}) * 0.15)
+            calc(var(--control-box-size-#{$key}) * 0.15)
             0;
         }
       }
@@ -101,24 +101,24 @@
     }
 
     // Tamaño para la línea de indeterminación
-    @each $key, $size in $checkbox-box-sizes {
+    @each $key, $size in $control-box-sizes {
       &--#{$key} {
-        height: var(--checkbox-box-size-#{$key});
-        width: var(--checkbox-box-size-#{$key});
+        height: var(--control-box-size-#{$key});
+        width: var(--control-box-size-#{$key});
 
         &::after {
           // Tamaño del aspa en proporción a la caja
-          width: calc(var(--checkbox-box-size-#{$key}) * 0.55);
-          height: calc(var(--checkbox-box-size-#{$key}) * 0.2);
+          width: calc(var(--control-box-size-#{$key}) * 0.55);
+          height: calc(var(--control-box-size-#{$key}) * 0.2);
         }
       }
     }
   }
 
   // Tamaño dinámico para el checkbox según el tamaño del componente
-  @each $size-key, $checbox-size in $checkbox-box-sizes {
+  @each $size-key, $checbox-size in $control-box-sizes {
     &--#{$size-key} &__mark {
-      @include component-checkbox-size($size-key);
+      @include component-control-box-size($size-key);
     }
   }
 

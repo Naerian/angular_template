@@ -1,20 +1,9 @@
 @import "mixins";
-@import "config";
-@import "colors";
+@import "theme-config";
 
 html,
-body,
-button,
-input,
-select,
-textarea,
-span {
+:host {
   font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-m);
-  color: var(--color-text);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,

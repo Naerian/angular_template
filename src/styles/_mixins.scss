@@ -1,3 +1,5 @@
+@import "config";
+
 // Mixin para aplicar estilos tipográficos de encabezados
 // Utiliza este mixin para definir estilos de encabezados h1 a h6
 @mixin heading($level) {
@@ -30,7 +32,7 @@
 
 // Mixin para definir tamaños de componentes
 // Utiliza este mixin para aplicar tamaños consistentes a los componentes de la aplicación
-@mixin component-size($size) {
+@mixin component-size($size, $widthFontWeight: true) {
   height: var(
     --component-height-#{$size},
     #{map-get($component-heights, $size)}
@@ -43,14 +45,14 @@
     --component-font-size-#{$size},
     #{map-get($component-font-sizes, $size)}
   );
-  line-height: var(
-    --component-font-size-#{$size},
-    #{map-get($component-font-sizes, $size)}
-  );
-  font-weight: var(
-    --component-font-weight-#{$size},
-    #{map-get($component-font-weights, $size)}
-  );
+
+  // Aplica el peso de fuente si se especifica
+  @if $widthFontWeight {
+    font-weight: var(
+      --component-font-weight-#{$size},
+      #{map-get($component-font-weights, $size)}
+    );
+  }
 }
 
 // Mixin para definir tamaños de componentes de textarea
@@ -64,10 +66,6 @@
     --component-font-size-#{$size},
     #{map-get($component-font-sizes, $size)}
   );
-  line-height: var(
-    --component-font-size-#{$size},
-    #{map-get($component-font-sizes, $size)}
-  );
 }
 
 // Mixin para aplicar tamaño de fuente según el tamaño del componente
@@ -76,12 +74,6 @@
   font-size: var(
     --component-font-size-#{$size},
     #{map-get($component-font-sizes, $size)}
-  );
-  line-height: calc(
-    var(
-        --component-font-size-#{$size},
-        #{map-get($component-font-sizes, $size)}
-      ) * 1.5
   );
 }
 
@@ -110,16 +102,16 @@
   );
 }
 
-// Mixin para aplicar tamaño al checkbox
-// Utiliza este mixin para aplicar un tamaño específico al checkbox
-@mixin component-checkbox-size($size) {
+// Mixin para aplicar tamaño al checkbox / radiobutton
+// Utiliza este mixin para aplicar un tamaño específico al checkbox / radiobutton
+@mixin component-control-box-size($size) {
   height: var(
-    --checkbox-box-size-#{$size},
-    #{map-get($checkbox-box-sizes, $size)}
+    --control-box-size-#{$size},
+    #{map-get($control-box-sizes, $size)}
   );
   width: var(
-    --checkbox-box-size-#{$size},
-    #{map-get($checkbox-box-sizes, $size)}
+    --control-box-size-#{$size},
+    #{map-get($control-box-sizes, $size)}
   );
 }
 

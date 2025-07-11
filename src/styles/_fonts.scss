@@ -1,123 +1,32 @@
-// src/styles/_fonts.scss
-
-// FONT-FAMILY: Hellix
-// Source: './fonts/Hellix/'
-// License: SIL Open Font License, Version 1.1
-
-// THIN Y THIN ITALIC
 @font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-Thin.woff2") format("truetype");
-  font-weight: 100;
+  font-family: "Inter";
+  src: url("./fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+  font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-ThinItalic.woff2") format("truetype");
-  font-weight: 100;
+  font-family: "Inter";
+  src: url("./fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
   font-style: italic;
+  font-display: swap;
 }
 
-// LIGHT Y LIGHT ITALIC
 @font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-Light.woff2") format("truetype");
-  font-weight: 300;
+  font-family: "Roboto";
+  src: url("./fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
 }
-
 @font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-LightItalic.woff2") format("truetype");
-  font-weight: 300;
+  font-family: "Roboto";
+  src: url("./fonts/Roboto/Roboto-Italic-VariableFont_wdth,wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
   font-style: italic;
-}
-
-// REGULAR Y REGULAR ITALIC
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-Regular.woff2") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-RegularItalic.woff2") format("truetype");
-  font-weight: 400;
-  font-style: italic;
-}
-
-// MEDIUM Y MEDIUM ITALIC
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-Medium.woff2") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-MediumItalic.woff2") format("truetype");
-  font-weight: 500;
-  font-style: italic;
-}
-
-// SEMIBOLD Y SEMIBOLD ITALIC
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-SemiBold.woff2") format("truetype");
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-SemiBoldItalic.woff2") format("truetype");
-  font-weight: 600;
-  font-style: italic;
-}
-
-// BOLD Y BOLD ITALIC
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-Bold.woff2") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-BoldItalic.woff2") format("truetype");
-  font-weight: 700;
-  font-style: italic;
-}
-
-// EXTRABOLD Y EXTRABOLD ITALIC
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-ExtraBold.woff2") format("truetype");
-  font-weight: 800;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-ExtraBoldItalic.woff2") format("truetype");
-  font-weight: 800;
-  font-style: italic;
-}
-
-// BLACK Y BLACK ITALIC
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-Black.woff2") format("truetype");
-  font-weight: 900;
-  font-style: normal;
-}
-@font-face {
-  font-family: "Hellix";
-  src: url("./fonts/Hellix/Hellix-BlackItalic.woff2") format("truetype");
-  font-weight: 900;
-  font-style: italic;
+  font-display: swap;
 }

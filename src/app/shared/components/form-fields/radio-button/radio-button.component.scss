@@ -45,9 +45,9 @@
     box-sizing: border-box;
 
     // Tamaño dinámico para el radio button según el tamaño del componente
-    @each $size-key, $size in $checkbox-box-sizes {
+    @each $size-key, $size in $control-box-sizes {
       &--#{$size-key} {
-        @include component-checkbox-size($size-key);
+        @include component-control-box-size($size-key);
       }
     }
   }
@@ -82,10 +82,10 @@
     }
     .neo-radio-button__inner-circle {
       // Tamaño dinámico para el radio button según el tamaño del componente
-      @each $key, $size in $checkbox-box-sizes {
+      @each $key, $size in $control-box-sizes {
         &--#{$key} {
-          width: calc(var(--checkbox-box-size-#{$key}) * 0.55);
-          height: calc(var(--checkbox-box-size-#{$key}) * 0.55);
+          width: calc(var(--control-box-size-#{$key}) * 0.55);
+          height: calc(var(--control-box-size-#{$key}) * 0.55);
         }
       }
     }

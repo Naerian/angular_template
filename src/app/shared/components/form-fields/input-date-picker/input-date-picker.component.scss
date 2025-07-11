@@ -12,7 +12,7 @@
       // Tamaño dinámico para el input según el tamaño del componente
       @each $size-key, $input-size in $component-heights {
         &--#{$size-key} {
-          @include component-size($size-key);
+          @include component-size($size-key, false);
         }
       }
 
@@ -23,6 +23,7 @@
       cursor: pointer;
       background-color: var(--bg-field-color);
       border: var(--border-width-base) solid var(--border-field-color);
+      box-shadow: var(--box-shadow-component);
 
       &:focus:not(&--disabled),
       &:active:not(&--disabled) {

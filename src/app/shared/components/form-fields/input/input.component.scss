@@ -15,39 +15,36 @@
 
     &__field {
       width: 100%;
-      border-radius: var(--border-radius-md); 
+      border-radius: var(--border-radius-md);
       box-sizing: border-box;
       background-color: var(--bg-field-color);
-      border: var(--border-width-base) solid var(--border-field-color); 
+      border: var(--border-width-base) solid var(--border-field-color);
+      box-shadow: var(--box-shadow-component);
 
       &:focus:not(&--disabled),
       &:active:not(&--disabled) {
-        @include outline-focus; 
+        @include outline-focus;
       }
 
       // Tamaño dinámico para el input según el tamaño del componente
       @each $size-key, $input-size in $component-heights {
         &--#{$size-key} {
-          @include component-size(
-            $size-key
-          ); 
+          @include component-size($size-key, false);
         }
       }
 
       &--clear {
-        padding-right: calc(
-          var(--spacing-s) * 3
-        ); 
+        padding-right: calc(var(--spacing-s) * 3);
       }
 
       &--has-error {
-        border: var(--border-width-xs) solid var(--color-danger); 
+        border: var(--border-width-xs) solid var(--color-danger);
       }
 
       &[disabled],
       &:disabled,
       &--disabled {
-        @include disabled; 
+        @include disabled;
       }
 
       &:hover:not(&--disabled) {

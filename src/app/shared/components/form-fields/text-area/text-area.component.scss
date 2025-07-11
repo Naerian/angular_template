@@ -20,6 +20,7 @@
       padding: var(--spacing-s);
       background-color: var(--bg-field-color);
       border: var(--border-width-base) solid var(--border-field-color);
+      box-shadow: var(--box-shadow-component);
 
       &:focus:not(&--disabled),
       &:active:not(&--disabled) {

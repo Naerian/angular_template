@@ -1,0 +1,40 @@
+@import "theme-config";
+
+html,
+:host {
+  font-family: var(--font-family-base);
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+  line-height: 1.5;
+  font-feature-settings: normal;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  line-height: 1.5;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background-color: var(--color-selection);
+  color: var(--color-text);
+}

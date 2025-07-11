@@ -11,10 +11,11 @@
   position: relative;
 
   &__field {
+    
     // Tamaño dinámico para el input según el tamaño del componente
     @each $size-key, $input-size in $component-heights {
       &--#{$size-key} {
-        @include component-size($size-key);
+        @include component-size($size-key, false);
       }
     }
 
@@ -28,6 +29,7 @@
     gap: var(--spacing-xs);
     background-color: var(--bg-field-color);
     border: var(--border-width-base) solid var(--border-field-color);
+    box-shadow: var(--box-shadow-component);
 
     &:focus:not(&--disabled),
     &:active:not(&--disabled) {
@@ -115,11 +117,12 @@
           var(--border-field-color);
         background-color: var(--bg-field-color);
         color: var(--text-color);
+        box-shadow: var(--box-shadow-component);
 
         // Tamaño dinámico para el input según el tamaño del componente
         @each $size-key, $input-size in $component-heights {
           &--#{$size-key} {
-            @include component-size($size-key);
+            @include component-size($size-key, false);
           }
         }
 
