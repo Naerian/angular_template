@@ -100,20 +100,26 @@
     >
       @if (searchable && options.length > 0) {
         <div class="neo-select__dropdown__search">
-          <input
-            #searchInput
-            class="
-              neo-select__dropdown__search__input 
-              neo-select__dropdown__search__input--{{ inputSize }}
+          <div class="neo-select__dropdown__search__wrapper">
+            <input
+              #searchInput
+              class="
+              neo-select__dropdown__search__wrapper__input 
+              neo-select__dropdown__search__wrapper__input--{{ inputSize }}
             "
-            type="text"
-            [placeholder]="placeholderSearch || _translations.search"
-            [attr.id]="'listbox_search_' + _id()"
-            [attr.autocomplete]="'off'"
-            [attr.autocapitalize]="'off'"
-            (input)="searchOption(searchInput.value)"
-          />
-          <i class="ri-search-line neo-select__dropdown__search__icon"></i>
+              type="text"
+              [placeholder]="placeholderSearch || _translations.search"
+              [attr.id]="'listbox_search_' + _id()"
+              [attr.autocomplete]="'off'"
+              [attr.autocapitalize]="'off'"
+              (input)="searchOption(searchInput.value)"
+            />
+            <i
+              class="ri-search-line neo-select__dropdown__search__wrapper__icon neo-select__dropdown__search__wrapper__icon--{{
+                inputSize
+              }}"
+            ></i>
+          </div>
         </div>
       }
       <div

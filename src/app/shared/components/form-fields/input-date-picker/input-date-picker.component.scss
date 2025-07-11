@@ -12,7 +12,7 @@
       // Tamaño dinámico para el input según el tamaño del componente
       @each $size-key, $input-size in $component-heights {
         &--#{$size-key} {
-          @include component-size($size-key, false);
+          @include component-size($size-key);
         }
       }
 

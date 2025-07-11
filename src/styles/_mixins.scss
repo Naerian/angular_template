@@ -32,7 +32,7 @@
 
 // Mixin para definir tamaños de componentes
 // Utiliza este mixin para aplicar tamaños consistentes a los componentes de la aplicación
-@mixin component-size($size, $widthFontWeight: true) {
+@mixin component-size($size) {
   height: var(
     --component-height-#{$size},
     #{map-get($component-heights, $size)}
@@ -45,14 +45,6 @@
     --component-font-size-#{$size},
     #{map-get($component-font-sizes, $size)}
   );
-
-  // Aplica el peso de fuente si se especifica
-  @if $widthFontWeight {
-    font-weight: var(
-      --component-font-weight-#{$size},
-      #{map-get($component-font-weights, $size)}
-    );
-  }
 }
 
 // Mixin para definir tamaños de componentes de textarea

@@ -61,6 +61,7 @@
   transition: box-shadow 0.2s ease;
   font-family: var(--font-family-base);
   box-shadow: var(--box-shadow-component);
+  font-weight: var(--font-weight-medium);
 
   &:focus,
   &:active {

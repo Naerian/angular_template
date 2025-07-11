@@ -11,11 +11,10 @@
   position: relative;
 
   &__field {
-    
     // Tamaño dinámico para el input según el tamaño del componente
     @each $size-key, $input-size in $component-heights {
       &--#{$size-key} {
-        @include component-size($size-key, false);
+        @include component-size($size-key);
       }
     }
 
@@ -107,46 +106,70 @@
       position: relative;
       width: 100%;
 
-      &__input {
+      &__wrapper {
+        position: relative;
         width: 100%;
-        border-radius: var(--border-radius-md);
-        border: none;
-        box-sizing: border-box;
-        padding: var(--spacing-xs) var(--spacing-s);
-        border: calc(var(--border-width-base) / 2) solid
-          var(--border-field-color);
-        background-color: var(--bg-field-color);
-        color: var(--text-color);
-        box-shadow: var(--box-shadow-component);
 
-        // Tamaño dinámico para el input según el tamaño del componente
-        @each $size-key, $input-size in $component-heights {
-          &--#{$size-key} {
-            @include component-size($size-key, false);
+        &__input {
+          // Tamaño dinámico para el input según el tamaño del componente
+          @each $size-key, $input-size in $component-heights {
+            &--#{$size-key} {
+              @include component-size($size-key);
+            }
+          }
+
+          width: 100%;
+          border-radius: var(--border-radius-md);
+          box-sizing: border-box;
+          padding-right: calc(
+            var(--spacing-m) * 2 + var(--spacing-xxs)
+          ) !important;
+          background-color: var(--bg-field-color);
+          border: var(--border-width-base) solid var(--border-field-color);
+          box-shadow: var(--box-shadow-component);
+
+          &:focus,
+          &:active {
+            @include outline-focus;
+          }
+
+          &:hover {
+            border-color: var(--hover-border-field-color);
+          }
+
+          &:hover ~ .neo-select__dropdown__search__icon::before {
+            color: var(--hover-border-field-color);
           }
         }
 
-        &:focus,
-        &:active {
-          @include outline-focus;
-        }
+        &__icon {
+          position: absolute;
+          right: 0;
+          top: 0;
+          cursor: pointer;
+          @include flex-center;
 
-        &:hover {
-          border-color: var(--hover-border-field-color);
-        }
+          // Tamaño dinámico para el icono según el tamaño del componente
+          @each $size-key, $icon-size in $component-heights {
+            &--#{$size-key} {
+              @include component-icon-size($size-key);
+            }
+          }
 
-        &:hover ~ .neo-select__dropdown__search__icon::before {
-          color: var(--hover-border-field-color);
-        }
-      }
+          &:focus:not(&--disabled),
+          &:active:not(&--disabled) {
+            @include outline-focus;
+            border-radius: var(--border-radius-md);
+          }
 
-      &__icon {
-        position: absolute;
-        right: var(--spacing-m);
-        cursor: default;
+          &:hover:not(&--disabled),
+          &:focus:not(&--disabled) {
+            opacity: 0.8;
+          }
 
-        &::before {
-          color: var(--icon-field-color);
+          &::before {
+            color: var(--icon-field-color);
+          }
         }
       }
     }
