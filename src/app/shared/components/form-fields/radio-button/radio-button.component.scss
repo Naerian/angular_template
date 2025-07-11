@@ -84,8 +84,8 @@
       // Tamaño dinámico para el radio button según el tamaño del componente
       @each $key, $size in $checkbox-box-sizes {
         &--#{$key} {
-          width: calc(var(--checkbox-size-#{$key}) * 0.55);
-          height: calc(var(--checkbox-size-#{$key}) * 0.55);
+          width: calc(var(--checkbox-box-size-#{$key}) * 0.55);
+          height: calc(var(--checkbox-box-size-#{$key}) * 0.55);
         }
       }
     }

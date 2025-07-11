@@ -9,7 +9,7 @@
   @include flex-col-center;
   border: calc(#{$border-width-base} / 2) solid var(--border-field-color);
   background-color: var(--bg-field-color);
-  box-shadow: $box-shadow-md;
+  box-shadow: $box-shadow-m;
   padding: $spacing-xs;
   gap: $spacing-xxs;
   min-width: 160px;

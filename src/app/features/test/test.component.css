@@ -5,24 +5,3 @@
 hr {
   margin: 25px 0 !important;
 }
-
-.mat-column-id {
-  max-width: 100px;
-  min-width: 100px;
-}
-
-.mat-column-name,
-.mat-column-price,
-.mat-column-description {
-  max-width: 300px;
-  min-width: 300px;
-}
-
-neo-card-header {
-  div {
-    font-weight: 600;
-    font-size: 15px;
-    display: flex;
-    flex-direction: column;
-  }
-}

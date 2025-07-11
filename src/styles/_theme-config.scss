@@ -6,12 +6,32 @@
   // TIPOGRAFÍA
   // =======================
   --font-family-base: #{$font-family-base};
+
+  --font-size-xs: #{$font-size-xs};
+  --font-size-s: #{$font-size-s};
+  --font-size-xm: #{$font-size-xm};
+  --font-size-m: #{$font-size-m};
+  --font-size-l: #{$font-size-l};
+  --font-size-xl: #{$font-size-xl};
+  --font-size-xxl: #{$font-size-xxl};
+  --font-size-xxxl: #{$font-size-xxxl};
+  --font-size-xxxxl: #{$font-size-xxxxl};
+
   --font-size-base: #{$font-size-base};
-  --line-height-base: #{$line-height-base};
+
   --font-weight-regular: #{$font-weight-regular};
   --font-weight-medium: #{$font-weight-medium};
   --font-weight-semibold: #{$font-weight-semibold};
   --font-weight-bold: #{$font-weight-bold};
+
+  --line-height-m: #{$line-height-m};
+  --line-height-l: #{$line-height-l};
+  --line-height-xl: #{$line-height-xl};
+  --line-height-xxl: #{$line-height-xxl};
+  --line-height-xxxl: #{$line-height-xxxl};
+  --line-height-xxxxl: #{$line-height-xxxxl};
+
+  --line-height-base: #{$line-height-base};
 
   // =======================
   // BORDES Y RADIOS
@@ -38,9 +58,9 @@
   // =======================
   // SOMBRAS
   // =======================
-  --box-shadow-sm: #{$box-shadow-sm};
-  --box-shadow-md: #{$box-shadow-md};
-  --box-shadow-lg: #{$box-shadow-lg};
+  --box-shadow-s: #{$box-shadow-s};
+  --box-shadow-m: #{$box-shadow-m};
+  --box-shadow-l: #{$box-shadow-l};
   --box-shadow-button-hover: #{$box-shadow-button-hover};
 
   // =======================

@@ -1,3 +1,7 @@
+@import "mixins";
+@import "config";
+@import "colors";
+
 html,
 body,
 button,
@@ -5,10 +9,10 @@ input,
 select,
 textarea,
 span {
-  font-family: $font-family-base;
-  font-size: $font-size-base;
-  line-height: 1.5;
-  color: $color-text;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-m);
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,52 +23,52 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: $font-family-base;
+  font-family: var(--font-family-base);
   margin-top: 0;
-  margin-bottom: $spacing-m;
+  margin-bottom: var(--spacing-m);
   line-height: 1.2;
-  color: $color-gray-900;
+  color: var(--color-gray-900);
 }
 
 h1 {
-  font-size: 2.5rem;
+  @include heading(h1);
 }
 
 h2 {
-  font-size: 2rem; // 32px
+  @include heading(h2);
 }
 
 h3 {
-  font-size: 1.75rem; // 28px
+  @include heading(h3);
 }
 
 h4 {
-  font-size: 1.5rem; // 24px
+  @include heading(h4);
 }
 
 h5 {
-  font-size: 1.25rem; // 20px
+  @include heading(h5);
 }
 
 h6 {
-  font-size: 1rem; // 16px
+  @include heading(h6);
 }
 
 small {
-  font-family: $font-family-base;
-  font-size: 0.75rem; // 12px
-  color: $color-gray-600;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-s); // 12px
+  color: var(--color-gray-600);
 }
 
 p {
-  font-family: $font-family-base;
+  font-family: var(--font-family-base);
   margin-top: 0;
-  margin-bottom: $spacing-s;
+  margin-bottom: var(--spacing-s);
 }
 
 a {
-  font-family: $font-family-base;
-  color: $color-primary;
+  font-family: var(--font-family-base);
+  color: var(--color-primary);
   text-decoration: none;
 
   &:hover {

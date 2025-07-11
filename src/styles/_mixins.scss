@@ -1,3 +1,33 @@
+// Mixin para aplicar estilos tipográficos de encabezados
+// Utiliza este mixin para definir estilos de encabezados h1 a h6
+@mixin heading($level) {
+  @if $level == h1 {
+    font-size: var(--font-size-xxxxl);
+    line-height: var(--line-height-xxxxl);
+    font-weight: var(--font-weight-bold);
+  } @else if $level == h2 {
+    font-size: var(--font-size-xxxl);
+    line-height: var(--line-height-xxxl);
+    font-weight: var(--font-weight-bold);
+  } @else if $level == h3 {
+    font-size: var(--font-size-xxl);
+    line-height: var(--line-height-xxl);
+    font-weight: var(--font-weight-bold);
+  } @else if $level == h4 {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+    font-weight: var(--font-weight-semibold);
+  } @else if $level == h5 {
+    font-size: var(--font-size-l);
+    line-height: var(--line-height-l);
+    font-weight: var(--font-weight-semibold);
+  } @else if $level == h6 {
+    font-size: var(--font-size-m);
+    line-height: var(--line-height-m);
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
 // Mixin para definir tamaños de componentes
 // Utiliza este mixin para aplicar tamaños consistentes a los componentes de la aplicación
 @mixin component-size($size) {

@@ -119,7 +119,7 @@
   &:not(&--transparent) {
     border-width: var(--border-width-base);
     border-style: solid;
-    box-shadow: var(--box-shadow-sm);
+    box-shadow: var(--box-shadow-s);
 
     &:hover {
       box-shadow: var(--box-shadow-button-hover);

@@ -21,6 +21,7 @@
 
   &__header {
     @include flex-start-between;
+    @include heading(h5);
     padding: var(--spacing-m);
     padding-bottom: 0;
     width: 100%;
