@@ -1,22 +1,17 @@
-<div
-  class="spinner"
-  [ngClass]="{
-    'spinner--overlay': overlay,
-    'spinner--center': label && label !== ''
-  }"
-  [style.position]="overlay ? position : 'inherit'"
->
-  <div class="spinner__icon spinner__icon--size-{{ size }}"></div>
+<div class="neo-spinner-wrapper" [class]="'neo-spinner-wrapper--' + size()">
+  <div
+    class="neo-spinner-circle"
+    [class]="'neo-spinner-circle--' + size()"
+    [style.border-top-color]="spinnerColor()"
+  ></div>
 
-  @if (label && label !== "") {
-    <div
-      class="spinner__label"
-      [ngStyle]="{ color: labelColor, 'font-size': labelSize }"
+  @if (label()) {
+    <span
+      class="neo-spinner-label"
+      [class]="'neo-spinner-label--' + size()"
+      [style.color]="labelColor()"
     >
-      {{ label }}
-    </div>
+      {{ label() }}
+    </span>
   }
 </div>
-@if(overlay && backdrop) {
-  <div class="spinner__backdrop" [ngStyle]="{'backgroundColor': backdropColor}"></div>
-}

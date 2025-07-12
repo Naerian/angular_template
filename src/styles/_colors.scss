@@ -1,3 +1,7 @@
+// =======================
+// COLORES GENERALES
+// =======================
+
 // Grises para UI
 $color-white: #ffffff;
 $color-gray-100: #f8f9fa;
@@ -33,3 +37,8 @@ $focus-ring-color: rgba($color-accent, 0.3);
 // Color para selección de texto
 // Usamos un tono más claro del color de acento para la selección de texto
 $color-selection: tint($color-accent, 40%); 
+
+// =======================
+// SPINNER
+// =======================
+$spinner-circle-border-color: #0000001a;

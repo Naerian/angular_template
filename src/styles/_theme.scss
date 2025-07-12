@@ -2,9 +2,9 @@
 @import "mixins";
 
 :root {
-  // -------------------------------------------------
-  // --- COLORES Y VARIABLES GLOBALES ---
-  // -------------------------------------------------
+  // =========================================
+  // COLORES GLOBALES
+  // =========================================
   // Colores principales del tema
   --color-primary: #{$color-primary}; // Color primario del tema
   --color-secondary: #{$color-secondary}; // Color secundario del tema
@@ -75,9 +75,9 @@
   // Color de selección de texto
   --color-selection: #{$color-selection};
 
-  // -------------------------------------------------
-  // --- COLORES Y VARIABLES PARA LAS FORMS ---
-  // -------------------------------------------------
+  // =========================================
+  // COLORES DE FORMS
+  // =========================================
   --border-field-color: #{$color-gray-300};
   --bg-field-color: #{$color-white};
   --border-field-disabled-color: #{$color-gray-400};
@@ -85,16 +85,16 @@
   --bg-scroll-field-color: #{$color-gray-200};
   --bg-options-field-color: #{$color-gray-100};
 
-  // -------------------------------------------------
-  // --- COLORES Y VARIABLES PARA LAS CARDS ---
-  // -------------------------------------------------
+  // =========================================
+  // COLORES DE CARDS
+  // =========================================
   --bg-card-color: var(--color-white);
   --shadow-card: #{$box-shadow-m};
   --border-color-card: var(--border-color-base);
 
-  // -------------------------------------------------
-  // --- COLORES Y VARIABLES PARA BREADCRUMB ---
-  // -------------------------------------------------
+  // =========================================
+  // COLORES DE BREADCRUMB
+  // =========================================
   --bg-color-hover: #{$color-gray-100};
 
   --text-breadcrumb-color: #{$color-text};
@@ -105,9 +105,9 @@
   --active-breadcrumb-text-color: #{$color-accent};
   --active-breadcrumb-bg: #{tint($color-accent, 90%)};
 
-  // -------------------------------------------------
-  // --- COLORES Y VARIABLES PARA BOTONES ---
-  // -------------------------------------------------
+  // =========================================
+  // COLORES DE BOTONES
+  // =========================================
   // Sombras comunes para botones
   --shadow-btn: 0 2px 4px rgba(0, 0, 0, 0.1);
 
@@ -176,4 +176,9 @@
   --icon-btn-warning-color: #{$color-gray-100};
   --icon-btn-warning-transparent-color: #{$color-warning};
   --hover-bg-btn-warning-transparent-color: #{tint($color-warning, 90%)};
+
+  // =========================================
+  // COLORES DE SPINNER
+  // =========================================
+  --spinner-circle-border-color: #{$spinner-circle-border-color};
 }

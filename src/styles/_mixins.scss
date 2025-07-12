@@ -103,6 +103,25 @@
   );
 }
 
+// Mixin para aplicar tamaño al spinner
+// Utiliza este mixin para aplicar un tamaño específico al spinner
+@mixin spinner-size($size) {
+  width: var(
+    --spinner-size-#{$size},
+    #{map-get($spinner-sizes, $size)}
+  );
+  height: var(
+    --spinner-size-#{$size},
+    #{map-get($spinner-sizes, $size)}
+  );
+  border-width: var(
+    --spinner-border-width-#{$size},
+    #{map-get($spinner-border-widths, $size)}
+  );
+}
+
+
+
 // Mixin para aplicar tamaño al checkbox / radiobutton
 // Utiliza este mixin para aplicar un tamaño específico al checkbox / radiobutton
 @mixin component-control-box-size($size) {
@@ -193,6 +212,12 @@
 @mixin flex-col-center {
   @include flex-col;
   align-items: center;
+}
+
+@mixin flex-col-center-center {
+  @include flex-col;
+  align-items: center;
+  justify-content: center;
 }
 
 @mixin flex-col-start-center {

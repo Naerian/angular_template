@@ -155,4 +155,31 @@
   --calendar-grid-gap: #{$calendar-grid-gap}; // Espacio entre celdas del calendario
   --calendar-width: #{$calendar-width}; // Ancho del calendario
   --calendar-height: #{$calendar-height}; // Altura del calendario
+
+  // =======================
+  // SPINNER
+  // =======================
+  --spinner-size-xs: #{map-get($spinner-sizes, xs)};
+  --spinner-size-s: #{map-get($spinner-sizes, s)};
+  --spinner-size-xm: #{map-get($spinner-sizes, xm)};
+  --spinner-size-m: #{map-get($spinner-sizes, m)};
+  --spinner-size-l: #{map-get($spinner-sizes, l)};
+  --spinner-size-xl: #{map-get($spinner-sizes, xl)};
+
+  --spinner-border-xs: #{map-get($spinner-border-widths, xs)};
+  --spinner-border-s: #{map-get($spinner-border-widths, s)};
+  --spinner-border-xm: #{map-get($spinner-border-widths, xm)};
+  --spinner-border-m: #{map-get($spinner-border-widths, m)};
+  --spinner-border-l: #{map-get($spinner-border-widths, l)};
+  --spinner-border-xl: #{map-get($spinner-border-widths, xl)};
+
+  --spinner-gap-xs: #{map-get($spinner-gaps, xs)};
+  --spinner-gap-s: #{map-get($spinner-gaps, s)};
+  --spinner-gap-xm: #{map-get($spinner-gaps, xm)};
+  --spinner-gap-m: #{map-get($spinner-gaps, m)};
+  --spinner-gap-l: #{map-get($spinner-gaps, l)};
+  --spinner-gap-xl: #{map-get($spinner-gaps, xl)};
+
+  --spinner-circle-border-width: #{$spinner-circle-border-width};
+  --spinner-circle-border-style: #{$spinner-circle-border-style};
 }

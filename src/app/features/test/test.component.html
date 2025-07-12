@@ -734,23 +734,69 @@
     </small>
   </neo-card-header>
   <div class="row">
-    <div class="col-3">
-      <label>Spinner ultra pequeño (xs)</label>
-      <neo-spinner size="xs"></neo-spinner>
+    <div class="col-2">
+      <label>Spinner por defecto (tamaño M, inline, sin label)</label>
+      <neo-spinner></neo-spinner>
     </div>
-    <div class="col-3">
-      <label>Spinner normal (M)</label>
-      <neo-spinner size="m"></neo-spinner>
-    </div>
-    <div class="col-3">
-      <label>Spinner normal con label</label>
-      <neo-spinner size="m" [label]="'Texto de prueba'"></neo-spinner>
-    </div>
-    <div class="col-3">
-      <label>Spinner normal con overlay (absolute)</label>
-      <div style="position: relative; width: 100%; height: 100%">
-        <neo-spinner size="m" [overlay]="true"></neo-spinner>
+    <div class="col-2">
+      <label
+        >Spinner L con label y color personalizado, sin backdrop, y contenido
+        entre medias color "#673ab7"</label
+      >
+      <div style="border: 1px solid #ccc; position: relative">
+        <p>Contenido encima del spinner</p>
+        <neo-spinner
+          label="Cargando datos importantes..."
+          spinnerColor="#673ab7"
+          labelColor="#673ab7"
+          size="l"
+          position="inline"
+        ></neo-spinner>
+        <p>Más contenido debajo del spinner</p>
       </div>
+    </div>
+    <div class="col-2">
+      <label>Spinner XL en posición absoluta color "darkgreen" con backdrop color "#e0f7facc"</label>
+      <div
+        style="
+          width: 100%;
+          height: 150px;
+          border: 2px dashed blue;
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #e0f7fa;
+        "
+      >
+        <h3>Este es un contenedor con un spinner absoluto</h3>
+        <p>El spinner se superpondrá a este contenido.</p>
+        <neo-spinner
+          label="Procesando..."
+          spinnerColor="darkgreen"
+          labelColor="darkgreen"
+          size="xl"
+          position="absolute"
+          backdropColor="#e0f7facc"
+        ></neo-spinner>
+      </div>
+    </div>
+    <div class="col-2">
+      <label>Spinner S con label corto color "#d32f2f"</label>
+      <neo-spinner
+        label="Guardando..."
+        size="s"
+        spinnerColor="#d32f2f"
+        labelColor="#d32f2f"
+      ></neo-spinner>
+    </div>
+    <div class="col-2">
+      <label>Spinner XS con label con color original</label>
+      <neo-spinner label="Guardando datos..." size="xs"></neo-spinner>
+    </div>
+    <div class="col-2">
+      <label>Spinner M sin label</label>
+      <neo-spinner></neo-spinner>
     </div>
   </div>
 </neo-card>

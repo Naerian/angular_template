@@ -222,3 +222,58 @@ $calendar-height: calc(
   $calendar-grid-height + $calendar-header-height + $calendar-weekdays-height +
     ($spacing-xs * 2) + ($border-width-base * 2) + spacing-xs
 ); // Altura del calendario, incluyendo encabezado, días de la semana y celdas
+
+// =======================
+// SPINNER
+// =======================
+
+$spinner-size-xs: "12px";
+$spinner-size-s: "16px";
+$spinner-size-xm: "20px";
+$spinner-size-m: "24px";
+$spinner-size-l: "36px";
+$spinner-size-xl: "48px";
+
+$spinner-border-xs: "1px";
+$spinner-border-s: "2px";
+$spinner-border-xm: "2px";
+$spinner-border-m: "3px";
+$spinner-border-l: "4px";
+$spinner-border-xl: "5px";
+
+$spinner-gap-xs: $spacing-xs;
+$spinner-gap-s: $spacing-xs;
+$spinner-gap-xm: $spacing-xm;
+$spinner-gap-m: $spacing-m;
+$spinner-gap-l: $spacing-l;
+$spinner-gap-xl: $spacing-xl;
+
+$spinner-circle-border-width: 0.125rem;
+$spinner-circle-border-style: solid;
+
+$spinner-sizes: (
+  xs: $spinner-size-xs,
+  s: $spinner-size-s,
+  xm: $spinner-size-xm,
+  m: $spinner-size-m,
+  l: $spinner-size-l,
+  xl: $spinner-size-xl,
+);
+
+$spinner-border-widths: (
+  xs: $spinner-border-xs,
+  s: $spinner-border-s,
+  xm: $spinner-border-xm,
+  m: $spinner-border-m,
+  l: $spinner-border-l,
+  xl: $spinner-border-xl,
+);
+
+$spinner-gaps: (
+  xs: $spinner-gap-xs,
+  s: $spinner-gap-s,
+  xm: $spinner-gap-xm,
+  m: $spinner-gap-m,
+  l: $spinner-gap-l,
+  xl: $spinner-gap-xl,
+);
