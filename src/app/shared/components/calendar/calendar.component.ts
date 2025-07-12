@@ -688,7 +688,7 @@ export class CalendarComponent implements OnInit {
    * Se utiliza para la navegación de accesibilidad.
    */
   focusSelectedYear() {
-    queueMicrotask(() => {
+    setTimeout(() => {
       const buttons = this.yearButtons?.toArray() ?? [];
       const selected = buttons.find(
         (btn) => btn.nativeElement.getAttribute('aria-selected') === 'true',
@@ -710,7 +710,7 @@ export class CalendarComponent implements OnInit {
    * Se utiliza para la navegación de accesibilidad.
    */
   focusSelectedMonth() {
-    queueMicrotask(() => {
+    setTimeout(() => {
       const buttons = this.monthButtons?.toArray() ?? [];
       const monthIndex = this.currentMonthNumber();
       const monthButton = buttons[monthIndex]; // Usa 'buttons' para obtener el elemento
