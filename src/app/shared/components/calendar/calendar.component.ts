@@ -102,7 +102,7 @@ export class CalendarComponent implements OnInit {
 
   // Señales para manejar el estado del calendario.
   readonly selectedDate: WritableSignal<moment.Moment | null> = signal(null);
-  readonly daysInMonth: WritableSignal<CalendarDay[]> = signal([]);
+  readonly daysInMonth: WritableSignal<CalendarDay[][]> = signal([]);
   readonly currentViewDate: WritableSignal<Date | null> = signal(
     moment().toDate(),
   );
@@ -302,7 +302,7 @@ export class CalendarComponent implements OnInit {
     cols: number,
   ): void {
     const btns = buttons.toArray();
-    const activeEl = document.activeElement as HTMLElement;
+    const activeEl = document.activeElement as HTMLButtonElement;
     const currentIndex = btns.findIndex(
       (btn) => btn.nativeElement === activeEl,
     );
@@ -330,14 +330,244 @@ export class CalendarComponent implements OnInit {
       case 'End':
         nextIndex = btns.length - 1;
         break;
+      case 'PageUp':
+        if (this.viewMode() === CalendarViewMode.YEARS) this.loadPastYears();
+        else if (this.viewMode() === CalendarViewMode.DEFAULT) this.prevMonth();
+        setTimeout(() => this.focusEndOfGrid(activeEl), 0);
+        return;
+      case 'PageDown':
+        if (this.viewMode() === CalendarViewMode.YEARS) this.loadFutureYears();
+        else if (this.viewMode() === CalendarViewMode.DEFAULT) this.nextMonth();
+        setTimeout(() => this.focusStartOfGrid(activeEl), 0);
+        return;
     }
 
-    if (nextIndex >= 0 && nextIndex < btns.length) {
-      // Actualizamos el tabindex para el "roaming tabindex"
-      btns[currentIndex].nativeElement.setAttribute('tabindex', '-1');
+    // Si hemos llegado al inicio de la cuadrícula, cambiamos al mes anterior
+    if (nextIndex < 0) {
+      if (this.viewMode() === CalendarViewMode.DEFAULT) this.prevMonth();
+      else if (this.viewMode() === CalendarViewMode.YEARS) this.loadPastYears();
+      setTimeout(() => this.focusEndOfGrid(), 0);
+      return;
+    }
+
+    // Si hemos llegado al final de la cuadrícula, cambiamos al mes siguiente
+    else if (nextIndex >= btns.length) {
+      if (this.viewMode() === CalendarViewMode.DEFAULT) this.nextMonth();
+      else if (this.viewMode() === CalendarViewMode.YEARS)
+        this.loadFutureYears();
+      setTimeout(() => this.focusStartOfGrid(), 0);
+      return;
+    }
+
+    // Si el índice siguiente está dentro del rango de botones, actualizamos el tabindex y el foco.
+    else {
       btns[nextIndex].nativeElement.setAttribute('tabindex', '0');
       btns[nextIndex].nativeElement.focus();
     }
+
+    // Deshabilitamos el tabindex del botón actual para evitar que se pueda navegar a él.
+    btns[currentIndex].nativeElement.setAttribute('tabindex', '-1');
+  }
+
+  /**
+   * Función para establecer el foco en el último elemento del bloque siguiente
+   * en el caso de años y días. O volver al último elemento en el caso de los meses.
+   * Se utiliza para la navegación de accesibilidad.
+   */
+  private focusEndOfGrid(currentElement?: HTMLButtonElement) {
+    // Si es vista de "años", enfocamos el último botón del año.
+    if (this.viewMode() === CalendarViewMode.YEARS) {
+      const buttons = this.yearButtons?.toArray() ?? [];
+      const lastButton = buttons[buttons.length - 1]?.nativeElement;
+      if (lastButton) {
+        lastButton.setAttribute('tabindex', '0');
+        lastButton.focus();
+      }
+      return;
+    }
+    // Si es vista de "meses" y hemos llegado al primer mes,
+    // enfocamos el último botón del mes.
+    else if (this.viewMode() === CalendarViewMode.MONTHS) {
+      const buttons = this.monthButtons?.toArray() ?? [];
+      const lastButton = buttons[buttons.length - 1]?.nativeElement;
+      if (lastButton) {
+        lastButton.setAttribute('tabindex', '0');
+        lastButton.focus();
+      }
+      return;
+    }
+    // Si es vista de "días", enfocamos el último botón del día.
+    else {
+      const buttons = this.dayButtons?.toArray() ?? [];
+
+      // Si se pasa "currentElement", buscamos el mismo día, obtenido de "data-day",
+      // para que al cambiar de mes, se mantenga el foco en el mismo día.
+      if (currentElement) {
+        const native = buttons.map((b) => b.nativeElement);
+        const currentDay = currentElement.getAttribute('data-day');
+
+        // Buscamos el botón que coincida con el día actual.
+        let targetButton = native.find(
+          (btn) => btn.getAttribute('data-day') === currentDay,
+        );
+
+        // Si "targetButton" no existe, restamos un día para encontrar el más cercano.
+        if (!targetButton) {
+          if (currentDay !== null) {
+            const currentDayNum = Number(currentDay) - 1;
+
+            // Restamos uno porque se intuye que el día no se ha encontrado porque
+            // el mes no tiene dicho día al principio (por ejemplo, 31 de enero).
+            const currentIndex = native.findIndex(
+              (btn) => Number(btn.getAttribute('data-day')) === currentDayNum,
+            );
+
+            // Si el botón del índice actual está deshabilitado,
+            // buscamos el más cercano habilitado al día actual.
+            if (buttons[currentIndex].nativeElement.disabled) {
+              const btnClosest = this.findClosestEnabledDay(currentIndex);
+
+              // Si encontramos un botón cercano habilitado, lo enfocamos.
+              // Si no, cambiamos al mes siguiente y enfocamos el último día del mes.
+              if (btnClosest) {
+                targetButton = btnClosest;
+              } else {
+                this.nextMonth();
+                this.focusEndOfGrid();
+                return;
+              }
+            } else {
+              // Si el botón del índice actual no está deshabilitado, lo enfocamos.
+              targetButton = buttons[currentIndex].nativeElement;
+              targetButton.setAttribute('tabindex', '0');
+              targetButton.focus();
+              return;
+            }
+          }
+        } else {
+          targetButton.setAttribute('tabindex', '0');
+          targetButton.focus();
+          return;
+        }
+      } else {
+        const native = buttons.map((b) => b.nativeElement);
+        native
+          .reverse()
+          .find((btn) => !btn.disabled)
+          ?.focus();
+      }
+    }
+  }
+
+  /**
+   * Función para establecer el foco en el primer elemento del bloque siguiente
+   * en el caso de años y días. O volver al primer elemento en el caso de los meses.
+   * Se utiliza para la navegación de accesibilidad.
+   */
+  private focusStartOfGrid(currentElement?: HTMLButtonElement) {
+    // Si es vista de "años", enfocamos el primer botón del año.
+    if (this.viewMode() === CalendarViewMode.YEARS) {
+      const buttons = this.yearButtons?.toArray() ?? [];
+      const firstButton = buttons[0]?.nativeElement;
+      if (firstButton) {
+        firstButton.setAttribute('tabindex', '0');
+        firstButton.focus();
+      }
+      return;
+    }
+    // Si es vista de "meses", enfocamos el primer botón del mes.
+    else if (this.viewMode() === CalendarViewMode.MONTHS) {
+      const buttons = this.monthButtons?.toArray() ?? [];
+      const firstButton = buttons[0]?.nativeElement;
+      if (firstButton) {
+        firstButton.setAttribute('tabindex', '0');
+        firstButton.focus();
+      }
+      return;
+    }
+    // Si es vista de "días", enfocamos el primer botón del día.
+    else {
+      const buttons = this.dayButtons?.toArray() ?? [];
+      // Si se pasa "currentElement", buscamos el mismo día, obtenido de "data-day",
+      // para que al cambiar de mes, se mantenga el foco en el mismo día.
+      if (currentElement) {
+        const native = buttons.map((b) => b.nativeElement);
+        const currentDay = currentElement.getAttribute('data-day');
+
+        // Buscamos el botón que coincida con el día actual.
+        let targetButton = native.find(
+          (btn) => btn.getAttribute('data-day') === currentDay,
+        );
+
+        // Si "targetButton" no existe, restamos un día para encontrar el más cercano.
+        if (!targetButton) {
+          if (currentDay !== null) {
+            const currentDayNum = Number(currentDay) - 1;
+
+            // Restamos uno porque se intuye que el día no se ha encontrado porque
+            // el mes no tiene dicho día al final (por ejemplo, 31 de febrero).
+            const currentIndex = native.findIndex(
+              (btn) => Number(btn.getAttribute('data-day')) === currentDayNum,
+            );
+
+            // Si el botón del indice actual está deshabilitado,
+            // buscamos el más cercano habilitado al día actual.
+            if (buttons[currentIndex].nativeElement.disabled) {
+              const currentIndex = native.findIndex(
+                (btn) => Number(btn.getAttribute('data-day')) === currentDayNum,
+              );
+              const btnClosest = this.findClosestEnabledDay(currentIndex);
+
+              // Si encontramos un botón cercano habilitado, lo enfocamos.
+              // Si no, cambiamos al mes anterior y enfocamos el primer día del mes.
+              if (btnClosest) {
+                targetButton = btnClosest;
+              } else {
+                this.prevMonth();
+                this.focusStartOfGrid();
+                return;
+              }
+            } else {
+              // Si el botón del índice actual no está deshabilitado, lo enfocamos.
+              targetButton = buttons[currentIndex].nativeElement;
+              targetButton.setAttribute('tabindex', '0');
+              targetButton.focus();
+              return;
+            }
+          }
+        } else {
+          targetButton.setAttribute('tabindex', '0');
+          targetButton.focus();
+          return;
+        }
+      } else {
+        const native = buttons.map((b) => b.nativeElement);
+        native.find((btn) => !btn.disabled)?.focus();
+      }
+    }
+  }
+
+  /**
+   * Función bucle para buscar el día habilitado más cercano a un índice dado.
+   * Se utiliza para la navegación de accesibilidad.
+   * @param {number} index - Índice del botón actual.
+   */
+  private findClosestEnabledDay(index: number): HTMLButtonElement | undefined {
+    const buttons = this.dayButtons?.toArray() ?? [];
+    const length = buttons.length;
+
+    for (let offset = 0; offset < length; offset++) {
+      const beforeIndex = index - offset;
+      if (beforeIndex >= 0 && !buttons[beforeIndex].nativeElement.disabled) {
+        return buttons[beforeIndex]?.nativeElement || undefined;
+      }
+      const afterIndex = index + offset;
+      if (afterIndex < length && !buttons[afterIndex].nativeElement.disabled) {
+        return buttons[afterIndex]?.nativeElement || undefined;
+      }
+    }
+
+    return undefined; // Ningún elemento enabled cercano
   }
 
   /**
@@ -346,7 +576,6 @@ export class CalendarComponent implements OnInit {
    */
   navigateCalendarDay(event: KeyboardEvent) {
     if (this.viewMode() !== CalendarViewMode.DEFAULT) return;
-
     const keys = [
       'ArrowLeft',
       'ArrowRight',
@@ -358,70 +587,7 @@ export class CalendarComponent implements OnInit {
       'PageDown',
     ];
     if (!keys.includes(event.key)) return;
-
-    event.preventDefault(); // Prevenimos el comportamiento por defecto de la tecla.
-
-    const activeEl = document.activeElement as HTMLElement;
-
-    // Salto al mes anterior con PageUp o ArrowLeft si estamos en el primer día.
-    if (
-      event.key === 'PageUp' ||
-      (event.key === 'ArrowLeft' &&
-        this.dayButtons.first?.nativeElement === activeEl)
-    ) {
-      this.prevMonth();
-      // `setTimeout` para asegurar que los botones se han renderizado antes de intentar enfocar.
-      setTimeout(() => {
-        const updatedButtons = this.dayButtons?.toArray() ?? [];
-        // Intentar enfocar el último día del mes que esté visible y no esté deshabilitado.
-        const targetButton = [...updatedButtons]
-          .reverse()
-          .find(
-            (btn) =>
-              !btn.nativeElement.disabled &&
-              btn.nativeElement.classList.contains(
-                'calendar-picker__day--current-month',
-              ),
-          );
-        // Fallback: si no hay un día "current-month" disponible, enfocar el último día hábil de la cuadrícula.
-        (
-          targetButton ??
-          [...updatedButtons]
-            .reverse()
-            .find((btn) => !btn.nativeElement.disabled)
-        )?.nativeElement.focus();
-      }, 0);
-      return;
-    }
-
-    // Salto al mes siguiente con PageDown o ArrowRight si estamos en el último día.
-    if (
-      event.key === 'PageDown' ||
-      (event.key === 'ArrowRight' &&
-        this.dayButtons.last?.nativeElement === activeEl)
-    ) {
-      this.nextMonth();
-      // `setTimeout` para asegurar que los botones se han renderizado antes de intentar enfocar.
-      setTimeout(() => {
-        const updatedButtons = this.dayButtons?.toArray() ?? [];
-        // Intentar enfocar el primer día del mes que esté visible y no esté deshabilitado.
-        const targetButton = updatedButtons.find(
-          (btn) =>
-            !btn.nativeElement.disabled &&
-            btn.nativeElement.classList.contains(
-              'calendar-picker__day--current-month',
-            ),
-        );
-        // Fallback: si no hay un día "current-month" disponible, enfocar el primer día hábil de la cuadrícula.
-        (
-          targetButton ??
-          updatedButtons.find((btn) => !btn.nativeElement.disabled)
-        )?.nativeElement.focus();
-      }, 0);
-      return;
-    }
-
-    // Navegación normal con flechas, Home y End.
+    event.preventDefault();
     this.navigateButtons(this.dayButtons, event, 7);
   }
 
@@ -462,31 +628,6 @@ export class CalendarComponent implements OnInit {
     ];
     if (!keys.includes(event.key)) return;
     event.preventDefault();
-
-    const activeEl = document.activeElement as HTMLElement;
-
-    // Saltar a años anteriores con PageUp o si estamos en el primer año del bloque.
-    if (
-      event.key === 'PageUp' ||
-      (['ArrowLeft', 'ArrowUp'].includes(event.key) &&
-        this.yearButtons.first?.nativeElement === activeEl)
-    ) {
-      this.loadPastYears();
-      setTimeout(() => this.yearButtons.last?.nativeElement.focus(), 0); // Enfoca el último del nuevo bloque.
-      return;
-    }
-
-    // Saltar a años futuros con PageDown o si estamos en el último año del bloque.
-    if (
-      event.key === 'PageDown' ||
-      (['ArrowRight', 'ArrowDown'].includes(event.key) &&
-        this.yearButtons.last?.nativeElement === activeEl)
-    ) {
-      this.loadFutureYears();
-      setTimeout(() => this.yearButtons.first?.nativeElement.focus(), 0); // Enfoca el primero del nuevo bloque.
-      return;
-    }
-
     this.navigateButtons(this.yearButtons, event, 4);
   }
 
@@ -495,9 +636,9 @@ export class CalendarComponent implements OnInit {
    * Se utiliza para la navegación de accesibilidad.
    */
   focusInitialDay() {
-    queueMicrotask(() => {
+    setTimeout(() => {
       // Obtenemos todos los días del mes actual.
-      const allCalendarDays = this.daysInMonth();
+      const allCalendarDays = this.daysInMonth().flat();
 
       // Filtramos solo los días del mes actual que no están deshabilitados.
       const availableDays = allCalendarDays.filter(
@@ -633,39 +774,51 @@ export class CalendarComponent implements OnInit {
    * Función para construir los días del calendario basándose en `currentViewDate`.
    * Actualiza el signal `daysInMonth`.
    */
-  renderCalendarDays() {
-    // Limpiamos el array de días antes de llenarlo.
-    const days: CalendarDay[] = [];
+  renderCalendarDays(): CalendarDay[][] {
+    // Limpiamos el array de semanas antes de llenarlo.
+    const weeks: CalendarDay[][] = [];
 
     // Creamos el primer día del mes actual y el primer día de la semana (lunes).
     const firstDayOfMonth = moment(this.currentViewDate()).startOf('month');
     const firstCell = firstDayOfMonth.clone().startOf('isoWeek'); // Lunes de la 1ª fila.
 
     // Calculamos el total de días a mostrar en el calendario (6 filas x 7 columnas).
-    // Esto asegura que siempre mostramos 6 filas, incluso si el mes tiene menos días.
-    // Por ejemplo, si el mes empieza en un miércoles, habrá días del mes anterior en el calendario.
     const totalDays = 6 * 7; // 6 filas x 7 columnas para cubrir todo el mes.
 
     // Obtenemos las fechas deshabilitadas del input `disabledDates`, si las hubiese.
     const disabledDates = this.getDisabledDates();
 
-    // Iteramos desde el primer día de la semana hasta el total de días a mostrar.
-    // Esto incluye días del mes anterior y del siguiente para completar las 6 filas.
+    // Iteramos para crear las semanas y los días dentro de cada semana.
     for (let i = 0; i < totalDays; i++) {
       const date = firstCell.clone().add(i, 'day');
       const isDisabled = disabledDates.some((dd) => dd.isSame(date, 'day'));
-      days.push({
+
+      const day: CalendarDay = {
         date,
         isCurrentMonth: date.month() === firstDayOfMonth.month(),
         isToday: date.isSame(moment(), 'day'),
         isSelected: this.checkIfSelected(date),
         isInRange: this.checkIfInRange(date),
         isDisabled: isDisabled,
-      });
+      };
+
+      // Determinamos en qué semana estamos (0-5)
+      const weekIndex = Math.floor(i / 7);
+
+      // Si es el primer día de una nueva semana, creamos un nuevo array para esa semana.
+      if (i % 7 === 0) {
+        weeks.push([]);
+      }
+
+      // Añadimos el día a la semana actual.
+      weeks[weekIndex].push(day);
     }
 
-    // Actualizamos el signal `daysInMonth` con los días generados.
-    this.daysInMonth.set(days);
+    // Actualizamos el signal `daysInMonth` con el array bidimensional de semanas.
+    // Asumiendo que `this.daysInMonth` es ahora un signal de tipo WritableSignal<CalendarDay[][]>.
+    this.daysInMonth.set(weeks);
+
+    return weeks; // Retornamos el array bidimensional de semanas
   }
 
   /**
@@ -1075,10 +1228,7 @@ export class CalendarComponent implements OnInit {
 
     if (day.isDisabled) {
       // Usamos el servicio de traducción para el mensaje de día deshabilitado
-      return this._translations.dayDisabled.replace(
-        '{date}',
-        formattedDate,
-      );
+      return this._translations.dayDisabled.replace('{date}', formattedDate);
     }
     // Si no está deshabilitado, solo mostramos la fecha formateada
     return formattedDate;

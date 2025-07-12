@@ -8,7 +8,7 @@
   &__error {
     @include flex-col-center;
     gap: var(--spacing-xxs);
-    font-size: var(--component-font-size-xs);
+    font-size: var(--component-font-size-s);
     font-style: italic;
     color: var(--color-danger);
   }

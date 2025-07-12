@@ -317,6 +317,7 @@ export class SelectComponent
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
+    if(this._id()) return;
     this._id?.set(this._inputsUtilsService.createUniqueId('select'));
     this._labelId?.set(`label_${this._id()}`);
   }
@@ -327,7 +328,10 @@ export class SelectComponent
    * @return {string}
    */
   get ariaDescribedByCustom(): string {
-    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
+    return this._inputsUtilsService.getAriaDescribedBy(this._id(), [
+      'hint',
+      'error',
+    ]);
   }
 
   /**

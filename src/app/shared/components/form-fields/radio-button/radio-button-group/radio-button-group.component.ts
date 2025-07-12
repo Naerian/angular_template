@@ -16,7 +16,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { RadioButtonComponent } from '../radio-button.component';
 import { InputsUtilsService } from '../../services/inputs-utils.service';
 import { RadioButtonsOrientation } from '../models/radio-button.model';
-import { Subject, take, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * @name
@@ -80,6 +80,19 @@ export class RadioButtonGroupComponent
   }
 
   /**
+   * Indica si el grupo de radio buttons está deshabilitado.
+   * Si se establece en `true`, todos los radio buttons dentro del grupo estarán deshabilitados.
+   */
+  _disabled: WritableSignal<boolean> = signal(false);
+  @Input()
+  set disabled(val: boolean) {
+    this._disabled.set(val);
+  }
+  get disabled(): boolean {
+    return this._disabled();
+  }
+
+  /**
    * Valor actualmente seleccionado en el grupo.
    */
   _value: WritableSignal<any> = signal(null);
@@ -100,11 +113,16 @@ export class RadioButtonGroupComponent
    * Señal para generar un ID único para el contenedor principal del grupo (el div con role="radiogroup").
    */
   _groupId: WritableSignal<string> = signal('');
-
-  /**
-   * Señal para generar un ID único para la etiqueta (<label>).
-   */
   _labelId: WritableSignal<string> = signal('');
+  @Input()
+  set id(value: string) {
+    this._groupId.set(value);
+    this._labelId.set(`label_${value}`);
+    this._name.set(value);
+  }
+  get id(): string {
+    return this._groupId();
+  }
 
   private readonly _inputsUtilsService = inject(InputsUtilsService);
   private readonly ngUnsubscribe$: Subject<any> = new Subject<any>();
@@ -147,7 +165,8 @@ export class RadioButtonGroupComponent
    * Este ID se puede usar para asociar el grupo con su etiqueta.
    */
   createUniqueId(): void {
-    const uniqueId = this._inputsUtilsService.createUniqueId('radio-group_');
+    if(this._groupId()) return;
+    const uniqueId = this._inputsUtilsService.createUniqueId('radio-group');
     this._name.set(uniqueId); // Asigna un nombre único al grupo
     this._groupId.set(uniqueId);
     this._labelId.set(`label_${uniqueId}`);
@@ -158,18 +177,19 @@ export class RadioButtonGroupComponent
    */
   private setRadioButtonAttributes(button: RadioButtonComponent): void {
     if (this.radioButtons && this.radioButtons.length > 0 && button) {
-      const uniqueId = this._inputsUtilsService.createUniqueId('radio-button_');
+      const uniqueId = this._inputsUtilsService.createUniqueId('radio-button');
       button.id = uniqueId; // Asigna un ID único basado en el valor
       button.name = this.name; // Asegura que todos los radios tienen el mismo nombre
       button.checked = button.value === this.value; // Inicializa el estado
-      button.change.pipe(
-        takeUntil(this.ngUnsubscribe$),
-      ).subscribe((selectedVal) => {
-        this.writeValue(selectedVal); // Actualiza el valor del grupo
-        this.onChange(selectedVal); // Notifica el cambio al formulario
-        this.onTouched(); // Marca el control como 'touched'
-        this.change.emit(selectedVal); // Emite el evento de cambio
-      });
+      button.disabled = button?.disabled ? button.disabled : this.disabled; // Establece el estado deshabilitado si el grupo está deshabilitado
+      button.change
+        .pipe(takeUntil(this.ngUnsubscribe$))
+        .subscribe((selectedVal) => {
+          this.writeValue(selectedVal); // Actualiza el valor del grupo
+          this.onChange(selectedVal); // Notifica el cambio al formulario
+          this.onTouched(); // Marca el control como 'touched'
+          this.change.emit(selectedVal); // Emite el evento de cambio
+        });
     }
   }
 

@@ -4,7 +4,11 @@
   [attr.data-calendar-id]="calendarId"
 >
   @if (viewMode() === VIEW_MODE.DEFAULT) {
-    <div class="calendar-picker__view calendar-picker__view--default">
+    <div
+      class="calendar-picker__view calendar-picker__view--default"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+    >
       <div class="calendar-picker__header">
         <button
           class="calendar-picker__header-btn"
@@ -63,48 +67,72 @@
         <div
           class="calendar-picker__grid calendar-picker__grid--days"
           role="grid"
+          [attr.aria-label]="_translations.selectDay"
         >
-          @for (day of daysInMonth(); track day.date.valueOf()) {
-            @if (day.isDisabled || !day.isCurrentMonth) {
-              <span
-                class="calendar-picker__grid-day"
-                [class.calendar-picker__grid-day--inactive]="
-                  !day.isCurrentMonth
-                "
-                [class.calendar-picker__grid-day--disabled]="day.isDisabled"
-                [class.calendar-picker__grid-day--selected]="day.isSelected"
-                [class.calendar-picker__grid-day--in-range]="day.isInRange"
-                [class.calendar-picker__grid-day--today]="day.isToday"
-                [attr.aria-selected]="day.isSelected"
-                [attr.aria-disabled]="true"
-                [attr.aria-current]="day.isToday"
-                [attr.aria-label]="getDayAccessibilityLabel(day)"
-                [title]="getDayAccessibilityLabel(day)"
-              >
-                {{ day.date.date() }}
-              </span>
-            } @else {
-              <button
-                #dayButton
-                type="button"
-                class="calendar-picker__grid-day"
-                role="gridcell"
-                [attr.tabindex]="
-                  day.isSelected || (!hasSelectedDays() && day.isToday) ? 0 : -1
-                "
-                [class.calendar-picker__grid-day--selected]="day.isSelected"
-                [class.calendar-picker__grid-day--today]="day.isToday"
-                [attr.aria-selected]="day.isSelected"
-                [attr.aria-disabled]="day.isDisabled"
-                [attr.aria-current]="day.isToday"
-                [attr.aria-label]="getDayAccessibilityLabel(day)"
-                [attr.data-day]="day.date.toDate() | date: 'dd'"
-                [title]="getDayAccessibilityLabel(day)"
-                (click)="selectDay(day, $event)"
-              >
-                {{ day.date.date() }}
-              </button>
-            }
+          @for (
+            week of daysInMonth();
+            track week[0].date.valueOf();
+            let weekIdx = $index
+          ) {
+            <div role="row" class="calendar-picker__grid-week">
+              @for (
+                day of week;
+                track day.date.valueOf();
+                let dayIdx = $index
+              ) {
+                @if (day.isDisabled || !day.isCurrentMonth) {
+                  <span
+                    class="calendar-picker__grid-day"
+                    [class.calendar-picker__grid-day--inactive]="
+                      !day.isCurrentMonth
+                    "
+                    [class.calendar-picker__grid-day--disabled]="day.isDisabled"
+                    [class.calendar-picker__grid-day--selected]="day.isSelected"
+                    [class.calendar-picker__grid-day--in-range]="day.isInRange"
+                    [class.calendar-picker__grid-day--today]="day.isToday"
+                    [attr.aria-selected]="day.isSelected"
+                    [attr.aria-disabled]="true"
+                    [attr.aria-current]="day.isToday"
+                    [attr.aria-label]="getDayAccessibilityLabel(day)"
+                    [attr.data-day]="day.date.toDate() | date: 'dd'"
+                    [title]="getDayAccessibilityLabel(day)"
+                    role="presentation"
+                  >
+                    {{ day.date.date() }}
+                  </span>
+                } @else {
+                  <button
+                    #dayButton
+                    type="button"
+                    class="calendar-picker__grid-day"
+                    role="gridcell"
+                    [attr.tabindex]="
+                      day.isSelected || (!hasSelectedDays() && day.isToday)
+                        ? 0
+                        : -1
+                    "
+                    [class.calendar-picker__grid-day--selected]="day.isSelected"
+                    [class.calendar-picker__grid-day--today]="day.isToday"
+                    [attr.aria-selected]="day.isSelected"
+                    [attr.aria-disabled]="day.isDisabled"
+                    [attr.aria-current]="day.isToday"
+                    [attr.aria-label]="getDayAccessibilityLabel(day)"
+                    [attr.data-day]="day.date.toDate() | date: 'dd'"
+                    [attr.data-date]="day.date.toISOString()"
+                    [attr.data-current-month]="day.isCurrentMonth"
+                    [attr.data-selected]="day.isSelected"
+                    [attr.data-today]="day.isToday"
+                    [attr.data-in-range]="day.isInRange"
+                    [disabled]="day.isDisabled || !day.isCurrentMonth"
+                    [attr.data-day-index]="dayIdx"
+                    [title]="getDayAccessibilityLabel(day)"
+                    (click)="selectDay(day, $event)"
+                  >
+                    {{ day.date.date() }}
+                  </button>
+                }
+              }
+            </div>
           }
         </div>
       </div>

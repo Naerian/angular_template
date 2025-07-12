@@ -4,85 +4,23 @@
 .neo-radio-button {
   display: flex;
   align-items: center;
-  cursor: pointer;
   user-select: none;
-  @include transition(opacity 0.2s ease);
   color: var(--color-text);
 
   &--disabled {
-    cursor: default;
     opacity: 0.6;
     .neo-radio-button__label {
       cursor: default;
     }
   }
 
-  &__input {
-    position: absolute;
-    opacity: 0;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    border: 0;
-    padding: 0;
-    clip: rect(0 0 0 0);
-    overflow: hidden;
-    white-space: nowrap;
-  }
-
-  &__input:focus ~ &__outer-circle,
-  &__input:checked ~ &__outer-circle,
-  &__input:focus-visible:not([disabled]) ~ &__outer-circle,
-  &__input:active:not([disabled]) ~ &__outer-circle {
-    @include outline-focus;
-  }
-
-  &__outer-circle {
-    @include flex-center;
-    @include transition(border-color 0.2s ease, background-color 0.2s ease);
-    border: var(--border-width-base) solid var(--border-field-color);
-    border-radius: 50%;
-    box-sizing: border-box;
-
-    // Tamaño dinámico para el radio button según el tamaño del componente
-    @each $size-key, $size in $control-box-sizes {
-      &--#{$size-key} {
-        @include component-control-box-size($size-key);
-      }
-    }
-  }
-
-  &__inner-circle {
-    width: 0;
-    height: 0;
-    border-radius: var(--border-radius-circle);
-    background-color: var(--color-primary);
-    @include transition(width 0.2s ease, height 0.2s ease);
-  }
-
-  &__label {
-    color: var(--color-text);
-    margin: 0 !important;
-    padding-left: var(--spacing-xs);
-    cursor: pointer;
-
-    // Tamaño dinámico para la fuente según el tamaño del componente
-    @each $size-key, $font-size in $component-font-sizes {
-      &--#{$size-key} {
-        font-size: var(--component-font-size-#{$size-key});
-        line-height: var(--component-font-size-#{$size-key});
-      }
-    }
-  }
-
-  // Estilos cuando el radio button está seleccionado
   &--checked {
     .neo-radio-button__outer-circle {
       border-color: var(--color-primary);
       background-color: var(--bg-field-color);
     }
+
     .neo-radio-button__inner-circle {
-      // Tamaño dinámico para el radio button según el tamaño del componente
       @each $key, $size in $control-box-sizes {
         &--#{$key} {
           width: calc(var(--control-box-size-#{$key}) * 0.55);
@@ -92,15 +30,78 @@
     }
   }
 
-  // Efecto hover
   &:not(&--disabled):hover {
     .neo-radio-button__outer-circle {
       border-color: var(--hover-border-field-color);
     }
   }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    color: var(--color-text);
+    width: 100%;
+
+    .neo-radio-button__input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      border: 0;
+      padding: 0;
+      clip: rect(0 0 0 0);
+      overflow: hidden;
+      white-space: nowrap;
+
+      &:focus-visible + .neo-radio-button__outer-circle,
+      &:checked + .neo-radio-button__outer-circle {
+        @include outline-focus;
+      }
+    }
+
+    .neo-radio-button__outer-circle {
+      @include flex-center;
+      @include transition(border-color 0.2s ease, background-color 0.2s ease);
+      border: var(--border-width-base) solid var(--border-field-color);
+      border-radius: 50%;
+      box-sizing: border-box;
+
+      @each $size-key, $size in $control-box-sizes {
+        &--#{$size-key} {
+          @include component-control-box-size($size-key);
+        }
+      }
+
+      .neo-radio-button__inner-circle {
+        border-radius: var(--border-radius-circle);
+        background-color: var(--color-primary);
+        @include transition(width 0.2s ease, height 0.2s ease);
+
+        &:not(&--checked) {
+          width: 0;
+          height: 0;
+        }
+      }
+    }
+
+    .neo-radio-button__text {
+      padding-left: var(--spacing-xs);
+      color: var(--color-text);
+
+      @each $size-key, $font-size in $component-font-sizes {
+        &--#{$size-key} {
+          font-size: var(--component-font-size-#{$size-key});
+          line-height: var(--component-font-size-#{$size-key});
+        }
+      }
+    }
+  }
 }
 
-// Si el group tiene "label" se aplica un estilo especial
 .neo-radio-button-group {
   .neo-radio-button__label {
     font-weight: var(--font-weight-medium) !important;

@@ -119,6 +119,7 @@ export class InputComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
+    if(this._id()) return;
     this._id?.set(this._inputsUtilsService.createUniqueId('input'));
     this._labelId?.set(`label_${this._id()}`);
   }
@@ -129,7 +130,10 @@ export class InputComponent implements ControlValueAccessor {
    * @return {string}
    */
   get ariaDescribedByCustom(): string {
-    return this._inputsUtilsService.getAriaDescribedByCustom(this._id());
+    return this._inputsUtilsService.getAriaDescribedBy(this._id(), [
+      'hint',
+      'error',
+    ]);
   }
 
   /**

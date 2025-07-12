@@ -87,7 +87,15 @@ export class OptionComponent implements FocusableOption {
 
   @Input() value!: any;
 
-  private _id: WritableSignal<string> = signal('');
+  _id: WritableSignal<string> = signal('');
+  @Input()
+  set id(value: string) {
+    this._id.set(value);
+  }
+  get id(): string {
+    return this._id();
+  }
+
   private _size: WritableSignal<InputSize> = signal('m');
   private _disabled: WritableSignal<boolean> = signal(false);
   private _selected: WritableSignal<boolean> = signal(false);
@@ -129,6 +137,7 @@ export class OptionComponent implements FocusableOption {
    * Método para generar un identificador único para la opción
    */
   createUniqueId(): void {
+    if(this._id()) return;
     this._id?.set(this._inputsUtilsService.createUniqueId('select-option'));
   }
 

@@ -34,6 +34,7 @@ export interface NeoUITranslations {
 
   // Textos del componente Calendar
   weekDaysShort: string[];
+  selectDay: string;
   months: string[];
   shortMonths: string[];
   prevMonth: string;

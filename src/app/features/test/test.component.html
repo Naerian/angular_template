@@ -555,20 +555,24 @@
     <div class="col-3">
       <neo-radio-button-group
         [orientation]="'vertical'"
-        [label]="'Radiobutton vertical'"
+        [label]="'Radiobutton vertical con disabled (opción individual)'"
       >
-        <neo-radio-button [value]="1">Opción 1</neo-radio-button>
-        <neo-radio-button [value]="2">Opción 2</neo-radio-button>
-        <neo-radio-button [value]="3">Opción 3</neo-radio-button>
-      </neo-radio-button-group>
-    </div>
-    <div class="col-3">
-      <neo-radio-button-group [orientation]="'vertical'" [label]="'Radiobutton vertical con disabled'">
         <neo-radio-button [value]="1">Opción 1</neo-radio-button>
         <neo-radio-button [value]="2">Opción 2</neo-radio-button>
         <neo-radio-button [value]="3" [disabled]="true"
           >Opción 3</neo-radio-button
         >
+      </neo-radio-button-group>
+    </div>
+    <div class="col-3">
+      <neo-radio-button-group
+        [orientation]="'vertical'"
+        [label]="'Radiobutton vertical con todos disabled (grupo completo)'"
+        [disabled]="true"
+      >
+        <neo-radio-button [value]="1" [label]="'Opción 1'"></neo-radio-button>
+        <neo-radio-button [value]="2">Opción 2</neo-radio-button>
+        <neo-radio-button [value]="3">Opción 3</neo-radio-button>
       </neo-radio-button-group>
     </div>
   </div>

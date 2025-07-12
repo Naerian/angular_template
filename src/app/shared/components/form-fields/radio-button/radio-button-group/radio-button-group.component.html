@@ -2,8 +2,9 @@
   @if (label) {
     <label
       class="neo-radio-button-group__label"
-      [for]="_groupId()"
       [attr.id]="_labelId()"
+      [attr.aria-label]="label"
+      [attr.title]="label"
     >
       <span [innerHtml]="label!"></span>
     </label>
@@ -14,6 +15,7 @@
       label !== undefined && label !== null && label !== ''
     "
     role="radiogroup"
+    [attr.aria-labelledby]="_labelId()"
   >
     <ng-content></ng-content>
   </div>

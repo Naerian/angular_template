@@ -4,6 +4,6 @@
 .neo-form-hint {
   @include flex-col-start;
   margin-top: var(--spacing-xxs);
-  font-size: var(--component-font-size-xs);
+  font-size: var(--component-font-size-s);
   color: var(--color-text-secondary);
 }

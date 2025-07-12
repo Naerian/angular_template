@@ -119,6 +119,11 @@
     min-width: var(--calendar-grid-width);
     align-content: center;
     justify-content: center;
+    margin-top: var(--spacing-xs);
+
+    &-week {
+      display: contents;
+    }
 
     &--days {
       grid-template-columns: repeat(7, 1fr);
@@ -133,12 +138,21 @@
     }
   }
 
+  &__grid-day {
+    width: var(--calendar-day-size);
+    height: var(--calendar-day-size);
+  }
+
+  &__grid-month,
+  &__grid-year {
+    width: 100%;
+    height: var(--calendar-day-size);
+  }
+
   &__grid-day,
   &__grid-month,
   &__grid-year {
     @include flex-center;
-    width: var(--calendar-day-size);
-    height: var(--calendar-day-size);
     background-color: transparent;
     border: none;
     font-size: var(--component-font-size-m);

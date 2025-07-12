@@ -212,5 +212,5 @@ $calendar-width: calc(
 ); // Ancho del calendario, incluyendo márgenes y paddings
 $calendar-height: calc(
   $calendar-grid-height + $calendar-header-height + $calendar-weekdays-height +
-    ($spacing-xs * 2) + ($border-width-base * 2)
+    ($spacing-xs * 2) + ($border-width-base * 2) + spacing-xs
 ); // Altura del calendario, incluyendo encabezado, días de la semana y celdas

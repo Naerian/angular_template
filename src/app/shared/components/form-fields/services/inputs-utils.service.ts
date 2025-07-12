@@ -5,8 +5,6 @@ import { UtilsService } from '../../../../core/services/utils/utils.service';
   providedIn: 'root',
 })
 export class InputsUtilsService {
-  private counter = 0;
-
   constructor(private readonly _utilsService: UtilsService) {}
 
   /**
@@ -16,18 +14,20 @@ export class InputsUtilsService {
    * @returns {string} - LabelId creado a partir del nombre o label del campo
    */
   createUniqueId(name?: string): string {
-    return `${this._utilsService.stringToSlug(name, '_')}_${this.counter}_${crypto.randomUUID()}`;
+    return `${this._utilsService.stringToSlug(name, '_')}_${crypto.randomUUID()}`;
   }
 
   /**
    * Función para crear un aria-describedby personalizado
    * y generar un ID único para el aria-describedby.
    * @param {string} id - ID del campo para el que se quiere crear el
-   * @returns {string} - Aria-describedby personalizado
+   * @param {string[]} suffixes - Sufijos a añadir al ID del campo (Por ejemplo: 'hint', 'error')
    */
-  getAriaDescribedByCustom(id: string): string {
+  getAriaDescribedBy(
+    id: string,
+    suffixes: string[] = [],
+  ): string {
     if (!id) return '';
-    const ids = [`${id}-hint`, `${id}-error`];
-    return ids.join(' ');
+    return suffixes.map((suffix) => `${id}-${suffix}`).join(' ');
   }
 }

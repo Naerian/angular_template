@@ -105,8 +105,8 @@ export class RadioButtonComponent {
     return this._title();
   }
 
-  // Variable para comprobar si el checkbox tiene contenido proyectado
-  // Se usa para mostrar el contenido proyectado en el label del checkbox
+  // Variable para comprobar si el radiobutton tiene contenido proyectado
+  // Se usa para mostrar el contenido proyectado en el label del radiobutton
   // Si no hay contenido proyectado, se usa el label o una cadena vacía
   // Se inicializa en false y se comprueba en ngAfterViewInit
   hasProjectedContent = false;
@@ -116,8 +116,12 @@ export class RadioButtonComponent {
    */
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
 
+  ngAfterViewInit() {
+    this.computedTitle();
+  }
+
   /**
-   * Función para obtener el título del checkbox
+   * Función para obtener el título del radiobutton
    * Si se ha definido un título, se usa ese
    * Si no, se usa el contenido proyectado o el label
    */

@@ -19,6 +19,7 @@ export const NEOUI_DEFAULT_I18N: NeoUITranslations = {
 
   // Textos del componente Calendar
   weekDaysShort: ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'],
+  selectDay: 'Seleccionar día',
   months: [
     'Enero',
     'Febrero',

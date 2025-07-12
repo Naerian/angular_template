@@ -259,7 +259,7 @@ export class ProgressBarComponent {
    * Este ID se puede usar para asociar la barra de progreso con su etiqueta.
    */
   createUniqueId(): void {
-    // Generar IDs únicos al inicializar
+    if(this._id()) return;
     this._id.set('progress_bar_' + crypto.randomUUID());
     this._labelId.set(`label_${this._id()}`);
   }

@@ -134,16 +134,15 @@ export class CheckboxComponent implements ControlValueAccessor {
    */
   createUniqueId() {
     if (this._id()) return; // Si ya existe, no generamos otro
-    const uniqueId = this._inputsUtilsService.createUniqueId('checkbox_');
+    const uniqueId = this._inputsUtilsService.createUniqueId('checkbox');
     this._id.set(uniqueId);
-    this._labelId.set(`${uniqueId}__label`);
+    this._labelId.set(`label_${uniqueId}`);
   }
 
   /**
    * Función para alternar el estado checked del checkbox
    * Si el checkbox está deshabilitado, no hace nada
    * Si no, alterna el estado checked y emite el evento changed
-   * @param {Event} event - Evento del input
    */
   toggleChecked() {
     if (this.disabled) return;

@@ -2,43 +2,44 @@
   class="neo-radio-button neo-radio-button--{{ inputSize }}"
   [class.neo-radio-button--checked]="checked"
   [class.neo-radio-button--disabled]="disabled"
-  (click)="onClick()"
 >
-  <input
-    class="neo-radio-button__input"
-    type="radio"
-    [id]="_id()"
-    [name]="_name()"
-    [attr.aria-labelledby]="_labelId()"
-    [attr.aria-disabled]="disabled"
-    [attr.aria-checked]="checked"
-    [attr.title]="_title()"
-    [value]="value"
-    [checked]="checked"
-    [disabled]="disabled"
-    tabindex="-1"
-    aria-hidden="true"
-  />
-  <div
-    class="neo-radio-button__outer-circle neo-radio-button__outer-circle--{{
-      inputSize
-    }}"
-  >
-    <div
-      class="neo-radio-button__inner-circle neo-radio-button__inner-circle--{{
-        inputSize
-      }}"
-    ></div>
-  </div>
   <label
     class="neo-radio-button__label neo-radio-button__label--{{ inputSize }}"
-    [for]="_id()"
     [attr.id]="_labelId()"
-    #contentWrapper
+    [attr.aria-label]="label"
+    [attr.title]="_title()"
+    [attr.aria-checked]="checked"
+    [attr.aria-disabled]="disabled"
+    [class.neo-radio-button__label--checked]="checked"
+    role="radio"
+    tabindex="0"
   >
-    <ng-content></ng-content>
-    @if (!hasProjectedContent) {
+    <input
+      class="neo-radio-button__input"
+      type="radio"
+      [name]="_name()"
+      [value]="value"
+      [checked]="checked"
+      [disabled]="disabled"
+      (click)="onClick()"
+    />
+    <div
+      class="
+        neo-radio-button__outer-circle 
+        neo-radio-button__outer-circle--{{ inputSize }}
+      "
+    >
+      <div
+        class="
+          neo-radio-button__inner-circle 
+          neo-radio-button__inner-circle--{{ inputSize }}
+        "
+        [class.neo-radio-button__inner-circle--checked]="checked"
+      ></div>
+    </div>
+    <div class="neo-radio-button__text" #contentWrapper>
+      <ng-content></ng-content>
       {{ label || "" }}
-    }
+    </div>
   </label>
 </div>
