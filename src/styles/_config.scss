@@ -16,23 +16,22 @@ $font-family-base:
   "Segoe UI Emoji",
   "Noto Color Emoji";
 
-$font-size-xs: 0.625rem; // 10px
-$font-size-s: 0.75rem; // 12px
-$font-size-xm: 0.875rem; // 14px
-$font-size-m: 1rem; // 16px
-$font-size-l: 1.125rem; // 18px
-$font-size-xl: 1.25rem; // 20px
-$font-size-xxl: 1.5rem; // 24px
-$font-size-xxxl: 2rem; // 32px
-$font-size-xxxxl: 2.5rem; // 40px
+$font-size-xs: 0.625rem;
+$font-size-s: 0.75rem;
+$font-size-xm: 0.8125rem;
+$font-size-m: 0.875rem; // Base
+$font-size-l: 1rem;
+$font-size-xl: 1.125rem;
+$font-size-xxl: 1.375rem;
+$font-size-xxxl: 1.75rem;
+$font-size-xxxxl: 2.25rem;
 
-$font-size-base: $font-size-m; // 16px
+$font-size-base: $font-size-m;
 
 $font-weight-regular: 400;
 $font-weight-medium: 500;
 $font-weight-semibold: 600;
 $font-weight-bold: 700;
-
 
 $line-height-h6: 1.5;
 $line-height-h5: 1.4;
@@ -114,12 +113,12 @@ $component-font-sizes: (
 );
 
 $component-line-heights: (
-  xs: 1.2,
-  s: 1.25,
-  xm: 1.3,
-  m: 1.4,
-  l: 1.4,
-  xl: 1.5,
+  xs: $line-height-xs,
+  s: $line-height-s,
+  xm: $line-height-xm,
+  m: $line-height-m,
+  l: $line-height-l,
+  xl: $line-height-xl,
 );
 
 // Pesos de fuente por tamaño
@@ -136,12 +135,21 @@ $component-font-weights: (
 // PROGRESS BARS
 // =======================
 $progress-bar-heights: (
-  xs: 0.85rem,
+  xs: 0.95rem,
   s: 1rem,
   xm: 1.2rem,
   m: 2rem,
   l: 2.5rem,
   xl: 3rem,
+);
+
+$progress-bar-font-sizes: (
+  xs: $font-size-xs,
+  s: $font-size-s,
+  xm: $font-size-xm,
+  m: $font-size-m,
+  l: $font-size-l,
+  xl: $font-size-xl,
 );
 
 // =======================

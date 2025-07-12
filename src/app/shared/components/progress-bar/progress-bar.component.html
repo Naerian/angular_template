@@ -15,12 +15,11 @@
   [class.neo-progress-bar-container--no-label]="!_finalLabelText()"
 >
   @if (_finalLabelText() && labelPosition() === "top") {
-    <label
+    <span
       class="neo-progress-bar__label"
       [class]="'neo-progress-bar__label--' + size()"
-      [attr.id]="_labelId()"
       ><span [innerHtml]="_finalLabelText()"></span
-    ></label>
+    ></span>
   }
 
   <div
@@ -41,6 +40,13 @@
     [class.neo-progress-bar--value-right]="
       valuePosition() === 'right' && !combineLabelValue()
     "
+    [class.neo-progress-bar--labeled]="
+      _finalLabelText() ||
+      combineLabelValue() ||
+      (valuePosition() !== 'hidden' &&
+        valuePosition() !== 'inside' &&
+        _computedValueOnlyText())
+    "
     role="progressbar"
     [attr.aria-valuenow]="!indeterminate() ? value() : null"
     [attr.aria.valuemin]="0"
@@ -49,12 +55,11 @@
     [attr.aria-labelledby]="label() ? _labelId() : null"
   >
     @if (_finalLabelText() && labelPosition() === "left") {
-      <label
+      <span
         class="neo-progress-bar__label"
         [class]="'neo-progress-bar__label--' + size()"
-        [attr.id]="_labelId()"
         ><span [innerHtml]="_finalLabelText()"></span
-      ></label>
+      ></span>
     }
 
     @if (
@@ -89,21 +94,19 @@
       </div>
     </div>
     @if (_finalLabelText() && labelPosition() === "right") {
-      <label
+      <span
         class="neo-progress-bar__label"
         [class]="'neo-progress-bar__label--' + size()"
-        [attr.id]="_labelId()"
         ><span [innerHtml]="_finalLabelText()"></span
-      ></label>
+      ></span>
     }
   </div>
 
   @if (_finalLabelText() && labelPosition() === "bottom") {
-    <label
+    <span
       class="neo-progress-bar__label"
       [class]="'neo-progress-bar__label--' + size()"
-      [attr.id]="_labelId()"
       ><span [innerHtml]="_finalLabelText()"></span
-    ></label>
+    ></span>
   }
 </div>
