@@ -4,11 +4,7 @@
   [attr.data-calendar-id]="calendarId"
 >
   @if (viewMode() === VIEW_MODE.DEFAULT) {
-    <div
-      class="calendar-picker__view calendar-picker__view--default"
-      cdkTrapFocus
-      [cdkTrapFocusAutoCapture]="true"
-    >
+    <div class="calendar-picker__view calendar-picker__view--default">
       <div class="calendar-picker__header">
         <button
           class="calendar-picker__header-btn"

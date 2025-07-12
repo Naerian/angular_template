@@ -637,6 +637,14 @@ export class CalendarComponent implements OnInit {
    */
   focusInitialDay() {
     setTimeout(() => {
+
+      // Si el calendario no se ha abierto por un overlay, no hacemos nada.
+      // Esto es útil para evitar que el calendario se enfoque automáticamente
+      // cuando se utiliza en un contexto donde no se requiere el enfoque automático.
+      // Por ejemplo, si se abre el calendario desde un botón o enlace, no queremos que
+      // el calendario se enfoque automáticamente al abrirse.
+      if (!this.isOpenedByOverlay) return;
+
       // Obtenemos todos los días del mes actual.
       const allCalendarDays = this.daysInMonth().flat();
 
