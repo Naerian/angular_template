@@ -1,0 +1,262 @@
+<!-- NgTemplate de la opción del dropdown -->
+<ng-template
+  #optionButtonTemplate
+  let-optionData="option"
+  let-groupLabelId="groupLabelId"
+>
+  <button
+    focusableItem
+    #option="focusableItem"
+    role="option"
+    class="
+      neo-dropdown__panel__options__option
+      neo-dropdown__panel__options__option--{{ inputSize() }}
+    "
+    [class.neo-dropdown__panel__options__option--selected]="
+      isOptionSelected(optionData)
+    "
+    [class.neo-dropdown__panel__options__option--disabled]="optionData.disabled"
+    [attr.tabindex]="-1"
+    (click)="selectOption(optionData)"
+    [disabled]="optionData.disabled"
+    [attr.role]="'option'"
+    [attr.id]="optionData.id"
+    [attr.aria-selected]="isOptionSelected(optionData)"
+    [attr.aria-disabled]="optionData.disabled"
+    [attr.aria-label]="optionData.label"
+    [attr.aria-labelledby]="groupLabelId ? groupLabelId : null"
+    [label]="optionData.label"
+  >
+    {{ optionData.label }}
+  </button>
+</ng-template>
+
+<!-- NgTemplate cuando no hay resultados -->
+<ng-template #noResultsTemplate>
+  <div
+    class="
+      neo-dropdown__panel__options__no-results
+      neo-dropdown__panel__options__no-results--{{ inputSize() }}
+    "
+  >
+    {{ _translations.noResults }}
+  </div>
+</ng-template>
+
+@if (label()) {
+  <label
+    [for]="_id()"
+    [attr.id]="_labelId()"
+    class="neo-dropdown__label"
+    (click)="onLabelClick($event)"
+  >
+    {{ label() }}
+  </label>
+}
+
+<div
+  class="neo-dropdown"
+  [class.neo-dropdown--open]="isOpen()"
+  [class.neo-dropdown--disabled]="_disabled()"
+>
+  <div
+    #dropdownInput
+    class="neo-dropdown__field neo-dropdown__field--{{ inputSize() }}"
+    [class.neo-select__field--clear]="showClear()"
+    [class.neo-select__field--empty]="filteredOptions().length === 0"
+    [class.neo-select__field--multiple]="multiple()"
+    [class.neo-select__field--has-error]="
+      ngControl?.control?.errors &&
+      (ngControl?.control?.dirty || ngControl?.control?.touched)
+    "
+    (blur)="onBlur()"
+    (click)="toggleDropdown($event)"
+    (keydown.enter)="toggleDropdown($event)"
+    (keydown.space)="toggleDropdown($event)"
+    (keydown.arrowDown)="openDropdown($event)"
+    (keydown.arrowUp)="openDropdown($event)"
+    [attr.title]="getTitle() || _translations.selectOption"
+    [attr.aria-controls]="isOpen() ? _panelId() : null"
+    [attr.aria-labelledby]="_labelId()"
+    [attr.id]="_id()"
+    [attr.tabindex]="_disabled() ? -1 : 0"
+    [attr.aria-label]="getTitle() || _translations.selectOption"
+    [attr.aria-haspopup]="'listbox'"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-labelledby]="label() ? _labelId() : _id()"
+    [attr.role]="'combobox'"
+    #dropdown="cdkOverlayOrigin"
+    [showClear]="showClear()"
+    (clear)="clearSelection()"
+    cdkOverlayOrigin
+  >
+    <span class="neo-dropdown__field__value">
+      @if (multiple()) {
+        @if (_value()?.length) {
+          {{
+            _translations.multipleChoices.replace(
+              "{choices}",
+              _value()?.length.toString()
+            )
+          }}
+        } @else {
+          {{ _translations.selectOptions }}
+        }
+      } @else {
+        {{ displayLabel || _translations.selectOption }}
+      }
+    </span>
+    <span
+      class="
+        neo-dropdown__field__icon
+        neo-dropdown__field__icon--{{ inputSize() }}
+      "
+      [class.neo-dropdown__field__icon--open]="isOpen()"
+    >
+      <i class="ri-arrow-down-s-line"></i>
+    </span>
+  </div>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="dropdown"
+    [cdkConnectedOverlayOpen]="isOpen()"
+    [cdkConnectedOverlayPositions]="overlayPositions"
+    [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+    [cdkConnectedOverlayWidth]="_dropdownWidth()"
+    (attach)="onOverlayAttached()"
+    (detach)="onOverlayDetached()"
+  >
+    <div
+      class="
+        neo-dropdown__panel
+        neo-dropdown__panel--{{ inputSize() }}
+      "
+      #dropdownPanel
+      [@fadeInOutScale]="isOpen() ? '*' : 'void'"
+      [attr.id]="_panelId()"
+      [attr.aria-labelledby]="_labelId()"
+      [cdkTrapFocus]="true"
+      [cdkTrapFocusAutoCapture]="true"
+    >
+      @if (searchable()) {
+        <div class="neo-dropdown__panel__search">
+          <neo-input
+            #inputSearch
+            type="text"
+            [placeholder]="_translations.search + '...'"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearchTermChange()"
+            class="neo-dropdown__panel__search__input"
+            [attr.aria-label]="_translations.search"
+            [inputSize]="inputSize()"
+            [id]="'search_' + _id()"
+            [autocomplete]="'off'"
+            [autocapitalize]="'off'"
+            [attr.aria-autocomplete]="'list'"
+          ></neo-input>
+        </div>
+      }
+
+      @if (shouldUseVirtualScroll) {
+        @if (filteredOptions().length > 0) {
+          <cdk-virtual-scroll-viewport
+            [itemSize]="getItemSize()"
+            [minBufferPx]="200"
+            [maxBufferPx]="400"
+            class="neo-dropdown__panel__options-viewport"
+            [style.height.px]="5 * getItemSize()"
+            tabindex="0"
+            role="listbox"
+            [attr.aria-labelledby]="label() ? _labelId() : _id()"
+            [attr.id]="_optionsId()"
+            (keydown)="onKeydown($event)"
+          >
+            @for (item of filteredOptions(); track $index) {
+              @if (isDropdownGroup(item)) {
+                <div
+                  class="
+                    neo-dropdown__panel__options__group-label
+                    neo-dropdown__panel__options__group-label--{{ inputSize() }}
+                  "
+                  [attr.id]="item.label + '-group-label'"
+                >
+                  {{ item.label }}
+                </div>
+                @for (option of item.options; track option.value) {
+                  <ng-container
+                    *ngTemplateOutlet="
+                      optionButtonTemplate;
+                      context: {
+                        option: option,
+                        groupLabelId: item.label + '-group-label'
+                      }
+                    "
+                  ></ng-container>
+                }
+              } @else {
+                <ng-container
+                  *ngTemplateOutlet="
+                    optionButtonTemplate;
+                    context: {
+                      option: item
+                    }
+                  "
+                ></ng-container>
+              }
+            }
+          </cdk-virtual-scroll-viewport>
+        } @else {
+          <ng-container *ngTemplateOutlet="noResultsTemplate"></ng-container>
+        }
+      } @else {
+        <div
+          class="neo-dropdown__panel__options"
+          tabindex="0"
+          role="listbox"
+          [style.height.px]="5 * getItemSize()"
+          [attr.aria-labelledby]="label() ? _labelId() : _id()"
+          [attr.id]="_optionsId()"
+          (keydown)="onKeydown($event)"
+        >
+          @for (item of filteredOptions(); track $index) {
+            @if (isDropdownGroup(item)) {
+              <div
+                class="
+                  neo-dropdown__panel__options__group-label
+                  neo-dropdown__panel__options__group-label--{{ inputSize() }}
+                "
+                [class.neo-dropdown__panel__options__group-label--disabled]="
+                  item.disabled
+                "
+                [attr.id]="item.id"
+              >
+                {{ item.label }}
+              </div>
+              @for (option of item.options; track option.value) {
+                <ng-container
+                  *ngTemplateOutlet="
+                    optionButtonTemplate;
+                    context: {
+                      option: option,
+                      groupLabelId: option?.idGroup ?? null
+                    }
+                  "
+                ></ng-container>
+              }
+            } @else {
+              <ng-container
+                *ngTemplateOutlet="
+                  optionButtonTemplate;
+                  context: { option: item }
+                "
+              ></ng-container>
+            }
+          } @empty {
+            <ng-container *ngTemplateOutlet="noResultsTemplate"></ng-container>
+          }
+        </div>
+      }
+    </div>
+  </ng-template>
+</div>

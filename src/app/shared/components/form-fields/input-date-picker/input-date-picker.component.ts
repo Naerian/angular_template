@@ -3,6 +3,8 @@ import { Overlay, OverlayModule, ScrollStrategy } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import {
   booleanAttribute,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -69,10 +71,14 @@ import { CalendarService } from '@shared/components/calendar/services/calendar.s
     },
   ],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputDatePickerComponent implements ControlValueAccessor {
   @ViewChild('calendarOverlay', { read: ElementRef })
   calendarOverlayRef!: ElementRef;
+
+  @ViewChild('datePickerInput', { static: true })
+  datePickerInput!: ElementRef<HTMLInputElement>;
 
   // Si el campo está deshabilitado, se añade el atributo "disabled" al input
   @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
@@ -168,8 +174,9 @@ export class InputDatePickerComponent implements ControlValueAccessor {
 
   @Output() dateSelected = new EventEmitter<Date | Date[] | null>();
   @Output() change = new EventEmitter<Date | Date[] | null>();
+  @Output() blur = new EventEmitter<void>();
 
-  isDatePickerOpened: WritableSignal<boolean> = signal(false);
+  isOpened: WritableSignal<boolean> = signal(false);
   scrollStrategy: ScrollStrategy;
   overlayPositions = OVERLAY_POSITIONS;
 
@@ -180,6 +187,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   private readonly _inputsUtilsService = inject(InputsUtilsService);
   private readonly _datePickerManagerService = inject(DatePickerManagerService);
   private readonly _calendarService = inject(CalendarService);
+  private readonly _changeDetectorRef = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -188,21 +196,11 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   }
 
   /**
-   * Método para cerrar el panel al pulsar la tecla "Escape"
-   */
-  @HostListener('keydown', ['$event'])
-  _onKeydownHandler(event: KeyboardEvent) {
-    if (!this.isDatePickerOpened) return;
-    const keyCode = event.key;
-    if (keyCode === 'Escape') this.closeCalendar();
-  }
-
-  /**
    * Método para cerrar el calendario al hacer click fuera del panel
    */
   @HostListener('document:click', ['$event'])
   onOutsideClick(event: MouseEvent) {
-    if (!this.isDatePickerOpened) return;
+    if (!this.isOpened()) return;
     const clickedInside = this.calendarOverlayRef?.nativeElement.contains(
       event.target as Node,
     );
@@ -233,9 +231,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
       .pipe(takeUntil(this.destroy$))
       .subscribe((openedComponent) => {
         // Si el componente notificado no es este mismo, ciérrate.
-        if (openedComponent !== this) {
-          this.closeCalendar();
-        }
+        if (openedComponent !== this) this.closeCalendar();
       });
   }
 
@@ -243,7 +239,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if(this._id()) return;
+    if (this._id()) return;
     this._id?.set(this._inputsUtilsService.createUniqueId('input-date-picker'));
     this._labelId?.set(`label_${this._id()}`);
   }
@@ -272,7 +268,8 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * Función del evento `blur` del campo para marcar el campo como "touched"
    */
   onBlur() {
-    this.onTouched();
+    setTimeout(() => this.onTouched());
+    this.blur.emit();
   }
 
   /**
@@ -282,9 +279,8 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   setCalendarValue(value: Date | Date[] | string | string[] | null) {
     // Establecemos el valor del campo de fecha
     this.setValue(value);
-
     this.onChange(value);
-    this.onTouched();
+    setTimeout(() => this.onTouched());
 
     // Emitimos el valor REAL
     this.dateSelected.emit(this.realDateValue());
@@ -523,7 +519,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
     event?.preventDefault();
     event?.stopPropagation();
 
-    if (this.isDatePickerOpened()) this.closeCalendar();
+    if (this.isOpened()) this.closeCalendar();
     else this.openCalendar();
   }
 
@@ -534,7 +530,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
     if (this.disabled) return;
 
     // Abrimos el calendario y notificamos al servicio DatePickerManagerService
-    this.isDatePickerOpened.set(true);
+    this.isOpened.set(true);
     this._datePickerManagerService.notifyOpened(this);
   }
 
@@ -542,7 +538,20 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * Función para cerrar el calendario
    */
   closeCalendar() {
-    this.isDatePickerOpened.set(false);
+    this.isOpened.set(false);
+    this._changeDetectorRef.detectChanges(); // Detectamos cambios para actualizar la vista
+    this.onOverlayDetached();
+  }
+
+  /**
+   * Manejador para cuando el overlay se ha cerrado.
+   * Aquí se puede manejar la lógica de limpieza o de retorno del foco.
+   */
+  onOverlayDetached(): void {
+    setTimeout(() => this.onTouched());
+    if (this.datePickerInput) {
+      setTimeout(() => this.datePickerInput.nativeElement.focus());
+    }
   }
 
   /**
@@ -552,7 +561,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
     this._value.set(null);
     this.realDateValue.set(null);
     this.onChange(null);
-    this.onTouched();
+    setTimeout(() => this.onTouched());
     this.dateSelected.emit(null);
     this.change.emit(null);
   }

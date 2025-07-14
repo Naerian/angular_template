@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
-export class SelectManagerService {
+@Injectable({
+  providedIn: 'root',
+})
+export class DropdownManagerService {
   // Este subject actuará como un emisor de eventos.
   // Emitirá una referencia al componente que se acaba de abrir.
   // Los demás componentes se suscribirán a este Observable para recibir notificaciones.

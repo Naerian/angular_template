@@ -19,7 +19,9 @@ export interface NeoUITranslations {
   // Textos del componente Select
   multipleChoices: string;
   selectOption: string;
+  selectOptions: string;
   search: string;
+  noResults: string;
 
   // Textos del componente InputFile
   inputFileLabel: string;

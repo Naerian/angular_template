@@ -15,6 +15,7 @@ import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.co
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { CalendarComponent } from '@shared/components/calendar/calendar.component';
 import { CardModule } from '@shared/components/card/card.module';
+import { DropdownModule } from '@shared/components/form-fields/dropdown/dropdown.module';
 import { FormFieldsModule } from '@shared/components/form-fields/form-fields.module';
 import { InputDatePickerComponent } from '@shared/components/form-fields/input-date-picker/input-date-picker.component';
 import { MenuContextModule } from '@shared/components/menu-context/menu-context.module';
@@ -50,12 +51,11 @@ import { ToastrService } from 'ngx-toastr';
     JsonPipe,
     PaginatorComponent,
     MenuContextModule,
-    MatTableModule,
-    MatSortModule,
     CalendarComponent,
     InputDatePickerComponent,
     ButtonComponent,
     FormFieldsModule,
+    DropdownModule,
   ],
   templateUrl: './test.component.html',
   styleUrl: './test.component.css',
@@ -101,21 +101,6 @@ export class TestComponent implements OnInit {
   selectMultipleValue: string[] = [];
   selectValueWithDefaultMultipleValue: string[] = [];
 
-  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([
-    { id: '1', name: 'One name', description: 'One', price: 1 },
-    { id: '2', name: 'Two name', description: 'Two', price: 2 },
-    { id: '3', name: 'Three name', description: 'Three', price: 2 },
-    { id: '1', name: 'One name', description: 'One', price: 3 },
-    { id: '2', name: 'Two name', description: 'Two', price: 5 },
-    { id: '3', name: 'Three name', description: 'Three', price: 5 },
-    { id: '1', name: 'One name', description: 'One', price: 6 },
-    { id: '2', name: 'Two name', description: 'Two', price: 5 },
-    { id: '3', name: 'Three name', description: 'Three', price: 45 },
-    { id: '1', name: 'One name', description: 'One', price: 7 },
-    { id: '2', name: 'Two name', description: 'Two', price: 45 },
-    { id: '3', name: 'Three name', description: 'Three', price: 44 },
-  ]);
-
   // Fecha actual para el calendario
   today = new Date();
 
@@ -154,12 +139,91 @@ export class TestComponent implements OnInit {
     radioButtonControl: new FormControl<number>(2),
   });
 
+  selectedCountry: string[] = ['es'];
+  countries = [
+    { value: 'es', label: 'España' },
+    { value: 'mx', label: 'México' },
+    { value: 'ar', label: 'Argentina' },
+    { value: 'cl', label: 'Chile' },
+    { value: 'co', label: 'Colombia' },
+    { value: 'pe', label: 'Perú' },
+    { value: 've', label: 'Venezuela' },
+    { value: 'uy', label: 'Uruguay' },
+    { value: 'bo', label: 'Bolivia' },
+    { value: 'py', label: 'Paraguay' },
+    { value: 'ec', label: 'Ecuador' },
+    { value: 'do', label: 'República Dominicana' },
+    { value: 'gt', label: 'Guatemala' },
+    { value: 'hn', label: 'Honduras' },
+    { value: 'ni', label: 'Nicaragua' },
+    { value: 'sv', label: 'El Salvador' },
+  ];
+
+  selectedCategory: string = 'fruits';
+  categories = [
+    {
+      label: 'Frutas',
+      options: [
+        { value: 'apple', label: 'Manzana' },
+        { value: 'banana', label: 'Plátano' },
+        { value: 'orange', label: 'Naranja' },
+      ],
+    },
+    {
+      label: 'Vegetales',
+      options: [
+        { value: 'carrot', label: 'Zanahoria' },
+        { value: 'potato', label: 'Patata' },
+        { value: 'tomato', label: 'Tomate' },
+      ],
+    },
+  ];
+
+  selectedFruitNgContent: string = 'lemon';
+
+  selectedItemFromLargeData: string = '';
+  largeDataSet: { value: string; label: string }[] = [];
+  largeDataSetWithGroups: {
+    label: string;
+    options?: { value: string; label: string }[];
+  }[] = [];
+
+  selectedCustomItem: number = 2; // Valor inicial para el custom data
+  customData = [
+    { id_item: 1, texto_item: 'Primer Artículo' },
+    { id_item: 2, texto_item: 'Segundo Artículo' },
+    { id_item: 3, texto_item: 'Tercer Artículo' },
+    { id_item: 4, texto_item: 'Cuarto Artículo' },
+  ];
+
   constructor(
     private readonly _sidebarPanelService: SidebarPanelService,
     private readonly _modalDialogService: ModalDialogService,
     private readonly _toastrService: ToastrService,
-  ) {}
-
+  ) {
+    // Generar un gran conjunto de datos para probar el virtual scroll
+    for (let i = 1; i <= 1000; i++) {
+      this.largeDataSet.push({
+        value: `item${i}`,
+        label: `Elemento muy largo ${i}`,
+      });
+    }
+    // Puedes añadir grupos también si quieres probar la combinación
+    this.largeDataSetWithGroups.unshift({
+      label: 'Grupo Inicial',
+      options: [
+        { value: 'first', label: 'Primer elemento' },
+        { value: 'second', label: 'Segundo elemento' },
+      ],
+    });
+    this.largeDataSetWithGroups.push({
+      label: 'Grupo Final',
+      options: [
+        { value: 'last', label: 'Último elemento' },
+        { value: 'almost_last', label: 'Penúltimo elemento' },
+      ],
+    });
+  }
   ngOnInit(): void {
     // Inicializamos las fechas deshabilitadas para el componente "neo-calendar"
     this.setDisabledDates();

@@ -15,9 +15,10 @@
     <input
       tabindex="0"
       (click)="toogleCalendar($event)"
-      (keydown.enter)="toogleCalendar($event)"
       (keydown.space)="toogleCalendar($event)"
+      (keydown.enter)="toogleCalendar($event)"
       cdkOverlayOrigin
+      #datePickerInput
       #datePicker="cdkOverlayOrigin"
       #dpInput="ngModel"
       class="
@@ -75,17 +76,17 @@
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="datePicker"
-  [cdkConnectedOverlayOpen]="isDatePickerOpened()"
+  [cdkConnectedOverlayOpen]="isOpened()"
   [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
   [cdkConnectedOverlayPositions]="overlayPositions"
-  (detach)="closeCalendar()"
-  (backdropClick)="closeCalendar()"
+  (detach)="onOverlayDetached()"
 >
   <div
     cdkTrapFocus
     [cdkTrapFocusAutoCapture]="true"
+    (keydown.escape)="closeCalendar()"
     #calendarOverlay
-    [@fadeInOutScale]="isDatePickerOpened() ? '*' : 'void'"
+    [@fadeInOutScale]="isOpened() ? '*' : 'void'"
   >
     <neo-calendar
       [date]="realDateValue() ?? null"

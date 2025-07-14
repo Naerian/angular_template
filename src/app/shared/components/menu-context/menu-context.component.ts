@@ -113,7 +113,7 @@ export class MenuContextComponent {
     optional: true,
   }) as ItemMenuContextComponent | null;
 
-  private destroy$ = new Subject<void>();
+  private ngUnsubscribe$ = new Subject<void>();
 
   constructor() {
     this.scrollStrategy = this.overlay.scrollStrategies.close();
@@ -166,8 +166,8 @@ export class MenuContextComponent {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.complete();
   }
 
   /**
@@ -184,7 +184,7 @@ export class MenuContextComponent {
   menuContextManager() {
     // Nos suscribimos a las notificaciones del servicio
     this._menuContextManagerService.menuContextOpened$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((openedComponent) => {
         // Si el componente notificado no es este mismo, ciérrate.
         if (openedComponent !== this) {

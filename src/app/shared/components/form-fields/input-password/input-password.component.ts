@@ -102,6 +102,11 @@ export class InputPasswordComponent implements ControlValueAccessor {
    * Evento que se emite cuando el valor del campo cambia
    */
   @Output() change = new EventEmitter<string>();
+  
+  /**
+   * Evento que se emite cuando el campo pierde el foco
+   */
+  @Output() blur = new EventEmitter<void>();
 
   // Signal para mostrar u ocultar la contraseña
   show: WritableSignal<boolean> = signal(false);
@@ -153,6 +158,7 @@ export class InputPasswordComponent implements ControlValueAccessor {
    */
   onBlur() {
     this.onTouched();
+    this.blur.emit();
   }
 
   /**

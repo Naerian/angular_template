@@ -2,6 +2,7 @@ import { CommonModule, JsonPipe } from '@angular/common';
 import {
   booleanAttribute,
   Component,
+  ElementRef,
   EventEmitter,
   forwardRef,
   input,
@@ -9,6 +10,7 @@ import {
   InputSignal,
   Output,
   signal,
+  ViewChild,
   WritableSignal,
 } from '@angular/core';
 import {
@@ -65,6 +67,8 @@ export class InputComponent implements ControlValueAccessor {
   @Input() inputSize: InputSize = 'm';
   @Input({ transform: booleanAttribute }) showClear: boolean = false;
 
+  @ViewChild('input', { static: true }) inputRef!: ElementRef<HTMLInputElement>;
+
   /**
    * Input para crear un id único para el campo
    */
@@ -109,6 +113,8 @@ export class InputComponent implements ControlValueAccessor {
 
   @Output() change = new EventEmitter<string>();
 
+  @Output() blur = new EventEmitter<void>();
+
   constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
 
   ngAfterViewInit(): void {
@@ -119,7 +125,7 @@ export class InputComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if(this._id()) return;
+    if (this._id()) return;
     this._id?.set(this._inputsUtilsService.createUniqueId('input'));
     this._labelId?.set(`label_${this._id()}`);
   }
@@ -162,6 +168,14 @@ export class InputComponent implements ControlValueAccessor {
    */
   onBlur() {
     this.onTouched();
+    this.blur.emit();
+  }
+
+  /**
+   * Función para obtener el elemento nativo del input
+   */
+  get nativeInputElement(): HTMLInputElement {
+    return this.inputRef.nativeElement;
   }
 
   /**

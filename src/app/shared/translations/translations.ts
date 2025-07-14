@@ -4,7 +4,9 @@ export const NEOUI_DEFAULT_I18N: NeoUITranslations = {
   // Textos del componente Select
   multipleChoices: `{choices} opciones seleccionadas`,
   selectOption: 'Selecciona una opción',
-  search: 'Buscar',
+  selectOptions: 'Selecciona una o más opciones',
+  search: 'Buscar opciones',
+  noResults: 'No se encontraron resultados',
 
   // Textos del componente InputFile
   inputFileLabel: 'Seleccionar fichero',

@@ -9,13 +9,14 @@
   }
   <div class="neo-input__wrapper">
     <input
-      #input="ngModel"
+      #input
+      #inputControl="ngModel"
       class="
         neo-input__wrapper__field 
         neo-input__wrapper__field--{{ inputSize }}
       "
       [class.neo-input__wrapper__field--has-error]="
-        input?.errors && (input?.dirty || input?.touched)
+        inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
       "
       [class.neo-input__wrapper__field--disabled]="_disabled()"
       [class.neo-input__wrapper__field--clear]="showClear"
@@ -36,7 +37,9 @@
       [required]="required"
       [attr.aria-required]="required"
       [attr.placeholder]="placeholder"
-      [attr.aria-invalid]="input?.errors && (input?.dirty || input?.touched)"
+      [attr.aria-invalid]="
+        inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
+      "
       [attr.size]="size"
       [attr.minlength]="minlength"
       [attr.maxlength]="maxlength"

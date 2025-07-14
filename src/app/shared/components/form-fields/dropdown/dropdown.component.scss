@@ -1,0 +1,242 @@
+@import "config";
+@import "mixins";
+@import "functions";
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.neo-dropdown {
+  position: relative;
+
+  &__field {
+    // Tamaño dinámico para el input según el tamaño del componente
+    @each $size-key, $input-size in $component-heights {
+      &--#{$size-key} {
+        @include component-size($size-key);
+      }
+    }
+
+    @include flex-row-center;
+    @include ellipsis-text;
+    justify-content: space-between;
+    border-radius: var(--border-radius-md);
+    box-sizing: border-box;
+    padding-right: calc(var(--spacing-m) * 2 + var(--spacing-xxs)) !important;
+    cursor: pointer;
+    position: relative;
+    gap: var(--spacing-xs);
+    background-color: var(--bg-field-color);
+    border: var(--border-width-base) solid var(--border-field-color);
+    box-shadow: var(--box-shadow-component);
+
+    &:focus:not(&--disabled),
+    &:active:not(&--disabled) {
+      @include outline-focus;
+    }
+
+    &--clear {
+      padding-right: calc(
+        var(--spacing-m) * 2 + var(--spacing-xxs) + var(--spacing-s)
+      );
+    }
+
+    &__value {
+      flex-grow: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__icon {
+      position: absolute;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+      @include flex-center;
+      @include transition(
+        transform var(--transition-duration-normal)
+          var(--transition-timing-function-ease)
+      );
+
+      @each $size-key, $icon-size in $component-heights {
+        &--#{$size-key} {
+          @include component-icon-size($size-key);
+        }
+      }
+
+      &::before {
+        color: var(--icon-field-color);
+      }
+
+      &--open {
+        transform: rotate(180deg);
+      }
+    }
+
+    &--has-error {
+      border: var(--border-width-base) solid var(--color-danger);
+    }
+
+    &[disabled],
+    &:disabled,
+    &--disabled {
+      @include disabled;
+    }
+
+    &__value {
+      display: block;
+      width: 100%;
+      line-height: normal;
+      @include ellipsis-text;
+    }
+
+    &:hover:not(&--disabled) {
+      border-color: var(--hover-border-field-color);
+    }
+
+    &:hover:not(&--disabled) ~ .neo-select__field__arrow-dropdown::before {
+      color: var(--hover-border-field-color);
+    }
+
+    .neo-clear-field-button {
+      right: calc(var(--spacing-xs) * 2) !important;
+    }
+  }
+
+  &__panel {
+    @include flex-col-center;
+    border: calc(var(--border-width-base) / 2) solid var(--border-field-color);
+    background-color: var(--bg-field-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-xs);
+    box-shadow: var(--box-shadow-m);
+
+    &__search {
+      padding-bottom: var(--spacing-xs);
+      margin-top: var(--spacing-xs);
+      padding-bottom: var(--spacing-xs);
+      width: 100%;
+      &__input {
+        width: 100%;
+      }
+    }
+
+    &__options-viewport,
+    &__options {
+      width: 100%;
+      border-radius: var(--border-radius-md);
+
+      &:focus:not(&--disabled),
+      &:active:not(&--disabled) {
+        @include outline-focus;
+      }
+    }
+
+    &__options-viewport .cdk-virtual-scroll-content-wrapper,
+    &__options {
+      display: flex;
+      flex-direction: column;
+      padding: var(--border-width-xs);
+      gap: var(--spacing-xxs);
+    }
+
+    &__options {
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      &__group-label {
+        // Tamaño dinámico para el input según el tamaño del componente
+        @each $size-key, $size in $component-font-sizes {
+          &--#{$size-key} {
+            @include component-font-size($size-key);
+          }
+        }
+        font-weight: var(--font-weight-semibold);
+
+        &--disabled {
+          filter: opacity(0.3);
+          cursor: default;
+        }
+      }
+
+      &__option {
+        @include flex-row-center;
+        cursor: pointer;
+        position: relative;
+        width: 100%;
+        border: none;
+        background-color: var(--bg-field-color);
+        color: var(--color-text);
+        border-radius: var(--border-radius-md);
+
+        &--disabled {
+          filter: opacity(0.3);
+          cursor: default;
+        }
+
+        // Tamaño dinámico para el input según el tamaño del componente
+        @each $size-key, $input-size in $component-heights {
+          &--#{$size-key} {
+            @include component-size($size-key);
+          }
+        }
+
+        &:focus:not(&--disabled),
+        &:active:not(&--disabled) {
+          @include outline-focus;
+        }
+
+        &:hover:not(&--disabled):not(&--selected) {
+          background-color: var(--color-gray-200);
+        }
+
+        &--selected {
+          color: var(--color-white);
+          background-color: var(--color-accent);
+          font-weight: var(--font-weight-semibold);
+        }
+
+        &__label {
+          @include ellipsis-text;
+          width: 100%;
+          font-weight: var(--font-weight-medium);
+          text-align: left;
+        }
+      }
+
+      &__no-results {
+        padding: var(--spacing-xs);
+        color: var(--color-text-light);
+        text-align: center;
+        // Tamaño dinámico para el input según el tamaño del componente
+        @each $size-key, $input-size in $component-heights {
+          &--#{$size-key} {
+            @include component-size($size-key);
+          }
+        }
+      }
+    }
+  }
+
+  // &__option,
+  // &__group-label {
+  //   padding: var(--spacing-xxs) var(--spacing-xs);
+  //   cursor: pointer;
+  //   white-space: nowrap;
+  //   overflow: hidden;
+  //   text-overflow: ellipsis;
+  //   display: block;
+
+  //   &:not(&--disabled):hover {
+  //     background-color: var(--bg-hover-color);
+  //   }
+  // }
+
+  // &__group-label {
+  //   font-weight: bold;
+  //   color: var(--color-heading);
+  //   background-color: var(--bg-light);
+  //   cursor: default;
+  // }
+}

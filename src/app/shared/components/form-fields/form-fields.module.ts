@@ -11,6 +11,7 @@ import { RadioButtonModule } from './radio-button/radio-button.module';
 import { SelectModule } from './select/select.module';
 import { TextAreaComponent } from './text-area/text-area.component';
 import { FormHintComponent } from './form-hint/form-hint.component';
+import { DropdownModule } from './dropdown/dropdown.module';
 
 @NgModule({
   declarations: [],
@@ -23,10 +24,10 @@ import { FormHintComponent } from './form-hint/form-hint.component';
     FormErrorComponent,
     FormHintComponent,
     RadioButtonModule,
-    SelectModule,
     FormFieldComponent,
     InputFileComponent,
     InputDatePickerComponent,
+    DropdownModule,
   ],
   exports: [
     InputComponent,
@@ -36,10 +37,10 @@ import { FormHintComponent } from './form-hint/form-hint.component';
     FormHintComponent,
     CheckboxComponent,
     RadioButtonModule,
-    SelectModule,
     FormFieldComponent,
     InputFileComponent,
     InputDatePickerComponent,
+    DropdownModule,
   ],
 })
 export class FormFieldsModule {}

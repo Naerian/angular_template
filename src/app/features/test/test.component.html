@@ -339,102 +339,68 @@
       <neo-textarea label="Textarea required" [required]="true"></neo-textarea>
     </div>
     <div class="col-12 col-md-6 col-lg-6 mb-2 mt-2">
-      <neo-select
-        [label]="'Selector con NG Model'"
-        [(ngModel)]="selectValue"
-        (change)="selectChangeNM()"
-        [required]="true"
-        [showClear]="true"
-      >
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option [disabled]="true" value="3">Opción 3</neo-option>
-        <neo-option value="4">Opción 4</neo-option>
-        <neo-option value="5">Opción 5</neo-option>
-        <neo-option value="6">Opción 6</neo-option>
-      </neo-select>
-      <br />
-      <neo-select
-        [label]="'Selector múltiple con NG Model'"
-        [(ngModel)]="selectMultipleValue"
-        (change)="selectMultipleChangeNM()"
+      <neo-dropdown
+        [label]="'Dropdown M con ngModel múltiple y buscador'"
+        [content]="countries"
+        placeholder="Selecciona un país"
         [multiple]="true"
+        inputSize="xl"
+        [searchable]="false"
+        [(ngModel)]="selectedCountry"
+      ></neo-dropdown>
+      <p>País seleccionado: {{ selectedCountry | json }}</p>
+      <hr />
+      <neo-dropdown
+        [label]="'Dropdown L con ngModel y buscador'"
+        [content]="categories"
+        placeholder="Selecciona una categoría"
+        [searchable]="true"
+        [(ngModel)]="selectedCategory"
+      ></neo-dropdown>
+      <p>Categoría seleccionada: {{ selectedCategory | json }}</p>
+      <hr />
+      <neo-dropdown
+        [label]="'Dropdown M con ngModel, buscador y ScrollView (virtual)'"
+        [content]="largeDataSet"
+        placeholder="Selecciona una opción"
+        [searchable]="true"
+        [(ngModel)]="selectedItemFromLargeData"
+      ></neo-dropdown>
+      <p>Item seleccionado: {{ selectedItemFromLargeData | json }}</p>
+      <hr />
+      <neo-dropdown
+        [label]="'Dropdown con ng-content y grupos de opciones'"
+        placeholder="Selecciona una fruta"
+        [searchable]="true"
+        [(ngModel)]="selectedFruitNgContent"
       >
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
-        <neo-option value="4">Opción 4</neo-option>
-        <neo-option value="5">Opción 5</neo-option>
-        <neo-option value="6">Opción 6</neo-option>
-      </neo-select>
-      <br />
-      <neo-select
-        [label]="'Selector con valor por defecto'"
-        [value]="'3'"
-        (change)="selectWithDefaultValue($event)"
-      >
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
-        <neo-option value="4">Opción 4</neo-option>
-        <neo-option value="5">Opción 5</neo-option>
-        <neo-option value="6">Opción 6</neo-option>
-      </neo-select>
-      <br />
-      <neo-select
-        [label]="'Selector múltiple con valores por defecto'"
-        [value]="['3', '5', '1']"
-        multiple
-        (change)="selectWithDefaultMultipleValue($event)"
-      >
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
-        <neo-option value="4">Opción 4</neo-option>
-        <neo-option value="5">Opción 5</neo-option>
-        <neo-option value="6">Opción 6</neo-option>
-      </neo-select>
-      <br />
-      <neo-select
-        [label]="'Selector con valor por defecto usando el atributo -selected-'"
-        (change)="selectWithDefaultMultipleValue($event)"
-      >
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option [selected]="true" value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
-        <neo-option value="4">Opción 4</neo-option>
-        <neo-option value="5">Opción 5</neo-option>
-        <neo-option value="6">Opción 6</neo-option>
-      </neo-select>
-      <br />
-      <neo-select
-        [label]="'Selector agrupado con búsqueda'"
-        searchable
-        (change)="selectWithDefaultMultipleValue($event)"
-      >
-        <neo-option-groups [label]="'GRUPO 1'">
-          <neo-option value="1">Opción 1</neo-option>
-          <neo-option value="2">Opción 2</neo-option>
-        </neo-option-groups>
-        <neo-option-groups [label]="'GRUPO 2'">
-          <neo-option value="3">Opción 3</neo-option>
-          <neo-option value="4">Opción 4</neo-option>
-        </neo-option-groups>
-        <neo-option-groups
-          [label]="'GRUPO 3 (Deshabilitado)'"
-          [disabled]="true"
-        >
-          <neo-option value="5">Opción 1</neo-option>
-          <neo-option value="5">Opción 5</neo-option>
-          <neo-option value="6">Opción 6</neo-option>
-        </neo-option-groups>
-      </neo-select>
-      <br />
-      <neo-select label="Selector deshabilitado" [disabled]="true">
-        <neo-option value="1">Opción 1</neo-option>
-        <neo-option value="2">Opción 2</neo-option>
-        <neo-option value="3">Opción 3</neo-option>
-      </neo-select>
+        <neo-option-group [label]="'Cítricos'">
+          <neo-option value="lemon">Limón</neo-option>
+          <neo-option value="orange">Naranja</neo-option>
+          <neo-option value="grapefruit" [disabled]="true"
+            >Pomelo (deshabilitado)</neo-option
+          >
+        </neo-option-group>
+
+        <neo-option-group [label]="'Frutas de Hueso'">
+          <neo-option value="peach">Melocotón</neo-option>
+          <neo-option value="cherry">Cereza</neo-option>
+        </neo-option-group>
+
+        <neo-option value="banana">Plátano (sin grupo)</neo-option>
+      </neo-dropdown>
+      <p>Fruta seleccionada: {{ selectedFruitNgContent | json }}</p>
+      <hr />
+      <neo-dropdown
+        [label]="'Dropdown con campos personalizados para indicar el valor y la etiqueta'"
+        [content]="customData"
+        placeholder="Selecciona un ítem (Custom Fields)"
+        [searchable]="true"
+        valueField="id_item"
+        labelField="texto_item"
+        [(ngModel)]="selectedCustomItem"
+      ></neo-dropdown>
+      <p>Ítem seleccionado: {{ selectedCustomItem | json }}</p>
     </div>
   </div>
   <hr />
@@ -756,7 +722,10 @@
       </div>
     </div>
     <div class="col-2">
-      <label>Spinner XL en posición absoluta color "darkgreen" con backdrop color "#e0f7facc"</label>
+      <label
+        >Spinner XL en posición absoluta color "darkgreen" con backdrop color
+        "#e0f7facc"</label
+      >
       <div
         style="
           width: 100%;
@@ -1036,64 +1005,7 @@
       <neo-card-header>
         <div>Tabla</div>
       </neo-card-header>
-      <div
-        class="neo-table neo-table-responsive"
-        style="height: 350px; margin-top: 5px"
-      >
-        <table
-          mat-table
-          class="neo-table"
-          [dataSource]="dataSource"
-          matSort
-          [matSortDisableClear]="true"
-          [matSortActive]="'name'"
-          [matSortDirection]="'asc'"
-        >
-          <ng-container matColumnDef="id" [sticky]="true">
-            <th mat-header-cell mat-sort-header *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let row">{{ row?.id || "" }}</td>
-          </ng-container>
-          <ng-container matColumnDef="name">
-            <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let row">{{ row?.name || "" }}</td>
-          </ng-container>
-          <ng-container matColumnDef="description">
-            <th mat-header-cell mat-sort-header *matHeaderCellDef>
-              Description
-            </th>
-            <td mat-cell *matCellDef="let row">{{ row?.description || "" }}</td>
-          </ng-container>
-          <ng-container matColumnDef="price">
-            <th mat-header-cell mat-sort-header *matHeaderCellDef>Price</th>
-            <td mat-cell *matCellDef="let row">{{ row?.price || "" }}</td>
-          </ng-container>
-
-          <tr
-            mat-header-row
-            *matHeaderRowDef="getDisplayedColumns(); sticky: true"
-          ></tr>
-          <tr
-            mat-row
-            *matRowDef="
-              let row;
-              columns: getDisplayedColumns();
-              let index = index
-            "
-            [ngClass]="{ even: index % 2 === 0, odd: index % 2 !== 0 }"
-          ></tr>
-        </table>
-      </div>
-      <a
-        (click)="showInfoTable = !showInfoTable"
-        style="font-size: 11px; font-weight: 700; cursor: pointer"
-      >
-        {{ showInfoTable ? "Ocultar" : "Mostrar" }} información de la tabla</a
-      >
-      @if (showInfoTable) {
-        <pre style="background: #ccc; padding: 5px; font-size: 11px">{{
-          columnDefinitions | json
-        }}</pre>
-      }
+      AQUÍ IRÁ LA TABLA
     </neo-card>
   </div>
   <div class="col-12 col-md-12 col-lg-6">

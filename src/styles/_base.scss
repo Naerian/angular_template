@@ -12,6 +12,28 @@ html,
   -webkit-tap-highlight-color: transparent;
 }
 
+html {
+  scrollbar-color: var(--bg-scroll-field-color) var(--bg-field-color);
+  scrollbar-width: thin;
+}
+
+/* Para navegadores basados en WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Estilo del thumb del scrollbar para navegadores basados en WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar-thumb {
+  background-color: var(--bg-scroll-field-color);
+  border-radius: 4px;
+}
+
+/* Estilo del track del scrollbar para navegadores basados en WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar-track {
+  background: var(--bg-field-color);
+}
+
 body {
   margin: 0;
   line-height: 1.5;

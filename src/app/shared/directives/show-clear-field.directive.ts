@@ -73,10 +73,7 @@ export class ShowClearFieldDirective implements OnInit, OnDestroy {
     // Si el elemento tiene algún hijo, lo añadimos al final del elemento
     // Si no, lo añadimos directamente al padre (porque se intuye que es un input)
     if (this.el.nativeElement.children.length > 0) {
-      this.renderer.appendChild(
-        this.el.nativeElement,
-        this.clearButton,
-      );
+      this.renderer.appendChild(this.el.nativeElement, this.clearButton);
     } else {
       this.renderer.appendChild(
         this.el.nativeElement.parentNode,
@@ -141,10 +138,14 @@ export class ShowClearFieldDirective implements OnInit, OnDestroy {
       if (this.showClear && this.hideOnEmpty && isValueEmpty) {
         this.renderer.setStyle(this.clearButton, 'display', 'none');
       } else if (this.showClear && !isValueEmpty) {
-        this.renderer.setStyle(this.clearButton, 'display', 'block');
+        this.renderer.setStyle(this.clearButton, 'display', 'flex');
+        this.renderer.setStyle(this.clearButton, 'flex-direction', 'column');
+        this.renderer.setStyle(this.clearButton, 'justify-content', 'center');
       } else if (this.showClear && !this.hideOnEmpty) {
         // Si no se oculta en vacío, siempre se muestra si showClear es true
-        this.renderer.setStyle(this.clearButton, 'display', 'block');
+        this.renderer.setStyle(this.clearButton, 'display', 'flex');
+        this.renderer.setStyle(this.clearButton, 'flex-direction', 'column');
+        this.renderer.setStyle(this.clearButton, 'justify-content', 'center');
       } else {
         this.renderer.setStyle(this.clearButton, 'display', 'none');
       }
