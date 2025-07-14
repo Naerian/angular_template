@@ -8,7 +8,6 @@ import { InputFileComponent } from './input-file/input-file.component';
 import { InputPasswordComponent } from './input-password/input-password.component';
 import { InputComponent } from './input/input.component';
 import { RadioButtonModule } from './radio-button/radio-button.module';
-import { SelectModule } from './select/select.module';
 import { TextAreaComponent } from './text-area/text-area.component';
 import { FormHintComponent } from './form-hint/form-hint.component';
 import { DropdownModule } from './dropdown/dropdown.module';

@@ -51,6 +51,7 @@ import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animatio
 import { InputComponent } from '../input/input.component';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { FocusableItemDirective } from './directives/focusable-item.directive';
+import { set } from 'date-fns';
 
 /**
  * @name
@@ -352,40 +353,69 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
     // para que maneje la navegación por teclado.
     this.keyManager.onKeydown(event);
 
-    // Si es ha pulsado Enter o Espacio, seleccionamos la opción activa.
-    if (event.key === 'Enter' || event.key === ' ' || event.key === 'Space') {
-      event.preventDefault();
-      const active = this.keyManager.activeItem;
-      if (active) {
-        const index = this.keyManager.activeItemIndex;
+    // Control de teclas pulsadas para poder hacer diferentes acciones
+    // y además, después, seguir manteniendo el foco en el input de búsqueda.
+    switch (event.key) {
+      case 'Enter':
+        event.preventDefault();
+        const active = this.keyManager.activeItem;
+        if (active) {
+          const index = this.keyManager.activeItemIndex;
 
-        // Si el índice es válido, seleccionamos la opción correspondiente
-        if (
-          index === null ||
-          index === undefined ||
-          index < 0 ||
-          index >= this._allFlatOptions.length
-        )
-          return;
+          if (
+            index === null ||
+            index === undefined ||
+            index < 0 ||
+            index >= this._allFlatOptions.length
+          )
+            return;
 
-        const option = this._allFlatOptions[index];
-        this.selectOption(option);
-      }
+          const option = this._allFlatOptions[index];
+          this.selectOption(option);
+        }
+        break;
+
+      case 'End':
+        event.preventDefault();
+        this.keyManager.setLastItemActive();
+        this.focusOption(this.keyManager.activeItemIndex);
+        break;
+
+      case 'Home':
+        event.preventDefault();
+        this.keyManager.setFirstItemActive();
+        this.focusOption(this.keyManager.activeItemIndex);
+        break;
+
+      case 'Escape':
+        event.preventDefault();
+        this.closeDropdown();
+        break;
+
+      default:
+        break;
     }
 
-    // Si pulsamos End o Home, movemos el foco al final o al principio de la lista.
-    if (event.key === 'End') {
-      event.preventDefault();
-      this.keyManager.setLastItemActive();
-      this.focusOption(this.keyManager.activeItemIndex);
-    } else if (event.key === 'Home') {
-      event.preventDefault();
-      this.keyManager.setFirstItemActive();
-      this.focusOption(this.keyManager.activeItemIndex);
-    }
+    // Volvemos a hacer focus en el input de búsqueda si está activo.
+    // De esta forma, aunque nos movamos, seguimos pudiendo buscar en todo momento.
+    if (this.inputSearch && this.inputSearch.nativeInputElement)
+      this.inputSearch.nativeInputElement.focus();
+  }
 
-    // Si pulsamos la tecla Escape, cerramos el dropdown.
-    if (event.key === 'Escape') this.closeDropdown();
+  /**
+   * Función para comprobar si la opción está resaltada en el KeyManager.
+   * @param {DropdownOption} option - Opción a comprobar si está resaltada.
+   * @returns {boolean} - Devuelve true si la opción está resaltada, false en caso contrario.
+   */
+  isOptionHighlighted(option: DropdownOption): boolean {
+    if (!this.keyManager) return false;
+    // Comprobamos si la opción está activa en el KeyManager
+    const activeIndex = this.keyManager.activeItemIndex;
+    return (
+      activeIndex !== null &&
+      activeIndex >= 0 &&
+      this._allFlatOptions[activeIndex]?.id === option.id
+    );
   }
 
   /**
@@ -628,6 +658,13 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
 
     // Si estas usando scroll virtual, reseteamos el scroll al inicio
     if (this.virtualScroll) this.virtualScroll.scrollToIndex(0);
+
+    // Movemos el foco al primer elemento visible y volvemos a hacer focus en el input de búsqueda
+    setTimeout(() => {
+      this.keyManager.setFirstItemActive();
+      this.focusOption(this.keyManager.activeItemIndex);
+      if (this.inputSearch) this.inputSearch.nativeInputElement.focus();
+    });
   }
 
   /**
@@ -664,10 +701,28 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
 
   /**
    * Comprueba si una opción coincide con el término de búsqueda.
+   * Este método normaliza tanto la opción como el término de búsqueda
+   * para hacer una comparación insensible a mayúsculas y acentos, evitando problemas
+   * de localización y acentos.
+   * Además, permite una búsqueda inteligente donde cada palabra del término
+   * debe aparecer en el label de la opción, pudiendo buscar por múltiples palabras.
+   * @param {DropdownOption} option - La opción a comprobar.
+   * @returns {boolean} - Devuelve true si la opción coincide con el término de búsqueda, false en caso contrario.
    */
   private matchesSearchTerm(option: DropdownOption): boolean {
-    const term = this.searchTerm().toLowerCase();
-    return option.label.toLowerCase().includes(term);
+    const normalize = (str: string) =>
+      str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+
+    const label = normalize(option.label);
+    const searchTerms = normalize(this.searchTerm())
+      .split(/\s+/) // separa por espacios
+      .filter((term) => term); // quita vacíos
+
+    // Cada palabra del término debe aparecer en el label
+    return searchTerms.every((partial) => label.includes(partial));
   }
 
   /**
@@ -684,10 +739,31 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
    * Obtiene la etiqueta para mostrar en el input principal.
    */
   get displayLabel(): string {
-    const selectedOption = this._allFlatOptions.find(
-      (opt) => opt.value === this._value(),
-    );
-    return selectedOption ? selectedOption.label : this.placeholder();
+    // Si es múltiple y tiene valores, mostramos los valores seleccionados usando la traduccion correspondiente
+    // Si es múltiple y no tiene valores, mostramos el placeholder o la traducción correspondiente
+    // Si no es múltiple, mostramos el placeholder si no hay valor seleccionado o el label de la opción seleccionada.
+    if (this.multiple()) {
+      const selectedOptions = this._allFlatOptions.filter((opt) =>
+        this.isOptionSelected(opt),
+      );
+      if (selectedOptions.length > 0) {
+        return this._translations.multipleChoices.replace(
+          '{choices}',
+          this._value()?.length.toString(),
+        );
+      } else {
+        return this.placeholder() || this._translations.selectOptions;
+      }
+    } else {
+      const selectedOption = this._allFlatOptions.find((opt) =>
+        this.isOptionSelected(opt),
+      );
+      return (
+        selectedOption?.label ||
+        this.placeholder() ||
+        this._translations.selectOption
+      );
+    }
   }
 
   /**

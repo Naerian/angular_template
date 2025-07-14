@@ -16,6 +16,9 @@
       isOptionSelected(optionData)
     "
     [class.neo-dropdown__panel__options__option--disabled]="optionData.disabled"
+    [class.neo-dropdown__panel__options__option--highlighted]="
+      isOptionHighlighted(optionData)
+    "
     [attr.tabindex]="-1"
     (click)="selectOption(optionData)"
     [disabled]="optionData.disabled"
@@ -90,22 +93,7 @@
     (clear)="clearSelection()"
     cdkOverlayOrigin
   >
-    <span class="neo-dropdown__field__value">
-      @if (multiple()) {
-        @if (_value()?.length) {
-          {{
-            _translations.multipleChoices.replace(
-              "{choices}",
-              _value()?.length.toString()
-            )
-          }}
-        } @else {
-          {{ _translations.selectOptions }}
-        }
-      } @else {
-        {{ displayLabel || _translations.selectOption }}
-      }
-    </span>
+    <span class="neo-dropdown__field__value">{{ displayLabel }}</span>
     <span
       class="
         neo-dropdown__field__icon
@@ -138,6 +126,7 @@
       [attr.aria-labelledby]="_labelId()"
       [cdkTrapFocus]="true"
       [cdkTrapFocusAutoCapture]="true"
+      (keydown)="onKeydown($event)"
     >
       @if (searchable()) {
         <div class="neo-dropdown__panel__search">
@@ -170,7 +159,6 @@
             role="listbox"
             [attr.aria-labelledby]="label() ? _labelId() : _id()"
             [attr.id]="_optionsId()"
-            (keydown)="onKeydown($event)"
           >
             @for (item of filteredOptions(); track $index) {
               @if (isDropdownGroup(item)) {
@@ -217,7 +205,6 @@
           [style.height.px]="5 * getItemSize()"
           [attr.aria-labelledby]="label() ? _labelId() : _id()"
           [attr.id]="_optionsId()"
-          (keydown)="onKeydown($event)"
         >
           @for (item of filteredOptions(); track $index) {
             @if (isDropdownGroup(item)) {

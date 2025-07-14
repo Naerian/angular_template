@@ -183,7 +183,8 @@
         }
 
         &:focus:not(&--disabled),
-        &:active:not(&--disabled) {
+        &:active:not(&--disabled),
+        &--highlighted:not(&--disabled) {
           @include outline-focus;
         }
 
