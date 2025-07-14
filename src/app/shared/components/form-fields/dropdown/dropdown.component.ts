@@ -359,32 +359,17 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
       case 'Enter':
         event.preventDefault();
         const active = this.keyManager.activeItem;
-        if (active) {
-          const index = this.keyManager.activeItemIndex;
-
-          if (
-            index === null ||
-            index === undefined ||
-            index < 0 ||
-            index >= this._allFlatOptions.length
-          )
-            return;
-
-          const option = this._allFlatOptions[index];
-          this.selectOption(option);
-        }
+        if (active) this.selectOptionByIndex(this.keyManager.activeItemIndex);
         break;
 
       case 'End':
         event.preventDefault();
         this.keyManager.setLastItemActive();
-        this.focusOption(this.keyManager.activeItemIndex);
         break;
 
       case 'Home':
         event.preventDefault();
         this.keyManager.setFirstItemActive();
-        this.focusOption(this.keyManager.activeItemIndex);
         break;
 
       case 'Escape':
@@ -648,6 +633,23 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
     this.optionSelected.emit(option);
 
     if (!this.multiple()) setTimeout(() => this.onTouched());
+  }
+
+  /**
+   * Selecciona una opción por su índice en la lista aplanada de opciones.
+   * @param {number | null} index - El índice de la opción a seleccionar.
+   */
+  selectOptionByIndex(index: number | null) {
+    if (
+      index === null ||
+      index === undefined ||
+      index < 0 ||
+      index >= this._allFlatOptions.length
+    )
+      return;
+
+    const option = this._allFlatOptions[index];
+    this.selectOption(option);
   }
 
   /**
