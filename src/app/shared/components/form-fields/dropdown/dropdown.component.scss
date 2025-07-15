@@ -129,7 +129,7 @@
 
       &:focus:not(&--disabled),
       &:active:not(&--disabled) {
-        @include outline-focus;
+        outline: none;
       }
     }
 
@@ -146,12 +146,14 @@
       overflow-x: hidden;
 
       &__group-label {
+        @include flex-row-center;
         // Tamaño dinámico para el input según el tamaño del componente
-        @each $size-key, $size in $component-font-sizes {
+        @each $size-key, $input-size in $component-heights {
           &--#{$size-key} {
-            @include component-font-size($size-key);
+            @include component-size($size-key);
           }
         }
+        padding: 0 !important;
         font-weight: var(--font-weight-semibold);
 
         &--disabled {

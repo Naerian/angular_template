@@ -51,7 +51,7 @@
     [for]="_id()"
     [attr.id]="_labelId()"
     class="neo-dropdown__label"
-    (click)="onLabelClick($event)"
+    (click)="openDropdown($event)"
   >
     {{ label() }}
   </label>
@@ -135,7 +135,7 @@
             type="text"
             [placeholder]="_translations.search + '...'"
             [(ngModel)]="searchTerm"
-            (ngModelChange)="onSearchTermChange()"
+            (ngModelChange)="onSearchTerm()"
             class="neo-dropdown__panel__search__input"
             [attr.aria-label]="_translations.search"
             [inputSize]="inputSize()"
@@ -202,7 +202,8 @@
           class="neo-dropdown__panel__options"
           tabindex="0"
           role="listbox"
-          [style.height.px]="5 * getItemSize()"
+          [style.min-height.px]="getItemSize()"
+          [style.max-height.px]="5 * getItemSize()"
           [attr.aria-labelledby]="label() ? _labelId() : _id()"
           [attr.id]="_optionsId()"
         >

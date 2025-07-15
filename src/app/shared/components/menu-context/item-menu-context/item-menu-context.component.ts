@@ -117,13 +117,10 @@ export class ItemMenuContextComponent
    * @param {Event} event
    */
   onClickItem(event?: Event) {
-    // Si se recibe un evento, evitamos la propagación para evitar conflictos con el overlay.
     event?.stopPropagation();
-
     if (this.disabled) return;
-
-    this.menuContext?.close(); // Cerramos el menú padre
     this.itemClick.emit(event);
+    this.menuContext?.close(event);
   }
 
   /**
@@ -154,5 +151,16 @@ export class ItemMenuContextComponent
    */
   focus() {
     this._elementRef?.nativeElement?.focus();
+  }
+
+  /**
+   * Método para obtener la referencia al elemento nativo del componente.
+   * Este método es necesario para implementar la interfaz `FocusableOption`
+   * @returns {string} El label del item del menú contextual.
+   */
+  getLabel(): string {
+    return (
+      this.label || this.elementRef.nativeElement.textContent?.trim() || ''
+    );
   }
 }

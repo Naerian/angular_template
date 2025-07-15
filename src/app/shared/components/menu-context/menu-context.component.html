@@ -6,7 +6,7 @@
   [title]="title"
   [attr.aria-label]="title"
   [attr.aria-haspopup]="'menu'"
-  [attr.aria-expanded]="isMenuContextOpened()"
+  [attr.aria-expanded]="isOpened()"
   [attr.aria-controls]="_id()"
   (onClick)="toggleMenuContext($event)"
   cdkOverlayOrigin
@@ -19,11 +19,10 @@
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="btnMenuContext"
-  [cdkConnectedOverlayOpen]="isMenuContextOpened()"
+  [cdkConnectedOverlayOpen]="isOpened()"
   [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
   [cdkConnectedOverlayPositions]="overlayPositions"
   (detach)="close()"
-  (backdropClick)="close()"
 >
   <div
     class="menu-context"
@@ -31,7 +30,7 @@
     [cdkTrapFocusAutoCapture]="true"
     [attr.id]="_id()"
     #menuContextOverlay
-    [@fadeInOutScale]="isMenuContextOpened() ? '*' : 'void'"
+    [@fadeInOutScale]="isOpened() ? '*' : 'void'"
     (keydown)="onKeyDown($event)"
   >
     <ng-content select="neo-item-menu-context"></ng-content>

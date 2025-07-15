@@ -97,12 +97,11 @@ export class MenuContextComponent {
     return this._id();
   }
 
-  isMenuContextOpened: WritableSignal<boolean> = signal(false);
   scrollStrategy: ScrollStrategy;
   overlayPositions = OVERLAY_POSITIONS;
 
   // Manager para el control de teclas en las opciones
-  private _focusKeyManager!: FocusKeyManager<ItemMenuContextComponent>;
+  private keyManager!: FocusKeyManager<ItemMenuContextComponent>;
 
   private readonly overlay = inject(Overlay);
   private readonly _menuContextManagerService = inject(
@@ -120,15 +119,6 @@ export class MenuContextComponent {
   }
 
   /**
-   * Método para cerrar el panel al pulsar la tecla "Escape"
-   */
-  @HostListener('document:keydown', ['$event'])
-  onKeyDownHandler(event: KeyboardEvent) {
-    const keyCode = event.key;
-    if (keyCode === 'Escape') this.close();
-  }
-
-  /**
    * Método para cerrar el menú contextual al hacer click fuera del panel
    */
   @HostListener('document:click', ['$event'])
@@ -142,7 +132,7 @@ export class MenuContextComponent {
 
     // Si el menú está abierto y el clic no fue dentro del botón NI dentro del overlay
     if (
-      this.isMenuContextOpened() &&
+      this.isOpened() &&
       !clickedInsideBtnMenu &&
       !clickedInsideMenuCtxtOverlay
     ) {
@@ -158,11 +148,22 @@ export class MenuContextComponent {
   ngAfterViewInit(): void {
     // Creamos un id único para el menú contextual
     this.createUniqueId();
+  }
 
-    // Inicialización del manager de teclas para las opciones.
-    // Con la opción "withWrap" permitimos que el foco se mueva cíclicamente entre los elementos del menú.
-    // Esto permite que al presionar la tecla "Tab" o "Shift + Tab" también se pueda navegar por los ítems del menú contextual.
-    this._focusKeyManager = new FocusKeyManager(this.menuItems).withWrap();
+  /**
+   * Inicializa el KeyManager para manejar la navegación por teclado
+   * a través de los elementos del menú contextual.
+   */
+  initKeyManager() {
+    setTimeout(() => {
+      this.keyManager = new FocusKeyManager(this.menuItems)
+        .withWrap()
+        .withVerticalOrientation()
+        .withTypeAhead();
+
+      // Enfocar el primer elemento del menú al abrirlo
+      this.keyManager.setFirstItemActive();
+    });
   }
 
   ngOnDestroy(): void {
@@ -198,15 +199,15 @@ export class MenuContextComponent {
    */
   open() {
     this._menuContextManagerService.notifyOpened(this);
-    this.isMenuContextOpened.set(true);
+    this.initKeyManager(); // Inicializamos el KeyManager para manejar la navegación por teclado
     this.isOpened.set(true);
   }
 
   /**
    * Función para cerrar el menú contextual
    */
-  close() {
-    this.isMenuContextOpened.set(false);
+  close(event?: Event) {
+    event?.stopPropagation();
     this.isOpened.set(false);
   }
 
@@ -220,7 +221,7 @@ export class MenuContextComponent {
 
     // Si el menú contextual ya está abierto, lo cerramos.
     // Si no, lo abrimos.
-    if (this.isMenuContextOpened()) this.close();
+    if (this.isOpened()) this.close();
     else this.open();
   }
 
@@ -229,8 +230,41 @@ export class MenuContextComponent {
    * @param {KeyboardEvent} event
    */
   onKeyDown(event: KeyboardEvent) {
-    if (!this.isMenuContextOpened()) return;
+    if (!this.isOpened()) return;
     // Permitir que el FocusKeyManager maneje las flechas de dirección
-    this._focusKeyManager.onKeydown(event);
+    this.keyManager.onKeydown(event);
+
+    // Control de teclas pulsadas para poder hacer diferentes acciones
+    // y además, después, seguir manteniendo el foco en el input de búsqueda.
+    switch (event.key) {
+      case 'Enter':
+        event.preventDefault();
+        event.stopPropagation();
+        const active = this.keyManager.activeItem;
+        if (active) {
+          active.focus(); // Enfocar el elemento activo
+          active.onClickItem(event); // Ejecutar el click del item activo
+          this.close(); // Cerrar el menú después de seleccionar
+        }
+        break;
+
+      case 'End':
+        event.preventDefault();
+        this.keyManager.setLastItemActive();
+        break;
+
+      case 'Home':
+        event.preventDefault();
+        this.keyManager.setFirstItemActive();
+        break;
+
+      case 'Escape':
+        event.preventDefault();
+        this.close();
+        break;
+
+      default:
+        break;
+    }
   }
 }

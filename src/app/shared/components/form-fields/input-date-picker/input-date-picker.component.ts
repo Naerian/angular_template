@@ -189,7 +189,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   private readonly _calendarService = inject(CalendarService);
   private readonly _changeDetectorRef = inject(ChangeDetectorRef);
 
-  private destroy$ = new Subject<void>();
+  private ngUnsubscribe = new Subject<void>();
 
   constructor() {
     this.scrollStrategy = this.overlay.scrollStrategies.close();
@@ -217,8 +217,8 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   /**
@@ -228,7 +228,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   datePickerManager() {
     // Nos suscribimos a las notificaciones del servicio
     this._datePickerManagerService.datePickerOpened$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((openedComponent) => {
         // Si el componente notificado no es este mismo, ciérrate.
         if (openedComponent !== this) this.closeCalendar();
@@ -549,9 +549,6 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    */
   onOverlayDetached(): void {
     setTimeout(() => this.onTouched());
-    if (this.datePickerInput) {
-      setTimeout(() => this.datePickerInput.nativeElement.focus());
-    }
   }
 
   /**

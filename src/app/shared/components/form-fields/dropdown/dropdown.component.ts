@@ -21,6 +21,10 @@ import {
   ViewEncapsulation,
   Injector,
   ChangeDetectorRef,
+  OnInit,
+  AfterContentInit,
+  OnChanges,
+  OnDestroy,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -44,14 +48,13 @@ import { DropdownOptionComponent } from './dropdown-option/dropdown-option.compo
 import { DropdownOptionGroupComponent } from './dropdown-option-group/dropdown-option-group.component';
 import { Overlay, ScrollStrategy } from '@angular/cdk/overlay';
 import { DropdownManagerService } from './services/dropdown-manager.service';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { NeoUITranslations } from '@shared/translations/translations.model';
 import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
 import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { InputComponent } from '../input/input.component';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { FocusableItemDirective } from './directives/focusable-item.directive';
-import { set } from 'date-fns';
 
 /**
  * @name
@@ -90,7 +93,15 @@ import { set } from 'date-fns';
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
+export class DropdownComponent
+  implements
+    ControlValueAccessor,
+    AfterViewInit,
+    OnInit,
+    AfterContentInit,
+    OnChanges,
+    OnDestroy
+{
   // Captura de contenido proyectado
   @ContentChildren(DropdownOptionComponent, { descendants: true })
   _optionsFromContent!: QueryList<DropdownOptionComponent>; // Todas las opciones, planas o en grupos
@@ -241,6 +252,7 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
   // Propiedad para mantener la instancia de NgControl
   public ngControl: NgControl | null = null;
 
+  private searchTerm$ = new Subject<string>();
   private ngUnsubscribe$ = new Subject<void>();
 
   _id: WritableSignal<string> = signal('');
@@ -272,6 +284,11 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
 
     // Si el clic no fue dentro del trigger ni dentro del panel del dropdown, cerrar.
     if (!isClickInsideTrigger && !isClickInsidePanel) this.closeDropdown();
+  }
+
+  ngOnInit(): void {
+    this.onSearchTermChange();
+    this.dropdownManager();
   }
 
   ngAfterViewInit(): void {
@@ -394,6 +411,7 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
    */
   isOptionHighlighted(option: DropdownOption): boolean {
     if (!this.keyManager) return false;
+
     // Comprobamos si la opción está activa en el KeyManager
     const activeIndex = this.keyManager.activeItemIndex;
     return (
@@ -458,55 +476,19 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
   }
 
   /**
-   * Manejador de clic en la etiqueta para forzar el foco y abrir el dropdown.
-   * @param event El evento de clic.
-   */
-  onLabelClick(event: MouseEvent): void {
-    if (this._disabled()) {
-      event.preventDefault();
-      return;
-    }
-
-    // Prevenir el comportamiento por defecto de la etiqueta para evitar doble disparo
-    // o para asegurar que nuestro manejo explícito tome precedencia.
-    event.preventDefault();
-
-    // Enfocar el elemento del trigger del dropdown
-    if (this.dropdownInput) {
-      this.dropdownInput.nativeElement.focus();
-    }
-
-    // Luego, llamar a toggleDropdown para abrirlo
-    if (!this.isOpen()) {
-      // Solo abrir si no está ya abierto
-      this.toggleDropdown();
-      // Notificar al servicio que este dropdown se está abriendo
-      this._dropdownManagerService.notifyOpened(this);
-    }
-  }
-
-  /**
    * Procesa el contenido del dropdown, ya sea desde el input `content` o desde `ng-content`.
    * Adapta los `DropdownOptionComponent` y `DropdownOptionGroupComponent` a la estructura interna `DropdownOption`/`DropdownGroup`.
    */
-  private processContent(): void {
+  private async processContent(): Promise<void> {
     let rawContent: DropdownContent = [];
 
     // Priorizamos el input `content` si está presente.
-    // Este contento se espera que sea un array de objetos con las propiedades que se pasrá usando el input `content`.
-    // Además, se le puede indicar cual será el `value` con el input `valueField` y el `label` con el input `labelField`.
     if (this.content()) {
       rawContent = this.content()!.map((rawItem) => {
-        // Aserción de tipo para permitir indexación dinámica
-        const item = rawItem as any; // Aserción de tipo any aquí para permitir indexación dinámica
+        const item = rawItem as any;
 
-        // Asumiendo que `item` puede ser un grupo o una opción simple
         if (item.options && Array.isArray(item.options)) {
-          // Si es un grupo de opciones, convertimos a DropdownGroup
-          // Aseguramos que el grupo tenga un label, si no, usamos el valor
-          // por defecto '-' y un ID único.
           return {
-            // Aseguramos que el grupo tenga un label, si no, usamos el valor por defecto '-'
             label: item[this.labelField()] || item.label || '-',
             id:
               item.id ??
@@ -523,9 +505,6 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
             }),
           } as DropdownGroup;
         } else {
-          // Si es una opción simple, convertimos a DropdownOption
-          // Aseguramos que la opción tenga un label, si no, usamos el valor
-          // por defecto '-' y un ID único.
           return {
             value: item[this.valueField()],
             label: item[this.labelField()],
@@ -535,60 +514,48 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
         }
       });
     } else {
-      // Si no hay contenido en el input `content`, procesamos el contenido proyectado
-      // que ha sido creado usando las etiquetas <neo-option> y <neo-option-group>.
+      // Si no hay `content`, procesamos contenido proyectado (grupos y opciones)
       this._groupsFromContent.forEach((groupCmp) => {
-        // Creamos unos IDs por defecto para los grupos y opciones
-        // en caso de que no se hayan definido.
-        // Esto asegura que cada grupo y opción tenga un ID único,
         const defaultGroupId =
           this._inputsUtilsService.createUniqueId('option-group');
         const defaultOptionId =
           this._inputsUtilsService.createUniqueId('option');
 
-        // Creamos un grupo de opciones
         const group: DropdownGroup = {
           label: groupCmp.label(),
-          id: groupCmp._id() ?? defaultGroupId, // Aseguramos que cada grupo tenga un ID único
+          id: groupCmp._id() ?? defaultGroupId,
           disabled: groupCmp.disabled(),
           options: groupCmp.options.map((optCmp) => ({
             value: optCmp.value(),
             label: optCmp.displayLabel,
             disabled:
               (groupCmp.isDisabled ?? false) || (optCmp.isDisabled ?? false),
-            id: optCmp._id() ?? defaultOptionId, // Aseguramos que cada opción tenga un ID único
-            idGroup: groupCmp._id() ?? null, // Asignamos el ID del grupo al que pertenece
+            id: optCmp._id() ?? defaultOptionId,
+            idGroup: groupCmp._id() ?? null,
           })),
         };
         rawContent.push(group);
       });
 
-      // Procesamos las opciones planas que no están en grupos
-      // Esto es útil si hay opciones que no están dentro de un grupo
-      // y queremos que se muestren en el dropdown.
       this._optionsFromContent.forEach((optCmp) => {
-        // Verificamos si la opción pertenece a algún grupo
-        // para no duplicarla como opción plana si ya está en un grupo.
         const isPartOfGroup = this._groupsFromContent.some((g) =>
           g.options.some((o) => o === optCmp),
         );
 
-        // Si la opción no pertenece a ningún grupo, la añadimos como opción plana
         if (!isPartOfGroup) {
           const defaultID = this._inputsUtilsService.createUniqueId('option');
-          // Añadimos la opción plana al contenido
           rawContent.push({
             value: optCmp.value(),
             label: optCmp.displayLabel,
             disabled: optCmp.disabled(),
-            id: optCmp._id() ?? defaultID, // Aseguramos que cada opción tenga un ID único
-            idGroup: null, // No pertenece a ningún grupo
+            id: optCmp._id() ?? defaultID,
+            idGroup: null,
           });
         }
       });
     }
 
-    // Aplanamos y filtramos las opciones según el término de búsqueda
+    // Aplanamos y filtramos las opciones
     this.flattenAndFilterOptions(rawContent);
   }
 
@@ -655,18 +622,8 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
   /**
    * Filtra las opciones basadas en el término de búsqueda.
    */
-  onSearchTermChange(): void {
-    this.processContent();
-
-    // Si estas usando scroll virtual, reseteamos el scroll al inicio
-    if (this.virtualScroll) this.virtualScroll.scrollToIndex(0);
-
-    // Movemos el foco al primer elemento visible y volvemos a hacer focus en el input de búsqueda
-    setTimeout(() => {
-      this.keyManager.setFirstItemActive();
-      this.focusOption(this.keyManager.activeItemIndex);
-      if (this.inputSearch) this.inputSearch.nativeInputElement.focus();
-    });
+  onSearchTerm() {
+    this.searchTerm$.next(this.searchTerm());
   }
 
   /**
@@ -725,6 +682,51 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
 
     // Cada palabra del término debe aparecer en el label
     return searchTerms.every((partial) => label.includes(partial));
+  }
+
+  /**
+   * Método para suscrbirnos al cambio del término de búsqueda.
+   * Utiliza debounce para evitar llamadas excesivas al filtrar las opciones, mejorando el rendimiento.
+   * Esta función se llama al inicializar el componente y cada vez que cambia el término de búsqueda.
+   * Además, se asegura de que el scroll virtual se reinicie al cambiar el término de búsqueda.
+   * También se asegura de que el KeyManager se reinicie al cambiar el término de búsqueda.
+   */
+  private onSearchTermChange() {
+    // Calculamos el tiempo de debounce según el número de opciones
+    // y si se está usando scroll virtual o no. De esta forma, optimizamos,
+    // ya que si hay pocas opciones, no necesitamos tanto tiempo de debounce.
+    // Si hay muchas opciones, el debounce es mayor para evitar llamadas excesivas.
+    const itemCount = this._allFlatOptions.length;
+    let dTimeSearch = 200; // Tiempo de debounce por defecto
+    if (this.virtualScroll) {
+      if (itemCount < 100) dTimeSearch = 150;
+      if (itemCount < 500) dTimeSearch = 200;
+      dTimeSearch = 300;
+    } else {
+      if (itemCount < 100) dTimeSearch = 100;
+      if (itemCount < 500) dTimeSearch = 150;
+      dTimeSearch = 200;
+    }
+
+    // Nos suscribimos al término de búsqueda y filtramos las opciones
+    // usando debounce para evitar llamadas excesivas al filtrar.
+    this.searchTerm$
+      .pipe(
+        debounceTime(dTimeSearch),
+        distinctUntilChanged(),
+        takeUntil(this.ngUnsubscribe$),
+      )
+      .subscribe(() => {
+        this.processContent().then(() => {
+          if (this.virtualScroll) this.virtualScroll.scrollToIndex(0);
+          setTimeout(() => {
+            this.keyManager.setFirstItemActive();
+            this.focusOption(this.keyManager.activeItemIndex);
+            if (this.inputSearch) this.inputSearch.nativeInputElement.focus();
+          }, 100);
+          this._changeDetector.detectChanges();
+        });
+      });
   }
 
   /**
@@ -868,7 +870,7 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
     this.isOpen.set(true);
     this.searchTerm.set('');
     this.processContent();
-    this.initKeyManager(); // Inicializamos el KeyManager para navegación por teclado
+    this.initKeyManager();
     this._dropdownManagerService.notifyOpened(this);
     this.onOverlayAttached();
     this.openChange.emit(true);
@@ -905,7 +907,6 @@ export class DropdownComponent implements ControlValueAccessor, AfterViewInit {
    */
   onOverlayDetached(): void {
     setTimeout(() => this.onTouched());
-    if (this.dropdownInput) this.dropdownInput.nativeElement.focus();
   }
 
   /**
