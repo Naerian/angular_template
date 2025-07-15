@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LogoComponent } from './logo.component';
 import { toHaveNoViolations, axe } from 'jasmine-axe';
 import { Component } from '@angular/core';
-import { LIGHT_THEME, DARK_THEME } from '../theme-toggle/model/theme.entity';
+import { LIGHT_THEME, DARK_THEME } from '../theme-toggle/model/theme.model';
 import { ThemesService } from '../theme-toggle/service/themes.service';
 import { LOGO, LOGO_DARK, LOGO_SMALL, LOGO_SMALL_DARK, LogoSize } from './models/logo.entity';
 

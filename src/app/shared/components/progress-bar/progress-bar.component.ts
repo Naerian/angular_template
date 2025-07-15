@@ -1,19 +1,24 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  Input,
   InputSignal,
   WritableSignal,
-  booleanAttribute,
   computed,
+  inject,
   input,
   signal,
 } from '@angular/core';
 import {
-  ProgressBarSize,
   ProgressBarValuePosition,
   ProgressBarValueFormat,
   ProgressBarLabelPosition,
 } from './models/progress-bar.model';
+import {
+  ComponentSize,
+  NeoComponentConfig,
+} from '@shared/configs/component.model';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 
 /**
  * Componente de barra de progreso que muestra el progreso de una tarea.
@@ -32,10 +37,15 @@ import {
 export class ProgressBarComponent {
   /**
    * Define el tamaño de la barra de progreso.
-   * @type {InputSignal<ProgressBarSize>}
-   * @default 'm'
    */
-  size: InputSignal<ProgressBarSize> = input<ProgressBarSize>('m');
+  _size: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set size(value: ComponentSize) {
+    this._size.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get size(): ComponentSize {
+    return this._size();
+  }
 
   /**
    * Define el valor actual de la barra de progreso.
@@ -233,14 +243,24 @@ export class ProgressBarComponent {
     } else if (this.label()) {
       // If there's a separate label, use it as the primary description
       return this.label();
-    } else if (this.valuePosition() !== 'hidden' && this._computedValueOnlyText()) {
+    } else if (
+      this.valuePosition() !== 'hidden' &&
+      this._computedValueOnlyText()
+    ) {
       // If no label but value is displayed, use the value text
       return this._computedValueOnlyText();
     }
     return null; // Fallback if no relevant text to describe
   });
 
+  private readonly globalConfig = inject(
+    NEOUI_COMPONENT_CONFIG,
+  );
+
   constructor() {
+    // Inicializamos el tamaño del botón con el valor por defecto de la configuración global
+    this._size.set(this.globalConfig.defaultSize || 'm');
+
     // Actualiza el porcentaje cuando el valor o maxValue cambian
     // Esto se mantiene reactivo gracias a `computed`
     computed(() => {
@@ -254,12 +274,17 @@ export class ProgressBarComponent {
     });
   }
 
+  ngOnInit(): void {
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.size) this._size.set(this.size);
+  }
+
   /**
    * Función para crear un ID único para la barra de progreso.
    * Este ID se puede usar para asociar la barra de progreso con su etiqueta.
    */
   createUniqueId(): void {
-    if(this._id()) return;
+    if (this._id()) return;
     this._id.set('progress_bar_' + crypto.randomUUID());
     this._labelId.set(`label_${this._id()}`);
   }

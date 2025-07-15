@@ -4,11 +4,14 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  InputSignal,
   Output,
   ViewChild,
   WritableSignal,
+  computed,
   forwardRef,
   inject,
+  input,
   signal,
 } from '@angular/core';
 import {
@@ -16,8 +19,12 @@ import {
   FormsModule,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
-import { InputSize } from '../models/form-field.model';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import {
+  ComponentSize,
+  NeoComponentConfig,
+} from '@shared/configs/component.model';
 
 /**
  * @name
@@ -53,9 +60,21 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Input() checked: boolean = false;
   @Input() disabled: boolean = false;
   @Input() indeterminate: boolean = false;
-  @Input() inputSize: InputSize = 'm';
   @Input() label?: string;
   @Input() name?: string;
+
+
+  /**
+   * Tamaño del checkbox.
+   */
+  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set inputSize(value: ComponentSize) {
+    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get inputSize(): ComponentSize {
+    return this._inputSize();
+  }
 
   _id: WritableSignal<string> = signal('');
   _labelId: WritableSignal<string> = signal('');
@@ -86,9 +105,22 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Output() changed = new EventEmitter<boolean>();
 
   private readonly _inputsUtilsService = inject(InputsUtilsService);
+  private readonly globalConfig = inject(
+    NEOUI_COMPONENT_CONFIG,
+  );
+
+  constructor() {
+    // Inicializamos el tamaño del checkbox con el valor por defecto de la configuración global
+    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+  }
 
   onChange = (_: boolean) => {};
   onTouched = () => {};
+
+  ngOnInit(): void {
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.inputSize) this._inputSize.set(this.inputSize);
+  }
 
   ngAfterViewInit() {
     this.createUniqueId();

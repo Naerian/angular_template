@@ -1,6 +1,6 @@
 import { Component, Injector, Input, Signal, computed, effect, signal } from '@angular/core';
 import { ThemesService } from '../theme-toggle/service/themes.service';
-import { ThemeType, LIGHT_THEME } from '../theme-toggle/model/theme.entity';
+import { ThemeType, LIGHT_THEME } from '../theme-toggle/model/theme.model';
 import { LOGO, LOGO_DARK, LOGO_SMALL, LOGO_SMALL_DARK, LogoSize } from './models/logo.entity';
 
 /**

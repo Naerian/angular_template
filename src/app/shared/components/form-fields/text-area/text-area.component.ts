@@ -4,9 +4,8 @@ import {
   Component,
   EventEmitter,
   forwardRef,
-  input,
+  inject,
   Input,
-  InputSignal,
   Output,
   signal,
   WritableSignal,
@@ -14,7 +13,8 @@ import {
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { InputSize } from '../models/form-field.model';
+import { ComponentSize } from '@shared/configs/component.model';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 
 /**
  * @name
@@ -50,8 +50,18 @@ export class TextAreaComponent {
   @Input() cols?: number;
   @Input() maxlength?: number;
   @Input() resize?: boolean = true;
-  @Input() inputSize: InputSize = 'm';
-  @Output() change = new EventEmitter<string>();
+
+  /**
+   * Input para establecer el tamaño del campo
+   */
+  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set inputSize(value: ComponentSize) {
+    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get inputSize(): ComponentSize {
+    return this._inputSize();
+  }
 
   /**
    * Input para crear un id único para el campo
@@ -95,7 +105,20 @@ export class TextAreaComponent {
    */
   @Input('aria-describedby') ariaDescribedBy!: string;
 
-  constructor(private readonly _inputsUtilsService: InputsUtilsService) {}
+  @Output() change = new EventEmitter<string>();
+
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
+
+  constructor() {
+    // Inicializamos el tamaño del input con el valor por defecto de la configuración global
+    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+  }
+
+  ngOnInit(): void {
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.inputSize) this._inputSize.set(this.inputSize);
+  }
 
   ngAfterViewInit(): void {
     this.createUniqueId();
@@ -105,7 +128,7 @@ export class TextAreaComponent {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if(this._id()) return;
+    if (this._id()) return;
     this._id?.set(this._inputsUtilsService.createUniqueId('textarea'));
     this._labelId?.set(`label_${this._id()}`);
   }

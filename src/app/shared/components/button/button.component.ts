@@ -1,5 +1,20 @@
-import { Component, ElementRef, EventEmitter, HostBinding, Input, Output, ViewChild, ViewEncapsulation, WritableSignal, signal } from '@angular/core';
-import { ButtonColor, ButtonMode, ButtonSize, ButtonType } from './models/button.model';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewEncapsulation,
+  WritableSignal,
+  inject,
+  signal,
+} from '@angular/core';
+import { ButtonMode, ButtonType } from './models/button.model';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { ComponentColor, ComponentSize } from '@shared/configs/component.model';
 
 /**
  * @name
@@ -13,32 +28,66 @@ import { ButtonColor, ButtonMode, ButtonSize, ButtonType } from './models/button
   selector: 'neo-button',
   host: {
     '[class.disabled]': 'disabled',
-    '[class.all-width]': 'allWidth'
+    '[class.all-width]': 'allWidth',
   },
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
   standalone: true,
   imports: [],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
-export class ButtonComponent {
-
+export class ButtonComponent implements AfterViewInit, OnInit {
   @ViewChild('btnContent') btnContent!: ElementRef;
 
   /**
-   * Modo del botón (button, icon) de tipo `ButtonMode`
+   * Color del botón
+   */
+  _color: WritableSignal<ComponentColor> = signal('primary');
+  @Input()
+  set color(value: ComponentColor) {
+    this._color.set(value || this.globalConfig.defaultColor || 'primary');
+  }
+  get color(): ComponentColor {
+    return this._color();
+  }
+
+  /**
+   * Tamaño del botón
+   */
+  _size: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set size(value: ComponentSize) {
+    this._size.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get size(): ComponentSize {
+    return this._size();
+  }
+
+  _transparent: WritableSignal<boolean> = signal(true);
+  @Input()
+  set transparent(value: boolean) {
+    this._transparent.set(value || this.globalConfig.transparentButton || true);
+  }
+  get transparent(): boolean {
+    return this._transparent();
+  }
+
+  /**
+   * Título del botón
+   */
+  _title: WritableSignal<string> = signal('');
+  @Input()
+  set title(value: string) {
+    this._title.set(value);
+  }
+  get title(): string {
+    return this._title();
+  }
+
+  /**
+   * Modo del botón
    */
   @Input() mode: ButtonMode = 'button';
-
-  /**
-   * Color del botón (primary, secondary) de tipo `ButtonColor`
-   */
-  @Input() color: ButtonColor = 'primary';
-
-  /**
-   * Tamaño del botón (xs, s, xm, m, l, xl) de tipo `ButtonSize`
-   */
-  @Input() size: ButtonSize = 'm';
 
   /**
    * Permite que el botón ocupe todo el ancho del contenedor padre (true, false)
@@ -56,36 +105,40 @@ export class ButtonComponent {
   @Input() type: ButtonType = 'button';
 
   /**
-   * Permite indicar si el botón tiene el foco (true, false)
-   */
-  @Input() focus: boolean = false;
-
-  /**
-   * Permite indicar si el botón es transparente (true, false)
-   */
-  @Input() transparent: boolean = false;
-
-  /**
-   * Título del botón
-   */
-  @Input()
-  set title(value: string) {
-    this._title.set(value);
-  }
-  get title(): string {
-    return this._title();
-  }
-
-  /**
    * Evento que se emite al hacer click en el botón
    */
   @Output() onClick: EventEmitter<Event> = new EventEmitter();
 
-  _title: WritableSignal<string> = signal('');
+  // Inyectamos la configuración global de componentes
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
+
+  constructor() {
+    // Inicializamos los atributos por defecto
+    this._size.set(this.globalConfig.defaultSize || 'm');
+    this._color.set(this.globalConfig.defaultColor || 'primary');
+    this._transparent.set(this.globalConfig.transparentButton || true);
+  }
+
+  ngOnInit(): void {
+    this.setProperties();
+  }
 
   ngAfterViewInit(): void {
     if (this.getTitle() === '')
-      this._title.set(this.btnContent?.nativeElement?.innerHTML.replace(/(<([^>]+)>)/gi, "").trim() || '');
+      this._title.set(
+        this.btnContent?.nativeElement?.innerHTML
+          .replace(/(<([^>]+)>)/gi, '')
+          .trim() || '',
+      );
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties() {
+    if (this.size) this._size.set(this.size);
+    if (this.color) this._color.set(this.color);
+    if (this.transparent) this._transparent.set(this.transparent);
   }
 
   /**
@@ -93,25 +146,9 @@ export class ButtonComponent {
    * @param {Event} event
    */
   clickOnButton(event: Event) {
-
-    if (this.disabled)
-      return;
+    if (this.disabled) return;
 
     this.onClick.emit(event);
-  }
-
-  /**
-   * Función para añadir el foco al botón
-   */
-  focusButton() {
-    this.btnContent.nativeElement.focus();
-  }
-
-  /**
-   * Función para quitar el foco al botón
-   */
-  blurButton() {
-    this.btnContent.nativeElement.blur();
   }
 
   /**

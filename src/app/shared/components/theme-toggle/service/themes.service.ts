@@ -1,6 +1,6 @@
 import { Injectable, Renderer2, RendererFactory2, WritableSignal, signal } from '@angular/core';
 import { environment } from '@environments/environment';
-import { DARK_THEME, LIGHT_THEME, PREFIX_THEME_CLASS, ThemeType } from '../model/theme.entity';
+import { DARK_THEME, LIGHT_THEME, PREFIX_THEME_CLASS, ThemeType } from '../model/theme.model';
 
 @Injectable({
   providedIn: 'root'

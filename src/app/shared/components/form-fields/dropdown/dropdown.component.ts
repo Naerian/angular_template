@@ -25,6 +25,7 @@ import {
   AfterContentInit,
   OnChanges,
   OnDestroy,
+  computed,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -36,7 +37,6 @@ import {
   DropdownContent,
   DropdownOption,
   DropdownGroup,
-  DropdownSize,
   VIRTUAL_SCROLL_THRESHOLD,
   DropdownSizesInPx,
   OVERLAY_POSITIONS,
@@ -55,6 +55,11 @@ import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animatio
 import { InputComponent } from '../input/input.component';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { FocusableItemDirective } from './directives/focusable-item.directive';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import {
+  ComponentSize,
+  NeoComponentConfig,
+} from '@shared/configs/component.model';
 
 /**
  * @name
@@ -154,13 +159,19 @@ export class DropdownComponent
    * Etiqueta (placeholder) del dropdown.
    * @type {InputSignal<string>}
    */
-  placeholder: InputSignal<string> = input<string>('Seleccionar...');
+  placeholder: InputSignal<string> = input<string>('');
 
   /**
    * Tamaño del input del dropdown.
-   * @type {InputSignal<DropdownSize>}
    */
-  inputSize: InputSignal<DropdownSize> = input<DropdownSize>('m');
+  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set inputSize(value: ComponentSize) {
+    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get inputSize(): ComponentSize {
+    return this._inputSize();
+  }
 
   /**
    * Si se debe mostrar un botón para limpiar la selección.
@@ -246,8 +257,11 @@ export class DropdownComponent
   // Manager para el control de teclas en las opciones
   keyManager!: FocusKeyManager<FocusableItemDirective>;
 
-  // Inyectamos las traducciones
-  protected _translations: NeoUITranslations = inject(NEOUI_TRANSLATIONS);
+  protected readonly _translations: NeoUITranslations =
+    inject(NEOUI_TRANSLATIONS);
+  private readonly globalConfig = inject(
+    NEOUI_COMPONENT_CONFIG,
+  );
 
   // Propiedad para mantener la instancia de NgControl
   public ngControl: NgControl | null = null;
@@ -265,6 +279,8 @@ export class DropdownComponent
 
   constructor() {
     this.scrollStrategy = this.overlay.scrollStrategies.close();
+    // Inicializamos el tamaño del input con el valor por defecto de la configuración global
+    this._inputSize.set(this.globalConfig.defaultSize || 'm');
   }
 
   /**
@@ -289,6 +305,9 @@ export class DropdownComponent
   ngOnInit(): void {
     this.onSearchTermChange();
     this.dropdownManager();
+
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.inputSize) this._inputSize.set(this.inputSize);
   }
 
   ngAfterViewInit(): void {
@@ -835,7 +854,7 @@ export class DropdownComponent
    * @returns {number} Altura del item en píxeles.
    */
   getItemSize(): number {
-    const size = this.inputSize();
+    const size = this._inputSize();
     const height = DropdownSizesInPx[size as keyof typeof DropdownSizesInPx];
     return (
       (height ?? DropdownSizesInPx.m) +

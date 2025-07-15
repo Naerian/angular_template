@@ -10,7 +10,7 @@
     role="option"
     class="
       neo-dropdown__panel__options__option
-      neo-dropdown__panel__options__option--{{ inputSize() }}
+      neo-dropdown__panel__options__option--{{ _inputSize() }}
     "
     [class.neo-dropdown__panel__options__option--selected]="
       isOptionSelected(optionData)
@@ -39,7 +39,7 @@
   <div
     class="
       neo-dropdown__panel__options__no-results
-      neo-dropdown__panel__options__no-results--{{ inputSize() }}
+      neo-dropdown__panel__options__no-results--{{ _inputSize() }}
     "
   >
     {{ _translations.noResults }}
@@ -64,7 +64,7 @@
 >
   <div
     #dropdownInput
-    class="neo-dropdown__field neo-dropdown__field--{{ inputSize() }}"
+    class="neo-dropdown__field neo-dropdown__field--{{ _inputSize() }}"
     [class.neo-select__field--clear]="showClear()"
     [class.neo-select__field--empty]="filteredOptions().length === 0"
     [class.neo-select__field--multiple]="multiple()"
@@ -97,7 +97,7 @@
     <span
       class="
         neo-dropdown__field__icon
-        neo-dropdown__field__icon--{{ inputSize() }}
+        neo-dropdown__field__icon--{{ _inputSize() }}
       "
       [class.neo-dropdown__field__icon--open]="isOpen()"
     >
@@ -118,7 +118,7 @@
     <div
       class="
         neo-dropdown__panel
-        neo-dropdown__panel--{{ inputSize() }}
+        neo-dropdown__panel--{{ _inputSize() }}
       "
       #dropdownPanel
       [@fadeInOutScale]="isOpen() ? '*' : 'void'"
@@ -138,7 +138,7 @@
             (ngModelChange)="onSearchTerm()"
             class="neo-dropdown__panel__search__input"
             [attr.aria-label]="_translations.search"
-            [inputSize]="inputSize()"
+            [inputSize]="_inputSize()"
             [id]="'search_' + _id()"
             [autocomplete]="'off'"
             [autocapitalize]="'off'"
@@ -165,7 +165,7 @@
                 <div
                   class="
                     neo-dropdown__panel__options__group-label
-                    neo-dropdown__panel__options__group-label--{{ inputSize() }}
+                    neo-dropdown__panel__options__group-label--{{ _inputSize() }}
                   "
                   [attr.id]="item.label + '-group-label'"
                 >
@@ -212,7 +212,7 @@
               <div
                 class="
                   neo-dropdown__panel__options__group-label
-                  neo-dropdown__panel__options__group-label--{{ inputSize() }}
+                  neo-dropdown__panel__options__group-label--{{ _inputSize() }}
                 "
                 [class.neo-dropdown__panel__options__group-label--disabled]="
                   item.disabled

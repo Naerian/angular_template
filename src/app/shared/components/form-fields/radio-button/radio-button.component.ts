@@ -8,9 +8,10 @@ import {
   ElementRef,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { InputSize } from '../models/form-field.model';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { ComponentSize } from '@shared/configs/component.model';
 
 /**
  * @name
@@ -42,9 +43,16 @@ export class RadioButtonComponent {
   @Input() label?: string;
 
   /**
-   * Tamaño del input del radio button.
+   * Input para establecer el tamaño del campo
    */
-  @Input() inputSize: InputSize = 'm';
+  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set inputSize(value: ComponentSize) {
+    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get inputSize(): ComponentSize {
+    return this._inputSize();
+  }
 
   /**
    * Indica si el radio button está seleccionado.
@@ -115,6 +123,18 @@ export class RadioButtonComponent {
    * Emite el valor de este radio button cuando es seleccionado.
    */
   @Output() change: EventEmitter<any> = new EventEmitter<any>();
+
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
+
+  constructor() {
+    // Inicializamos el tamaño del input con el valor por defecto de la configuración global
+    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+  }
+
+  ngOnInit(): void {
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.inputSize) this._inputSize.set(this.inputSize);
+  }
 
   ngAfterViewInit() {
     this.computedTitle();

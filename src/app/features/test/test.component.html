@@ -40,13 +40,13 @@
     </div>
     <div class="col-2">
       <label>Primary y background</label>
-      <neo-button [size]="'m'" color="primary" mode="icon">
+      <neo-button color="primary" mode="icon">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
     <div class="col-2">
       <label>Primary y transparente</label>
-      <neo-button [size]="'m'" color="primary" mode="icon" [transparent]="true">
+      <neo-button color="primary" mode="icon" [transparent]="true">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
@@ -74,18 +74,13 @@
     </div>
     <div class="col-2">
       <label>Secondary y background</label>
-      <neo-button [size]="'m'" color="secondary" mode="icon">
+      <neo-button color="secondary" mode="icon">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
     <div class="col-2">
       <label>Secondary y transparente</label>
-      <neo-button
-        [size]="'m'"
-        color="secondary"
-        mode="icon"
-        [transparent]="true"
-      >
+      <neo-button color="secondary" mode="icon" [transparent]="true">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
@@ -113,13 +108,13 @@
     </div>
     <div class="col-2">
       <label>Success y background</label>
-      <neo-button [size]="'m'" color="success" mode="icon">
+      <neo-button color="success" mode="icon">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
     <div class="col-2">
       <label>Success y transparente</label>
-      <neo-button [size]="'m'" color="success" mode="icon" [transparent]="true">
+      <neo-button color="success" mode="icon" [transparent]="true">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
@@ -145,13 +140,13 @@
     </div>
     <div class="col-2">
       <label>Info y background</label>
-      <neo-button [size]="'m'" color="info" mode="icon">
+      <neo-button color="info" mode="icon">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
     <div class="col-2">
       <label>Info y transparente</label>
-      <neo-button [size]="'m'" color="info" mode="icon" [transparent]="true">
+      <neo-button color="info" mode="icon" [transparent]="true">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
@@ -177,13 +172,13 @@
     </div>
     <div class="col-2">
       <label>Danger y background</label>
-      <neo-button [size]="'m'" color="danger" mode="icon">
+      <neo-button color="danger" mode="icon">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
     <div class="col-2">
       <label>Danger y transparente</label>
-      <neo-button [size]="'m'" color="danger" mode="icon" [transparent]="true">
+      <neo-button color="danger" mode="icon" [transparent]="true">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
@@ -211,13 +206,13 @@
     </div>
     <div class="col-2">
       <label>Warning y background</label>
-      <neo-button [size]="'m'" color="warning" mode="icon">
+      <neo-button color="warning" mode="icon">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
     <div class="col-2">
       <label>Warning y transparente</label>
-      <neo-button [size]="'m'" color="warning" mode="icon" [transparent]="true">
+      <neo-button color="warning" mode="icon" [transparent]="true">
         <i class="ri-newspaper-fill"></i>
       </neo-button>
     </div>
@@ -238,7 +233,7 @@
     </div>
     <div class="col-2">
       <label>Botón M</label>
-      <neo-button [size]="'m'">Botón M</neo-button>
+      <neo-button>Botón M</neo-button>
     </div>
     <div class="col-2">
       <label>Botón L</label>
@@ -340,7 +335,7 @@
     </div>
     <div class="col-12 col-md-6 col-lg-6 mb-2 mt-2">
       <neo-dropdown
-        [label]="'Dropdown M con ngModel múltiple y buscador'"
+        [label]="'Dropdown con ngModel múltiple y buscador'"
         [content]="countries"
         placeholder="Selecciona un país"
         [multiple]="true"
@@ -350,7 +345,7 @@
       <p>País seleccionado: {{ selectedCountry | json }}</p>
       <hr />
       <neo-dropdown
-        [label]="'Dropdown L con ngModel y buscador'"
+        [label]="'Dropdown con ngModel y buscador'"
         [content]="categories"
         placeholder="Selecciona una categoría"
         [searchable]="true"
@@ -359,7 +354,7 @@
       <p>Categoría seleccionada: {{ selectedCategory | json }}</p>
       <hr />
       <neo-dropdown
-        [label]="'Dropdown M con ngModel, buscador y ScrollView (virtual)'"
+        [label]="'Dropdown con ngModel, buscador y ScrollView (virtual)'"
         [content]="largeDataSet"
         placeholder="Selecciona una opción"
         [searchable]="true"
@@ -391,7 +386,9 @@
       <p>Fruta seleccionada: {{ selectedFruitNgContent | json }}</p>
       <hr />
       <neo-dropdown
-        [label]="'Dropdown con campos personalizados para indicar el valor y la etiqueta'"
+        [label]="
+          'Dropdown con campos personalizados para indicar el valor y la etiqueta'
+        "
         [content]="customData"
         placeholder="Selecciona un ítem (Custom Fields)"
         [searchable]="true"
@@ -705,7 +702,7 @@
     </div>
     <div class="col-2">
       <label
-        >Spinner L con label y color personalizado, sin backdrop, y contenido
+        >Spinner con label y color personalizado, sin backdrop, y contenido
         entre medias color "#673ab7"</label
       >
       <div style="border: 1px solid #ccc; position: relative">
@@ -714,7 +711,6 @@
           label="Cargando datos importantes..."
           spinnerColor="#673ab7"
           labelColor="#673ab7"
-          size="l"
           position="inline"
         ></neo-spinner>
         <p>Más contenido debajo del spinner</p>
@@ -722,7 +718,7 @@
     </div>
     <div class="col-2">
       <label
-        >Spinner XL en posición absoluta color "darkgreen" con backdrop color
+        >Spinner en posición absoluta color "darkgreen" con backdrop color
         "#e0f7facc"</label
       >
       <div
@@ -743,27 +739,25 @@
           label="Procesando..."
           spinnerColor="darkgreen"
           labelColor="darkgreen"
-          size="xl"
           position="absolute"
           backdropColor="#e0f7facc"
         ></neo-spinner>
       </div>
     </div>
     <div class="col-2">
-      <label>Spinner S con label corto color "#d32f2f"</label>
+      <label>Spinner con label corto color "#d32f2f"</label>
       <neo-spinner
         label="Guardando..."
-        size="s"
         spinnerColor="#d32f2f"
         labelColor="#d32f2f"
       ></neo-spinner>
     </div>
     <div class="col-2">
-      <label>Spinner XS con label con color original</label>
-      <neo-spinner label="Guardando datos..." size="xs"></neo-spinner>
+      <label>Spinner con label con color original</label>
+      <neo-spinner label="Guardando datos..."></neo-spinner>
     </div>
     <div class="col-2">
-      <label>Spinner M sin label</label>
+      <label>Spinner sin label</label>
       <neo-spinner></neo-spinner>
     </div>
   </div>
@@ -983,7 +977,7 @@
   <div class="row">
     <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
       <label>Menú contextual</label>
-      <neo-menu-context size="xm">
+      <neo-menu-context>
         <neo-item-menu-context>Test 1</neo-item-menu-context>
         <neo-item-menu-context>Test 2</neo-item-menu-context>
         <neo-item-menu-context [disabled]="true"
@@ -993,7 +987,7 @@
     </div>
     <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
       <label>Cambio de tema (claro / oscuro)</label>
-      <neo-theme-toggle size="xm"></neo-theme-toggle>
+      <neo-theme-toggle></neo-theme-toggle>
     </div>
   </div>
 </neo-card>

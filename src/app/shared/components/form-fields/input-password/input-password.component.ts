@@ -4,9 +4,7 @@ import {
   EventEmitter,
   forwardRef,
   inject,
-  input,
   Input,
-  InputSignal,
   Output,
   signal,
   WritableSignal,
@@ -17,9 +15,12 @@ import {
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { InputSize } from '../models/form-field.model';
 import { NeoUITranslations } from '@shared/translations/translations.model';
 import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import {
+  ComponentSize,
+} from '@shared/configs/component.model';
 
 /**
  * @name
@@ -54,7 +55,18 @@ export class InputPasswordComponent implements ControlValueAccessor {
   @Input() size?: number;
   @Input() minlength?: number;
   @Input() maxlength?: number;
-  @Input() inputSize: InputSize = 'm';
+
+  /**
+   * Input para establecer el tamaño del campo
+   */
+  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set inputSize(value: ComponentSize) {
+    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get inputSize(): ComponentSize {
+    return this._inputSize();
+  }
 
   /**
    * Input para crear un id único para el campo
@@ -102,7 +114,7 @@ export class InputPasswordComponent implements ControlValueAccessor {
    * Evento que se emite cuando el valor del campo cambia
    */
   @Output() change = new EventEmitter<string>();
-  
+
   /**
    * Evento que se emite cuando el campo pierde el foco
    */
@@ -111,11 +123,22 @@ export class InputPasswordComponent implements ControlValueAccessor {
   // Signal para mostrar u ocultar la contraseña
   show: WritableSignal<boolean> = signal(false);
 
-  // Inyectamos las traducciones
-  protected _translations: NeoUITranslations = inject(NEOUI_TRANSLATIONS);
-
-  // Inyectamos las dependencias necesarias
   private readonly _inputsUtilsService = inject(InputsUtilsService);
+  protected readonly _translations: NeoUITranslations =
+    inject(NEOUI_TRANSLATIONS);
+  private readonly globalConfig = inject(
+    NEOUI_COMPONENT_CONFIG,
+  );
+
+  constructor() {
+    // Inicializamos el tamaño del input con el valor por defecto de la configuración global
+    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+  }
+
+  ngOnInit(): void {
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.inputSize) this._inputSize.set(this.inputSize);
+  }
 
   ngAfterViewInit(): void {
     this.createUniqueId();
@@ -125,7 +148,7 @@ export class InputPasswordComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if(this._id()) return;
+    if (this._id()) return;
     this._id?.set(this._inputsUtilsService.createUniqueId('input-password'));
     this._labelId?.set(`label_${this._id()}`);
   }

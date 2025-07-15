@@ -17,14 +17,14 @@
   @if (_finalLabelText() && labelPosition() === "top") {
     <span
       class="neo-progress-bar__label"
-      [class]="'neo-progress-bar__label--' + size()"
+      [class]="'neo-progress-bar__label--' + _size()"
       ><span [innerHtml]="_finalLabelText()"></span
     ></span>
   }
 
   <div
     class="neo-progress-bar"
-    [class]="'neo-progress-bar--' + size()"
+    [class]="'neo-progress-bar--' + _size()"
     [class.neo-progress-bar--indeterminate]="indeterminate()"
     [class.neo-progress-bar--hidden-value]="valuePosition() === 'hidden'"
     [class.neo-progress-bar--value-inside]="valuePosition() === 'inside'"
@@ -57,7 +57,7 @@
     @if (_finalLabelText() && labelPosition() === "left") {
       <span
         class="neo-progress-bar__label"
-        [class]="'neo-progress-bar__label--' + size()"
+        [class]="'neo-progress-bar__label--' + _size()"
         ><span [innerHtml]="_finalLabelText()"></span
       ></span>
     }
@@ -96,7 +96,7 @@
     @if (_finalLabelText() && labelPosition() === "right") {
       <span
         class="neo-progress-bar__label"
-        [class]="'neo-progress-bar__label--' + size()"
+        [class]="'neo-progress-bar__label--' + _size()"
         ><span [innerHtml]="_finalLabelText()"></span
       ></span>
     }
@@ -105,7 +105,7 @@
   @if (_finalLabelText() && labelPosition() === "bottom") {
     <span
       class="neo-progress-bar__label"
-      [class]="'neo-progress-bar__label--' + size()"
+      [class]="'neo-progress-bar__label--' + _size()"
       ><span [innerHtml]="_finalLabelText()"></span
     ></span>
   }

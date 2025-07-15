@@ -12,8 +12,6 @@ import {
   HostListener,
   inject,
   Input,
-  input,
-  InputSignal,
   Output,
   signal,
   ViewChild,
@@ -35,11 +33,15 @@ import {
   DEFAULT_FORMAT,
   SelectionType,
 } from '../../calendar/models/calendar.model';
-import { InputAutocomplete, InputSize } from '../models/form-field.model';
+import { InputAutocomplete } from '../models/form-field.model';
 import { OVERLAY_POSITIONS } from './models/input-date-picker.model';
 import { DatePickerManagerService } from './services/date-picker-manager/date-picker-manager.service';
 import { ShowClearFieldDirective } from '@shared/directives/show-clear-field.directive';
 import { CalendarService } from '@shared/components/calendar/services/calendar.service';
+import {
+  ComponentSize,
+} from '@shared/configs/component.model';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 
 /**
  * @name
@@ -110,8 +112,17 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   // Tipo de autocompletado del input
   @Input() autocomplete: InputAutocomplete = 'off';
 
-  // Tamaño del input
-  @Input() inputSize: InputSize = 'm';
+  /**
+   * Tamaño del input
+   */
+  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set inputSize(value: ComponentSize) {
+    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get inputSize(): ComponentSize {
+    return this._inputSize();
+  }
 
   // Si se quiere mostrar el icono del calendario o no
   @Input() showIconCalendar: boolean = true;
@@ -189,10 +200,16 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   private readonly _calendarService = inject(CalendarService);
   private readonly _changeDetectorRef = inject(ChangeDetectorRef);
 
+  private readonly globalConfig = inject(
+    NEOUI_COMPONENT_CONFIG,
+  );
+
   private ngUnsubscribe = new Subject<void>();
 
   constructor() {
     this.scrollStrategy = this.overlay.scrollStrategies.close();
+    // Inicializamos el tamaño del input con el valor por defecto de la configuración global
+    this._inputSize.set(this.globalConfig.defaultSize || 'm');
   }
 
   /**
@@ -214,6 +231,9 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   ngOnInit(): void {
     // Nos suscribimos a las notificaciones del servicio DatePickerManagerService
     this.datePickerManager();
+
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.inputSize) this._inputSize.set(this.inputSize);
   }
 
   ngOnDestroy(): void {

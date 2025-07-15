@@ -3,7 +3,7 @@
   [color]="color"
   [transparent]="transparent"
   (onClick)="toggleTheme($event)"
-  [size]="size"
+  [size]="_size()"
   [title]="
     (currentTheme() === LIGHT_THEME ? 'THEME.DARK_THEME' : 'THEME.LIGHT_THEME')
       | translate

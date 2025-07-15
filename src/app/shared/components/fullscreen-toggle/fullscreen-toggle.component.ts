@@ -4,12 +4,14 @@ import {
   Inject,
   Input,
   WritableSignal,
+  inject,
   signal,
 } from '@angular/core';
 import { ButtonComponent } from '../button/button.component';
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { ButtonColor, ButtonSize } from '../button/models/button.model';
 import { TranslateModule } from '@ngx-translate/core';
+import { ComponentColor, ComponentSize } from '@shared/configs/component.model';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 
 @Component({
   selector: 'neo-fullscreen-toggle',
@@ -18,14 +20,38 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './fullscreen-toggle.component.html',
 })
 export class FullscreenToggleComponent {
-  @Input() color: ButtonColor = 'primary';
-  @Input() size: ButtonSize = 'm';
-  @Input() transparent: boolean = true;
+  _transparent: WritableSignal<boolean> = signal(true);
+  @Input()
+  set transparent(value: boolean) {
+    this._transparent.set(value || this.globalConfig.transparentButton || true);
+  }
+  get transparent(): boolean {
+    return this._transparent();
+  }
+
+  _size: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set size(value: ComponentSize) {
+    this._size.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get size(): ComponentSize {
+    return this._size();
+  }
+
+  _color: WritableSignal<ComponentColor> = signal('primary');
+  @Input()
+  set color(value: ComponentColor) {
+    this._color.set(value || this.globalConfig.defaultColor || 'primary');
+  }
+  get color(): ComponentColor {
+    return this._color();
+  }
+
   isFullScreen: WritableSignal<boolean> = signal(false);
   docElement!: HTMLElement;
 
   /**
-   * Función al pulsar la tecla `F11` para cambiar el estado de pantalla completa
+   * Listener al pulsar la tecla `F11` para cambiar el estado de pantalla completa
    * @param {KeyboardEvent} event
    */
   @HostListener('document:keydown.F11', ['$event'])
@@ -36,8 +62,7 @@ export class FullscreenToggleComponent {
   }
 
   /**
-   * Función para detectar el cambio de pantalla completa y cambiar el estado
-   * @param {Event} event
+   * Listener para detectar el cambio de pantalla completa y cambiar el estado
    */
   @HostListener('document:fullscreenchange')
   @HostListener('document:webkitfullscreenchange')
@@ -47,8 +72,29 @@ export class FullscreenToggleComponent {
     this.isFullScreen.set(!this.isFullScreen());
   }
 
-  constructor(@Inject(DOCUMENT) readonly document: any) {
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
+  private readonly document = inject(DOCUMENT);
+
+  constructor() {
     this.docElement = document.documentElement;
+
+    // Inicializamos los atributos por defecto
+    this._size.set(this.globalConfig.defaultSize || 'm');
+    this._color.set(this.globalConfig.defaultColor || 'primary');
+    this._transparent.set(this.globalConfig.transparentButton || true);
+  }
+
+  ngOnInit(): void {
+    this.setProperties();
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties() {
+    if (this.size) this._size.set(this.size);
+    if (this.color) this._color.set(this.color);
+    if (this.transparent) this._transparent.set(this.transparent);
   }
 
   /**
@@ -56,6 +102,6 @@ export class FullscreenToggleComponent {
    */
   toggleFullScreen() {
     if (!this.isFullScreen()) this.docElement?.requestFullscreen();
-    else document?.exitFullscreen();
+    else this.document?.exitFullscreen();
   }
 }

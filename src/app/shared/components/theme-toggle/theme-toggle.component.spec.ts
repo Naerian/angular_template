@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ThemeToggleModule } from './theme-toggle.module';
 import { of } from 'rxjs';
 import { ThemesService } from './service/themes.service';
-import { DARK_THEME, LIGHT_THEME } from './model/theme.entity';
+import { DARK_THEME, LIGHT_THEME } from './model/theme.model';
 
 describe('ThemeToggleComponent', () => {
   let component: ThemeToggleComponent;

@@ -1,14 +1,14 @@
-<div class="neo-spinner-wrapper" [class]="'neo-spinner-wrapper--' + size()">
+<div class="neo-spinner-wrapper" [class]="'neo-spinner-wrapper--' + _size()">
   <div
     class="neo-spinner-circle"
-    [class]="'neo-spinner-circle--' + size()"
+    [class]="'neo-spinner-circle--' + _size()"
     [style.border-top-color]="spinnerColor()"
   ></div>
 
   @if (label()) {
     <span
       class="neo-spinner-label"
-      [class]="'neo-spinner-label--' + size()"
+      [class]="'neo-spinner-label--' + _size()"
       [style.color]="labelColor()"
     >
       {{ label() }}

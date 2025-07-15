@@ -14,7 +14,6 @@ import {
 } from '@angular/core';
 import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { Subject, takeUntil } from 'rxjs';
-import { ButtonColor, ButtonSize } from '../button/models/button.model';
 import {
   NEO_ITEMS_MENU_CONTEXT,
   NEO_MENU_CONTEXT,
@@ -23,6 +22,8 @@ import {
 import { MenuContextManagerService } from './services/menu-context-manager/menu-context-manager.service';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { ItemMenuContextComponent } from './item-menu-context/item-menu-context.component';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { ComponentColor, ComponentSize } from '@shared/configs/component.model';
 
 /**
  * @name
@@ -61,20 +62,32 @@ export class MenuContextComponent {
    */
   @Input() icon: string = 'ri-more-2-fill';
 
-  /**
-   * Input que recibe el color del icono del menú, por defecto es 'primary'
-   */
-  @Input() color: ButtonColor = 'primary';
+  _size: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set size(value: ComponentSize) {
+    this._size.set(value || this.globalConfig.defaultSize || 'xm');
+  }
+  get size(): ComponentSize {
+    return this._size();
+  }
 
-  /**
-   * Input que recibe el tamaño del icono del menú, por defecto es 'xm'
-   */
-  @Input() size: ButtonSize = 'xm';
+  _color: WritableSignal<ComponentColor> = signal('primary');
+  @Input()
+  set color(value: ComponentColor) {
+    this._color.set(value || this.globalConfig.defaultColor || 'primary');
+  }
+  get color(): ComponentColor {
+    return this._color();
+  }
 
-  /**
-   * Input que recibe el color del icono del menú, por defecto es 'primary'
-   */
-  @Input() transparent: boolean = true;
+  _transparent: WritableSignal<boolean> = signal(true);
+  @Input()
+  set transparent(value: boolean) {
+    this._transparent.set(value || this.globalConfig.transparentButton || true);
+  }
+  get transparent(): boolean {
+    return this._transparent();
+  }
 
   /**
    * Input que recibe el título del menú
@@ -108,15 +121,9 @@ export class MenuContextComponent {
     MenuContextManagerService,
   );
 
-  private readonly itemMenuContext = inject(NEO_ITEMS_MENU_CONTEXT, {
-    optional: true,
-  }) as ItemMenuContextComponent | null;
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
 
   private ngUnsubscribe$ = new Subject<void>();
-
-  constructor() {
-    this.scrollStrategy = this.overlay.scrollStrategies.close();
-  }
 
   /**
    * Método para cerrar el menú contextual al hacer click fuera del panel
@@ -140,14 +147,35 @@ export class MenuContextComponent {
     }
   }
 
+  constructor() {
+    this.scrollStrategy = this.overlay.scrollStrategies.close();
+
+    // Inicializamos los atributos por defecto
+    this._size.set(this.globalConfig.defaultSize || 'xm');
+    this._color.set(this.globalConfig.defaultColor || 'primary');
+    this._transparent.set(this.globalConfig.transparentButton || true);
+  }
+
   ngOnInit(): void {
     // Nos suscribimos a las notificaciones del servicio MenuContextManagerService
     this.menuContextManager();
+
+    // Si se ha proporcionado un tamaño, lo establecemos
+    this.setProperties();
   }
 
   ngAfterViewInit(): void {
     // Creamos un id único para el menú contextual
     this.createUniqueId();
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties() {
+    if (this.size) this._size.set(this.size);
+    if (this.color) this._color.set(this.color);
+    if (this.transparent) this._transparent.set(this.transparent);
   }
 
   /**

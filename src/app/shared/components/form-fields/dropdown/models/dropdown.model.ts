@@ -20,9 +20,6 @@ export interface DropdownGroup {
 // Un tipo genérico para el contenido de las opciones, que puede ser plano o agrupado
 export type DropdownContent = (DropdownOption | DropdownGroup)[];
 
-// Tamaños del input
-export type DropdownSize = 'xs' | 's' | 'xm' | 'm' | 'l' | 'xl';
-
 // Umbral para el scroll virtual, ajusta según tus necesidades
 export const VIRTUAL_SCROLL_THRESHOLD = 100; // Umbral para el scroll virtual, ajusta según tus necesidades
 

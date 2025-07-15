@@ -1,6 +1,16 @@
-import { Component, InputSignal, input } from '@angular/core';
+import {
+  Component,
+  Input,
+  InputSignal,
+  WritableSignal,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SpinnerPosition, SpinnerSize } from './models/spinner.model';
+import { SpinnerPosition } from './models/spinner.model';
+import { ComponentSize, NeoComponentConfig } from '@shared/configs/component.model';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 
 @Component({
   selector: 'neo-spinner',
@@ -53,7 +63,14 @@ export class SpinnerComponent {
    * @type {InputSignal<SpinnerSize>}
    * @default 'm'
    */
-  size: InputSignal<SpinnerSize> = input<SpinnerSize>('m');
+  _size: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set size(value: ComponentSize) {
+    this._size.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get size(): ComponentSize {
+    return this._size();
+  }
 
   /**
    * Define la posición del spinner:
@@ -63,4 +80,18 @@ export class SpinnerComponent {
    * @default 'inline'
    */
   position: InputSignal<SpinnerPosition> = input<SpinnerPosition>('inline');
+
+  private readonly globalConfig = inject(
+    NEOUI_COMPONENT_CONFIG,
+  );
+
+  constructor() {
+    // Inicializamos el tamaño del botón con el valor por defecto de la configuración global
+    this._size.set(this.globalConfig.defaultSize || 'm');
+  }
+
+  ngOnInit(): void {
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.size) this._size.set(this.size);
+  }
 }

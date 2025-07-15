@@ -1,6 +1,6 @@
 import { Directive, HostBinding, Injector, OnInit, Signal, computed, effect, signal } from '@angular/core';
 import { ThemesService } from '@shared/components/theme-toggle/service/themes.service';
-import { LIGHT_THEME } from '../model/theme.entity';
+import { LIGHT_THEME } from '../model/theme.model';
 
 /**
  * @name

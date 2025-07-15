@@ -3,7 +3,7 @@ import { NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ThemesService } from './themes.service';
-import { LIGHT_THEME } from '../model/theme.entity';
+import { LIGHT_THEME } from '../model/theme.model';
 
 describe('ThemesService', () => {
   let service: ThemesService;

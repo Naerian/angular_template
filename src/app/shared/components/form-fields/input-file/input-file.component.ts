@@ -2,25 +2,21 @@ import {
   Component,
   EventEmitter,
   Input,
-  InputSignal,
   Output,
   WritableSignal,
   booleanAttribute,
   forwardRef,
   inject,
-  input,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { InputSize } from '../models/form-field.model';
 import { InputsUtilsService } from '../services/inputs-utils.service';
 import { NeoUITranslations } from '@shared/translations/translations.model';
 import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
 import { ButtonComponent } from '@shared/components/button/button.component';
-import {
-  ButtonColor,
-  ButtonMode,
-} from '@shared/components/button/models/button.model';
+import { ButtonMode } from '@shared/components/button/models/button.model';
+import { ComponentColor, ComponentSize } from '@shared/configs/component.model';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 
 @Component({
   selector: 'neo-input-file',
@@ -45,11 +41,27 @@ export class InputFileComponent implements ControlValueAccessor {
   @Input() extensions?: string | string[];
   @Input() label?: string;
   @Input() name?: string;
-  @Input() inputSize: InputSize = 'm';
-  @Input() color: ButtonColor = 'primary';
   @Input() allWidth: boolean = false;
   @Input() transparent: boolean = false;
   @Input() mode: ButtonMode = 'button';
+
+  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set inputSize(value: ComponentSize) {
+    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get inputSize(): ComponentSize {
+    return this._inputSize();
+  }
+
+  _color: WritableSignal<ComponentColor> = signal('primary');
+  @Input()
+  set color(value: ComponentColor) {
+    this._color.set(value || this.globalConfig.defaultColor || 'primary');
+  }
+  get color(): ComponentColor {
+    return this._color();
+  }
 
   /**
    * Input para añadir un aria-describedby al campo
@@ -113,7 +125,19 @@ export class InputFileComponent implements ControlValueAccessor {
   private _multiple: WritableSignal<boolean> = signal(false);
 
   private readonly _inputsUtilsService = inject(InputsUtilsService);
-  protected _translations: NeoUITranslations = inject(NEOUI_TRANSLATIONS); // Inyectamos las traducciones
+  protected readonly _translations: NeoUITranslations =
+    inject(NEOUI_TRANSLATIONS);
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
+
+  constructor() {
+    // Inicializamos el tamaño del input con el valor por defecto de la configuración global
+    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+  }
+
+  ngOnInit(): void {
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.inputSize) this._inputSize.set(this.inputSize);
+  }
 
   ngAfterViewInit(): void {
     this.createUniqueId();
@@ -123,7 +147,7 @@ export class InputFileComponent implements ControlValueAccessor {
    * Función para crear un id único para el label del input
    */
   createUniqueId(): void {
-    if(this._id()) return;
+    if (this._id()) return;
     this._id?.set(this._inputsUtilsService.createUniqueId('input-file'));
     this._labelId?.set(`label_${this._id()}`);
   }

@@ -1,14 +1,26 @@
-import { Component, ContentChild, HostBinding, Input, WritableSignal, signal, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { ButtonSize } from '../button/models/button.model';
+import {
+  Component,
+  ContentChild,
+  HostBinding,
+  Input,
+  WritableSignal,
+  signal,
+  Output,
+  EventEmitter,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
 import { CardHeaderDirective } from './card-header/card-header.directive';
 import { CardFooterDirective } from './card-footer/card-footer.directive';
+import { ComponentSize } from '@shared/configs/component.model';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 
 /**
  * Componente para crear una tarjeta e incluir contenido dentro de ella
  * @example
  * <neo-card label="Título de la tarjeta" icon="icono" size="s" [collapsable]="true">
  *    <neo-card-header>
-*       <div>Tipos de botones</div>
+ *       <div>Tipos de botones</div>
  *    </neo-card-header>
  *    <p>Contenido de la tarjeta</p>
  * </neo-card>
@@ -18,14 +30,14 @@ import { CardFooterDirective } from './card-footer/card-footer.directive';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
   host: {
-    'class': 'neo-card',
-    '[class.neo-card--collapsed-label]': '_isCollapsed() && (iconCollpased || labelCollpased) && !neoCardHeader',
+    class: 'neo-card',
+    '[class.neo-card--collapsed-label]':
+      '_isCollapsed() && (iconCollpased || labelCollpased) && !neoCardHeader',
     '[class.neo-card--has-structure]': 'neoCardFooter || neoCardHeader',
   },
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class CardComponent {
-
   /**
    * Contenido del header de la tarjeta (si lo hubiera) mediante el componente `neo-card-header`
    */
@@ -49,7 +61,14 @@ export class CardComponent {
   /**
    * Tamaño del botón al que pasará el tamaño de la tarjeta (si lo hubiera) cuando se colapse
    */
-  @Input() sizeIconCollapsed: ButtonSize = 's';
+  _sizeIconCollapsed: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set sizeIconCollapsed(value: ComponentSize) {
+    this._sizeIconCollapsed.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get sizeIconCollapsed(): ComponentSize {
+    return this._sizeIconCollapsed();
+  }
 
   /**
    * Indica si la tarjeta es colapsable
@@ -61,18 +80,34 @@ export class CardComponent {
    */
   @HostBinding('class.card-collapsed-icon')
   get isCollapsedIcon(): boolean {
-    return (this.collapsable && this._isCollapsed() && this.iconCollpased !== '') || false;
-  };
+    return (
+      (this.collapsable && this._isCollapsed() && this.iconCollpased !== '') ||
+      false
+    );
+  }
+
+  /**
+   * Indica si la tarjeta está colapsada o no
+   */
+  _isCollapsed: WritableSignal<boolean> = signal(false);
 
   /**
    * Evento que se emite cuando la tarjeta se colapsa o se expande
    */
   @Output() collapsed: EventEmitter<boolean> = new EventEmitter(false);
 
-  /**
-   * Indica si la tarjeta está colapsada o no
-   */
-  _isCollapsed: WritableSignal<boolean> = signal(false);
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
+
+  constructor() {
+    // Inicializamos el tamaño del icono colapsado con el valor por defecto de la configuración global
+    this._sizeIconCollapsed.set(this.globalConfig.defaultSize || 'm');
+  }
+
+  ngOnInit(): void {
+    // Si se ha proporcionado un tamaño, lo establecemos
+    if (this.sizeIconCollapsed)
+      this._sizeIconCollapsed.set(this.sizeIconCollapsed);
+  }
 
   /**
    * Función para colapsar o expandir la tarjeta
