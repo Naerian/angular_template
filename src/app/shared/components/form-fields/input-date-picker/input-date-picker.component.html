@@ -30,6 +30,7 @@
       "
       [class.neo-date-picker__wrapper__field--clear]="showClear"
       [class.neo-date-picker__wrapper__field--disabled]="_disabled()"
+      [class.neo-date-picker__wrapper__field--icon]="showIconCalendar"
       [value]="_value()"
       [(ngModel)]="value"
       (input)="onInput(dpInput.value)"
@@ -52,24 +53,29 @@
       [attr.name]="name"
       [title]="title || label || placeholder || ''"
       [showClear]="showClear"
+      [clearSize]="inputSize"
       (clear)="clearInput()"
       autocomplete="off"
       type="text"
     />
     @if (showIconCalendar) {
-      <i
+      <button
         class="
-        neo-date-picker__wrapper__icon 
-        neo-date-picker__wrapper__icon--{{ inputSize }}
-        {{ icon }}
+          neo-date-picker__wrapper__icon 
+          neo-date-picker__wrapper__icon--{{ inputSize }}
         "
+        role="button"
+        [title]="_translations.openCalendar"
+        [attr.aria-label]="_translations.openCalendar"
         [class.neo-date-picker__wrapper__icon--disabled]="_disabled()"
         [tabindex]="!_disabled() ? 0 : -1"
         (click)="toogleCalendar($event)"
         (keydown.enter)="toogleCalendar($event)"
         (keydown.space)="toogleCalendar($event)"
         cdkOverlayOrigin
-      ></i>
+      >
+        <i class="{{ icon }}"></i>
+      </button>
     }
   </div>
 </div>
@@ -91,6 +97,7 @@
     <neo-calendar
       [date]="realDateValue() ?? null"
       [type]="type"
+      [size]="_calendarSize()"
       [disabledDates]="disabledDates || []"
       [blockDisabledRanges]="blockDisabledRanges"
       [isOpenedByOverlay]="true"

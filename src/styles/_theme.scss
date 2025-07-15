@@ -177,6 +177,18 @@
   --icon-btn-warning-transparent-color: #{$color-warning};
   --hover-bg-btn-warning-transparent-color: #{tint($color-warning, 90%)};
 
+  // Colores para el botón ACCENT
+  --bg-btn-accent-color: #{$color-accent};
+  --border-btn-accent-color: #{$color-accent};
+  --text-btn-accent-color: #{$color-gray-100};
+  --hover-btn-accent-color: #{shade($color-accent, 10%)};
+  
+  --text-btn-accent-transparent-color: #{$color-accent};
+  --icon-btn-accent-color: #{$color-gray-100};
+  --icon-btn-accent-transparent-color: #{$color-accent};
+  --hover-bg-btn-accent-transparent-color: #{tint($color-accent, 90%)};
+
+
   // =========================================
   // COLORES DE SPINNER
   // =========================================

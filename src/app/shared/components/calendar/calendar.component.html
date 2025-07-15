@@ -1,67 +1,103 @@
 <div
-  class="calendar-picker"
+  class="
+    calendar-picker
+    calendar-picker--{{ _size() }}
+  "
   role="application"
   [attr.data-calendar-id]="calendarId"
 >
   @if (viewMode() === VIEW_MODE.DEFAULT) {
     <div class="calendar-picker__view calendar-picker__view--default">
-      <div class="calendar-picker__header">
-        <button
+      <div
+        class="
+          calendar-picker__header
+          calendar-picker__header--{{ _size() }}
+        "
+      >
+        <neo-button
           class="calendar-picker__header-btn"
-          type="button"
+          [size]="_size()"
+          [color]="'primary'"
+          [transparent]="true"
+          [mode]="'icon'"
           (click)="prevMonth($event)"
           [title]="_translations.prevMonth"
           [attr.aria-label]="_translations.prevMonth"
         >
           <i class="ri-arrow-left-s-line"></i>
-        </button>
+        </neo-button>
 
         <div class="calendar-picker__selectors">
-          <button
+          <neo-button
             class="calendar-picker__selector calendar-picker__selector--month"
-            type="button"
+            [size]="_size()"
+            [color]="'primary'"
+            [transparent]="true"
             (click)="setMonthsView($event)"
             [title]="_translations.changeMonth"
             [attr.aria-label]="_translations.changeMonth"
           >
-            {{ _translations.shortMonths[currentMonthNumber()] }}
-            <i class="ri-arrow-down-s-line arrow-dropdown"></i>
-          </button>
+            <div class="calendar-picker__selector__text">
+              {{ _translations.shortMonths[currentMonthNumber()] }}
+              <i class="ri-arrow-down-s-line arrow-dropdown"></i>
+            </div>
+          </neo-button>
 
-          <button
+          <neo-button
             class="calendar-picker__selector calendar-picker__selector--year"
-            type="button"
+            [size]="_size()"
+            [color]="'primary'"
+            [transparent]="true"
             (click)="setYearsView($event)"
             [title]="_translations.changeYear"
             [attr.aria-label]="_translations.changeYear"
           >
-            {{ currentViewDate() | date: "yyyy" }}
-            <i class="ri-arrow-down-s-line arrow-dropdown"></i>
-          </button>
+            <div class="calendar-picker__selector__text">
+              {{ currentViewDate() | date: "yyyy" }}
+              <i class="ri-arrow-down-s-line arrow-dropdown"></i>
+            </div>
+          </neo-button>
         </div>
-
-        <button
-          type="button"
+        <neo-button
           class="calendar-picker__header-btn"
+          [size]="_size()"
+          [color]="'primary'"
+          [transparent]="true"
+          [mode]="'icon'"
           (click)="nextMonth($event)"
           [title]="_translations.nextMonth"
           [attr.aria-label]="_translations.nextMonth"
         >
           <i class="ri-arrow-right-s-line"></i>
-        </button>
+        </neo-button>
       </div>
 
-      <div class="calendar-picker__content">
-        <div class="calendar-picker__weekdays">
+      <div
+        class="
+        calendar-picker__content
+        calendar-picker__content--{{ _size() }}
+      "
+      >
+        <div
+          class="
+            calendar-picker__weekdays
+            calendar-picker__weekdays--{{ _size() }}
+          "
+        >
           @for (dayKey of _translations.weekDaysShort; track dayKey) {
-            <span class="calendar-picker__weekday">
+            <span
+              class="
+              calendar-picker__weekday
+              calendar-picker__weekday--{{ _size() }}
+            "
+            >
               {{ dayKey }}
             </span>
           }
         </div>
 
         <div
-          class="calendar-picker__grid calendar-picker__grid--days"
+          class="calendar-picker__grid--days"
           role="grid"
           [attr.aria-label]="_translations.selectDay"
         >
@@ -70,7 +106,13 @@
             track week[0].date.valueOf();
             let weekIdx = $index
           ) {
-            <div role="row" class="calendar-picker__grid-week">
+            <div
+              role="row"
+              class="
+              calendar-picker__grid-week
+              calendar-picker__grid-week--{{ _size() }}
+            "
+            >
               @for (
                 day of week;
                 track day.date.valueOf();
@@ -78,7 +120,10 @@
               ) {
                 @if (day.isDisabled || !day.isCurrentMonth) {
                   <span
-                    class="calendar-picker__grid-day"
+                    class="
+                      calendar-picker__grid-day
+                      calendar-picker__grid-day--{{ _size() }}
+                    "
                     [class.calendar-picker__grid-day--inactive]="
                       !day.isCurrentMonth
                     "
@@ -100,7 +145,10 @@
                   <button
                     #dayButton
                     type="button"
-                    class="calendar-picker__grid-day"
+                    class="
+                      calendar-picker__grid-day
+                      calendar-picker__grid-day--{{ _size() }}
+                    "
                     role="gridcell"
                     [attr.tabindex]="
                       day.isSelected || (!hasSelectedDays() && day.isToday)
@@ -140,7 +188,12 @@
       [cdkTrapFocusAutoCapture]="true"
       (keydown.escape)="setDefaultView()"
     >
-      <div class="calendar-picker__header">
+      <div
+        class="
+          calendar-picker__header
+          calendar-picker__header--{{ _size() }}
+        "
+      >
         <span class="calendar-picker__title">
           {{ _translations.month }}
         </span>
@@ -148,7 +201,11 @@
 
       <div class="calendar-picker__content">
         <div
-          class="calendar-picker__grid calendar-picker__grid--months"
+          class="
+            calendar-picker__grid 
+            calendar-picker__grid--months
+            calendar-picker__grid--{{ _size() }}
+          "
           role="grid"
           [title]="_translations.monthAria"
           [attr.aria-label]="_translations.monthAria"
@@ -156,7 +213,10 @@
           @for (month of allMonths; track $index) {
             <button
               #monthButton
-              class="calendar-picker__grid-month"
+              class="
+                calendar-picker__grid-month
+                calendar-picker__grid-month--{{ _size() }}
+              "
               type="button"
               role="gridcell"
               [attr.tabindex]="currentMonthNumber() === $index ? 0 : -1"
@@ -183,35 +243,50 @@
       [cdkTrapFocusAutoCapture]="true"
       (keydown.escape)="setDefaultView()"
     >
-      <div class="calendar-picker__header">
-        <button
-          type="button"
+      <div
+        class="
+        calendar-picker__header
+        calendar-picker__header--{{ _size() }}
+      "
+      >
+        <neo-button
           class="calendar-picker__header-btn"
+          [size]="_size()"
+          [color]="'primary'"
+          [transparent]="true"
+          [mode]="'icon'"
           (click)="loadPastYears($event)"
           [title]="_translations.prevMonth"
           [attr.aria-label]="_translations.prevMonth"
         >
           <i class="ri-arrow-left-s-line"></i>
-        </button>
+        </neo-button>
 
         <span class="calendar-picker__title">
           {{ _translations.year }}
         </span>
 
-        <button
-          type="button"
+        <neo-button
           class="calendar-picker__header-btn"
+          [size]="_size()"
+          [color]="'primary'"
+          [transparent]="true"
+          [mode]="'icon'"
           (click)="loadFutureYears($event)"
           [title]="_translations.nextMonth"
           [attr.aria-label]="_translations.nextMonth"
         >
           <i class="ri-arrow-right-s-line"></i>
-        </button>
+        </neo-button>
       </div>
 
       <div class="calendar-picker__content">
         <div
-          class="calendar-picker__grid calendar-picker__grid--years"
+          class="
+            calendar-picker__grid 
+            calendar-picker__grid--years
+            calendar-picker__grid--{{ _size() }}
+          "
           role="grid"
           [title]="_translations.yearsAria"
           [attr.aria-label]="_translations.yearsAria"
@@ -221,7 +296,10 @@
               #yearButton
               type="button"
               role="gridcell"
-              class="calendar-picker__grid-year"
+              class="
+                calendar-picker__grid-year
+                calendar-picker__grid-year--{{ _size() }}
+              "
               [attr.tabindex]="currentYear() === year ? 0 : -1"
               [class.calendar-picker__grid-year--selected]="
                 currentYear() === year
@@ -244,14 +322,17 @@
 
 <ng-template #backButton>
   <div class="calendar-picker__back">
-    <button
-      type="button"
+    <neo-button
       class="calendar-picker__back-btn"
+      [size]="_size()"
+      [color]="'primary'"
+      [transparent]="true"
+      [mode]="'icon'"
       (click)="backToDefaultView($event)"
       [title]="_translations.back"
       [attr.aria-label]="_translations.back"
     >
-      <i class="ri-calendar-close-fill"></i>
-    </button>
+      <i class="ri-arrow-left-s-line"></i>
+    </neo-button>
   </div>
 </ng-template>

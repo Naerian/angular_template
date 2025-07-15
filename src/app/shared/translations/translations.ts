@@ -60,6 +60,7 @@ export const NEOUI_DEFAULT_I18N: NeoUITranslations = {
   dayDisabled: 'Deshabilitado: {date}',
   monthAria: 'Vista de meses',
   yearsAria: 'Vista de años',
+  openCalendar: 'Abrir calendario',
 
   // Textos de validadores de formularios de Angular
   validators: {

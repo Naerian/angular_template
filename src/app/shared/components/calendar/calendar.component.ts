@@ -30,6 +30,9 @@ import {
 import { CalendarService } from './services/calendar.service';
 import { NeoUITranslations } from '@shared/translations/translations.model';
 import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
+import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { ComponentSize } from '@shared/configs/component.model';
+import { ButtonComponent } from '../button/button.component';
 
 /**
  * @name
@@ -44,7 +47,13 @@ import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, OverlayModule, A11yModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    OverlayModule,
+    A11yModule,
+    ButtonComponent,
+  ],
 })
 export class CalendarComponent implements OnInit {
   // ViewChildrens para acceder a los botones de días, meses y años.
@@ -83,15 +92,17 @@ export class CalendarComponent implements OnInit {
     return null;
   }
 
-  // Variable privada para almacenar las traducciones del calendario por defecto o las inyectadas.
-  protected _translations: NeoUITranslations = inject(NEOUI_TRANSLATIONS);
-
-  // Evento para emitir la fecha seleccionada.
-  @Output() dateSelected = new EventEmitter<Date | Date[]>();
-
-  // Eventos para manejar advertencias de fechas bloqueadas y deshabilitadas.
-  @Output() blockedRangeWarning: EventEmitter<void> = new EventEmitter();
-  @Output() disabledDatesWarning: EventEmitter<void> = new EventEmitter();
+  /**
+   * Tamaño del calendario
+   */
+  _size: WritableSignal<ComponentSize> = signal('m');
+  @Input()
+  set size(value: ComponentSize) {
+    this._size.set(value || this.globalConfig.defaultSize || 'm');
+  }
+  get size(): ComponentSize {
+    return this._size();
+  }
 
   // Constantes para el modo de vista del calendario y el tipo de selección.
   public readonly VIEW_MODE = CalendarViewMode;
@@ -124,8 +135,33 @@ export class CalendarComponent implements OnInit {
   // Variables para manejar el bloque de años y el inicio del bloque de años.
   yearsBlockStart = moment().year();
 
+  // Evento para emitir la fecha seleccionada.
+  @Output() dateSelected = new EventEmitter<Date | Date[]>();
+
+  // Eventos para manejar advertencias de fechas bloqueadas y deshabilitadas.
+  @Output() blockedRangeWarning: EventEmitter<void> = new EventEmitter();
+  @Output() disabledDatesWarning: EventEmitter<void> = new EventEmitter();
+
   // Inyección de Servicios
   private readonly _calendarService = inject(CalendarService);
+  protected readonly _translations: NeoUITranslations =
+    inject(NEOUI_TRANSLATIONS);
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
+
+  /**
+   * Listener para manejar el evento de teclado.
+   * @param {KeyboardEvent} event - Evento de teclado.
+   */
+  @HostListener('keydown', ['$event'])
+  handleKeydown(event: KeyboardEvent) {
+    if (this.viewMode() === CalendarViewMode.DEFAULT) {
+      this.navigateCalendarDay(event);
+    } else if (this.viewMode() === CalendarViewMode.MONTHS) {
+      this.navigateCalendarMonths(event);
+    } else if (this.viewMode() === CalendarViewMode.YEARS) {
+      this.navigateCalendarYears(event);
+    }
+  }
 
   constructor() {
     // Effect para manejar el enfoque después de cambiar de vista.
@@ -143,6 +179,9 @@ export class CalendarComponent implements OnInit {
         }
       });
     });
+
+    // Inicializamos los atributos por defecto
+    this._size.set(this.globalConfig.defaultSize || 'm');
   }
 
   ngOnInit(): void {
@@ -151,18 +190,10 @@ export class CalendarComponent implements OnInit {
   }
 
   /**
-   * Listener para manejar el evento de teclado.
-   * @param {KeyboardEvent} event - Evento de teclado.
+   * Método para establecer las propiedades por defecto del componente.
    */
-  @HostListener('keydown', ['$event'])
-  handleKeydown(event: KeyboardEvent) {
-    if (this.viewMode() === CalendarViewMode.DEFAULT) {
-      this.navigateCalendarDay(event);
-    } else if (this.viewMode() === CalendarViewMode.MONTHS) {
-      this.navigateCalendarMonths(event);
-    } else if (this.viewMode() === CalendarViewMode.YEARS) {
-      this.navigateCalendarYears(event);
-    }
+  setProperties() {
+    if (this.size) this._size.set(this.size);
   }
 
   /**
@@ -635,15 +666,14 @@ export class CalendarComponent implements OnInit {
    * Función para establecer el foco en el primer día del mes actual o en el día seleccionado.
    * Se utiliza para la navegación de accesibilidad.
    */
-  focusInitialDay() {
+  focusInitialDay(skipReturn: boolean = false) {
     setTimeout(() => {
-
       // Si el calendario no se ha abierto por un overlay, no hacemos nada.
       // Esto es útil para evitar que el calendario se enfoque automáticamente
       // cuando se utiliza en un contexto donde no se requiere el enfoque automático.
       // Por ejemplo, si se abre el calendario desde un botón o enlace, no queremos que
       // el calendario se enfoque automáticamente al abrirse.
-      if (!this.isOpenedByOverlay) return;
+      if (!this.isOpenedByOverlay && !skipReturn) return;
 
       // Obtenemos todos los días del mes actual.
       const allCalendarDays = this.daysInMonth().flat();
@@ -667,7 +697,15 @@ export class CalendarComponent implements OnInit {
       if (!targetDayData)
         targetDayData = availableDays.find((day) => day.isToday);
 
-      // Prioridad 3: Primer día del mes actual no deshabilitado.
+      // Prioridad 3: Que el número de día coincida con el día actual del mes.
+      if (!targetDayData) {
+        const today = moment();
+        targetDayData = availableDays.find(
+          (day) => day.date.date() === today.date(),
+        );
+      }
+
+      // Prioridad 4: Primer día del mes actual no deshabilitado.
       if (!targetDayData) targetDayData = availableDays[0];
 
       // Encuentra el botón HTML correspondiente al día objetivo.
@@ -1148,6 +1186,9 @@ export class CalendarComponent implements OnInit {
 
     // Al seleccionar un mes, cambiamos a la vista de días
     this.setDefaultView();
+
+    // Hacemos focus en el día que coincida con el día de hoy o el día seleccionado.
+    setTimeout(() => this.focusInitialDay(true));
   }
 
   /**

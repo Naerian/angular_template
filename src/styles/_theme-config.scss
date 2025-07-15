@@ -147,14 +147,22 @@
   // =======================
   // CALENDARIO
   // =======================
-  --calendar-header-height: #{$calendar-header-height}; // Altura del encabezado del
-  --calendar-weekdays-height: #{$calendar-weekdays-height}; // Altura de la fila de días de la semana
-  --calendar-day-size: #{$calendar-day-size}; // Tamaño de cada celda del calendario
-  --calendar-grid-height: #{$calendar-grid-height}; // Altura mínima del grid del calendario
-  --calendar-grid-width: #{$calendar-grid-width}; // Ancho mínimo del grid del calendario
-  --calendar-grid-gap: #{$calendar-grid-gap}; // Espacio entre celdas del calendario
-  --calendar-width: #{$calendar-width}; // Ancho del calendario
-  --calendar-height: #{$calendar-height}; // Altura del calendario
+
+  // Tamaño de los días del calendario
+  --calendar-day-size-xs: #{$calendar-day-size-xs};
+  --calendar-day-size-s: #{$calendar-day-size-s};
+  --calendar-day-size-xm: #{$calendar-day-size-xm};
+  --calendar-day-size-m: #{$calendar-day-size-m};
+  --calendar-day-size-l: #{$calendar-day-size-l};
+  --calendar-day-size-xl: #{$calendar-day-size-xl};
+
+  // Espacio entre celdas del calendario
+  --calendar-grid-gap-xs: #{$calendar-grid-gap-xs};
+  --calendar-grid-gap-s: #{$calendar-grid-gap-s};
+  --calendar-grid-gap-xm: #{$calendar-grid-gap-xm};
+  --calendar-grid-gap-m: #{$calendar-grid-gap-m};
+  --calendar-grid-gap-l: #{$calendar-grid-gap-l};
+  --calendar-grid-gap-xl: #{$calendar-grid-gap-xl};
 
   // =======================
   // SPINNER

@@ -9,31 +9,37 @@
     position: relative;
 
     &__field {
-      // Tamaño dinámico para el input según el tamaño del componente
-      @each $size-key, $input-size in $component-heights {
-        &--#{$size-key} {
-          @include component-size($size-key);
-        }
-      }
-
       width: 100%;
       border-radius: var(--border-radius-md);
       box-sizing: border-box;
-      padding-right: calc(var(--spacing-m) * 2 + var(--spacing-xs)) !important;
       cursor: pointer;
       background-color: var(--bg-field-color);
       border: var(--border-width-base) solid var(--border-field-color);
       box-shadow: var(--box-shadow-component);
 
+      // Tamaño dinámico para el input según el tamaño del componente
+      @each $size-key, $input-size in $component-heights {
+        &--#{$size-key} {
+          @include component-size($size-key);
+
+          &.neo-date-picker__wrapper__field--icon:not(
+              .neo-date-picker__wrapper__field--clear
+            ),
+          &.neo-date-picker__wrapper__field--clear:not(
+              .neo-date-picker__wrapper__field--icon
+            ) {
+            padding-right: calc(var(--component-height-#{$size-key}));
+          }
+
+          &.neo-date-picker__wrapper__field--clear.neo-date-picker__wrapper__field--icon {
+            padding-right: calc(var(--component-height-#{$size-key}) * 2);
+          }
+        }
+      }
+
       &:focus:not(&--disabled),
       &:active:not(&--disabled) {
         @include outline-focus;
-      }
-
-      &--clear {
-        padding-right: calc(
-          var(--spacing-m) * 2 + var(--spacing-xxs) + var(--spacing-s)
-        );
       }
 
       &--has-error {
@@ -61,22 +67,39 @@
       top: 0;
       cursor: pointer;
       @include flex-center;
+      background: transparent;
+      border: none;
+
+      @each $size-key, $input-size in $component-heights {
+        &--#{$size-key} {
+          width: var(--component-height-#{$size-key});
+          height: var(--component-height-#{$size-key});
+        }
+      }
 
       // Tamaño dinámico para el icono según el tamaño del componente
       @each $size-key, $icon-size in $component-heights {
         &--#{$size-key} {
-          @include component-icon-size($size-key);
+          i {
+            @include flex-center;
+            @include component-icon-size($size-key);
+            &::before {
+              color: var(--icon-field-color);
+            }
+          }
         }
-      }
-
-      &::before {
-        color: var(--icon-field-color);
       }
 
       &:focus:not(&--disabled),
       &:active:not(&--disabled) {
         @include outline-focus;
         border-radius: var(--border-radius-md);
+      }
+
+      &:hover:not(&--disabled) {
+        i::before {
+          color: var(--hover-border-field-color);
+        }
       }
 
       &[disabled],
@@ -86,8 +109,8 @@
       }
     }
 
-    .neo-clear-field-button {
-      right: calc(var(--spacing-s) * 2) !important;
+    &:has(&__icon) .neo-clear-field-button {
+      right: var(--component-height-m) !important;
     }
   }
 }

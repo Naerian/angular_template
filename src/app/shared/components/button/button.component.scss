@@ -48,11 +48,9 @@
 
 .neo-btn {
   display: flex;
+  gap: 0.25rem;
   justify-content: center;
   align-items: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   cursor: pointer;
   border-radius: var(--border-radius-md);
   font-weight: var(--font-weight-medium);
@@ -68,24 +66,14 @@
     @include outline-focus;
   }
 
-  // Clases de tamaño que usan el mixin component-size
-  &--xs {
-    @include component-size(xs);
-  }
-  &--s {
-    @include component-size(s);
-  }
-  &--xm {
-    @include component-size(xm);
-  }
-  &--m {
-    @include component-size(m);
-  }
-  &--l {
-    @include component-size(l);
-  }
-  &--xl {
-    @include component-size(xl);
+  // Tamaños de componente
+  @each $size-key, $size in $component-heights {
+    &--#{$size-key} {
+      @include component-size($size-key);
+      i {
+        font-size: var(--component-font-size-#{$size-key});
+      }
+    }
   }
 
   &--all-width {
@@ -101,17 +89,6 @@
     text-overflow: ellipsis;
   }
 
-  i {
-    font-size: var(--font-size-base);
-    line-height: 1;
-    &:not(:last-child) {
-      margin-right: var(--spacing-xxs);
-    }
-    &:not(:first-child) {
-      margin-left: var(--spacing-xxs);
-    }
-  }
-
   &:not(&--transparent) {
     border-width: var(--border-width-base);
     border-style: solid;
@@ -119,57 +96,20 @@
 
   &--icon {
     box-shadow: none;
-    width: auto;
     min-width: unset;
     padding: 0;
-
+    // Tamaños de componente
+    @each $size-key, $size in $component-heights {
+      &.neo-btn--#{$size-key} {
+        width: var(--component-height-#{$size-key});
+        height: var(--component-height-#{$size-key});
+        i {
+          font-size: var(--component-font-size-#{$size-key});
+        }
+      }
+    }
     i {
       margin: 0;
-    }
-
-    // Ajuste de tamaño para botones de icono
-    // Usamos las variables CSS de component-height y component-font-size
-    &.neo-btn--xs {
-      height: var(--component-height-xs);
-      width: var(--component-height-xs);
-      i {
-        font-size: var(--component-font-size-xs);
-      }
-    }
-    &.neo-btn--s {
-      height: var(--component-height-s);
-      width: var(--component-height-s);
-      i {
-        font-size: var(--component-font-size-s);
-      }
-    }
-    &.neo-btn--xm {
-      height: var(--component-height-xm);
-      width: var(--component-height-xm);
-      i {
-        font-size: var(--component-font-size-xm);
-      }
-    }
-    &.neo-btn--m {
-      height: var(--component-height-m);
-      width: var(--component-height-m);
-      i {
-        font-size: var(--component-font-size-m);
-      }
-    }
-    &.neo-btn--l {
-      height: var(--component-height-l);
-      width: var(--component-height-l);
-      i {
-        font-size: var(--component-font-size-l);
-      }
-    }
-    &.neo-btn--xl {
-      height: var(--component-height-xl);
-      width: var(--component-height-xl);
-      i {
-        font-size: var(--component-font-size-xl);
-      }
     }
   }
 
@@ -270,6 +210,20 @@
     --icon-btn-transparent-color: var(--icon-btn-warning-transparent-color);
     --hover-bg-btn-transparent-color: var(
       --hover-bg-btn-warning-transparent-color
+    );
+    @include button-color-styles;
+  }
+
+  &--accent {
+    --bg-btn-color: var(--bg-btn-accent-color);
+    --border-btn-color: var(--border-btn-accent-color);
+    --text-btn-color: var(--text-btn-accent-color);
+    --hover-btn-color: var(--hover-btn-accent-color);
+    --text-btn-transparent-color: var(--text-btn-accent-transparent-color);
+    --icon-btn-color: var(--icon-btn-accent-color);
+    --icon-btn-transparent-color: var(--icon-btn-accent-transparent-color);
+    --hover-bg-btn-transparent-color: var(
+      --hover-bg-btn-accent-transparent-color
     );
     @include button-color-styles;
   }

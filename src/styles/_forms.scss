@@ -1,4 +1,5 @@
 @import "theme-config";
+@import "config";
 @import "mixins";
 
 label {
@@ -30,23 +31,18 @@ label abbr {
 .neo-clear-field-button {
   cursor: default;
 
-  &--xs {
-    @include component-icon-size(xs);
-  }
-  &--s {
-    @include component-icon-size(s);
-  }
-  &--xm {
-    @include component-icon-size(xm);
-  }
-  &--m {
-    @include component-icon-size(m);
-  }
-  &--l {
-    @include component-icon-size(l);
-  }
-  &--xl {
-    @include component-icon-size(xl);
+  @each $size-key, $input-size in $component-heights {
+    &--#{$size-key} {
+      width: var(--component-height-#{$size-key});
+      height: var(--component-height-#{$size-key});
+      @include component-icon-size($size-key);
+      i {
+        @include flex-center;
+        &::before {
+          color: var(--icon-field-color);
+        }
+      }
+    }
   }
 
   &::before {

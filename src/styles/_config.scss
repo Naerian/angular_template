@@ -70,14 +70,14 @@ $border-width-xxl: 0.5rem; // 8px
 // =======================
 // ESPACIADOS
 // =======================
-$spacing-xxs: 0.25rem;
-$spacing-xs: 0.5rem;
-$spacing-s: 0.75rem;
-$spacing-xm: 0.8rem;
-$spacing-m: 0.9rem;
-$spacing-l: 1.2rem;
-$spacing-xl: 1.5rem;
-$spacing-xxl: 2rem;
+$spacing-xxs: 0.20rem;
+$spacing-xs: 0.30rem;
+$spacing-s: 0.5rem;
+$spacing-xm: 0.625rem;
+$spacing-m: 0.75rem;
+$spacing-l: 1rem;
+$spacing-xl: 1.25rem;
+$spacing-xxl: 1.5rem;
 
 // =======================
 // COMPONENTES GENERALES
@@ -94,12 +94,21 @@ $component-heights: (
 );
 
 $component-paddings: (
-  xs: 0.35rem $spacing-xs,
-  s: 0.4rem $spacing-s,
-  xm: 0.5rem $spacing-m,
-  m: 0.55rem $spacing-m,
-  l: 0.6rem $spacing-m,
-  xl: 0.85rem $spacing-m,
+  xs: 0.125rem $spacing-xs,
+  s: 0.125rem $spacing-s,
+  xm: 0.125rem $spacing-m,
+  m: 0.125rem $spacing-m,
+  l: 0.125rem $spacing-m,
+  xl: 0.125rem $spacing-m,
+);
+
+$spacings-sizes: (
+  xs: $spacing-xs,
+  s: $spacing-s,
+  xm: $spacing-xm,
+  m: $spacing-m,
+  l: $spacing-l,
+  xl: $spacing-xl,
 );
 
 // Tamaños de fuente por tamaño de componente
@@ -209,37 +218,55 @@ $transition-timing-function-ease: ease;
 // =======================
 // CALENDARIO
 // =======================
-$calendar-header-height: 3.5rem; // Altura del encabezado del calendario
-$calendar-weekdays-height: 3rem; // Altura de la fila de días de la semana
-$calendar-day-size: 2.75rem; // Tamaño de cada celda del
-$calendar-grid-gap: 0.25rem; // Espacio entre celdas del calendario
-$calendar-grid-height: calc(6 * ($calendar-day-size + $calendar-grid-gap));
-$calendar-grid-width: calc(7 * ($calendar-day-size + $calendar-grid-gap));
-$calendar-width: calc(
-  $calendar-grid-width + ($spacing-m * 2)
-); // Ancho del calendario, incluyendo márgenes y paddings
-$calendar-height: calc(
-  $calendar-grid-height + $calendar-header-height + $calendar-weekdays-height +
-    ($spacing-xs * 2) + ($border-width-base * 2) + spacing-xs
-); // Altura del calendario, incluyendo encabezado, días de la semana y celdas
 
+// Tamaño de los días del calendario
+$calendar-day-size-xs: 1.375rem;
+$calendar-day-size-s: 2.0625rem;
+$calendar-day-size-xm: 2.40625rem;
+$calendar-day-size-m: 2.75rem;
+$calendar-day-size-l: 3.4375rem;
+$calendar-day-size-xl: 4.125rem;
+$calendar-day-sizes: (
+  xs: $calendar-day-size-xs,
+  s: $calendar-day-size-s,
+  xm: $calendar-day-size-xm,
+  m: $calendar-day-size-m,
+  l: $calendar-day-size-l,
+  xl: $calendar-day-size-xl,
+);
+
+// Espacio entre celdas del calendario
+$calendar-grid-gap-xs: 0.125rem;
+$calendar-grid-gap-s: 0.1875rem;
+$calendar-grid-gap-xm: 0.21875rem;
+$calendar-grid-gap-m: 0.25rem;
+$calendar-grid-gap-l: 0.3125rem;
+$calendar-grid-gap-xl: 0.375rem;
+$calendar-grid-gaps: (
+  xs: $calendar-grid-gap-xs,
+  s: $calendar-grid-gap-s,
+  xm: $calendar-grid-gap-xm,
+  m: $calendar-grid-gap-m,
+  l: $calendar-grid-gap-l,
+  xl: $calendar-grid-gap-xl,
+);
 // =======================
 // SPINNER
 // =======================
 
-$spinner-size-xs: "12px";
-$spinner-size-s: "16px";
-$spinner-size-xm: "20px";
-$spinner-size-m: "24px";
-$spinner-size-l: "36px";
-$spinner-size-xl: "48px";
+$spinner-size-xs: 0.75rem;
+$spinner-size-s: 1rem;
+$spinner-size-xm: 1.25rem;
+$spinner-size-m: 1.5rem;
+$spinner-size-l: 2.25rem;
+$spinner-size-xl: 3rem;
 
-$spinner-border-xs: "1px";
-$spinner-border-s: "2px";
-$spinner-border-xm: "2px";
-$spinner-border-m: "3px";
-$spinner-border-l: "4px";
-$spinner-border-xl: "5px";
+$spinner-border-xs: 0.0625rem;
+$spinner-border-s: 0.125rem;
+$spinner-border-xm: 0.125rem;
+$spinner-border-m: 0.1875rem;
+$spinner-border-l: 0.25rem;
+$spinner-border-xl: 0.3125rem;
 
 $spinner-gap-xs: $spacing-xs;
 $spinner-gap-s: $spacing-xs;

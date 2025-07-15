@@ -13,7 +13,6 @@ import { provideToastr } from 'ngx-toastr';
 import { cancelSameRequestInterceptor } from '@interceptors/cancel-same-request.interceptor';
 import { jwtTokenInterceptor } from '@interceptors/jwt-token.interceptor';
 import { requestInterceptor } from '@interceptors/request.interceptor';
-import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
   new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -51,14 +50,6 @@ export const appConfig: ApplicationConfig = {
         useFactory: httpLoaderFactory,
         deps: [HttpClient],
       },
-    }).providers!,
-    {
-      provide: NEOUI_COMPONENT_CONFIG, // Proporciona un valor para tu token
-      useValue: {
-        defaultSize: 's', // <--- Aquí el desarrollador establece que todos sean 's' por defecto
-        defaultColor: 'secondary', // Color por defecto
-        transparentButton: true, // Botones transparentes por defecto
-      }
-    }
+    }).providers!
   ],
 };

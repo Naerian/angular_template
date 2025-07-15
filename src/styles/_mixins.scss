@@ -250,3 +250,83 @@
   outline-width: var(--border-width-xs);
   box-shadow: 0px 0px 2px var(--border-width-xs) var(--focus-ring-color);
 }
+
+// Mixin para definir la altura de la cuadrícula del calendario
+// Utiliza este mixin para calcular la altura de la cuadrícula del calendario según el tamaño
+@mixin calendar-grid-height($size) {
+  height: calc(
+    6 *
+      (
+        var(
+            --calendar-day-size-#{$size},
+            #{map-get($calendar-day-sizes, $size)}
+          ) +
+          var(
+            --calendar-grid-gap-#{$size},
+            #{map-get($calendar-grid-gaps, $size)}
+          )
+      )
+  );
+}
+
+// Mixin para definir el ancho de la cuadrícula del calendario
+// Utiliza este mixin para calcular el ancho de la cuadrícula del calendario según el tamaño
+@mixin calendar-grid-width($size) {
+  width: calc(
+    7 *
+      (
+        var(
+            --calendar-day-size-#{$size},
+            #{map-get($calendar-day-sizes, $size)}
+          ) +
+          var(
+            --calendar-grid-gap-#{$size},
+            #{map-get($calendar-grid-gaps, $size)}
+          )
+      )
+  );
+}
+
+// Mixin para definir el ancho del calendario
+// Utiliza este mixin para calcular el ancho del calendario según el tamaño
+@mixin calendar-width($size) {
+  width: calc(
+    (
+        7 *
+          (
+            var(--calendar-day-size-#{$size}) +
+              var(--calendar-grid-gap-#{$size})
+          )
+      ) + (var(--spacing-#{$size}) * 2)
+  );
+}
+
+// Mixin para definir la altura del calendario
+// Utiliza este mixin para calcular la altura del calendario según el tamaño
+@mixin calendar-height($size) {
+  height: calc(
+    (
+        6 *
+          (
+            var(--calendar-day-size-#{$size}) +
+              var(--calendar-grid-gap-#{$size})
+          )
+      ) + var(--calendar-day-size-#{$size}) + (var(--spacing-#{$size}) * 4) +
+      (var(--border-width-base) * 2) +
+      var(--component-height-#{$size}, #{map-get($component-heights, $size)}) +
+      var(--spacing-xs)
+  );
+}
+
+// Mixin para definir el tamaño de los días del calendario
+// Utiliza este mixin para aplicar un tamaño específico a los días del calendario
+@mixin calendar-day-size($size) {
+  width: var(
+    --calendar-day-size-#{$size},
+    #{map-get($calendar-day-sizes, $size)}
+  );
+  height: var(
+    --calendar-day-size-#{$size},
+    #{map-get($calendar-day-sizes, $size)}
+  );
+}

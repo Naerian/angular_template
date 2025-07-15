@@ -375,7 +375,7 @@ export class DropdownComponent
       // Enfocamos el input de búsqueda si existe. Usamos `setTimeout` para asegurarnos de que el DOM esté listo
       // y que ya se ha producido el foco y scroll del elemento que pueda haber seleccionado.
       setTimeout(() => {
-        if (this.inputSearch) this.inputSearch.nativeInputElement.focus();
+        if (this.inputSearch) this.inputSearch.nativeElement.focus();
       });
     });
   }
@@ -419,8 +419,8 @@ export class DropdownComponent
 
     // Volvemos a hacer focus en el input de búsqueda si está activo.
     // De esta forma, aunque nos movamos, seguimos pudiendo buscar en todo momento.
-    if (this.inputSearch && this.inputSearch.nativeInputElement)
-      this.inputSearch.nativeInputElement.focus();
+    if (this.inputSearch && this.inputSearch.nativeElement)
+      this.inputSearch.nativeElement.focus();
   }
 
   /**
@@ -741,7 +741,7 @@ export class DropdownComponent
           setTimeout(() => {
             this.keyManager.setFirstItemActive();
             this.focusOption(this.keyManager.activeItemIndex);
-            if (this.inputSearch) this.inputSearch.nativeInputElement.focus();
+            if (this.inputSearch) this.inputSearch.nativeElement.focus();
           }, 100);
           this._changeDetector.detectChanges();
         });

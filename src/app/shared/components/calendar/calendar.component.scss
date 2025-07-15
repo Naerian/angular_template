@@ -7,40 +7,37 @@
   background-color: var(--color-white);
   border: var(--border-width-base) solid var(--border-color-base);
   overflow: hidden;
-  width: var(--calendar-width);
-  height: var(--calendar-height);
   font-size: var(--component-font-size-m);
   color: var(--color-text);
   box-shadow: var(--box-shadow-component);
+
+  @each $size-key, $height in $calendar-day-sizes {
+    &--#{$size-key} {
+      @include calendar-height($size-key);
+      @include calendar-width($size-key);
+    }
+  }
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-xs) var(--spacing-m);
     border-bottom: var(--border-width-base) solid var(--border-color-base);
-    height: var(--calendar-header-height);
-  }
+    @each $size-key, $height in $calendar-day-sizes {
+      &--#{$size-key} {
+        padding: var(--spacing-xs) var(--spacing-#{$size-key});
 
-  &__header-btn {
-    background: transparent;
-    border: none;
-    color: var(--color-gray-600);
-    font-size: var(--component-font-size-l);
-    cursor: pointer;
-    padding: var(--spacing-xxs);
-    border-radius: var(--border-radius-md);
-    height: var(--component-height-m);
-    aspect-ratio: 1 / 1;
-    @include transition(all 0.2s ease-in-out);
-    @include flex-center;
-
-    &:hover {
-      background-color: var(--color-gray-100);
-      color: var(--color-accent);
-    }
-    &:focus {
-      @include outline-focus;
+        .calendar-picker__title {
+          height: var(--component-height-#{$size-key});
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: var(--component-font-size-l);
+          font-weight: var(--font-weight-bold);
+          color: var(--color-text);
+          width: 100%;
+        }
+      }
     }
   }
 
@@ -50,83 +47,73 @@
   }
 
   &__selector {
-    background: transparent;
-    border: none;
-    font-size: var(--component-font-size-m);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text);
-    cursor: pointer;
-    padding: var(--spacing-xxs) var(--spacing-m);
-    border-radius: var(--border-radius-md);
-    height: var(--component-height-m);
-    @include transition(all 0.2s ease-in-out);
-    @include flex-center;
-
-    .arrow-dropdown {
-      margin-left: var(--spacing-xxs);
-      font-size: var(--component-font-size-s);
-      color: var(--color-gray-500);
+    &__text {
+      @include flex-center;
+      gap: 0.125rem;
+      font-weight: var(--font-weight-semibold);
     }
-
-    &:hover {
-      background-color: var(--color-gray-100);
-      color: var(--color-accent);
-      .arrow-dropdown {
-        color: var(--color-accent);
-      }
-    }
-    &:focus {
-      @include outline-focus;
-    }
-  }
-
-  &__title {
-    font-size: var(--component-font-size-l);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text);
-    padding: var(--spacing-xxs) var(--spacing-m);
   }
 
   &__content {
-    padding: var(--spacing-xs) var(--spacing-m);
+    @each $size-key, $height in $calendar-day-sizes {
+      &--#{$size-key} {
+        padding: var(--spacing-#{$size-key});
+      }
+    }
   }
 
   &__weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: var(--calendar-grid-gap);
     border-bottom: var(--border-width-base) solid var(--border-color-base);
-    font-size: var(--component-font-size-m);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-gray-600);
-    padding: var(--spacing-xs) 0;
+    display: grid;
     text-align: center;
-    height: var(--calendar-weekdays-height);
+    align-content: center;
+    justify-content: center;
+    @each $size-key, $size in $calendar-day-sizes {
+      &--#{$size-key} {
+        grid-template-columns: repeat(7, var(--calendar-day-size-#{$size-key}));
+        height: var(--calendar-day-size-#{$size-key});
+        gap: var(
+          --calendar-grid-gap-#{$size-key},
+          #{map-get($calendar-grid-gaps, $size-key)}
+        );
+      }
+    }
   }
 
   &__weekday {
     @include flex-center;
-    width: var(--calendar-day-size);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-600);
+    @each $size-key, $size in $calendar-day-sizes {
+      &--#{$size-key} {
+        width: $size;
+        font-size: var(--component-font-size-#{$size-key});
+      }
+    }
   }
 
   &__grid {
     display: grid;
-    gap: var(--calendar-grid-gap);
     text-align: center;
-    height: var(--calendar-grid-height);
-    width: var(--calendar-grid-width);
-    min-height: var(--calendar-grid-height);
-    min-width: var(--calendar-grid-width);
     align-content: center;
     justify-content: center;
     margin-top: var(--spacing-xs);
 
-    &-week {
-      display: contents;
+    @each $size-key, $height in $calendar-day-sizes {
+      &--#{$size-key} {
+        padding: var(--spacing-xs) var(--spacing-#{$size-key});
+      }
     }
 
-    &--days {
-      grid-template-columns: repeat(7, 1fr);
+    @each $size-key, $size in $calendar-day-sizes {
+      &--#{$size-key} {
+        @include calendar-grid-height($size-key);
+        @include calendar-grid-width($size-key);
+        gap: var(
+          --calendar-grid-gap-#{$size-key},
+          #{map-get($calendar-grid-gaps, $size-key)}
+        );
+      }
     }
     &--months {
       gap: var(--spacing-xs);
@@ -138,15 +125,47 @@
     }
   }
 
+  &__grid-week {
+    display: grid;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+    @each $size-key, $size in $calendar-day-sizes {
+      &--#{$size-key} {
+        grid-template-columns: repeat(7, var(--calendar-day-size-#{$size-key}));
+        height: var(--calendar-day-size-#{$size-key});
+        gap: var(
+          --calendar-grid-gap-#{$size-key},
+          #{map-get($calendar-grid-gaps, $size-key)}
+        );
+        margin-top: var(
+          --calendar-grid-gap-#{$size-key},
+          #{map-get($calendar-grid-gaps, $size-key)}
+        );
+      }
+    }
+
+    &:first-child {
+      margin-top: var(--spacing-xs);
+    }
+  }
+
   &__grid-day {
-    width: var(--calendar-day-size);
-    height: var(--calendar-day-size);
+    @each $size-key, $size in $calendar-day-sizes {
+      &--#{$size-key} {
+        @include calendar-day-size($size-key);
+      }
+    }
   }
 
   &__grid-month,
   &__grid-year {
     width: 100%;
-    height: var(--calendar-day-size);
+    @each $size-key, $size in $calendar-day-sizes {
+      &--#{$size-key} {
+        height: var(--calendar-day-size-#{$size-key});
+      }
+    }
   }
 
   &__grid-day,
@@ -155,7 +174,6 @@
     @include flex-center;
     background-color: transparent;
     border: none;
-    font-size: var(--component-font-size-m);
     font-weight: var(--font-weight-regular);
     color: var(--color-text);
     cursor: pointer;
@@ -166,6 +184,12 @@
       border-color 0.2s ease-in-out,
       box-shadow 0.2s ease
     );
+
+    @each $size-key, $size in $calendar-day-sizes {
+      &--#{$size-key} {
+        font-size: var(--component-font-size-#{$size-key});
+      }
+    }
 
     &:hover:not(&--disabled):not(&--selected),
     &:hover:not(&--inactive):not(&--selected) {
@@ -225,33 +249,10 @@
     }
   }
 
-  &__grid-month,
-  &__grid-year {
-    height: var(--component-height-m);
-  }
-
   &__back {
     display: flex;
     justify-content: center;
     padding: var(--spacing-xxs);
     border-top: var(--border-width-base) solid var(--border-color-base);
-
-    .calendar-picker__back-btn {
-      @extend .calendar-picker__header-btn;
-      font-size: var(--component-font-size-m);
-      color: var(--color-text);
-      font-weight: var(--font-weight-medium);
-      padding: var(--spacing-xs) var(--spacing-m);
-      i {
-        font-size: var(--component-font-size-m);
-        color: var(--color-gray-600);
-      }
-      &:hover {
-        color: var(--color-accent);
-        i {
-          color: var(--color-accent);
-        }
-      }
-    }
   }
 }

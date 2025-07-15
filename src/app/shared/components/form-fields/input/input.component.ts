@@ -55,6 +55,7 @@ export class InputComponent implements ControlValueAccessor {
   @Input() title?: string;
   @Input() label?: string;
   @Input() name?: string;
+  @Input() step?: number = 1; // Para inputs de tipo number, define el incremento/decremento
   @Input() placeholder: string = '';
   @Input() type: InputType = 'text';
   @Input() autocomplete: InputAutocomplete = 'off';
@@ -193,7 +194,7 @@ export class InputComponent implements ControlValueAccessor {
   /**
    * Función para obtener el elemento nativo del input
    */
-  get nativeInputElement(): HTMLInputElement {
+  get nativeElement(): HTMLInputElement {
     return this.inputRef.nativeElement;
   }
 

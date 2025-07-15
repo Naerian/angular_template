@@ -22,7 +22,7 @@ import { Subscription } from 'rxjs';
 })
 export class ShowClearFieldDirective implements OnInit, OnDestroy {
   @Input('showClear') showClear: boolean = false; // Input para activar / desactivar la directiva
-  @Input() inputSize: string = 'm';
+  @Input() clearSize: string = 'm';
   @Input() clearIcon: string = 'ri-close-circle-fill'; // Icono por defecto
   @Input() hideOnEmpty: boolean = true; // Ocultar si el campo está vacío
 
@@ -50,7 +50,7 @@ export class ShowClearFieldDirective implements OnInit, OnDestroy {
     this.renderer.addClass(this.clearButton, 'neo-clear-field-button');
     this.renderer.addClass(
       this.clearButton,
-      'neo-clear-field-button--' + this.inputSize,
+      'neo-clear-field-button--' + this.clearSize,
     );
     this.renderer.addClass(this.clearButton, this.clearIcon); // Añadir clase del icono (ej: Remixer Icon)
     this.renderer.setStyle(this.clearButton, 'cursor', 'pointer');
@@ -90,7 +90,7 @@ export class ShowClearFieldDirective implements OnInit, OnDestroy {
 
     // Añadimos evento de teclado para accesibilidad
     this.renderer.listen(this.clearButton, 'keydown', (event) => {
-      if (event.key === 'Enter' || event.key === 'Space') {
+      if (event.key === 'Enter' || event.key === ' ') {
         event.stopPropagation();
         this.clear.emit();
         this.updateButtonVisibility();

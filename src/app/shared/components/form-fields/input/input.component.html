@@ -43,6 +43,7 @@
       [attr.size]="size"
       [attr.minlength]="minlength"
       [attr.maxlength]="maxlength"
+      [attr.step]="type === 'number' ? step : null"
       [attr.autocomplete]="autocomplete"
       [attr.name]="name"
       [title]="title || label || placeholder || ''"

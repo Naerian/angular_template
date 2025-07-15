@@ -161,7 +161,11 @@
       }
 
       &__option {
-        @include flex-row-center;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: start;
         cursor: pointer;
         position: relative;
         width: 100%;

@@ -63,10 +63,10 @@ export class ButtonComponent implements AfterViewInit, OnInit {
     return this._size();
   }
 
-  _transparent: WritableSignal<boolean> = signal(true);
+  _transparent: WritableSignal<boolean> = signal(false);
   @Input()
   set transparent(value: boolean) {
-    this._transparent.set(value || this.globalConfig.transparentButton || true);
+    this._transparent.set(value || this.globalConfig.transparentButton || false);
   }
   get transparent(): boolean {
     return this._transparent();
@@ -109,14 +109,14 @@ export class ButtonComponent implements AfterViewInit, OnInit {
    */
   @Output() onClick: EventEmitter<Event> = new EventEmitter();
 
-  // Inyectamos la configuración global de componentes
   private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
+  private readonly elementRef = inject(ElementRef);
 
   constructor() {
     // Inicializamos los atributos por defecto
     this._size.set(this.globalConfig.defaultSize || 'm');
     this._color.set(this.globalConfig.defaultColor || 'primary');
-    this._transparent.set(this.globalConfig.transparentButton || true);
+    this._transparent.set(this.globalConfig.transparentButton || false);
   }
 
   ngOnInit(): void {
@@ -156,5 +156,12 @@ export class ButtonComponent implements AfterViewInit, OnInit {
    */
   getTitle(): string {
     return this._title();
+  }
+
+  /**
+   * Método para obtener el elemento HTML del botón.
+   */
+  get nativeElement(): HTMLButtonElement {
+    return this.elementRef.nativeElement;
   }
 }

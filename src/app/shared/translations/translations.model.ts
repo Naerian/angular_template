@@ -49,6 +49,7 @@ export interface NeoUITranslations {
   dayDisabled: string;
   monthAria: string;
   yearsAria: string;
+  openCalendar: string;
 
   // Textos de validadores de formularios de Angular
   validators: {
