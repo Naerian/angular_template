@@ -18,6 +18,10 @@
     border-color: var(--hover-border-field-color);
   }
 
+  &--focused {
+    @include outline-focus;
+  }
+
   @each $size-key, $input-size in $component-heights {
     &--#{$size-key} {
       height: $input-size;
