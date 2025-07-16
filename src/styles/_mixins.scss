@@ -311,10 +311,9 @@
             var(--calendar-day-size-#{$size}) +
               var(--calendar-grid-gap-#{$size})
           )
-      ) + var(--calendar-day-size-#{$size}) + (var(--spacing-#{$size}) * 4) +
-      (var(--border-width-base) * 2) +
-      var(--component-height-#{$size}, #{map-get($component-heights, $size)}) +
-      var(--spacing-xs)
+      ) + var(--calendar-day-size-#{$size}) + (var(--spacing-#{$size}) * 2) +
+      (var(--border-width-base) * 3) + var(--component-height-#{$size}) +
+      (var(--spacing-xs) * 2)
   );
 }
 
