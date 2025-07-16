@@ -17,6 +17,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 import { ButtonMode } from '@shared/components/button/models/button.model';
 import { ComponentColor, ComponentSize } from '@shared/configs/component.model';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { DEFAULT_COLOR, DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 @Component({
   selector: 'neo-input-file',
@@ -45,19 +46,19 @@ export class InputFileComponent implements ControlValueAccessor {
   @Input() transparent: boolean = false;
   @Input() mode: ButtonMode = 'button';
 
-  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  _inputSize: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set inputSize(value: ComponentSize) {
-    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get inputSize(): ComponentSize {
     return this._inputSize();
   }
 
-  _color: WritableSignal<ComponentColor> = signal('primary');
+  _color: WritableSignal<ComponentColor> = signal(DEFAULT_COLOR);
   @Input()
   set color(value: ComponentColor) {
-    this._color.set(value || this.globalConfig.defaultColor || 'primary');
+    this._color.set(value || this.globalConfig.defaultColor || DEFAULT_COLOR);
   }
   get color(): ComponentColor {
     return this._color();
@@ -130,17 +131,24 @@ export class InputFileComponent implements ControlValueAccessor {
   private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
 
   constructor() {
-    // Inicializamos el tamaño del input con el valor por defecto de la configuración global
-    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
+    this._color.set(this.globalConfig.defaultColor || DEFAULT_COLOR);
   }
 
   ngOnInit(): void {
-    // Si se ha proporcionado un tamaño, lo establecemos
-    if (this.inputSize) this._inputSize.set(this.inputSize);
+    this.setProperties();
   }
 
   ngAfterViewInit(): void {
     this.createUniqueId();
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties(): void {
+    if (this.inputSize) this._inputSize.set(this.inputSize);
+    if (this.color) this._color.set(this.color);
   }
 
   /**

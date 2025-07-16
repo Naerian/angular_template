@@ -60,6 +60,7 @@ import {
   ComponentSize,
   NeoComponentConfig,
 } from '@shared/configs/component.model';
+import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
  * @name
@@ -164,10 +165,10 @@ export class DropdownComponent
   /**
    * Tamaño del input del dropdown.
    */
-  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  _inputSize: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set inputSize(value: ComponentSize) {
-    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get inputSize(): ComponentSize {
     return this._inputSize();
@@ -280,7 +281,7 @@ export class DropdownComponent
   constructor() {
     this.scrollStrategy = this.overlay.scrollStrategies.close();
     // Inicializamos el tamaño del input con el valor por defecto de la configuración global
-    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
 
   /**
@@ -305,9 +306,7 @@ export class DropdownComponent
   ngOnInit(): void {
     this.onSearchTermChange();
     this.dropdownManager();
-
-    // Si se ha proporcionado un tamaño, lo establecemos
-    if (this.inputSize) this._inputSize.set(this.inputSize);
+    this.setProperties();
   }
 
   ngAfterViewInit(): void {
@@ -342,6 +341,13 @@ export class DropdownComponent
     this.closeDropdown();
     this.ngUnsubscribe$.next();
     this.ngUnsubscribe$.complete();
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties() {
+    if (this.inputSize) this._inputSize.set(this.inputSize);
   }
 
   /**

@@ -13,7 +13,7 @@ import { CardHeaderDirective } from './card-header/card-header.directive';
 
 @Component({
   template: `
-    <neo-card labelCollpased="Título de la tarjeta" iconCollpased="icono" sizeIconCollapsed="s" [collapsable]="true">
+    <neo-card labelCollpased="Título de la tarjeta" iconCollpased="icono" sizeIcon="s" [collapsable]="true">
       <neo-button
         class="neo-card__toggle-collapse"
         (onClick)="collapse($event)"
@@ -85,7 +85,7 @@ describe('CardComponent', () => {
     fixture.componentInstance.labelCollpased = 'Título de la tarjeta';
     fixture.componentInstance.iconCollpased = 'icono';
     fixture.componentInstance.collapsable = true;
-    fixture.componentInstance.sizeIconCollapsed = 's';
+    fixture.componentInstance.sizeIcon = 's';
     fixture.detectChanges();
     expect(await axe(fixture.nativeElement)).toHaveNoViolations();
   });

@@ -15,6 +15,7 @@ import {
 import { ButtonMode, ButtonType } from './models/button.model';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 import { ComponentColor, ComponentSize } from '@shared/configs/component.model';
+import { DEFAULT_COLOR, DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
  * @name
@@ -42,10 +43,10 @@ export class ButtonComponent implements AfterViewInit, OnInit {
   /**
    * Color del botón
    */
-  _color: WritableSignal<ComponentColor> = signal('primary');
+  _color: WritableSignal<ComponentColor> = signal(DEFAULT_COLOR);
   @Input()
   set color(value: ComponentColor) {
-    this._color.set(value || this.globalConfig.defaultColor || 'primary');
+    this._color.set(value || this.globalConfig.defaultColor || DEFAULT_COLOR);
   }
   get color(): ComponentColor {
     return this._color();
@@ -54,10 +55,10 @@ export class ButtonComponent implements AfterViewInit, OnInit {
   /**
    * Tamaño del botón
    */
-  _size: WritableSignal<ComponentSize> = signal('m');
+  _size: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set size(value: ComponentSize) {
-    this._size.set(value || this.globalConfig.defaultSize || 'm');
+    this._size.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get size(): ComponentSize {
     return this._size();
@@ -114,8 +115,8 @@ export class ButtonComponent implements AfterViewInit, OnInit {
 
   constructor() {
     // Inicializamos los atributos por defecto
-    this._size.set(this.globalConfig.defaultSize || 'm');
-    this._color.set(this.globalConfig.defaultColor || 'primary');
+    this._size.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
+    this._color.set(this.globalConfig.defaultColor || DEFAULT_COLOR);
     this._transparent.set(this.globalConfig.transparentButton || false);
   }
 

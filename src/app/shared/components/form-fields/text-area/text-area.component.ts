@@ -15,6 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 import { ComponentSize } from '@shared/configs/component.model';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
  * @name
@@ -54,10 +55,10 @@ export class TextAreaComponent {
   /**
    * Input para establecer el tamaño del campo
    */
-  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  _inputSize: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set inputSize(value: ComponentSize) {
-    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get inputSize(): ComponentSize {
     return this._inputSize();
@@ -111,17 +112,22 @@ export class TextAreaComponent {
   private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
 
   constructor() {
-    // Inicializamos el tamaño del input con el valor por defecto de la configuración global
-    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
 
   ngOnInit(): void {
-    // Si se ha proporcionado un tamaño, lo establecemos
-    if (this.inputSize) this._inputSize.set(this.inputSize);
+    this.setProperties();
   }
 
   ngAfterViewInit(): void {
     this.createUniqueId();
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties(): void {
+    if (this.inputSize) this._inputSize.set(this.inputSize);
   }
 
   /**

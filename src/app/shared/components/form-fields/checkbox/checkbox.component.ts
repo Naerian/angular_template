@@ -21,6 +21,7 @@ import {
 } from '@angular/forms';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 import {
   ComponentSize,
   NeoComponentConfig,
@@ -70,7 +71,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   _inputSize: WritableSignal<ComponentSize> = signal('m');
   @Input()
   set inputSize(value: ComponentSize) {
-    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get inputSize(): ComponentSize {
     return this._inputSize();
@@ -111,21 +112,27 @@ export class CheckboxComponent implements ControlValueAccessor {
 
   constructor() {
     // Inicializamos el tamaño del checkbox con el valor por defecto de la configuración global
-    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
 
   onChange = (_: boolean) => {};
   onTouched = () => {};
 
   ngOnInit(): void {
-    // Si se ha proporcionado un tamaño, lo establecemos
-    if (this.inputSize) this._inputSize.set(this.inputSize);
+    this.setProperties();
   }
 
   ngAfterViewInit() {
     this.createUniqueId();
     this.checkHasProjectedContent();
     this.computedTitle();
+  }
+
+  /**
+   * Función para establecer las propiedades del checkbox
+   */
+  setProperties() {
+    if (this.inputSize) this._inputSize.set(this.inputSize);
   }
 
   /**

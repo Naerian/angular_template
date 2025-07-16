@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { SpinnerPosition } from './models/spinner.model';
 import { ComponentSize, NeoComponentConfig } from '@shared/configs/component.model';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 @Component({
   selector: 'neo-spinner',
@@ -54,19 +55,17 @@ export class SpinnerComponent {
    * @type {InputSignal<string | null>}
    * @default 'rgba(255, 255, 255, 0.7)' (un blanco semitransparente)
    */
-  backdropColor: InputSignal<string | null> = input<string | null>(
-    'rgba(255, 255, 255, 0.7)',
-  );
+  backdropColor: InputSignal<string | null> = input<string | null>('var(--spinner-backdrop-color)');
 
   /**
    * Tamaño del spinner y, opcionalmente, de la etiqueta.
    * @type {InputSignal<SpinnerSize>}
    * @default 'm'
    */
-  _size: WritableSignal<ComponentSize> = signal('m');
+  _size: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set size(value: ComponentSize) {
-    this._size.set(value || this.globalConfig.defaultSize || 'm');
+    this._size.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get size(): ComponentSize {
     return this._size();
@@ -87,11 +86,17 @@ export class SpinnerComponent {
 
   constructor() {
     // Inicializamos el tamaño del botón con el valor por defecto de la configuración global
-    this._size.set(this.globalConfig.defaultSize || 'm');
+    this._size.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
 
   ngOnInit(): void {
-    // Si se ha proporcionado un tamaño, lo establecemos
+    this.setProperties();
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties() {
     if (this.size) this._size.set(this.size);
   }
 }

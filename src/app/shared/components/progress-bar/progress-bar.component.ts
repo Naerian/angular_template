@@ -19,6 +19,7 @@ import {
   NeoComponentConfig,
 } from '@shared/configs/component.model';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
  * Componente de barra de progreso que muestra el progreso de una tarea.
@@ -38,10 +39,10 @@ export class ProgressBarComponent {
   /**
    * Define el tamaño de la barra de progreso.
    */
-  _size: WritableSignal<ComponentSize> = signal('m');
+  _size: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set size(value: ComponentSize) {
-    this._size.set(value || this.globalConfig.defaultSize || 'm');
+    this._size.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get size(): ComponentSize {
     return this._size();
@@ -253,13 +254,11 @@ export class ProgressBarComponent {
     return null; // Fallback if no relevant text to describe
   });
 
-  private readonly globalConfig = inject(
-    NEOUI_COMPONENT_CONFIG,
-  );
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
 
   constructor() {
     // Inicializamos el tamaño del botón con el valor por defecto de la configuración global
-    this._size.set(this.globalConfig.defaultSize || 'm');
+    this._size.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
 
     // Actualiza el porcentaje cuando el valor o maxValue cambian
     // Esto se mantiene reactivo gracias a `computed`
@@ -275,7 +274,13 @@ export class ProgressBarComponent {
   }
 
   ngOnInit(): void {
-    // Si se ha proporcionado un tamaño, lo establecemos
+    this.setProperties();
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties() {
     if (this.size) this._size.set(this.size);
   }
 

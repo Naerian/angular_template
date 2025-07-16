@@ -24,6 +24,7 @@ import { FocusKeyManager } from '@angular/cdk/a11y';
 import { ItemMenuContextComponent } from './item-menu-context/item-menu-context.component';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 import { ComponentColor, ComponentSize } from '@shared/configs/component.model';
+import { DEFAULT_COLOR, DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
  * @name
@@ -62,19 +63,19 @@ export class MenuContextComponent {
    */
   @Input() icon: string = 'ri-more-2-fill';
 
-  _size: WritableSignal<ComponentSize> = signal('m');
+  _size: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set size(value: ComponentSize) {
-    this._size.set(value || this.globalConfig.defaultSize || 'xm');
+    this._size.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get size(): ComponentSize {
     return this._size();
   }
 
-  _color: WritableSignal<ComponentColor> = signal('primary');
+  _color: WritableSignal<ComponentColor> = signal(DEFAULT_COLOR);
   @Input()
   set color(value: ComponentColor) {
-    this._color.set(value || this.globalConfig.defaultColor || 'primary');
+    this._color.set(value || this.globalConfig.defaultColor || DEFAULT_COLOR);
   }
   get color(): ComponentColor {
     return this._color();
@@ -151,21 +152,17 @@ export class MenuContextComponent {
     this.scrollStrategy = this.overlay.scrollStrategies.close();
 
     // Inicializamos los atributos por defecto
-    this._size.set(this.globalConfig.defaultSize || 'xm');
-    this._color.set(this.globalConfig.defaultColor || 'primary');
+    this._size.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
+    this._color.set(this.globalConfig.defaultColor || DEFAULT_COLOR);
     this._transparent.set(this.globalConfig.transparentButton || true);
   }
 
   ngOnInit(): void {
-    // Nos suscribimos a las notificaciones del servicio MenuContextManagerService
     this.menuContextManager();
-
-    // Si se ha proporcionado un tamaño, lo establecemos
     this.setProperties();
   }
 
   ngAfterViewInit(): void {
-    // Creamos un id único para el menú contextual
     this.createUniqueId();
   }
 

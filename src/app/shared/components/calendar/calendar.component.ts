@@ -33,6 +33,7 @@ import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 import { ComponentSize } from '@shared/configs/component.model';
 import { ButtonComponent } from '../button/button.component';
+import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
  * @name
@@ -95,10 +96,10 @@ export class CalendarComponent implements OnInit {
   /**
    * Tamaño del calendario
    */
-  _size: WritableSignal<ComponentSize> = signal('m');
+  _size: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set size(value: ComponentSize) {
-    this._size.set(value || this.globalConfig.defaultSize || 'm');
+    this._size.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get size(): ComponentSize {
     return this._size();
@@ -181,7 +182,7 @@ export class CalendarComponent implements OnInit {
     });
 
     // Inicializamos los atributos por defecto
-    this._size.set(this.globalConfig.defaultSize || 'm');
+    this._size.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
 
   ngOnInit(): void {

@@ -22,6 +22,7 @@ import { InputAutocomplete, InputType } from '../models/form-field.model';
 import { ShowClearFieldDirective } from '@shared/directives/show-clear-field.directive';
 import { ComponentSize } from '@shared/configs/component.model';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
  * @name
@@ -69,10 +70,10 @@ export class InputComponent implements ControlValueAccessor {
   /**
    * Tamaño del input del dropdown.
    */
-  _inputSize: WritableSignal<ComponentSize> = signal('m');
+  _inputSize: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set inputSize(value: ComponentSize) {
-    this._inputSize.set(value || this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get inputSize(): ComponentSize {
     return this._inputSize();
@@ -129,16 +130,22 @@ export class InputComponent implements ControlValueAccessor {
 
   constructor() {
     // Inicializamos el tamaño del input con el valor por defecto de la configuración global
-    this._inputSize.set(this.globalConfig.defaultSize || 'm');
+    this._inputSize.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
 
   ngOnInit(): void {
-    // Si se ha proporcionado un tamaño, lo establecemos
-    if (this.inputSize) this._inputSize.set(this.inputSize);
+    this.setProperties();
   }
 
   ngAfterViewInit(): void {
     this.createUniqueId();
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties(): void {
+    this._inputSize.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
 
   /**

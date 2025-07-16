@@ -7,7 +7,7 @@ export const NEOUI_COMPONENT_CONFIG = new InjectionToken<NeoComponentConfig>(
   {
     // Opcional: Proporciona un valor por defecto si no se configura explícitamente
     providedIn: 'root', // Asegura que el token esté disponible en toda la aplicación
-    factory: () => ({ defaultSize: 'm' }), // Tamaño 'm' como predeterminado por defecto
+    factory: () => ({} as NeoComponentConfig),
   },
 );
 

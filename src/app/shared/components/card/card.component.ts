@@ -14,6 +14,7 @@ import { CardHeaderDirective } from './card-header/card-header.directive';
 import { CardFooterDirective } from './card-footer/card-footer.directive';
 import { ComponentSize } from '@shared/configs/component.model';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
+import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
  * Componente para crear una tarjeta e incluir contenido dentro de ella
@@ -61,13 +62,15 @@ export class CardComponent {
   /**
    * Tamaño del botón al que pasará el tamaño de la tarjeta (si lo hubiera) cuando se colapse
    */
-  _sizeIconCollapsed: WritableSignal<ComponentSize> = signal('m');
+  _sizeIcon: WritableSignal<ComponentSize> = signal('m');
   @Input()
-  set sizeIconCollapsed(value: ComponentSize) {
-    this._sizeIconCollapsed.set(value || this.globalConfig.defaultSize || 'm');
+  set sizeIcon(value: ComponentSize) {
+    this._sizeIcon.set(
+      value || this.globalConfig.defaultSize || DEFAULT_SIZE,
+    );
   }
-  get sizeIconCollapsed(): ComponentSize {
-    return this._sizeIconCollapsed();
+  get sizeIcon(): ComponentSize {
+    return this._sizeIcon();
   }
 
   /**
@@ -100,13 +103,19 @@ export class CardComponent {
 
   constructor() {
     // Inicializamos el tamaño del icono colapsado con el valor por defecto de la configuración global
-    this._sizeIconCollapsed.set(this.globalConfig.defaultSize || 'm');
+    this._sizeIcon.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
 
   ngOnInit(): void {
-    // Si se ha proporcionado un tamaño, lo establecemos
-    if (this.sizeIconCollapsed)
-      this._sizeIconCollapsed.set(this.sizeIconCollapsed);
+    this.setProperties();
+  }
+
+  /**
+   * Método para establecer las propiedades por defecto del componente.
+   */
+  setProperties() {
+    if (this.sizeIcon)
+      this._sizeIcon.set(this.sizeIcon);
   }
 
   /**
