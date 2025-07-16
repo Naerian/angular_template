@@ -14,6 +14,7 @@
     [class.neo-date-picker__wrapper--bg-icon]="
       !hideIcon && bgIcon && !iconInside
     "
+    [class.neo-date-picker__wrapper--disabled]="_disabled()"
   >
     <input
       cdkOverlayOrigin

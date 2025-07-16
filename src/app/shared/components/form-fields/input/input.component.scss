@@ -13,13 +13,17 @@
   border: var(--border-width-base) solid var(--border-field-color);
   overflow: hidden;
 
-  &--focused,
-  &:hover {
+  &--focused:not(&--disabled),
+  &:hover:not(&--disabled) {
     border-color: var(--hover-border-field-color);
   }
 
-  &--focused {
+  &--focused:not(&--disabled) {
     @include outline-focus;
+  }
+
+  &--disabled {
+    @include disabled;
   }
 
   @each $size-key, $input-size in $component-heights {

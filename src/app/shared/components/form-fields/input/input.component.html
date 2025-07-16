@@ -20,6 +20,7 @@
     [class.neo-input__wrapper--prefix-inside]="prefixInside"
     [class.neo-input__wrapper--suffix-inside]="suffixInside"
     [class.neo-input__wrapper--focused]="focused"
+    [class.neo-input__wrapper--disabled]="_disabled()"
   >
     @if (prefixTpl || prefixIcon || prefix) {
       <button
