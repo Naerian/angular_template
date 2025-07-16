@@ -204,10 +204,12 @@
         }
 
         &__label {
-          @include ellipsis-text;
-          width: 100%;
           font-weight: var(--font-weight-medium);
           text-align: left;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 0.25rem;
         }
       }
 
@@ -224,25 +226,4 @@
       }
     }
   }
-
-  // &__option,
-  // &__group-label {
-  //   padding: var(--spacing-xxs) var(--spacing-xs);
-  //   cursor: pointer;
-  //   white-space: nowrap;
-  //   overflow: hidden;
-  //   text-overflow: ellipsis;
-  //   display: block;
-
-  //   &:not(&--disabled):hover {
-  //     background-color: var(--bg-hover-color);
-  //   }
-  // }
-
-  // &__group-label {
-  //   font-weight: bold;
-  //   color: var(--color-heading);
-  //   background-color: var(--bg-light);
-  //   cursor: default;
-  // }
 }

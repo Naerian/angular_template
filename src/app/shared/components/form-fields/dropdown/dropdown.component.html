@@ -30,7 +30,12 @@
     [attr.aria-labelledby]="groupLabelId ? groupLabelId : null"
     [label]="optionData.label"
   >
-    {{ optionData.label }}
+    <span class="neo-dropdown__panel__options__option__label">
+      @if (!hideTick() && isOptionSelected(optionData)) {
+        <i class="ri-check-fill"></i>
+      }
+      {{ optionData.label }}
+    </span>
   </button>
 </ng-template>
 
@@ -165,7 +170,9 @@
                 <div
                   class="
                     neo-dropdown__panel__options__group-label
-                    neo-dropdown__panel__options__group-label--{{ _inputSize() }}
+                    neo-dropdown__panel__options__group-label--{{
+                    _inputSize()
+                  }}
                   "
                   [attr.id]="item.label + '-group-label'"
                 >

@@ -122,6 +122,12 @@ export class DropdownComponent
   @ViewChild(CdkVirtualScrollViewport) virtualScroll!: CdkVirtualScrollViewport;
 
   /**
+   * Input para controlar si se muestra o no el tick de selección en las opciones.
+   * @type {InputSignal<boolean>}
+   */
+  hideTick: InputSignal<boolean> = input<boolean>(false);
+
+  /**
    * Texto de la etiqueta asociada al dropdown.
    * @type {InputSignal<string | undefined>}
    */
