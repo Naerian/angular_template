@@ -253,7 +253,6 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    * Método para establecer las propiedades por defecto del componente.
    */
   setProperties() {
-    // Si se ha proporcionado un tamaño, lo establecemos
     if (this.inputSize) this._inputSize.set(this.inputSize);
     if (this.calendarSize) this._calendarSize.set(this.calendarSize);
   }

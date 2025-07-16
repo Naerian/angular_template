@@ -1,54 +1,119 @@
 @import "config";
+@import "theme";
+@import "theme-config";
 @import "mixins";
 @import "functions";
 
-.neo-input {
+.neo-input__wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--border-radius-md);
+  box-sizing: border-box;
+  background-color: var(--bg-field-color);
+  box-shadow: var(--box-shadow-component);
+  border: var(--border-width-base) solid var(--border-field-color);
+  overflow: hidden;
 
-  &--disabled {
-    cursor: not-allowed;
-    pointer-events: none;
+  &--focused,
+  &:hover {
+    border-color: var(--hover-border-field-color);
   }
 
-  &__wrapper {
-    position: relative;
+  @each $size-key, $input-size in $component-heights {
+    &--#{$size-key} {
+      height: $input-size;
+      min-height: $input-size;
 
-    &__field {
-      width: 100%;
-      border-radius: var(--border-radius-md);
-      box-sizing: border-box;
-      background-color: var(--bg-field-color);
-      border: var(--border-width-base) solid var(--border-field-color);
-      box-shadow: var(--box-shadow-component);
-
-      &:focus:not(&--disabled),
-      &:active:not(&--disabled) {
-        @include outline-focus;
+      .neo-input__wrapper__field {
+        font-size: var(--font-size-#{$size-key});
+        padding: var(--component-padding-#{$size-key});
       }
 
-      // Tamaño dinámico para el input según el tamaño del componente
-      @each $size-key, $input-size in $component-heights {
-        &--#{$size-key} {
-          @include component-size($size-key);
-        }
+      .neo-input__prefix,
+      .neo-input__suffix {
+        width: var(--component-height-#{$size-key});
+        height: var(--component-height-#{$size-key});
+        font-size: var(--font-size-#{$size-key});
       }
+    }
+  }
 
-      &--clear {
-        padding-right: calc(var(--spacing-s) * 3);
+  &--prefix-inside {
+    .neo-input__wrapper__field {
+      padding-left: 0;
+    }
+  }
+
+  &--suffix-inside {
+    .neo-input__wrapper__field {
+      padding-right: 0;
+    }
+  }
+
+  .neo-input__wrapper__field {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    border-radius: 0;
+
+    &:focus,
+    &:active {
+      outline: none;
+    }
+
+    &--clear {
+      padding-right: calc(var(--spacing-s) * 3);
+    }
+
+    &--has-error {
+      border: none;
+    }
+
+    &--prefix {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &--suffix {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  .neo-input__prefix,
+  .neo-input__suffix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--field-prefix-color);
+    background-color: transparent;
+    border: none;
+    pointer-events: none;
+
+
+    &--bg {
+      background-color: var(--border-field-color);
+    }
+
+    &.neo-input__prefix {
+      border-top-left-radius: var(--border-radius-md);
+      border-bottom-left-radius: var(--border-radius-md);
+      border-right: var(--border-width-base) solid var(--border-field-color);
+      &--inside {
+        border: none;
       }
+    }
 
-      &--has-error {
-        border: var(--border-width-xs) solid var(--color-danger);
-      }
-
-      &[disabled],
-      &:disabled,
-      &--disabled {
-        @include disabled;
-      }
-
-      &:hover:not(&--disabled) {
-        border-color: var(--hover-border-field-color);
+    &.neo-input__suffix {
+      border-top-right-radius: var(--border-radius-md);
+      border-bottom-right-radius: var(--border-radius-md);
+      border-left: var(--border-width-base) solid var(--border-field-color);
+      &--inside {
+        border: none;
       }
     }
   }

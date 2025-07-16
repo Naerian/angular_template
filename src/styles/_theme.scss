@@ -79,11 +79,13 @@
   // COLORES DE FORMS
   // =========================================
   --border-field-color: #{$color-gray-300};
+  --hover-border-field-color: #{$color-gray-500};
   --bg-field-color: #{$color-white};
   --border-field-disabled-color: #{$color-gray-400};
   --icon-field-color: #{$color-gray-600};
   --bg-scroll-field-color: #{$color-gray-200};
   --bg-options-field-color: #{$color-gray-100};
+  --field-prefix-color: #{tint($color-text, 50%)};
 
   // =========================================
   // COLORES DE CARDS
@@ -182,12 +184,11 @@
   --border-btn-accent-color: #{$color-accent};
   --text-btn-accent-color: #{$color-gray-100};
   --hover-btn-accent-color: #{shade($color-accent, 10%)};
-  
+
   --text-btn-accent-transparent-color: #{$color-accent};
   --icon-btn-accent-color: #{$color-gray-100};
   --icon-btn-accent-transparent-color: #{$color-accent};
   --hover-bg-btn-accent-transparent-color: #{tint($color-accent, 90%)};
-
 
   // =========================================
   // COLORES DE SPINNER

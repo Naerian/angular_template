@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   booleanAttribute,
   Component,
+  ContentChild,
   ElementRef,
   EventEmitter,
   forwardRef,
@@ -9,6 +10,7 @@ import {
   Input,
   Output,
   signal,
+  TemplateRef,
   ViewChild,
   WritableSignal,
 } from '@angular/core';
@@ -18,7 +20,11 @@ import {
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 import { InputsUtilsService } from '@shared/components/form-fields/services/inputs-utils.service';
-import { InputAutocomplete, InputType } from '../models/form-field.model';
+import {
+  InputAutocomplete,
+  InputMode,
+  InputType,
+} from '../models/form-field.model';
 import { ShowClearFieldDirective } from '@shared/directives/show-clear-field.directive';
 import { ComponentSize } from '@shared/configs/component.model';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
@@ -50,9 +56,14 @@ import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 export class InputComponent implements ControlValueAccessor {
   @ViewChild('input', { static: true }) inputRef!: ElementRef<HTMLInputElement>;
 
+  // Permite crear un "ng-template" para añadir un prefijo o sufijo al input
+  @ContentChild('prefix') prefixTpl?: TemplateRef<any>;
+  @ContentChild('suffix') suffixTpl?: TemplateRef<any>;
+
   @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
   @Input({ transform: booleanAttribute }) readonly?: boolean = false;
   @Input({ transform: booleanAttribute }) required: boolean = false;
+  @Input({ transform: booleanAttribute }) showClear: boolean = false;
   @Input() title?: string;
   @Input() label?: string;
   @Input() name?: string;
@@ -60,12 +71,22 @@ export class InputComponent implements ControlValueAccessor {
   @Input() placeholder: string = '';
   @Input() type: InputType = 'text';
   @Input() autocomplete: InputAutocomplete = 'off';
+  @Input() pattern?: string;
+  @Input() inputmode?: InputMode; // Define el modo de entrada del teclado en dispositivos móviles
   @Input() size?: number;
   @Input() minlength?: number;
   @Input() maxlength?: number;
   @Input() min?: number;
   @Input() max?: number;
-  @Input({ transform: booleanAttribute }) showClear: boolean = false;
+  @Input() prefixIcon?: string;
+  @Input() suffixIcon?: string;
+  @Input() prefix?: string;
+  @Input() suffix?: string;
+  @Input('aria-describedby') ariaDescribedBy!: string;
+  @Input({ transform: booleanAttribute }) bgPrefix?: boolean = false;
+  @Input({ transform: booleanAttribute }) bgSuffix?: boolean = false;
+  @Input({ transform: booleanAttribute }) prefixInside = false;
+  @Input({ transform: booleanAttribute }) suffixInside = false;
 
   /**
    * Tamaño del input del dropdown.
@@ -116,14 +137,10 @@ export class InputComponent implements ControlValueAccessor {
     return this._value();
   }
 
-  /**
-   * Input para añadir un aria-describedby al campo
-   */
-  @Input('aria-describedby') ariaDescribedBy!: string;
-
   @Output() change = new EventEmitter<string>();
-
   @Output() blur = new EventEmitter<void>();
+
+  focused = false;
 
   private readonly _inputsUtilsService = inject(InputsUtilsService);
   private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
@@ -145,7 +162,7 @@ export class InputComponent implements ControlValueAccessor {
    * Método para establecer las propiedades por defecto del componente.
    */
   setProperties(): void {
-    this._inputSize.set(this.globalConfig.defaultSize || DEFAULT_SIZE);
+    if (this.inputSize) this._inputSize.set(this.inputSize);
   }
 
   /**

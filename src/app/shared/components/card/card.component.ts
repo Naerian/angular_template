@@ -65,9 +65,7 @@ export class CardComponent {
   _sizeIcon: WritableSignal<ComponentSize> = signal('m');
   @Input()
   set sizeIcon(value: ComponentSize) {
-    this._sizeIcon.set(
-      value || this.globalConfig.defaultSize || DEFAULT_SIZE,
-    );
+    this._sizeIcon.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
   }
   get sizeIcon(): ComponentSize {
     return this._sizeIcon();
@@ -114,8 +112,7 @@ export class CardComponent {
    * Método para establecer las propiedades por defecto del componente.
    */
   setProperties() {
-    if (this.sizeIcon)
-      this._sizeIcon.set(this.sizeIcon);
+    if (this.sizeIcon) this._sizeIcon.set(this.sizeIcon);
   }
 
   /**

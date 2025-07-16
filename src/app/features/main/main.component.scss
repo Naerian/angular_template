@@ -23,53 +23,53 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 var(--spacing-l); // Usando variable CSS
-  background-color: var(--color-white); // Usando variable CSS
-  box-shadow: var(--box-shadow-sm); // Usando variable CSS
+  padding: 0 var(--spacing-l);
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow-sm);
   z-index: 100;
 }
 
 .main-header__left {
   display: flex;
   align-items: center;
-  gap: var(--spacing-m); // Usando variable CSS
+  gap: var(--spacing-m);
 }
 
 .main-header__left__menu {
-  @include flex-center; // Asumiendo que este mixin no usa variables SCSS
+  @include flex-center;
   width: 40px;
   height: 40px;
-  border-radius: var(--border-radius-sm); // Usando variable CSS
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: var(--color-gray-100); // Usando variable CSS
+    background-color: var(--color-gray-100);
   }
 
   i {
     font-size: 1.5rem;
-    color: var(--color-text); // Usando variable CSS
+    color: var(--color-text);
   }
 }
 
 .main-header__actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-s); // Usando variable CSS
+  gap: var(--spacing-s);
 }
 
 .content-wrapper {
   grid-area: content;
-  padding: var(--spacing-l); // Usando variable CSS
+  padding: var(--spacing-l);
   overflow-y: auto;
-  background-color: var(--color-gray-100); // Usando variable CSS
+  background-color: var(--color-gray-100);
 }
 
 neo-sidebar-panel {
   grid-area: sidebar-panel;
-  background-color: var(--color-white); // Usando variable CSS
-  border-left: 1px solid var(--color-gray-300); // Usando variable CSS
+  background-color: var(--color-white);
+  border-left: 1px solid var(--color-gray-300);
   width: 0;
   transition: width 0.3s ease;
   overflow: hidden;

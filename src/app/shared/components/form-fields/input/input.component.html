@@ -7,26 +7,62 @@
       }
     </label>
   }
-  <div class="neo-input__wrapper">
+  <div
+    class="neo-input__wrapper neo-input__wrapper--{{ inputSize }}"
+    [class.neo-input__wrapper--prefix]="prefixTpl || prefixIcon || prefix"
+    [class.neo-input__wrapper--suffix]="suffixTpl || suffixIcon || suffix"
+    [class.neo-input__wrapper--bg-prefix]="
+      (prefixTpl || prefixIcon || prefix) && bgPrefix && !prefixInside
+    "
+    [class.neo-input__wrapper--bg-suffix]="
+      (suffixTpl || suffixIcon || suffix) && bgSuffix && !suffixInside
+    "
+    [class.neo-input__wrapper--prefix-inside]="prefixInside"
+    [class.neo-input__wrapper--suffix-inside]="suffixInside"
+    [class.neo-input__wrapper--focused]="focused"
+  >
+    @if (prefixTpl || prefixIcon || prefix) {
+      <span
+        class="neo-input__prefix"
+        [class.neo-input__prefix--bg]="bgPrefix && !prefixInside"
+        [class.neo-input__prefix--inside]="prefixInside"
+      >
+        @if (prefixIcon) {
+          <i [class]="prefixIcon"></i>
+        }
+        @if (prefix) {
+          <span>{{ prefix }}</span>
+        }
+        @if (prefixTpl) {
+          <ng-container *ngTemplateOutlet="prefixTpl" />
+        }
+      </span>
+    }
     <input
       #input
       #inputControl="ngModel"
-      class="
-        neo-input__wrapper__field 
-        neo-input__wrapper__field--{{ inputSize }}
-      "
+      class="neo-input__wrapper__field"
       [class.neo-input__wrapper__field--has-error]="
         inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
       "
       [class.neo-input__wrapper__field--disabled]="_disabled()"
       [class.neo-input__wrapper__field--clear]="showClear"
+      [class.neo-input__wrapper__field--prefix]="
+        prefixTpl || prefixIcon || prefix
+      "
+      [class.neo-input__wrapper__field--suffix]="
+        suffixTpl || suffixIcon || suffix
+      "
       [(ngModel)]="value"
       (input)="onInput(input.value)"
-      (blur)="onBlur()"
+      (focus)="focused = true"
+      (blur)="onBlur(); focused = false"
       [attr.id]="_id()"
       [attr.type]="type"
       [attr.min]="min"
       [attr.max]="max"
+      [attr.pattern]="pattern"
+      [attr.inputmode]="inputmode"
       [attr.aria-disabled]="_disabled()"
       [attr.aria-readonly]="readonly"
       [attr.aria-labelledby]="_labelId()"
@@ -50,5 +86,22 @@
       [showClear]="showClear"
       (clear)="clearInput()"
     />
+    @if (suffixTpl || suffixIcon || suffix) {
+      <span
+        class="neo-input__suffix"
+        [class.neo-input__suffix--bg]="bgSuffix && !suffixInside"
+        [class.neo-input__suffix--inside]="suffixInside"
+      >
+        @if (suffixIcon) {
+          <i [class]="suffixIcon"></i>
+        }
+        @if (suffix) {
+          <span>{{ suffix }}</span>
+        }
+        @if (suffixTpl) {
+          <ng-container *ngTemplateOutlet="suffixTpl" />
+        }
+      </span>
+    }
   </div>
 </div>
