@@ -55,10 +55,16 @@ export class InputPasswordComponent implements ControlValueAccessor {
   @Input() label?: string;
   @Input() name?: string;
   @Input() placeholder?: string;
+  @Input() autocapitalize: 'off' | 'on' = 'off'; // Define si se debe autocapitalizar el texto
+  @Input() spellcheck: boolean = false; // Define si se debe revisar la ortografía del texto
   @Input() size?: number;
   @Input() minlength?: number;
   @Input() maxlength?: number;
+  @Input('aria-label') ariaLabel!: string;
+  @Input('aria-labelledby') ariaLabelledBy!: string;
+  @Input('aria-owns') ariaOwns!: string;
   @Input('aria-describedby') ariaDescribedBy!: string;
+  @Input('aria-autocomplete') ariaAutocomplete: 'none' | 'inline' | 'list' = 'none';
 
   /**
    * Input para establecer el tamaño del campo

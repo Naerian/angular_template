@@ -69,6 +69,8 @@ export class InputComponent implements ControlValueAccessor {
   @Input() name?: string;
   @Input() step?: number = 1; // Para inputs de tipo number, define el incremento/decremento
   @Input() placeholder: string = '';
+  @Input() autocapitalize: 'off' | 'on' = 'off'; // Define si se debe autocapitalizar el texto
+  @Input() spellcheck: boolean = false; // Define si se debe revisar la ortografía del texto
   @Input() type: InputType = 'text';
   @Input() autocomplete: InputAutocomplete = 'off';
   @Input() pattern?: string;
@@ -82,7 +84,11 @@ export class InputComponent implements ControlValueAccessor {
   @Input() suffixIcon?: string;
   @Input() prefix?: string;
   @Input() suffix?: string;
+  @Input('aria-label') ariaLabel!: string;
+  @Input('aria-labelledby') ariaLabelledBy!: string;
+  @Input('aria-owns') ariaOwns!: string;
   @Input('aria-describedby') ariaDescribedBy!: string;
+  @Input('aria-autocomplete') ariaAutocomplete: 'none' | 'inline' | 'list' = 'none';
   @Input() titlePrefix!: string;
   @Input() titleSuffix!: string;
   @Input({ transform: booleanAttribute }) bgPrefix?: boolean = false;
