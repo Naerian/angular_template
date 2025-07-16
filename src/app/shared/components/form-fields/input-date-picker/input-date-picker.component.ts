@@ -82,35 +82,23 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   @ViewChild('datePickerInput', { static: true })
   datePickerInput!: ElementRef<HTMLInputElement>;
 
-  // Si el campo está deshabilitado, se añade el atributo "disabled" al input
   @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
-
-  // Si el campo es de solo lectura, se añade el atributo "readonly" al input
-  @Input({ transform: booleanAttribute }) readonly?: boolean = false;
-
-  // Si el campo es obligatorio, se añade el atributo "required" al input
   @Input({ transform: booleanAttribute }) required: boolean = false;
-
-  // Título del campo, se usa para el label y el aria-label
+  @Input({ transform: booleanAttribute }) iconInside: boolean = false;
+  @Input({ transform: booleanAttribute }) hideIcon: boolean = false;
+  @Input({ transform: booleanAttribute }) bgIcon: boolean = false;
+  @Input({ transform: booleanAttribute }) showClear: boolean = false;
+  @Input() format: string = DEFAULT_FORMAT;
+  @Input() disabledDates: (string | Date)[] | undefined = undefined;
+  @Input() blockDisabledRanges: boolean | undefined = undefined;
   @Input() title?: string;
-
-  // Etiqueta del campo, se usa para el label y el aria-label
   @Input() label?: string;
-
-  // Nombre del campo, se usa para el aria-label y el aria-labelledby
   @Input() name?: string;
-
-  // Tipo de calendario (day, week, range)
   @Input() type: SelectionType = CalendarType.DAY;
-
-  // Placeholder del input
   @Input() placeholder: string = 'aaaa-mm-dd';
-
-  // Icono del calendario
   @Input() icon?: string = 'ri-calendar-2-line';
-
-  // Tipo de autocompletado del input
   @Input() autocomplete: InputAutocomplete = 'off';
+  @Input('aria-describedby') ariaDescribedBy!: string;
 
   /**
    * Tamaño del input
@@ -130,28 +118,13 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   _calendarSize: WritableSignal<ComponentSize> = signal(DEFAULT_SIZE);
   @Input()
   set calendarSize(value: ComponentSize) {
-    this._calendarSize.set(value || this.globalConfig.defaultSize || DEFAULT_SIZE);
+    this._calendarSize.set(
+      value || this.globalConfig.defaultSize || DEFAULT_SIZE,
+    );
   }
   get calendarSize(): ComponentSize {
     return this._calendarSize();
   }
-
-  // Si se quiere mostrar el icono del calendario o no
-  @Input() showIconCalendar: boolean = true;
-
-  // Formato de fecha para mostrar en el campo
-  @Input() format: string = DEFAULT_FORMAT;
-
-  // Array de Fechas deshabilitadas, que no se pueden seleccionar
-  @Input() disabledDates: (string | Date)[] | undefined = undefined;
-
-  // Si se quiere bloquear el rango de fechas (range / week) si hay fechas deshabilitadas o no
-  @Input() blockDisabledRanges: boolean | undefined = undefined;
-
-  /**
-   * Input para mostrar el botón de limpiar el campo
-   */
-  @Input({ transform: booleanAttribute }) showClear: boolean = false;
 
   /**
    * Input para crear un id único para el campo
@@ -190,11 +163,6 @@ export class InputDatePickerComponent implements ControlValueAccessor {
     return this._value();
   }
 
-  /**
-   * Input para añadir un aria-describedby al campo
-   */
-  @Input('aria-describedby') ariaDescribedBy!: string;
-
   @Output() dateSelected = new EventEmitter<Date | Date[] | null>();
   @Output() change = new EventEmitter<Date | Date[] | null>();
   @Output() blur = new EventEmitter<void>();
@@ -205,6 +173,8 @@ export class InputDatePickerComponent implements ControlValueAccessor {
 
   // Fecha por defecto del calendario
   realDateValue: WritableSignal<Date | Date[] | null> = signal(null);
+
+  focused = false;
 
   private readonly overlay = inject(Overlay);
   private readonly _inputsUtilsService = inject(InputsUtilsService);

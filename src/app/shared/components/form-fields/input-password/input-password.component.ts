@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  booleanAttribute,
   Component,
   EventEmitter,
   forwardRef,
@@ -44,9 +45,12 @@ import { DEFAULT_SIZE } from '@shared/configs/component.consts';
   imports: [CommonModule, FormsModule],
 })
 export class InputPasswordComponent implements ControlValueAccessor {
-  @Input() autofocus?: boolean = false;
-  @Input() readonly?: boolean = false;
-  @Input() required: boolean = false;
+  @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
+  @Input({ transform: booleanAttribute }) readonly?: boolean = false;
+  @Input({ transform: booleanAttribute }) required: boolean = false;
+  @Input({ transform: booleanAttribute }) iconInside: boolean = false;
+  @Input({ transform: booleanAttribute }) hideIcon: boolean = false;
+  @Input({ transform: booleanAttribute }) bgIcon: boolean = false;
   @Input() title?: string;
   @Input() label?: string;
   @Input() name?: string;
@@ -54,6 +58,7 @@ export class InputPasswordComponent implements ControlValueAccessor {
   @Input() size?: number;
   @Input() minlength?: number;
   @Input() maxlength?: number;
+  @Input('aria-describedby') ariaDescribedBy!: string;
 
   /**
    * Input para establecer el tamaño del campo
@@ -104,23 +109,13 @@ export class InputPasswordComponent implements ControlValueAccessor {
     return this._value();
   }
 
-  /**
-   * Input para añadir un aria-describedby al campo
-   */
-  @Input('aria-describedby') ariaDescribedBy!: string;
 
-  /**
-   * Evento que se emite cuando el valor del campo cambia
-   */
   @Output() change = new EventEmitter<string>();
-
-  /**
-   * Evento que se emite cuando el campo pierde el foco
-   */
   @Output() blur = new EventEmitter<void>();
 
   // Signal para mostrar u ocultar la contraseña
   show: WritableSignal<boolean> = signal(false);
+  focused = false;
 
   private readonly _inputsUtilsService = inject(InputsUtilsService);
   protected readonly _translations: NeoUITranslations =

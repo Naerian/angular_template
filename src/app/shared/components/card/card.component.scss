@@ -1,7 +1,7 @@
 @import "config";
+@import "theme";
+@import "theme-config";
 @import "mixins";
-@import "functions";
-
 .neo-card {
   display: flex;
   flex-direction: column;

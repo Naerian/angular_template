@@ -1,5 +1,3 @@
-@import "colors";
-
 // Función para oscurecer o aclarar un color
 @function tint($color, $percentage) {
   @return mix(white, $color, $percentage);

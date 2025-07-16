@@ -1,6 +1,7 @@
 @import "config";
+@import "theme";
+@import "theme-config";
 @import "mixins";
-@import "functions";
 
 .calendar-picker {
   border-radius: var(--border-radius-md);

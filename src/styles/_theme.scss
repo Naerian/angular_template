@@ -1,5 +1,6 @@
 @import "config";
 @import "mixins";
+@import "functions";
 
 :root {
   // =========================================
@@ -74,6 +75,10 @@
 
   // Color de selección de texto
   --color-selection: #{$color-selection};
+  
+  // Colo para el scroll de la página
+  --bg-scroll-color: #{$color-gray-200}; // Color del fondo del scroll
+  --bg-scroll-thumb-color: #{$color-gray-400}; // Color del thumb del scroll
 
   // =========================================
   // COLORES DE FORMS
@@ -83,7 +88,6 @@
   --bg-field-color: #{$color-white};
   --border-field-disabled-color: #{$color-gray-400};
   --icon-field-color: #{$color-gray-600};
-  --bg-scroll-field-color: #{$color-gray-200};
   --bg-options-field-color: #{$color-gray-100};
   --field-prefix-color: #{tint($color-text, 50%)};
 

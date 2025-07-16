@@ -1,41 +1,41 @@
 <div class="neo-date-picker">
   @if (label) {
-    <label
-      class="neo-date-picker__label"
-      [attr.for]="_id()"
-      [attr.id]="_labelId()"
-    >
+    <label class="neo-date-picker__label" [for]="_id()" [attr.id]="_labelId()">
       <span [innerHtml]="label"></span>
       @if (required) {
         <abbr aria-hidden="true">*</abbr>
       }
     </label>
   }
-  <div class="neo-date-picker__wrapper">
+  <div
+    class="neo-date-picker__wrapper neo-date-picker__wrapper--{{ inputSize }}"
+    [class.neo-date-picker__wrapper--icon-inside]="!hideIcon && iconInside"
+    [class.neo-date-picker__wrapper--focused]="focused"
+    [class.neo-date-picker__wrapper--bg-icon]="
+      !hideIcon && bgIcon && !iconInside
+    "
+  >
     <input
-      tabindex="0"
-      (click)="toogleCalendar($event)"
-      (keydown.space)="toogleCalendar($event)"
-      (keydown.enter)="toogleCalendar($event)"
       cdkOverlayOrigin
       #datePickerInput
       #datePicker="cdkOverlayOrigin"
       #dpInput="ngModel"
-      class="
-        neo-date-picker__wrapper__field 
-        neo-date-picker__wrapper__field--{{ inputSize }}
-      "
+      class="neo-date-picker__wrapper__field"
       [class.neo-date-picker__wrapper__field--has-error]="
         dpInput?.errors && (dpInput?.dirty || dpInput?.touched)
       "
-      [class.neo-date-picker__wrapper__field--clear]="showClear"
-      [class.neo-date-picker__wrapper__field--disabled]="_disabled()"
-      [class.neo-date-picker__wrapper__field--icon]="showIconCalendar"
+      [class.neo-input__wrapper__field--icon]="!hideIcon"
+      (click)="toogleCalendar($event)"
+      (keydown.space)="toogleCalendar($event)"
+      (keydown.enter)="toogleCalendar($event)"
       [value]="_value()"
       [(ngModel)]="value"
       (input)="onInput(dpInput.value)"
-      (blur)="onBlur()"
+      (blur)="onBlur(); focused = false"
+      (focus)="focused = true"
       [attr.id]="_id()"
+      [attr.title]="label"
+      [attr.autofocus]="autofocus"
       [attr.aria-disabled]="_disabled()"
       [attr.aria-readonly]="true"
       [attr.aria-labelledby]="_labelId()"
@@ -46,39 +46,32 @@
       "
       [readonly]="true"
       [disabled]="_disabled()"
-      [required]="required"
+      [attr.required]="required"
       [attr.aria-required]="required"
       [attr.placeholder]="placeholder"
-      [attr.autocomplete]="autocomplete"
-      [attr.name]="name"
-      [title]="title || label || placeholder || ''"
-      [showClear]="showClear"
-      [clearSize]="inputSize"
-      (clear)="clearInput()"
       autocomplete="off"
-      type="text"
+      (clear)="clearInput()"
     />
-    @if (showIconCalendar) {
+    @if (!hideIcon) {
       <button
-        class="
-          neo-date-picker__wrapper__icon 
-          neo-date-picker__wrapper__icon--{{ inputSize }}
-        "
-        role="button"
+        cdkOverlayOrigin
+        type="button"
+        class="neo-date-picker_wrapper__icon"
+        [class.neo-date-picker_wrapper__icon--bg]="bgIcon && !iconInside"
+        [class.neo-date-picker_wrapper__icon--inside]="iconInside"
         [title]="_translations.openCalendar"
         [attr.aria-label]="_translations.openCalendar"
-        [class.neo-date-picker__wrapper__icon--disabled]="_disabled()"
         [tabindex]="!_disabled() ? 0 : -1"
         (click)="toogleCalendar($event)"
         (keydown.enter)="toogleCalendar($event)"
         (keydown.space)="toogleCalendar($event)"
-        cdkOverlayOrigin
       >
         <i class="{{ icon }}"></i>
       </button>
     }
   </div>
 </div>
+
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="datePicker"

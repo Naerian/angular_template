@@ -1,8 +1,6 @@
 @import "config";
 @import "theme";
 @import "theme-config";
-@import "mixins";
-@import "functions";
 
 .neo-input__wrapper {
   position: relative;
@@ -94,6 +92,15 @@
     border: none;
     pointer-events: none;
 
+    &--clickable {
+      cursor: pointer;
+      pointer-events: all;
+
+      &:focus,
+      &:active {
+        @include outline-focus;
+      }
+    }
 
     &--bg {
       background-color: var(--border-field-color);

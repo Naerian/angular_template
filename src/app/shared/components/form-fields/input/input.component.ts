@@ -83,10 +83,14 @@ export class InputComponent implements ControlValueAccessor {
   @Input() prefix?: string;
   @Input() suffix?: string;
   @Input('aria-describedby') ariaDescribedBy!: string;
+  @Input() titlePrefix!: string;
+  @Input() titleSuffix!: string;
   @Input({ transform: booleanAttribute }) bgPrefix?: boolean = false;
   @Input({ transform: booleanAttribute }) bgSuffix?: boolean = false;
   @Input({ transform: booleanAttribute }) prefixInside = false;
   @Input({ transform: booleanAttribute }) suffixInside = false;
+  @Input({ transform: booleanAttribute }) prefixClickable = false;
+  @Input({ transform: booleanAttribute }) suffixClickable = false;
 
   /**
    * Tamaño del input del dropdown.
@@ -139,6 +143,8 @@ export class InputComponent implements ControlValueAccessor {
 
   @Output() change = new EventEmitter<string>();
   @Output() blur = new EventEmitter<void>();
+  @Output() prefixClick = new EventEmitter<void>();
+  @Output() suffixClick = new EventEmitter<void>();
 
   focused = false;
 
@@ -213,6 +219,22 @@ export class InputComponent implements ControlValueAccessor {
   onBlur() {
     this.onTouched();
     this.blur.emit();
+  }
+
+  /**
+   * Función para manejar el evento de clic en el prefijo del input
+   * Emite un evento para que el componente padre pueda reaccionar
+   */
+  prefixClicked() {
+    this.prefixClick.emit();
+  }
+
+  /**
+   * Función para manejar el evento de clic en el sufijo del input
+   * Emite un evento para que el componente padre pueda reaccionar
+   */
+  suffixClicked() {
+    this.suffixClick.emit();
   }
 
   /**

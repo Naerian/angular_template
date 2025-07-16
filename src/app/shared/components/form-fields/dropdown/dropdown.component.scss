@@ -1,6 +1,7 @@
 @import "config";
+@import "theme";
+@import "theme-config";
 @import "mixins";
-@import "functions";
 
 :host {
   display: block;

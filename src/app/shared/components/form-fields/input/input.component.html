@@ -22,10 +22,19 @@
     [class.neo-input__wrapper--focused]="focused"
   >
     @if (prefixTpl || prefixIcon || prefix) {
-      <span
+      <button
+        type="button"
         class="neo-input__prefix"
+        [tabindex]="!_disabled() ? 0 : -1"
+        [disabled]="_disabled()"
         [class.neo-input__prefix--bg]="bgPrefix && !prefixInside"
         [class.neo-input__prefix--inside]="prefixInside"
+        [class.neo-input__prefix--clickable]="prefixClickable"
+        [attr.title]="titlePrefix"
+        [attr.aria-label]="titlePrefix"
+        (click)="prefixClicked()"
+        (keydown.enter)="prefixClicked()"
+        (keydown.space)="prefixClicked()"
       >
         @if (prefixIcon) {
           <i [class]="prefixIcon"></i>
@@ -36,7 +45,7 @@
         @if (prefixTpl) {
           <ng-container *ngTemplateOutlet="prefixTpl" />
         }
-      </span>
+      </button>
     }
     <input
       #input
@@ -82,15 +91,24 @@
       [attr.step]="type === 'number' ? step : null"
       [attr.autocomplete]="autocomplete"
       [attr.name]="name"
-      [title]="title || label || placeholder || ''"
+      [attr.title]="title || label || placeholder || ''"
       [showClear]="showClear"
       (clear)="clearInput()"
     />
     @if (suffixTpl || suffixIcon || suffix) {
-      <span
+      <button
+        type="button"
         class="neo-input__suffix"
+        [tabindex]="!_disabled() ? 0 : -1"
+        [disabled]="_disabled()"
         [class.neo-input__suffix--bg]="bgSuffix && !suffixInside"
         [class.neo-input__suffix--inside]="suffixInside"
+        [class.neo-input__suffix--clickable]="suffixClickable"
+        [attr.title]="titleSuffix"
+        [attr.aria-label]="titleSuffix"
+        (click)="suffixClicked()"
+        (keydown.enter)="suffixClicked()"
+        (keydown.space)="suffixClicked()"
       >
         @if (suffixIcon) {
           <i [class]="suffixIcon"></i>
@@ -101,7 +119,7 @@
         @if (suffixTpl) {
           <ng-container *ngTemplateOutlet="suffixTpl" />
         }
-      </span>
+      </button>
     }
   </div>
 </div>

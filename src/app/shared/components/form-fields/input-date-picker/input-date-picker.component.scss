@@ -1,116 +1,102 @@
 @import "config";
+@import "theme";
+@import "theme-config";
 @import "mixins";
-@import "functions";
 
-.neo-date-picker {
+.neo-date-picker__wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--border-radius-md);
+  box-sizing: border-box;
+  background-color: var(--bg-field-color);
+  box-shadow: var(--box-shadow-component);
+  border: var(--border-width-base) solid var(--border-field-color);
+  overflow: hidden;
 
-  &__wrapper {
-    position: relative;
+  &--focused,
+  &:hover {
+    border-color: var(--hover-border-field-color);
+  }
 
-    &__field {
-      width: 100%;
-      border-radius: var(--border-radius-md);
-      box-sizing: border-box;
-      cursor: pointer;
-      background-color: var(--bg-field-color);
-      border: var(--border-width-base) solid var(--border-field-color);
-      box-shadow: var(--box-shadow-component);
+  @each $size-key, $input-size in $component-heights {
+    &--#{$size-key} {
+      height: $input-size;
+      min-height: $input-size;
 
-      // Tamaño dinámico para el input según el tamaño del componente
-      @each $size-key, $input-size in $component-heights {
-        &--#{$size-key} {
-          @include component-size($size-key);
-
-          &.neo-date-picker__wrapper__field--icon:not(
-              .neo-date-picker__wrapper__field--clear
-            ),
-          &.neo-date-picker__wrapper__field--clear:not(
-              .neo-date-picker__wrapper__field--icon
-            ) {
-            padding-right: calc(var(--component-height-#{$size-key}));
-          }
-
-          &.neo-date-picker__wrapper__field--clear.neo-date-picker__wrapper__field--icon {
-            padding-right: calc(var(--component-height-#{$size-key}) * 2);
-          }
-        }
+      .neo-date-picker__wrapper__field {
+        font-size: var(--font-size-#{$size-key});
+        padding: var(--component-padding-#{$size-key});
       }
 
-      &:focus:not(&--disabled),
-      &:active:not(&--disabled) {
-        @include outline-focus;
-      }
-
-      &--has-error {
-        border: var(--border-width-xs) solid var(--color-danger);
-      }
-
-      &[disabled],
-      &:disabled,
-      &--disabled {
-        @include disabled;
-      }
-
-      &:hover:not(&--disabled) {
-        border-color: var(--hover-border-field-color);
-      }
-
-      &:hover:not(&--disabled) ~ .neo-date-picker__wrapper__icon::before {
-        color: var(--hover-border-field-color);
+      .neo-date-picker_wrapper__icon {
+        width: var(--component-height-#{$size-key});
+        height: var(--component-height-#{$size-key});
+        font-size: var(--font-size-#{$size-key});
       }
     }
+  }
 
-    &__icon {
-      position: absolute;
-      right: 0;
-      top: 0;
-      cursor: pointer;
-      @include flex-center;
-      background: transparent;
+  &--icon-inside {
+    .neo-date-picker__wrapper__field {
+      padding-right: 0;
+    }
+  }
+
+  .neo-date-picker__wrapper__field {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    border-radius: 0;
+    cursor: pointer;
+
+    &:focus,
+    &:active {
+      outline: none;
+    }
+
+    &--clear {
+      padding-right: calc(var(--spacing-s) * 3);
+    }
+
+    &--has-error {
       border: none;
-
-      @each $size-key, $input-size in $component-heights {
-        &--#{$size-key} {
-          width: var(--component-height-#{$size-key});
-          height: var(--component-height-#{$size-key});
-        }
-      }
-
-      // Tamaño dinámico para el icono según el tamaño del componente
-      @each $size-key, $icon-size in $component-heights {
-        &--#{$size-key} {
-          i {
-            @include flex-center;
-            @include component-icon-size($size-key);
-            &::before {
-              color: var(--icon-field-color);
-            }
-          }
-        }
-      }
-
-      &:focus:not(&--disabled),
-      &:active:not(&--disabled) {
-        @include outline-focus;
-        border-radius: var(--border-radius-md);
-      }
-
-      &:hover:not(&--disabled) {
-        i::before {
-          color: var(--hover-border-field-color);
-        }
-      }
-
-      &[disabled],
-      &:disabled,
-      &--disabled {
-        @include disabled;
-      }
     }
 
-    &:has(&__icon) .neo-clear-field-button {
-      right: var(--component-height-m) !important;
+    &--icon {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  .neo-date-picker_wrapper__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--field-prefix-color);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+
+    &:focus,
+    &:active {
+      @include outline-focus;
+    }
+
+    &--bg {
+      background-color: var(--border-field-color);
+    }
+
+    &.neo-date-picker_wrapper__icon {
+      border-top-right-radius: var(--border-radius-md);
+      border-bottom-right-radius: var(--border-radius-md);
+      border-left: var(--border-width-base) solid var(--border-field-color);
+      &--inside {
+        border: none;
+      }
     }
   }
 }
