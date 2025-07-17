@@ -16,6 +16,15 @@
     @each $size-key, $input-size in $component-heights {
       &--#{$size-key} {
         @include component-size($size-key);
+        &.neo-select__field:not(&--clear) {
+          padding-right: $input-size;
+        }
+        &.neo-select__field--clear {
+          padding-right: $input-size * 2 !important;
+        }
+        .neo-clear-field-button {
+          right: $input-size !important;
+        }
       }
     }
 
@@ -24,7 +33,6 @@
     justify-content: space-between;
     border-radius: var(--border-radius-md);
     box-sizing: border-box;
-    padding-right: calc(var(--spacing-m) * 2 + var(--spacing-xxs)) !important;
     cursor: pointer;
     position: relative;
     gap: var(--spacing-xs);
@@ -35,12 +43,6 @@
     &:focus:not(&--disabled),
     &:active:not(&--disabled) {
       @include outline-focus;
-    }
-
-    &--clear {
-      padding-right: calc(
-        var(--spacing-m) * 2 + var(--spacing-xxs) + var(--spacing-s)
-      );
     }
 
     &__value {
@@ -76,7 +78,20 @@
     }
 
     &--has-error {
-      border: var(--border-width-base) solid var(--color-danger);
+      @include field-error;
+
+      &:not(&--disabled) {
+        &:focus,
+        &:active,
+        &:hover {
+          @include field-error;
+        }
+
+        &:focus,
+        &:active {
+          @include outline-field-error;
+        }
+      }
     }
 
     &[disabled],
@@ -98,10 +113,6 @@
 
     &:hover:not(&--disabled) ~ .neo-select__field__arrow-dropdown::before {
       color: var(--hover-border-field-color);
-    }
-
-    .neo-clear-field-button {
-      right: calc(var(--spacing-xs) * 2) !important;
     }
   }
 

@@ -7,6 +7,10 @@
     (touchstart)="onButtonPointerDown($event, 'increment')"
     (touchend)="onButtonPointerUp()"
     (touchcancel)="onButtonPointerUp()"
+    [title]="_translations.incrementBtn"
+    [attr.aria-label]="_translations.incrementBtn"
+    [attr.aria-disabled]="_disabled()"
+    [attr.aria-controls]="_id()"
     [disabled]="disabled"
     class="neo-input-number-button"
   >
@@ -23,6 +27,10 @@
     (touchstart)="onButtonPointerDown($event, 'decrement')"
     (touchend)="onButtonPointerUp()"
     (touchcancel)="onButtonPointerUp()"
+    [title]="_translations.decrementBtn"
+    [attr.aria-label]="_translations.decrementBtn"
+    [attr.aria-disabled]="_disabled()"
+    [attr.aria-controls]="_id()"
     [disabled]="disabled"
     class="neo-input-number-button"
   >
@@ -65,39 +73,18 @@
     "
     [class.neo-input-number__wrapper--focused]="focused"
     [class.neo-input-number__wrapper--disabled]="_disabled()"
-    [class.neo-input-number__wrapper__btn-horizontal]="
+    [class.neo-input-number__wrapper--has-error]="
+      inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
+    "
+    [class.neo-input-number__wrapper--horizontal]="
       showButtons && buttonsPosition === 'horizontal'
     "
-    [class.neo-input-number__wrapper__btn-vertical]="
+    [class.neo-input-number__wrapper--vertical]="
       showButtons && buttonsPosition === 'vertical'
     "
   >
-    @if (prefixTpl || prefixIcon || prefix) {
-      <button
-        type="button"
-        class="neo-input-number__prefix"
-        [tabindex]="!_disabled() && prefixClickable ? 0 : -1"
-        [disabled]="_disabled()"
-        [class.neo-input-number__prefix--bg]="bgPrefix && !prefixInside"
-        [class.neo-input-number__prefix--inside]="prefixInside"
-        [class.neo-input-number__prefix--clickable]="prefixClickable"
-        [class.neo-input-number__prefix--text]="prefix"
-        [attr.title]="titlePrefix"
-        [attr.aria-label]="titlePrefix"
-        (click)="prefixClicked()"
-        (keydown.enter)="prefixClicked()"
-        (keydown.space)="prefixClicked()"
-      >
-        @if (prefixIcon) {
-          <i [class]="prefixIcon"></i>
-        }
-        @if (prefix) {
-          <span>{{ prefix }}</span>
-        }
-        @if (prefixTpl) {
-          <ng-container *ngTemplateOutlet="prefixTpl" />
-        }
-      </button>
+    @if (showButtons && buttonsPosition !== "inside") {
+      <ng-container *ngTemplateOutlet="incrementButton"></ng-container>
     }
     <div
       class="neo-input-number__wrapper__content"
@@ -105,6 +92,35 @@
         showButtons && buttonsPosition === 'inside'
       "
     >
+      @if (prefixTpl || prefixIcon || prefix) {
+        <button
+          type="button"
+          class="neo-input-number__prefix"
+          [tabindex]="!_disabled() && prefixClickable ? 0 : -1"
+          [disabled]="_disabled()"
+          [class.neo-input-number__prefix--bg]="bgPrefix && !prefixInside"
+          [class.neo-input-number__prefix--inside]="prefixInside"
+          [class.neo-input-number__prefix--clickable]="prefixClickable"
+          [class.neo-input-number__prefix--text]="prefix"
+          [attr.title]="titlePrefix"
+          [attr.aria-label]="titlePrefix"
+          [attr.aria-controls]="prefixClickable ? _id() : null"
+          [attr.aria-disabled]="_disabled()"
+          (click)="prefixClicked()"
+          (keydown.enter)="prefixClicked()"
+          (keydown.space)="prefixClicked()"
+        >
+          @if (prefixIcon) {
+            <i [class]="prefixIcon"></i>
+          }
+          @if (prefix) {
+            <span>{{ prefix }}</span>
+          }
+          @if (prefixTpl) {
+            <ng-container *ngTemplateOutlet="prefixTpl" />
+          }
+        </button>
+      }
       @if (mode === "currency" && currencyPosition === "left") {
         <span
           class="neo-input-number__currency-symbol neo-input-number__currency-symbol--left"
@@ -112,52 +128,56 @@
           {{ currencySymbol }}
         </span>
       }
-      <input
-        #inputElement
-        #inputControl="ngModel"
-        class="neo-input-number__wrapper__field"
-        [class.neo-input-number__wrapper__field--has-error]="
-          inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
-        "
-        [class.neo-input-number__wrapper__field--disabled]="_disabled()"
-        [class.neo-input-number__wrapper__field--clear]="showClear"
-        [class.neo-input-number__wrapper__field--prefix]="
-          prefixTpl || prefixIcon || prefix
-        "
-        [class.neo-input-number__wrapper__field--suffix]="
-          suffixTpl || suffixIcon || suffix
-        "
-        [class.neo-input-number__wrapper__field--left]="align === 'left'"
-        [class.neo-input-number__wrapper__field--right]="align === 'right'"
-        [ngModel]="displayValue"
-        (ngModelChange)="onUserInput($event)"
-        (focus)="focused = true"
-        (blur)="onBlur()"
-        [attr.id]="_id()"
-        [attr.min]="min"
-        [attr.max]="max"
-        [attr.inputmode]="mode === 'integer' ? 'numeric' : 'decimal'"
-        [attr.aria-disabled]="_disabled()"
-        [attr.aria-readonly]="readonly"
-        [attr.aria-label]="ariaLabel || label || placeholder"
-        [attr.aria-labelledby]="ariaLabelledBy || _labelId()"
-        [attr.aria-owns]="ariaOwns || _labelId()"
-        [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
-        [attr.aria-autocomplete]="ariaAutocomplete"
-        [readonly]="readonly"
-        [disabled]="_disabled()"
-        [required]="required"
-        [attr.aria-required]="required"
-        [attr.placeholder]="placeholder"
-        [attr.aria-invalid]="
-          inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
-        "
-        [attr.name]="name"
-        [attr.title]="title || label || placeholder || ''"
-        [showClear]="showClear"
-        (clear)="clearInput()"
-        (keydown)="onKeyDown($event)"
-      />
+      <div class="neo-input-number__wrapper__field-container">
+        <input
+          #inputElement
+          #inputControl="ngModel"
+          class="neo-input-number__wrapper__field"
+          [class.neo-input-number__wrapper__field--has-error]="
+            inputControl?.errors &&
+            (inputControl?.dirty || inputControl?.touched)
+          "
+          [class.neo-input-number__wrapper__field--disabled]="_disabled()"
+          [class.neo-input-number__wrapper__field--clear]="showClear"
+          [class.neo-input-number__wrapper__field--prefix]="
+            prefixTpl || prefixIcon || prefix
+          "
+          [class.neo-input-number__wrapper__field--suffix]="
+            suffixTpl || suffixIcon || suffix
+          "
+          [class.neo-input-number__wrapper__field--left]="align === 'left'"
+          [class.neo-input-number__wrapper__field--right]="align === 'right'"
+          [ngModel]="displayValue"
+          (ngModelChange)="onUserInput($event)"
+          (focus)="focused = true"
+          (blur)="onBlur()"
+          [attr.id]="_id()"
+          [attr.min]="min"
+          [attr.max]="max"
+          [attr.inputmode]="mode === 'integer' ? 'numeric' : 'decimal'"
+          [attr.aria-disabled]="_disabled()"
+          [attr.aria-readonly]="readonly"
+          [attr.aria-label]="ariaLabel || label || placeholder"
+          [attr.aria-labelledby]="ariaLabelledBy || _labelId()"
+          [attr.aria-owns]="ariaOwns || _labelId()"
+          [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
+          [attr.aria-autocomplete]="ariaAutocomplete"
+          [readonly]="readonly"
+          [disabled]="_disabled()"
+          [required]="required"
+          [attr.aria-required]="required"
+          [attr.placeholder]="placeholder"
+          [attr.aria-invalid]="
+            inputControl?.errors &&
+            (inputControl?.dirty || inputControl?.touched)
+          "
+          [attr.name]="name"
+          [attr.title]="title || label || placeholder || ''"
+          [showClear]="showClear"
+          (clear)="clearInput()"
+          (keydown)="onKeyDown($event)"
+        />
+      </div>
       @if (showButtons && buttonsPosition === "inside") {
         <div class="neo-input-number__wrapper__content__buttons-inside">
           <ng-container *ngTemplateOutlet="incrementButton" />
@@ -171,33 +191,38 @@
           {{ currencySymbol }}
         </span>
       }
+      @if (suffixTpl || suffixIcon || suffix) {
+        <button
+          type="button"
+          class="neo-input-number__suffix"
+          [tabindex]="!_disabled() && suffixClickable ? 0 : -1"
+          [disabled]="_disabled()"
+          [class.neo-input-number__suffix--bg]="bgSuffix && !suffixInside"
+          [class.neo-input-number__suffix--inside]="suffixInside"
+          [class.neo-input-number__suffix--clickable]="suffixClickable"
+          [class.neo-input-number__suffix--text]="suffix"
+          [attr.title]="titleSuffix"
+          [attr.aria-label]="titleSuffix"
+          [attr.aria-controls]="suffixClickable ? _id() : null"
+          [attr.aria-disabled]="_disabled()"
+          (click)="suffixClicked()"
+          (keydown.enter)="suffixClicked()"
+          (keydown.space)="suffixClicked()"
+        >
+          @if (suffixIcon) {
+            <i [class]="suffixIcon"></i>
+          }
+          @if (suffix) {
+            <span>{{ suffix }}</span>
+          }
+          @if (suffixTpl) {
+            <ng-container *ngTemplateOutlet="suffixTpl" />
+          }
+        </button>
+      }
     </div>
-    @if (suffixTpl || suffixIcon || suffix) {
-      <button
-        type="button"
-        class="neo-input-number__suffix"
-        [tabindex]="!_disabled() && suffixClickable ? 0 : -1"
-        [disabled]="_disabled()"
-        [class.neo-input-number__suffix--bg]="bgSuffix && !suffixInside"
-        [class.neo-input-number__suffix--inside]="suffixInside"
-        [class.neo-input-number__suffix--clickable]="suffixClickable"
-        [class.neo-input-number__suffix--text]="suffix"
-        [attr.title]="titleSuffix"
-        [attr.aria-label]="titleSuffix"
-        (click)="suffixClicked()"
-        (keydown.enter)="suffixClicked()"
-        (keydown.space)="suffixClicked()"
-      >
-        @if (suffixIcon) {
-          <i [class]="suffixIcon"></i>
-        }
-        @if (suffix) {
-          <span>{{ suffix }}</span>
-        }
-        @if (suffixTpl) {
-          <ng-container *ngTemplateOutlet="suffixTpl" />
-        }
-      </button>
+    @if (showButtons && buttonsPosition !== "inside") {
+      <ng-container *ngTemplateOutlet="decrementButton"></ng-container>
     }
   </div>
 </div>

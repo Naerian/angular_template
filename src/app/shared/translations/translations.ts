@@ -16,6 +16,10 @@ export const NEOUI_DEFAULT_I18N: NeoUITranslations = {
   showPassword: 'Mostrar contraseña',
   hidePassword: 'Ocultar contraseña',
 
+  // Texto del componente InputNumber
+  incrementBtn: 'Incrementar valor',
+  decrementBtn: 'Decrementar valor',
+
   // Textos generales de los campos de formulario
   clearButton: 'Limpiar',
 

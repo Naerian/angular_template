@@ -31,6 +31,10 @@ export interface NeoUITranslations {
   showPassword: string;
   hidePassword?: string;
 
+  // Texto del componente InputNumber
+  incrementBtn: string;
+  decrementBtn: string;
+
   // Textos generales de los campos de formulario
   clearButton: string;
 

@@ -251,6 +251,16 @@
   box-shadow: 0px 0px 2px var(--border-width-xs) var(--focus-ring-color);
 }
 
+@mixin outline-field-error {
+  box-shadow: 0px 0px 2px var(--border-width-xs) var(--color-danger);
+}
+
+// Mixin para aplicar un borde de error
+// Utiliza este mixin para aplicar un estilo de borde de error a un elemento
+@mixin field-error {
+  border: var(--border-width-base) solid var(--color-danger);
+}
+
 // Mixin para definir la altura de la cuadrícula del calendario
 // Utiliza este mixin para calcular la altura de la cuadrícula del calendario según el tamaño
 @mixin calendar-grid-height($size) {

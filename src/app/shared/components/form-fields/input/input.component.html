@@ -21,6 +21,9 @@
     [class.neo-input__wrapper--suffix-inside]="suffixInside"
     [class.neo-input__wrapper--focused]="focused"
     [class.neo-input__wrapper--disabled]="_disabled()"
+    [class.neo-input__wrapper--has-error]="
+      inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
+    "
   >
     @if (prefixTpl || prefixIcon || prefix) {
       <button
@@ -33,6 +36,8 @@
         [class.neo-input__prefix--clickable]="prefixClickable"
         [attr.title]="titlePrefix"
         [attr.aria-label]="titlePrefix"
+        [attr.aria-controls]="prefixClickable ? _id() : null"
+        [attr.aria-disabled]="_disabled()"
         (click)="prefixClicked()"
         (keydown.enter)="prefixClicked()"
         (keydown.space)="prefixClicked()"
@@ -48,58 +53,60 @@
         }
       </button>
     }
-    <input
-      #input
-      #inputControl="ngModel"
-      class="neo-input__wrapper__field"
-      [class.neo-input__wrapper__field--has-error]="
-        inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
-      "
-      [class.neo-input__wrapper__field--disabled]="_disabled()"
-      [class.neo-input__wrapper__field--clear]="showClear"
-      [class.neo-input__wrapper__field--prefix]="
-        prefixTpl || prefixIcon || prefix
-      "
-      [class.neo-input__wrapper__field--suffix]="
-        suffixTpl || suffixIcon || suffix
-      "
-      [ngModel]="value"
-      (ngModelChange)="onInput($event)"
-      (focus)="focused = true"
-      (blur)="onBlur()"
-      [attr.id]="_id()"
-      [attr.type]="type"
-      [attr.min]="min"
-      [attr.max]="max"
-      [attr.pattern]="pattern"
-      [attr.inputmode]="inputmode"
-      [attr.aria-disabled]="_disabled()"
-      [attr.aria-readonly]="readonly"
-      [attr.aria-label]="ariaLabel || label || placeholder"
-      [attr.aria-labelledby]="ariaLabelledBy || _labelId()"
-      [attr.aria-owns]="ariaOwns || _labelId()"
-      [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
-      [attr.aria-autocomplete]="ariaAutocomplete"
-      [attr.autocapitalize]="autocapitalize"
-      [attr.spellcheck]="spellcheck"
-      [readonly]="readonly"
-      [disabled]="_disabled()"
-      [required]="required"
-      [attr.aria-required]="required"
-      [attr.placeholder]="placeholder"
-      [attr.aria-invalid]="
-        inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
-      "
-      [attr.size]="size"
-      [attr.minlength]="minlength"
-      [attr.maxlength]="maxlength"
-      [attr.step]="type === 'number' ? step : null"
-      [attr.autocomplete]="autocomplete"
-      [attr.name]="name"
-      [attr.title]="title || label || placeholder || ''"
-      [showClear]="showClear"
-      (clear)="clearInput()"
-    />
+    <div class="neo-input__wrapper__field-container">
+      <input
+        #input
+        #inputControl="ngModel"
+        class="neo-input__wrapper__field"
+        [class.neo-input__wrapper__field--has-error]="
+          inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
+        "
+        [class.neo-input__wrapper__field--disabled]="_disabled()"
+        [class.neo-input__wrapper__field--clear]="showClear"
+        [class.neo-input__wrapper__field--prefix]="
+          prefixTpl || prefixIcon || prefix
+        "
+        [class.neo-input__wrapper__field--suffix]="
+          suffixTpl || suffixIcon || suffix
+        "
+        [ngModel]="value"
+        (ngModelChange)="onInput($event)"
+        (focus)="focused = true"
+        (blur)="onBlur()"
+        [attr.id]="_id()"
+        [attr.type]="type"
+        [attr.min]="min"
+        [attr.max]="max"
+        [attr.pattern]="pattern"
+        [attr.inputmode]="inputmode"
+        [attr.aria-disabled]="_disabled()"
+        [attr.aria-readonly]="readonly"
+        [attr.aria-label]="ariaLabel || label || placeholder"
+        [attr.aria-labelledby]="ariaLabelledBy || _labelId()"
+        [attr.aria-owns]="ariaOwns || _labelId()"
+        [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
+        [attr.aria-autocomplete]="ariaAutocomplete"
+        [attr.autocapitalize]="autocapitalize"
+        [attr.spellcheck]="spellcheck"
+        [readonly]="readonly"
+        [disabled]="_disabled()"
+        [required]="required"
+        [attr.aria-required]="required"
+        [attr.placeholder]="placeholder"
+        [attr.aria-invalid]="
+          inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
+        "
+        [attr.size]="size"
+        [attr.minlength]="minlength"
+        [attr.maxlength]="maxlength"
+        [attr.step]="type === 'number' ? step : null"
+        [attr.autocomplete]="autocomplete"
+        [attr.name]="name"
+        [attr.title]="title || label || placeholder || ''"
+        [showClear]="showClear"
+        (clear)="clearInput()"
+      />
+    </div>
     @if (suffixTpl || suffixIcon || suffix) {
       <button
         type="button"
@@ -111,6 +118,8 @@
         [class.neo-input__suffix--clickable]="suffixClickable"
         [attr.title]="titleSuffix"
         [attr.aria-label]="titleSuffix"
+        [attr.aria-controls]="suffixClickable ? _id() : null"
+        [attr.aria-disabled]="_disabled()"
         (click)="suffixClicked()"
         (keydown.enter)="suffixClicked()"
         (keydown.space)="suffixClicked()"

@@ -13,6 +13,16 @@
   border: var(--border-width-base) solid var(--border-field-color);
   overflow: hidden;
 
+  &__field-container {
+    width: 100%;
+    flex-direction: row;
+    position: relative;
+    justify-content: flex-end;
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
   &--focused:not(&--disabled),
   &:hover:not(&--disabled) {
     border-color: var(--hover-border-field-color);
@@ -26,6 +36,17 @@
     @include disabled;
   }
 
+  &--has-error {
+    @include field-error;
+    &:hover:not(&--disabled) {
+      @include field-error;
+    }
+    &.neo-input__wrapper--focused:not(&.neo-input__wrapper--disabled) {
+      @include field-error;
+      @include outline-field-error;
+    }
+  }
+
   @each $size-key, $input-size in $component-heights {
     &--#{$size-key} {
       height: $input-size;
@@ -34,6 +55,9 @@
       .neo-input__wrapper__field {
         font-size: var(--font-size-#{$size-key});
         padding: var(--component-padding-#{$size-key});
+        &--clear {
+          padding-right: $input-size;
+        }
       }
 
       .neo-input__prefix,
@@ -69,14 +93,6 @@
     &:focus,
     &:active {
       outline: none;
-    }
-
-    &--clear {
-      padding-right: calc(var(--spacing-s) * 3);
-    }
-
-    &--has-error {
-      border: none;
     }
 
     &--prefix {

@@ -15,44 +15,50 @@
       !hideIcon && bgIcon && !iconInside
     "
     [class.neo-date-picker__wrapper--disabled]="_disabled()"
+    [class.neo-date-picker__wrapper--has-error]="
+      dpInput?.errors && (dpInput?.dirty || dpInput?.touched)
+    "
   >
-    <input
-      cdkOverlayOrigin
-      #datePickerInput
-      #datePicker="cdkOverlayOrigin"
-      #dpInput="ngModel"
-      class="neo-date-picker__wrapper__field"
-      [class.neo-date-picker__wrapper__field--has-error]="
-        dpInput?.errors && (dpInput?.dirty || dpInput?.touched)
-      "
-      [class.neo-input__wrapper__field--icon]="!hideIcon"
-      (click)="toogleCalendar($event)"
-      (keydown.space)="toogleCalendar($event)"
-      (keydown.enter)="toogleCalendar($event)"
-      [ngModel]="value"
-      (ngModelChange)="onInput($event)"
-      (blur)="onBlur();"
-      (focus)="focused = true"
-      [attr.id]="_id()"
-      [attr.title]="label"
-      [attr.autofocus]="autofocus"
-      [attr.aria-disabled]="_disabled()"
-      [attr.aria-readonly]="true"
-      [attr.aria-labelledby]="_labelId()"
-      [attr.aria-owns]="_labelId()"
-      [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
-      [attr.aria-invalid]="
-        dpInput?.errors && (dpInput?.dirty || dpInput?.touched)
-      "
-      [readonly]="true"
-      [disabled]="_disabled()"
-      [attr.required]="required"
-      [attr.aria-required]="required"
-      [attr.placeholder]="placeholder"
-      autocomplete="off"
-      [showClear]="showClear"
-      (clear)="clearInput()"
-    />
+    <div class="neo-date-picker__wrapper__field-container">
+      <input
+        cdkOverlayOrigin
+        #datePickerInput
+        #datePicker="cdkOverlayOrigin"
+        #dpInput="ngModel"
+        class="neo-date-picker__wrapper__field"
+        [class.neo-date-picker__wrapper__field--has-error]="
+          dpInput?.errors && (dpInput?.dirty || dpInput?.touched)
+        "
+        [class.neo-date-picker__wrapper__field--icon]="!hideIcon"
+        [class.neo-date-picker__wrapper__field--clear]="showClear"
+        (click)="toogleCalendar($event)"
+        (keydown.space)="toogleCalendar($event)"
+        (keydown.enter)="toogleCalendar($event)"
+        [ngModel]="value"
+        (ngModelChange)="onInput($event)"
+        (blur)="onBlur()"
+        (focus)="focused = true"
+        [attr.id]="_id()"
+        [attr.title]="label"
+        [attr.autofocus]="autofocus"
+        [attr.aria-disabled]="_disabled()"
+        [attr.aria-readonly]="true"
+        [attr.aria-labelledby]="_labelId()"
+        [attr.aria-owns]="_labelId()"
+        [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
+        [attr.aria-invalid]="
+          dpInput?.errors && (dpInput?.dirty || dpInput?.touched)
+        "
+        [readonly]="true"
+        [disabled]="_disabled()"
+        [attr.required]="required"
+        [attr.aria-required]="required"
+        [attr.placeholder]="placeholder"
+        autocomplete="off"
+        [showClear]="showClear"
+        (clear)="clearInput()"
+      />
+    </div>
     @if (!hideIcon) {
       <button
         cdkOverlayOrigin

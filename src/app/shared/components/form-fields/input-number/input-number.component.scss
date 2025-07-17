@@ -13,9 +13,14 @@
   border: var(--border-width-base) solid var(--border-field-color);
   overflow: hidden;
 
-  &--vertical {
-    flex-direction: column;
-    align-items: stretch;
+  &__field-container {
+    width: 100%;
+    flex-direction: row;
+    position: relative;
+    justify-content: flex-end;
+    flex: 1;
+    display: flex;
+    align-items: center;
   }
 
   &--focused:not(&--disabled),
@@ -31,6 +36,19 @@
     @include disabled;
   }
 
+  &--has-error {
+    @include field-error;
+    &:hover:not(&--disabled) {
+      @include field-error;
+    }
+    &.neo-input-number__wrapper--focused:not(
+        &.neo-input-number__wrapper--disabled
+      ) {
+      @include field-error;
+      @include outline-field-error;
+    }
+  }
+
   @each $size-key, $input-size in $component-heights {
     &--#{$size-key} {
       height: $input-size;
@@ -39,6 +57,9 @@
       .neo-input-number__wrapper__field {
         font-size: var(--font-size-#{$size-key});
         padding: var(--component-padding-#{$size-key});
+        &--clear {
+          padding-right: $input-size;
+        }
       }
 
       .neo-input-number__prefix,
@@ -53,6 +74,15 @@
         }
       }
 
+      &.neo-input-number__wrapper--horizontal,
+      &.neo-input-number__wrapper--vertical {
+        .neo-input-number-button {
+          width: var(--component-height-#{$size-key});
+          height: var(--component-height-#{$size-key});
+          font-size: var(--font-size-#{$size-key});
+        }
+      }
+
       .neo-input-number__wrapper__content {
         height: $input-size;
         min-height: $input-size;
@@ -64,6 +94,16 @@
             margin-right: calc(var(--component-height-#{$size-key}) / 2);
           }
         }
+      }
+    }
+
+    &--vertical {
+      flex-direction: column;
+      align-items: stretch;
+      height: auto !important;
+      min-height: auto !important;
+      .neo-input-number-button {
+        width: 100% !important;
       }
     }
   }
@@ -83,25 +123,29 @@
       .neo-input-number-button {
         position: relative;
         flex: 1 1 auto;
-        border: var(--border-width-base) solid var(--border-field-color);
-        background-color: var(--border-field-color);
-        cursor: pointer;
-
-        &:focus,
-        &:active {
-          @include outline-focus;
-        }
-
-        &:hover,
-        &:focus,
-        &:active {
-          background-color: var(--hover-border-field-color);
-        }
-
-        &.neo-btn--icon i::before {
-          color: var(--hover-border-field-color);
-        }
       }
+    }
+  }
+
+  .neo-input-number-button {
+    border: var(--border-width-base) solid var(--border-field-color);
+    background-color: var(--border-field-color);
+    cursor: pointer;
+
+    &:focus,
+    &:active {
+      @include outline-focus;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: var(--hover-border-field-color);
+      border-color: var(--hover-border-field-color);
+    }
+
+    &.neo-btn--icon i::before {
+      color: var(--hover-border-field-color);
     }
   }
 
@@ -137,14 +181,6 @@
     &:focus,
     &:active {
       outline: none;
-    }
-
-    &--clear {
-      padding-right: calc(var(--spacing-s) * 3);
-    }
-
-    &--has-error {
-      border: none;
     }
 
     &--prefix {

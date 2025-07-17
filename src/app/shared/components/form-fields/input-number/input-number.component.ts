@@ -35,6 +35,7 @@ import { InputsUtilsService } from '../services/inputs-utils.service';
 import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 import { ComponentSize } from '@shared/configs/component.model';
 import { ShowClearFieldDirective } from '@shared/directives/show-clear-field.directive';
+import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
 
 @Component({
   selector: 'neo-input-number',
@@ -168,6 +169,7 @@ export class InputNumberComponent
   private readonly LONG_PRESS_RATE = 100; // Frecuencia de repetición (ms)
 
   private readonly _inputsUtilsService = inject(InputsUtilsService);
+  protected readonly _translations = inject(NEOUI_TRANSLATIONS);
   private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
 
   constructor() {
@@ -234,10 +236,12 @@ export class InputNumberComponent
   }
 
   /**
-   * Función para limpiar el campo de texto
+   * Función para limpiar el campo numérico
    */
   clearInput() {
     this._value.set(null);
+    this.displayValue = '';
+    this.currentCaretPosition = null;
     this.onChange(null);
     this.onTouched();
     this.change.emit(null);

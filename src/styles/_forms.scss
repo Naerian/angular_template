@@ -35,18 +35,11 @@ label abbr {
     &--#{$size-key} {
       width: var(--component-height-#{$size-key});
       height: var(--component-height-#{$size-key});
-      @include component-icon-size($size-key);
-      i {
-        @include flex-center;
-        &::before {
-          color: var(--icon-field-color);
-        }
-      }
+      font-size: calc(var(--font-size-#{$size-key}) * 1.5);
+      color: var(--icon-field-color);
+      opacity: 0.3;
+      text-align: center;
     }
-  }
-
-  &::before {
-    color: var(--icon-field-color);
   }
 
   &:focus,
@@ -57,6 +50,6 @@ label abbr {
 
   &:hover,
   &:focus {
-    opacity: 0.8;
+    opacity: 0.85;
   }
 }
