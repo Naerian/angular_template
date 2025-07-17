@@ -1,0 +1,203 @@
+<ng-template #incrementButton>
+  <button
+    type="button"
+    (mousedown)="onButtonPointerDown($event, 'increment')"
+    (mouseup)="onButtonPointerUp()"
+    (mouseleave)="onButtonPointerUp()"
+    (touchstart)="onButtonPointerDown($event, 'increment')"
+    (touchend)="onButtonPointerUp()"
+    (touchcancel)="onButtonPointerUp()"
+    [disabled]="disabled"
+    class="neo-input-number-button"
+  >
+    <i class="ri-arrow-up-s-line"></i>
+  </button>
+</ng-template>
+
+<ng-template #decrementButton>
+  <button
+    type="button"
+    (mousedown)="onButtonPointerDown($event, 'decrement')"
+    (mouseup)="onButtonPointerUp()"
+    (mouseleave)="onButtonPointerUp()"
+    (touchstart)="onButtonPointerDown($event, 'decrement')"
+    (touchend)="onButtonPointerUp()"
+    (touchcancel)="onButtonPointerUp()"
+    [disabled]="disabled"
+    class="neo-input-number-button"
+  >
+    <i class="ri-arrow-down-s-line"></i>
+  </button>
+</ng-template>
+
+<div class="neo-input-number">
+  @if (label) {
+    <label
+      [attr.for]="_id()"
+      [attr.id]="_labelId()"
+      class="neo-input-number__label"
+    >
+      <span [innerHtml]="label"></span>
+      @if (required) {
+        <abbr aria-hidden="true">*</abbr>
+      }
+    </label>
+  }
+  <div
+    class="neo-input-number__wrapper neo-input-number__wrapper--{{ inputSize }}"
+    [class.neo-input-number__wrapper--prefix]="
+      prefixTpl || prefixIcon || prefix
+    "
+    [class.neo-input-number__wrapper--suffix]="
+      suffixTpl || suffixIcon || suffix
+    "
+    [class.neo-input-number__wrapper--bg-prefix]="
+      (prefixTpl || prefixIcon || prefix) && bgPrefix && !prefixInside
+    "
+    [class.neo-input-number__wrapper--bg-suffix]="
+      (suffixTpl || suffixIcon || suffix) && bgSuffix && !suffixInside
+    "
+    [class.neo-input-number__wrapper--prefix-inside]="
+      prefixInside || (mode === 'currency' && currencyPosition === 'left')
+    "
+    [class.neo-input-number__wrapper--suffix-inside]="
+      suffixInside || (mode === 'currency' && currencyPosition === 'right')
+    "
+    [class.neo-input-number__wrapper--focused]="focused"
+    [class.neo-input-number__wrapper--disabled]="_disabled()"
+    [class.neo-input-number__wrapper__btn-horizontal]="
+      showButtons && buttonsPosition === 'horizontal'
+    "
+    [class.neo-input-number__wrapper__btn-vertical]="
+      showButtons && buttonsPosition === 'vertical'
+    "
+  >
+    @if (prefixTpl || prefixIcon || prefix) {
+      <button
+        type="button"
+        class="neo-input-number__prefix"
+        [tabindex]="!_disabled() && prefixClickable ? 0 : -1"
+        [disabled]="_disabled()"
+        [class.neo-input-number__prefix--bg]="bgPrefix && !prefixInside"
+        [class.neo-input-number__prefix--inside]="prefixInside"
+        [class.neo-input-number__prefix--clickable]="prefixClickable"
+        [class.neo-input-number__prefix--text]="prefix"
+        [attr.title]="titlePrefix"
+        [attr.aria-label]="titlePrefix"
+        (click)="prefixClicked()"
+        (keydown.enter)="prefixClicked()"
+        (keydown.space)="prefixClicked()"
+      >
+        @if (prefixIcon) {
+          <i [class]="prefixIcon"></i>
+        }
+        @if (prefix) {
+          <span>{{ prefix }}</span>
+        }
+        @if (prefixTpl) {
+          <ng-container *ngTemplateOutlet="prefixTpl" />
+        }
+      </button>
+    }
+    <div
+      class="neo-input-number__wrapper__content"
+      [class.neo-input-number__wrapper__content--buttons-inside]="
+        showButtons && buttonsPosition === 'inside'
+      "
+    >
+      @if (mode === "currency" && currencyPosition === "left") {
+        <span
+          class="neo-input-number__currency-symbol neo-input-number__currency-symbol--left"
+        >
+          {{ currencySymbol }}
+        </span>
+      }
+      <input
+        #inputElement
+        #inputControl="ngModel"
+        class="neo-input-number__wrapper__field"
+        [class.neo-input-number__wrapper__field--has-error]="
+          inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
+        "
+        [class.neo-input-number__wrapper__field--disabled]="_disabled()"
+        [class.neo-input-number__wrapper__field--clear]="showClear"
+        [class.neo-input-number__wrapper__field--prefix]="
+          prefixTpl || prefixIcon || prefix
+        "
+        [class.neo-input-number__wrapper__field--suffix]="
+          suffixTpl || suffixIcon || suffix
+        "
+        [class.neo-input-number__wrapper__field--left]="align === 'left'"
+        [class.neo-input-number__wrapper__field--right]="align === 'right'"
+        [ngModel]="displayValue"
+        (ngModelChange)="onUserInput($event)"
+        (focus)="focused = true"
+        (blur)="onBlur()"
+        [attr.id]="_id()"
+        [attr.min]="min"
+        [attr.max]="max"
+        [attr.inputmode]="mode === 'integer' ? 'numeric' : 'decimal'"
+        [attr.aria-disabled]="_disabled()"
+        [attr.aria-readonly]="readonly"
+        [attr.aria-label]="ariaLabel || label || placeholder"
+        [attr.aria-labelledby]="ariaLabelledBy || _labelId()"
+        [attr.aria-owns]="ariaOwns || _labelId()"
+        [attr.aria-describedby]="ariaDescribedBy || ariaDescribedByCustom"
+        [attr.aria-autocomplete]="ariaAutocomplete"
+        [readonly]="readonly"
+        [disabled]="_disabled()"
+        [required]="required"
+        [attr.aria-required]="required"
+        [attr.placeholder]="placeholder"
+        [attr.aria-invalid]="
+          inputControl?.errors && (inputControl?.dirty || inputControl?.touched)
+        "
+        [attr.name]="name"
+        [attr.title]="title || label || placeholder || ''"
+        [showClear]="showClear"
+        (clear)="clearInput()"
+        (keydown)="onKeyDown($event)"
+      />
+      @if (showButtons && buttonsPosition === "inside") {
+        <div class="neo-input-number__wrapper__content__buttons-inside">
+          <ng-container *ngTemplateOutlet="incrementButton" />
+          <ng-container *ngTemplateOutlet="decrementButton" />
+        </div>
+      }
+      @if (mode === "currency" && currencyPosition === "right") {
+        <span
+          class="neo-input-number__currency-symbol neo-input-number__currency-symbol--right"
+        >
+          {{ currencySymbol }}
+        </span>
+      }
+    </div>
+    @if (suffixTpl || suffixIcon || suffix) {
+      <button
+        type="button"
+        class="neo-input-number__suffix"
+        [tabindex]="!_disabled() && suffixClickable ? 0 : -1"
+        [disabled]="_disabled()"
+        [class.neo-input-number__suffix--bg]="bgSuffix && !suffixInside"
+        [class.neo-input-number__suffix--inside]="suffixInside"
+        [class.neo-input-number__suffix--clickable]="suffixClickable"
+        [class.neo-input-number__suffix--text]="suffix"
+        [attr.title]="titleSuffix"
+        [attr.aria-label]="titleSuffix"
+        (click)="suffixClicked()"
+        (keydown.enter)="suffixClicked()"
+        (keydown.space)="suffixClicked()"
+      >
+        @if (suffixIcon) {
+          <i [class]="suffixIcon"></i>
+        }
+        @if (suffix) {
+          <span>{{ suffix }}</span>
+        }
+        @if (suffixTpl) {
+          <ng-container *ngTemplateOutlet="suffixTpl" />
+        }
+      </button>
+    }
+  </div>
+</div>

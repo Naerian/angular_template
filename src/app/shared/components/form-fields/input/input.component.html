@@ -26,7 +26,7 @@
       <button
         type="button"
         class="neo-input__prefix"
-        [tabindex]="!_disabled() ? 0 : -1"
+        [tabindex]="!_disabled() && prefixClickable ? 0 : -1"
         [disabled]="_disabled()"
         [class.neo-input__prefix--bg]="bgPrefix && !prefixInside"
         [class.neo-input__prefix--inside]="prefixInside"
@@ -63,10 +63,10 @@
       [class.neo-input__wrapper__field--suffix]="
         suffixTpl || suffixIcon || suffix
       "
-      [(ngModel)]="value"
-      (input)="onInput(input.value)"
+      [ngModel]="value"
+      (ngModelChange)="onInput($event)"
       (focus)="focused = true"
-      (blur)="onBlur(); focused = false"
+      (blur)="onBlur()"
       [attr.id]="_id()"
       [attr.type]="type"
       [attr.min]="min"
@@ -104,7 +104,7 @@
       <button
         type="button"
         class="neo-input__suffix"
-        [tabindex]="!_disabled() ? 0 : -1"
+        [tabindex]="!_disabled() && suffixClickable ? 0 : -1"
         [disabled]="_disabled()"
         [class.neo-input__suffix--bg]="bgSuffix && !suffixInside"
         [class.neo-input__suffix--inside]="suffixInside"

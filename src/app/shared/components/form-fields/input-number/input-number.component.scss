@@ -1,0 +1,208 @@
+@import "config";
+@import "theme";
+@import "theme-config";
+
+.neo-input-number__wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--border-radius-md);
+  box-sizing: border-box;
+  background-color: var(--bg-field-color);
+  box-shadow: var(--box-shadow-component);
+  border: var(--border-width-base) solid var(--border-field-color);
+  overflow: hidden;
+
+  &--vertical {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  &--focused:not(&--disabled),
+  &:hover:not(&--disabled) {
+    border-color: var(--hover-border-field-color);
+  }
+
+  &--focused:not(&--disabled) {
+    @include outline-focus;
+  }
+
+  &--disabled {
+    @include disabled;
+  }
+
+  @each $size-key, $input-size in $component-heights {
+    &--#{$size-key} {
+      height: $input-size;
+      min-height: $input-size;
+
+      .neo-input-number__wrapper__field {
+        font-size: var(--font-size-#{$size-key});
+        padding: var(--component-padding-#{$size-key});
+      }
+
+      .neo-input-number__prefix,
+      .neo-input-number__suffix,
+      .neo-input-number__currency-symbol {
+        width: var(--component-height-#{$size-key});
+        height: var(--component-height-#{$size-key});
+        font-size: var(--font-size-#{$size-key});
+        &--text {
+          width: auto;
+          padding: var(--component-padding-#{$size-key});
+        }
+      }
+
+      .neo-input-number__wrapper__content {
+        height: $input-size;
+        min-height: $input-size;
+        &__buttons-inside {
+          width: calc(var(--component-height-#{$size-key}) / 2);
+        }
+        &--buttons-inside {
+          .neo-input-number__currency-symbol--right {
+            margin-right: calc(var(--component-height-#{$size-key}) / 2);
+          }
+        }
+      }
+    }
+  }
+
+  &__content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    &__buttons-inside {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      right: 0;
+      z-index: 1;
+      .neo-input-number-button {
+        position: relative;
+        flex: 1 1 auto;
+        border: var(--border-width-base) solid var(--border-field-color);
+        background-color: var(--border-field-color);
+        cursor: pointer;
+
+        &:focus,
+        &:active {
+          @include outline-focus;
+        }
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: var(--hover-border-field-color);
+        }
+
+        &.neo-btn--icon i::before {
+          color: var(--hover-border-field-color);
+        }
+      }
+    }
+  }
+
+  &--prefix-inside {
+    .neo-input-number__wrapper__field {
+      padding-left: 0;
+    }
+  }
+
+  &--suffix-inside {
+    .neo-input-number__wrapper__field {
+      padding-right: 0;
+    }
+  }
+
+  .neo-input-number__wrapper__field {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    border-radius: 0;
+
+    &--left {
+      text-align: left;
+    }
+
+    &--right {
+      text-align: right;
+    }
+
+    &:focus,
+    &:active {
+      outline: none;
+    }
+
+    &--clear {
+      padding-right: calc(var(--spacing-s) * 3);
+    }
+
+    &--has-error {
+      border: none;
+    }
+
+    &--prefix {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &--suffix {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  .neo-input-number__prefix,
+  .neo-input-number__suffix,
+  .neo-input-number__currency-symbol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--field-prefix-color);
+    background-color: transparent;
+    border: none;
+    pointer-events: none;
+
+    &--clickable {
+      cursor: pointer;
+      pointer-events: all;
+
+      &:focus,
+      &:active {
+        @include outline-focus;
+      }
+    }
+
+    &--bg {
+      background-color: var(--border-field-color);
+    }
+
+    &.neo-input-number__prefix,
+    .neo-input-number__currency-symbol--left {
+      border-top-left-radius: var(--border-radius-md);
+      border-bottom-left-radius: var(--border-radius-md);
+      border-right: var(--border-width-base) solid var(--border-field-color);
+      &--inside,
+      &.neo-input-number__currency-symbol--left {
+        border: none;
+      }
+    }
+
+    &.neo-input-number__suffix,
+    .neo-input-number__currency-symbol--right {
+      border-top-right-radius: var(--border-radius-md);
+      border-bottom-right-radius: var(--border-radius-md);
+      border-left: var(--border-width-base) solid var(--border-field-color);
+      &--inside,
+      &.neo-input-number__currency-symbol--right {
+        border: none;
+      }
+    }
+  }
+}

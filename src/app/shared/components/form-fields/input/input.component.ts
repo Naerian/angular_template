@@ -80,15 +80,17 @@ export class InputComponent implements ControlValueAccessor {
   @Input() maxlength?: number;
   @Input() min?: number;
   @Input() max?: number;
-  @Input() prefixIcon?: string;
-  @Input() suffixIcon?: string;
-  @Input() prefix?: string;
-  @Input() suffix?: string;
   @Input('aria-label') ariaLabel!: string;
   @Input('aria-labelledby') ariaLabelledBy!: string;
   @Input('aria-owns') ariaOwns!: string;
   @Input('aria-describedby') ariaDescribedBy!: string;
-  @Input('aria-autocomplete') ariaAutocomplete: 'none' | 'inline' | 'list' = 'none';
+  @Input('aria-autocomplete') ariaAutocomplete: 'none' | 'inline' | 'list' =
+    'none';
+
+  @Input() prefixIcon?: string;
+  @Input() suffixIcon?: string;
+  @Input() prefix?: string;
+  @Input() suffix?: string;
   @Input() titlePrefix!: string;
   @Input() titleSuffix!: string;
   @Input({ transform: booleanAttribute }) bgPrefix?: boolean = false;
@@ -223,7 +225,8 @@ export class InputComponent implements ControlValueAccessor {
    * Función del evento `blur` del campo para marcar el campo como "touched"
    */
   onBlur() {
-    this.onTouched();
+    setTimeout(() => this.onTouched());
+    this.focused = false;
     this.blur.emit();
   }
 

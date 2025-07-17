@@ -29,10 +29,9 @@
       (click)="toogleCalendar($event)"
       (keydown.space)="toogleCalendar($event)"
       (keydown.enter)="toogleCalendar($event)"
-      [value]="_value()"
-      [(ngModel)]="value"
-      (input)="onInput(dpInput.value)"
-      (blur)="onBlur(); focused = false"
+      [ngModel]="value"
+      (ngModelChange)="onInput($event)"
+      (blur)="onBlur();"
       (focus)="focused = true"
       [attr.id]="_id()"
       [attr.title]="label"
@@ -51,6 +50,7 @@
       [attr.aria-required]="required"
       [attr.placeholder]="placeholder"
       autocomplete="off"
+      [showClear]="showClear"
       (clear)="clearInput()"
     />
     @if (!hideIcon) {

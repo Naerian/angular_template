@@ -183,7 +183,8 @@ export class InputPasswordComponent implements ControlValueAccessor {
    * Función del evento `blur` del campo para marcar el campo como "touched"
    */
   onBlur() {
-    this.onTouched();
+    setTimeout(() => this.onTouched());
+    this.focused = false;
     this.blur.emit();
   }
 

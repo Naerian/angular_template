@@ -22,3 +22,15 @@ export type InputMode =
 
 // Define los valores de autocompletado para los campos de formulario
 export type InputAutocomplete = 'on' | 'off';
+
+// Define el tipo para el input numérico
+export type InputNumberType = 'integer' | 'decimal' | 'currency';
+
+// Define la posición del símbolo de moneda en el input numérico
+export type InputNumberCurrencyPosition = 'left' | 'right';
+
+// Define el modo de entrada del teclado para inputs numéricos
+export type InputNumberMode = Extract<InputMode, 'decimal' | 'numeric'>;
+
+// Define la posición de los botones para el input numérico
+export type InputNumberButtons = 'horizontal' | 'vertical' | 'inside' | null;

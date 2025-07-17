@@ -19,8 +19,8 @@
       [class.neo-textarea__wrapper__field--has-error]="
         txArea?.errors && (txArea?.dirty || txArea?.touched)
       "
-      [(ngModel)]="_value"
-      (input)="onInput(txArea.value)"
+      [ngModel]="value"
+      (ngModelChange)="onInput($event)"
       (blur)="onBlur()"
       [attr.id]="_id()"
       [attr.name]="name"

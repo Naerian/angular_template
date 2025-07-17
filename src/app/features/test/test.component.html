@@ -291,6 +291,23 @@
   </neo-card-header>
   <div class="row">
     <div class="col-12 col-md-6 col-lg-6 mb-2 mt-2">
+      <neo-input-number
+        label="Input number completo"
+        [locale]="'en-US'"
+        [currencyCode]="'USD'"
+        [mode]="'currency'"
+        [minFractionDigits]="2"
+        [maxFractionDigits]="4"
+        [useGrouping]="true"
+        [showButtons]="true"
+        [buttonsPosition]="'inside'"
+        [step]="1"
+        [prefix]="'Debe'"
+        [prefixInside]="true"
+        [suffixIcon]="'ri-corner-left-up-line'"
+        [bgSuffix]="true"
+        [align]="'right'"
+      />
       <neo-input
         label="Input normal con prefijo de icono"
         (change)="inputChange($event)"
@@ -1211,7 +1228,6 @@
       <neo-date-picker
         [type]="'week'"
         label="Date picker de semana"
-        [(ngModel)]="datePickerValue"
         [required]="true"
       ></neo-date-picker>
     </div>

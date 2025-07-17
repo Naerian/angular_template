@@ -275,6 +275,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
    */
   onBlur() {
     setTimeout(() => this.onTouched());
+    this.focused = false;
     this.blur.emit();
   }
 

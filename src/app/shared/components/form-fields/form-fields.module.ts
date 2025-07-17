@@ -11,12 +11,14 @@ import { RadioButtonModule } from './radio-button/radio-button.module';
 import { TextAreaComponent } from './text-area/text-area.component';
 import { FormHintComponent } from './form-hint/form-hint.component';
 import { DropdownModule } from './dropdown/dropdown.module';
+import { InputNumberComponent } from './input-number/input-number.component';
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
     InputComponent,
+    InputNumberComponent,
     TextAreaComponent,
     InputPasswordComponent,
     CheckboxComponent,
@@ -30,6 +32,7 @@ import { DropdownModule } from './dropdown/dropdown.module';
   ],
   exports: [
     InputComponent,
+    InputNumberComponent,
     TextAreaComponent,
     InputPasswordComponent,
     FormErrorComponent,

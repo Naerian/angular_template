@@ -4,11 +4,11 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { InputDatePickerComponent } from './input-date-picker.component';
+import { InputNumberComponent } from './input-number.component';
 
 describe('DatePickerComponent', () => {
-  let component: InputDatePickerComponent;
-  let fixture: ComponentFixture<InputDatePickerComponent>;
+  let component: InputNumberComponent;
+  let fixture: ComponentFixture<InputNumberComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -16,14 +16,13 @@ describe('DatePickerComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         HttpClientModule,
-        OverlayModule,
         RouterTestingModule,
       ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InputDatePickerComponent);
+    fixture = TestBed.createComponent(InputNumberComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
