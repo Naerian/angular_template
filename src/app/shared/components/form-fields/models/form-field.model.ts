@@ -36,3 +36,11 @@ export type InputNumberMode = Extract<InputMode, 'decimal' | 'numeric'>;
 
 // Define la posición de los botones para el input numérico
 export type InputNumberButtons = 'horizontal' | 'vertical' | 'inside' | null;
+
+// Define el tipo de botón para el input numérico
+export type InputNumberButtonType = 'increment' | 'decrement';
+
+export enum InputNumberButton {
+  INCREMENT = 'increment',
+  DECREMENT = 'decrement',
+}

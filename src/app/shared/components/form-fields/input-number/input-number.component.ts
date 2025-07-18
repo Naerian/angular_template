@@ -26,7 +26,9 @@ import {
   Validator,
 } from '@angular/forms';
 import {
+  InputNumberButton,
   InputNumberButtons,
+  InputNumberButtonType,
   InputNumberCurrencyPosition,
   InputNumberTextAlign,
   InputNumberType,
@@ -158,6 +160,8 @@ export class InputNumberComponent
   @Output() prefixClick = new EventEmitter<void>();
   @Output() suffixClick = new EventEmitter<void>();
 
+  INPUT_NUMBER_BUTTON = InputNumberButton;
+
   public displayValue: string = ''; // Valor que se muestra en el input
   public currencySymbol: string = ''; // Símbolo de la moneda, si se usa el modo 'currency'
   public focused: boolean = false;
@@ -189,12 +193,14 @@ export class InputNumberComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['locale'] || changes['currencyCode'] || changes['mode']) {
-      // Re-detectar separadores si cambian locale, currencyCode o mode
+      // Re-detectar separadores y simbolo si cambian locale, currencyCode o mode
       this.updateSeparators();
       this.updateCurrencySymbol();
+
+      // Re-formatear el valor actual si ya existe
       this.displayValue = this.formatNumber(this.value);
     }
-    // Re-formatear si cambian useGrouping, min/maxFractionDigits o si el valor ya estaba afectado por un mode
+    // Re-formatear el valor si cambian useGrouping, min/maxFractionDigits
     if (
       changes['useGrouping'] ||
       changes['minFractionDigits'] ||
@@ -273,7 +279,14 @@ export class InputNumberComponent
     this.disabled = isDisabled;
   }
 
-  // --- Event Handlers ---
+  /**
+   * Método para manejar y sanear manualmente el valor que el usuario introduce un valor, haciendo lo siguiente:
+   * - Limpiar y validar el texto que el usuario escribe (o pega).
+   * - Convertirlo a número según las reglas del componente (decimal, currency, número negativo...).
+   * - Aplicar precisión, límites y formato.
+   * - Restaurar la posición del cursor correctamente tras actualizar el valor mostrado.
+   * @param {string} inputValue - El valor introducido por el usuario.
+   */
   onUserInput(inputValue: string): void {
     const inputElement = this.inputElement.nativeElement;
     this.currentCaretPosition = inputElement.selectionStart;
@@ -282,14 +295,16 @@ export class InputNumberComponent
     let decimalEncountered = false;
     let fractionDigitsCount = 0;
 
+    // Iteramos sobre cada carácter del input
     for (let i = 0; i < inputValue.length; i++) {
       const char = inputValue[i];
 
+      // Si el carácter es un dígito, lo añadimos al valor limpio
       if (/[0-9]/.test(char)) {
+        // Si estamos en modo decimal o currency, controlamos los dígitos decimales
+        // Si no, solo permitimos dígitos enteros
         if (decimalEncountered) {
-          // Si ya hemos pasado el separador decimal, contamos los dígitos decimales
-          // Esta lógica de limpieza es un respaldo para pegados y otros inputs,
-          // ya que onKeyDown ahora previene la escritura directa.
+          // Si ya hemos encontrado un punto decimal, solo permitimos dígitos hasta maxFractionDigits
           if (fractionDigitsCount < this.maxFractionDigits) {
             cleanedValue += char;
             fractionDigitsCount++;
@@ -297,14 +312,18 @@ export class InputNumberComponent
         } else {
           cleanedValue += char;
         }
-      } else if (
+      }
+      // Si el carácter es un separador de miles, lo ignoramos
+      else if (
         char === this.decimalSeparator &&
         (this.mode === 'decimal' || this.mode === 'currency') &&
         !decimalEncountered
       ) {
         cleanedValue += char;
         decimalEncountered = true;
-      } else if (
+      }
+      // Si el carácter es un signo menos, lo permitimos solo al inicio
+      else if (
         char === this.minusSign &&
         cleanedValue.indexOf(this.minusSign) === -1 &&
         i === 0
@@ -313,15 +332,18 @@ export class InputNumberComponent
       }
     }
 
+    // Si el valor es solo el signo menos, lo tratamos como nulo
     if (cleanedValue === this.minusSign) {
-      this._value.set(null); // Representa solo el signo menos como nulo en el modelo
+      this._value.set(null);
     } else {
       const parsedValue = this.parseInputToNumber(cleanedValue);
       this._value.set(this.applyRangeAndPrecision(parsedValue));
     }
 
+    // Formateamos el valor para mostrarlo en el input
     this.displayValue = cleanedValue;
 
+    // Emitimos el cambio
     this.onChange(this._value);
     this.change.emit(this.value);
 
@@ -344,6 +366,9 @@ export class InputNumberComponent
     }
   }
 
+  /**
+   * Método que emitirá valor al salir del input
+   */
   onBlur(): void {
     this.onTouched();
     this.displayValue = this.formatNumber(this.value);
@@ -368,10 +393,15 @@ export class InputNumberComponent
     this.suffixClick.emit();
   }
 
-  // --- Event Handlers for buttons (NEW LONG PRESS LOGIC) ---
+  /**
+   * Método para controlar la pulsación mediante ratón o táctil
+   * y poder incrementar o decrementar el valor del input al mantener pulsado.
+   * @param {MouseEvent | TouchEvent} event - Evento de ratón o táctil.
+   * @param {InputNumberButtonType} type - Tipo de acción a realizar.
+   */
   onButtonPointerDown(
     event: MouseEvent | TouchEvent,
-    type: 'increment' | 'decrement',
+    type: InputNumberButtonType,
   ): void {
     event.preventDefault();
     this.onTouched(); // Marca el control como 'touched'
@@ -382,14 +412,14 @@ export class InputNumberComponent
     this.clearLongPressTimers(); // Asegura que no haya otros temporizadores activos
 
     // Realiza una única acción inmediata al presionar (para el clic corto)
-    if (type === 'increment') this.increment();
+    if (type === InputNumberButton.INCREMENT) this.increment();
     else this.decrement();
 
     // Inicia un temporizador para detectar la pulsación larga
     this.longPressTimer = setTimeout(() => {
       // Si se mantiene presionado después del retardo inicial, inicia el intervalo de repetición
       this.longPressInterval = setInterval(() => {
-        if (type === 'increment') {
+        if (type === InputNumberButton.INCREMENT) {
           this.increment();
         } else {
           this.decrement();
@@ -398,10 +428,21 @@ export class InputNumberComponent
     }, this.LONG_PRESS_DELAY);
   }
 
+  /**
+   * Manejador para el evento de soltar el botón del ratón o tocar la pantalla.
+   * Limpia los temporizadores de pulsación larga para evitar acciones continuas.
+   * Detiene los temporizadores cuando el botón se suelta
+   */
   onButtonPointerUp(): void {
-    this.clearLongPressTimers(); // Detiene los temporizadores cuando el botón se suelta
+    this.clearLongPressTimers();
   }
 
+  /**
+   * Función para limpiar los temporizadores de pulsación larga
+   * para evitar que se sigan ejecutando acciones de incremento/decremento.
+   * Esto es importante para evitar que se sigan ejecutando acciones
+   * de incremento/decremento después de soltar el botón.
+   */
   private clearLongPressTimers(): void {
     if (this.longPressTimer) {
       clearTimeout(this.longPressTimer);
@@ -413,11 +454,20 @@ export class InputNumberComponent
     }
   }
 
+  /**
+   * Función para controlar la pulsación de teclas en el input
+   * Permite manejar la entrada del usuario y aplicar las reglas de formato.
+   * Por ejemplo, permite números, separadores decimales y controla la posición del cursor.
+   * También maneja las flechas arriba/abajo para incrementar/decrementar el valor.
+   * Evita caracteres no permitidos y asegura que el formato se mantenga correcto.
+   * @param {KeyboardEvent} event - Evento de teclado.
+   */
   onKeyDown(event: KeyboardEvent): void {
     const inputElement = event.target as HTMLInputElement;
     const caretPos = inputElement.selectionStart;
-    const currentText = inputElement.value; // Obtener el valor actual del input
+    const currentText = inputElement.value;
 
+    // Permite teclas especiales y navegación
     const allowedKeys = [
       'Backspace',
       'Delete',
@@ -428,6 +478,8 @@ export class InputNumberComponent
       'Home',
       'End',
     ];
+
+    // Comprobamos si el evento es una tecla de navegación o de edición
     const isNumber = /[0-9]/.test(event.key);
     const isDecimal =
       (this.mode === 'decimal' || this.mode === 'currency') &&
@@ -504,7 +556,10 @@ export class InputNumberComponent
     }
   }
 
-  // --- Helper Methods ---
+  /**
+   * Función para incrementar el valor del input.
+   * Aumenta el valor actual en el paso definido y aplica los límites de rango y precisión.
+   */
   increment(): void {
     if (this.disabled) return;
     let newValue = (this.value === null ? 0 : this.value) + this.step;
@@ -513,6 +568,10 @@ export class InputNumberComponent
     this.onChange(this._value);
   }
 
+  /**
+   * Función para disminuir el valor del input.
+   * Aumenta el valor actual en el paso definido y aplica los límites de rango y precisión.
+   */
   decrement(): void {
     if (this.disabled) return;
     let newValue = (this.value === null ? 0 : this.value) - this.step;
@@ -521,6 +580,12 @@ export class InputNumberComponent
     this.onChange(this._value);
   }
 
+  /**
+   * Función para actualizar los separadores de miles y decimales en base al locale actual.
+   * Utiliza Intl.NumberFormat para obtener los separadores correctos.
+   * Esto es importante para que el formato del número se muestre correctamente
+   * según la configuración regional del usuario o la indicada en el componente.
+   */
   private updateSeparators(): void {
     const formatter = new Intl.NumberFormat(this.locale, {
       minimumFractionDigits: 1,
@@ -536,10 +601,14 @@ export class InputNumberComponent
     this.minusSign = parts.find((p) => p.type === 'minusSign')?.value || '-';
   }
 
+  /**
+   * Función para actualizar el símbolo de la moneda y
+   * determinar su posición (izquierda o derecha) en base al locale y currencyCode
+   * Utiliza Intl.NumberFormat para obtener el símbolo de la moneda y su posición.
+   */
   private updateCurrencySymbol() {
     // Obtenemos el símbolo de la moneda si el modo es 'currency'
     if (this.mode === 'currency') {
-      
       // Usamos el locale para obtener el código de moneda por defecto
       const currencyCode =
         this.currencyCode ??
@@ -568,6 +637,18 @@ export class InputNumberComponent
     }
   }
 
+  /**
+   * Función para formatear un número según las reglas del componente.
+   * Utiliza Intl.NumberFormat para aplicar el formato correcto según el locale,
+   * los separadores de miles y decimales, y la precisión.
+   * Si el valor es nulo, devuelve una cadena vacía.
+   * @param {number | null} value - El valor a formatear.
+   * @returns {string} - El valor formateado como cadena.
+   * @example formatNumber(1234567.89) => "1,234,567.89"
+   * @example formatNumber(null) => ""
+   * @example formatNumber(1234.5) => "1,234.50"
+   * @example formatNumber(1234.56789) => "1,234.
+   */
   private formatNumber(value: number | null): string {
     if (value === null) {
       return '';
@@ -582,6 +663,19 @@ export class InputNumberComponent
     return formatted;
   }
 
+  /**
+   * Función para convertir un valor de entrada (string) a un número.
+   * Limpia el valor de entrada eliminando separadores de miles, reemplaza el separador decimal
+   * y el signo menos, y luego convierte el valor a un número.
+   * Si el valor no es un número válido, devuelve null.
+   * @param {string} inputValue - El valor de entrada a convertir.
+   * @returns {number | null} - El número convertido o null si no es válido
+   * @example parseInputToNumber("1,234.56") => 1234.56
+   * @example parseInputToNumber("1.234,56") => 1234.56
+   * @example parseInputToNumber("-1,234.56") => -1234.56
+   * @example parseInputToNumber("abc") => null
+   * @example parseInputToNumber("") => null
+   */
   private parseInputToNumber(inputValue: string): number | null {
     if (!inputValue) {
       return null;
@@ -617,20 +711,30 @@ export class InputNumberComponent
     return parsed;
   }
 
+  /**
+   * Aplica los límites de rango y precisión al valor.
+   * Si el valor es nulo, devuelve nulo.
+   * Si el valor es menor que el mínimo, lo ajusta al mínimo.
+   * Si el valor es mayor que el máximo, lo ajusta al máximo.
+   * Si el modo es 'decimal' o 'currency', redondea a la precisión máxima definida.
+   * Si el modo es 'integer', redondea al entero más cercano.
+   * @param {number | null} value - El valor a ajustar.
+   * @returns {number | null} - El valor ajustado o nulo si el valor es nulo.
+   * @example applyRangeAndPrecision(1234.567) => 1234.57 (si maxFractionDigits es 2)
+   * @example applyRangeAndPrecision(null) => null
+   */
   private applyRangeAndPrecision(value: number | null): number | null {
-    if (value === null) {
-      return null;
-    }
+    // Si el valor es nulo, devolvemos nulo
+    if (value === null) return null;
 
     let result = value;
 
-    if (this.min !== null && result < this.min) {
-      result = this.min;
-    }
-    if (this.max !== null && result > this.max) {
-      result = this.max;
-    }
+    // Aplicamos los límites de rango
+    if (this.min !== null && result < this.min) result = this.min;
+    if (this.max !== null && result > this.max) result = this.max;
 
+    // Si el modo es 'decimal' o 'currency', redondeamos a la precisión máxima
+    // Si el modo es 'integer', redondeamos al entero más cercano
     if (this.mode === 'decimal' || this.mode === 'currency') {
       const factor = Math.pow(10, this.maxFractionDigits);
       result = Math.round(result * factor) / factor;

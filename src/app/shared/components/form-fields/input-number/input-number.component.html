@@ -1,10 +1,10 @@
 <ng-template #incrementButton>
   <button
     type="button"
-    (mousedown)="onButtonPointerDown($event, 'increment')"
+    (mousedown)="onButtonPointerDown($event, INPUT_NUMBER_BUTTON.INCREMENT)"
     (mouseup)="onButtonPointerUp()"
     (mouseleave)="onButtonPointerUp()"
-    (touchstart)="onButtonPointerDown($event, 'increment')"
+    (touchstart)="onButtonPointerDown($event, INPUT_NUMBER_BUTTON.INCREMENT)"
     (touchend)="onButtonPointerUp()"
     (touchcancel)="onButtonPointerUp()"
     [title]="_translations.incrementBtn"
@@ -21,10 +21,10 @@
 <ng-template #decrementButton>
   <button
     type="button"
-    (mousedown)="onButtonPointerDown($event, 'decrement')"
+    (mousedown)="onButtonPointerDown($event, INPUT_NUMBER_BUTTON.DECREMENT)"
     (mouseup)="onButtonPointerUp()"
     (mouseleave)="onButtonPointerUp()"
-    (touchstart)="onButtonPointerDown($event, 'decrement')"
+    (touchstart)="onButtonPointerDown($event, INPUT_NUMBER_BUTTON.DECREMENT)"
     (touchend)="onButtonPointerUp()"
     (touchcancel)="onButtonPointerUp()"
     [title]="_translations.decrementBtn"
