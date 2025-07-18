@@ -22,6 +22,7 @@ export interface NeoUITranslations {
   selectOptions: string;
   search: string;
   noResults: string;
+  loadingOptions: string;
 
   // Textos del componente InputFile
   inputFileLabel: string;

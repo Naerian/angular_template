@@ -10,6 +10,7 @@ import { ShowClearFieldDirective } from '@shared/directives/show-clear-field.dir
 import { InputComponent } from '../input/input.component';
 import { A11yModule } from '@angular/cdk/a11y';
 import { FocusableItemDirective } from './directives/focusable-item.directive';
+import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { FocusableItemDirective } from './directives/focusable-item.directive';
     A11yModule,
     ShowClearFieldDirective,
     FocusableItemDirective,
+    SpinnerComponent,
     InputComponent,
   ],
   declarations: [

@@ -225,9 +225,9 @@
       }
 
       &__no-results {
-        padding: var(--spacing-xs);
-        color: var(--color-text-light);
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         // Tamaño dinámico para el input según el tamaño del componente
         @each $size-key, $input-size in $component-heights {
           &--#{$size-key} {

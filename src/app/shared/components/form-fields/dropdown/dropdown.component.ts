@@ -124,6 +124,12 @@ export class DropdownComponent
   hideTick: InputSignal<boolean> = input<boolean>(false);
 
   /**
+   * Indica si el dropdown está cargando datos.
+   * @type {InputSignal<boolean>}
+   */
+  loading: InputSignal<boolean> = input<boolean>(false);
+
+  /**
    * Texto de la etiqueta asociada al dropdown.
    * @type {InputSignal<string | undefined>}
    */
@@ -773,10 +779,13 @@ export class DropdownComponent
    * Obtiene la etiqueta para mostrar en el input principal.
    */
   get displayLabel(): string {
+    // Si el dropdown está cargando, mostramos un mensaje de carga
     // Si es múltiple y tiene valores, mostramos los valores seleccionados usando la traduccion correspondiente
     // Si es múltiple y no tiene valores, mostramos el placeholder o la traducción correspondiente
     // Si no es múltiple, mostramos el placeholder si no hay valor seleccionado o el label de la opción seleccionada.
-    if (this.multiple()) {
+    if (this.loading()) {
+      return this._translations.loadingOptions;
+    } else if (this.multiple()) {
       const selectedOptions = this._allFlatOptions.filter((opt) =>
         this.isOptionSelected(opt),
       );
@@ -882,7 +891,7 @@ export class DropdownComponent
     event?.stopPropagation();
 
     // Si el dropdown está deshabilitado, no hacemos nada
-    if (this._disabled()) return;
+    if (this._disabled() || this.loading()) return;
 
     // Si se abre, reseteamos el término de búsqueda y el índice resaltado
     if (!this.isOpen()) this.openDropdown();
@@ -896,7 +905,7 @@ export class DropdownComponent
     $event?.preventDefault();
     $event?.stopPropagation();
 
-    if (this._disabled() || this.isOpen()) return;
+    if (this._disabled() || this.isOpen() || this.loading()) return;
     this.isOpen.set(true);
     this.searchTerm.set('');
     this.processContent();
@@ -946,7 +955,9 @@ export class DropdownComponent
    * @returns {string} El título con las etiquetas de las opciones seleccionadas.
    */
   getTitle(): string {
-    if (this.multiple()) {
+    if (this.loading()) {
+      return this._translations.loadingOptions;
+    } else if (this.multiple()) {
       const selectedOptions = this._allFlatOptions.filter((opt) =>
         this.isOptionSelected(opt),
       );
