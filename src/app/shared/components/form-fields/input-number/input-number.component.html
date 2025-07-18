@@ -138,7 +138,6 @@
             (inputControl?.dirty || inputControl?.touched)
           "
           [class.neo-input-number__wrapper__field--disabled]="_disabled()"
-          [class.neo-input-number__wrapper__field--clear]="showClear"
           [class.neo-input-number__wrapper__field--prefix]="
             prefixTpl || prefixIcon || prefix
           "
@@ -173,8 +172,6 @@
           "
           [attr.name]="name"
           [attr.title]="title || label || placeholder || ''"
-          [showClear]="showClear"
-          (clear)="clearInput()"
           (keydown)="onKeyDown($event)"
         />
       </div>

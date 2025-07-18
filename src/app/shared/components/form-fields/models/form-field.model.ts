@@ -29,6 +29,8 @@ export type InputNumberType = 'integer' | 'decimal' | 'currency';
 // Define la posición del símbolo de moneda en el input numérico
 export type InputNumberCurrencyPosition = 'left' | 'right';
 
+export type InputNumberTextAlign = 'left' | 'right' | 'center';
+
 // Define el modo de entrada del teclado para inputs numéricos
 export type InputNumberMode = Extract<InputMode, 'decimal' | 'numeric'>;
 

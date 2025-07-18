@@ -43,6 +43,34 @@ export class ShowClearFieldDirective implements OnInit, OnDestroy {
   private readonly injector = inject(Injector);
 
   ngOnInit() {
+    this.initClearButton();
+  }
+
+  ngAfterViewInit(): void {
+    this.updateButtonVisibility();
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
+    if (this.clearButton) {
+      this.renderer.removeChild(this.el.nativeElement, this.clearButton);
+    }
+  }
+
+  /**
+   * Método para actualizar la visibilidad del botón de limpiar
+   * basado en el valor del control.
+   */
+  onValueChanged() {
+    this.subscription = this.ngControl?.control?.valueChanges.subscribe(() => {
+      this.updateButtonVisibility();
+    });
+  }
+
+  /**
+   * Inicializa el botón de limpiar y lo configura
+   */
+  private initClearButton() {
     // Intentamos obtener NgControl, pero es opcional
     this.ngControl = this.injector.get(NgControl, null);
 
@@ -98,34 +126,14 @@ export class ShowClearFieldDirective implements OnInit, OnDestroy {
     });
 
     // Llamamos a onValueChanged para inicializar la visibilidad del botón
-    if (this.ngControl && this.ngControl.control) {
-      this.onValueChanged();
-    } else {
-      this.updateButtonVisibility();
-    }
-  }
-
-  ngAfterViewInit(): void {
-    this.updateButtonVisibility();
-  }
-
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
-    if (this.clearButton) {
-      this.renderer.removeChild(this.el.nativeElement, this.clearButton);
-    }
+    if (this.ngControl && this.ngControl.control) this.onValueChanged();
+    else this.updateButtonVisibility();
   }
 
   /**
-   * Método para actualizar la visibilidad del botón de limpiar
-   * basado en el valor del control.
+   * Actualiza la visibilidad del botón de limpiar
+   * según el valor del control y las opciones configuradas.
    */
-  onValueChanged() {
-    this.subscription = this.ngControl?.control?.valueChanges.subscribe(() => {
-      this.updateButtonVisibility();
-    });
-  }
-
   private updateButtonVisibility() {
     const value = this.ngControl?.value;
     if (this.clearButton) {

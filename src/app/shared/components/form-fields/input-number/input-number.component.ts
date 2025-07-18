@@ -28,21 +28,26 @@ import {
 import {
   InputNumberButtons,
   InputNumberCurrencyPosition,
+  InputNumberTextAlign,
   InputNumberType,
 } from '../models/form-field.model';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 import { InputsUtilsService } from '../services/inputs-utils.service';
 import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 import { ComponentSize } from '@shared/configs/component.model';
-import { ShowClearFieldDirective } from '@shared/directives/show-clear-field.directive';
 import { NEOUI_TRANSLATIONS } from '@shared/translations/translations.token';
+import {
+  DEFAULT_CURRENTY_CODE,
+  DEFAULT_LOCALE,
+  DEFAULT_LOCALE_CURRENCY,
+} from './models/defaul-locale-currency';
 
 @Component({
   selector: 'neo-input-number',
   templateUrl: './input-number.component.html',
   styleUrls: ['./input-number.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ShowClearFieldDirective],
+  imports: [CommonModule, FormsModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -63,19 +68,18 @@ export class InputNumberComponent
   @Input({ transform: booleanAttribute }) autofocus?: boolean = false;
   @Input({ transform: booleanAttribute }) readonly?: boolean = false;
   @Input({ transform: booleanAttribute }) required: boolean = false;
-  @Input({ transform: booleanAttribute }) showClear: boolean = false;
   @Input({ transform: booleanAttribute }) useGrouping: boolean = false;
   @Input() title?: string;
   @Input() label?: string;
   @Input() name?: string;
   @Input() placeholder: string = '';
   @Input() mode: InputNumberType = 'integer';
-  @Input() currencyCode: string = 'EUR';
-  @Input() currencyPosition: InputNumberCurrencyPosition = 'right';
-  @Input() align: InputNumberCurrencyPosition = 'right';
+  @Input() currencyCode: string | null = null;
+  @Input() currencyPosition: InputNumberCurrencyPosition | null = null;
+  @Input() align: InputNumberTextAlign = 'right';
   @Input() minFractionDigits: number = 0;
   @Input() maxFractionDigits: number = 2;
-  @Input() locale: string = 'default';
+  @Input() locale: string = DEFAULT_LOCALE;
   @Input() showButtons: boolean = false;
   @Input() buttonsPosition: InputNumberButtons = 'inside';
   @Input() step: number = 1;
@@ -162,18 +166,21 @@ export class InputNumberComponent
   private thousandSeparator: string = '';
   private minusSign: string = '';
   private currentCaretPosition: number | null = null;
+  private localeCurrencyMap: Record<string, string> = {};
 
   private longPressTimer: any; // Temporizador para el retardo inicial de la pulsación larga
   private longPressInterval: any; // Intervalo para la repetición continua
   private readonly LONG_PRESS_DELAY = 250; // Retardo antes de que empiece la repetición (ms)
   private readonly LONG_PRESS_RATE = 100; // Frecuencia de repetición (ms)
 
-  private readonly _inputsUtilsService = inject(InputsUtilsService);
   protected readonly _translations = inject(NEOUI_TRANSLATIONS);
+  private readonly _inputsUtilsService = inject(InputsUtilsService);
   private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
 
   constructor() {
     this.updateSeparators();
+    this.initDefaultLocaleCurrencyMap();
+    this.updateCurrencySymbol();
   }
 
   ngOnInit(): void {
@@ -184,6 +191,7 @@ export class InputNumberComponent
     if (changes['locale'] || changes['currencyCode'] || changes['mode']) {
       // Re-detectar separadores si cambian locale, currencyCode o mode
       this.updateSeparators();
+      this.updateCurrencySymbol();
       this.displayValue = this.formatNumber(this.value);
     }
     // Re-formatear si cambian useGrouping, min/maxFractionDigits o si el valor ya estaba afectado por un mode
@@ -198,6 +206,15 @@ export class InputNumberComponent
 
   ngAfterViewInit(): void {
     this.createUniqueId();
+  }
+
+  /**
+   * Método para convertir los `locale` por defecto en un acceso rápido mapeado
+   */
+  private initDefaultLocaleCurrencyMap() {
+    DEFAULT_LOCALE_CURRENCY.forEach(({ locale, currency }) => {
+      this.localeCurrencyMap[locale] = currency;
+    });
   }
 
   /**
@@ -233,18 +250,6 @@ export class InputNumberComponent
    */
   get nativeElement(): HTMLInputElement {
     return this.inputElement.nativeElement;
-  }
-
-  /**
-   * Función para limpiar el campo numérico
-   */
-  clearInput() {
-    this._value.set(null);
-    this.displayValue = '';
-    this.currentCaretPosition = null;
-    this.onChange(null);
-    this.onTouched();
-    this.change.emit(null);
   }
 
   onChange: any = () => {};
@@ -529,18 +534,37 @@ export class InputNumberComponent
       parts.find((p) => p.type === 'decimal')?.value || '.';
     this.thousandSeparator = parts.find((p) => p.type === 'group')?.value || '';
     this.minusSign = parts.find((p) => p.type === 'minusSign')?.value || '-';
+  }
 
+  private updateCurrencySymbol() {
     // Obtenemos el símbolo de la moneda si el modo es 'currency'
     if (this.mode === 'currency') {
+      
+      // Usamos el locale para obtener el código de moneda por defecto
+      const currencyCode =
+        this.currencyCode ??
+        this.localeCurrencyMap[this.locale] ??
+        DEFAULT_CURRENTY_CODE;
+
+      // Formateamos el número 0 para obtener el símbolo de la moneda
       const currencyFormatter = new Intl.NumberFormat(this.locale, {
         style: 'currency',
-        currency: this.currencyCode,
+        currency: currencyCode,
         minimumFractionDigits: this.minFractionDigits,
         maximumFractionDigits: this.maxFractionDigits,
       });
-      const currencyParts = currencyFormatter.formatToParts(0);
-      this.currencySymbol =
-        currencyParts.find((p) => p.type === 'currency')?.value || '';
+
+      // Obtenemos las partes del formato de moneda
+      // y determinamos la posición del símbolo de la moneda y el símbolo en sí
+      const parts = currencyFormatter.formatToParts(0);
+      const currencyPart = parts.find((p) => p.type === 'currency');
+      const currencyIndex = parts.findIndex((p) => p.type === 'currency');
+      const integerIndex = parts.findIndex((p) => p.type === 'integer');
+
+      const positionSymbol: InputNumberCurrencyPosition =
+        currencyIndex < integerIndex ? 'left' : 'right';
+      this.currencySymbol = currencyPart?.value ?? '';
+      this.currencyPosition = this.currencyPosition ?? positionSymbol;
     }
   }
 
