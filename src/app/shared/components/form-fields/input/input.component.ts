@@ -151,6 +151,7 @@ export class InputComponent implements ControlValueAccessor {
 
   @Output() change = new EventEmitter<string>();
   @Output() blur = new EventEmitter<void>();
+  @Output() onClear = new EventEmitter<void>();
   @Output() prefixClick = new EventEmitter<void>();
   @Output() suffixClick = new EventEmitter<void>();
 
@@ -219,6 +220,7 @@ export class InputComponent implements ControlValueAccessor {
     this.onChange('');
     this.onTouched();
     this.change.emit('');
+    this.onClear.emit();
   }
 
   /**

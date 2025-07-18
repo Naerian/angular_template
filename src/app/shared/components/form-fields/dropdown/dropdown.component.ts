@@ -25,7 +25,6 @@ import {
   AfterContentInit,
   OnChanges,
   OnDestroy,
-  computed,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -56,10 +55,7 @@ import { InputComponent } from '../input/input.component';
 import { FocusKeyManager } from '@angular/cdk/a11y';
 import { FocusableItemDirective } from './directives/focusable-item.directive';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
-import {
-  ComponentSize,
-  NeoComponentConfig,
-} from '@shared/configs/component.model';
+import { ComponentSize } from '@shared/configs/component.model';
 import { DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
@@ -242,6 +238,11 @@ export class DropdownComponent
    */
   @Output() blur: EventEmitter<void> = new EventEmitter<void>();
 
+  /**
+   * Emite cuando se hace clic en el botón de limpiar.
+   */
+  @Output() onClear = new EventEmitter<void>();
+
   isOpen: WritableSignal<boolean> = signal(false);
   searchTerm: WritableSignal<string> = signal('');
   filteredOptions: WritableSignal<(DropdownOption | DropdownGroup)[]> = signal(
@@ -266,9 +267,7 @@ export class DropdownComponent
 
   protected readonly _translations: NeoUITranslations =
     inject(NEOUI_TRANSLATIONS);
-  private readonly globalConfig = inject(
-    NEOUI_COMPONENT_CONFIG,
-  );
+  private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
 
   // Propiedad para mantener la instancia de NgControl
   public ngControl: NgControl | null = null;
@@ -969,10 +968,11 @@ export class DropdownComponent
    */
   clearSelection(): void {
     this._value.set(null);
-    this.onChange(null);
-    this.valueChange.emit(null);
     this.closeDropdown();
     setTimeout(() => this.onTouched());
+    this.onChange(null);
+    this.valueChange.emit(null);
+    this.onClear.emit();
   }
 
   /**

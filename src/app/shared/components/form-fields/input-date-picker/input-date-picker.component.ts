@@ -166,6 +166,7 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   @Output() dateSelected = new EventEmitter<Date | Date[] | null>();
   @Output() change = new EventEmitter<Date | Date[] | null>();
   @Output() blur = new EventEmitter<void>();
+  @Output() onClear = new EventEmitter<void>();
 
   isOpened: WritableSignal<boolean> = signal(false);
   scrollStrategy: ScrollStrategy;
@@ -564,10 +565,12 @@ export class InputDatePickerComponent implements ControlValueAccessor {
   clearInput() {
     this._value.set(null);
     this.realDateValue.set(null);
+    this.closeCalendar();
     this.onChange(null);
     setTimeout(() => this.onTouched());
     this.dateSelected.emit(null);
     this.change.emit(null);
+    this.onClear.emit();
   }
 
   /**
