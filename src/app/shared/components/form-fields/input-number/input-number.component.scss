@@ -93,6 +93,10 @@
           .neo-input-number__currency-symbol--right {
             margin-right: calc(var(--component-height-#{$size-key}) / 2);
           }
+
+          .neo-input-number__wrapper__field--currency-left {
+            margin-right: calc(var(--component-height-#{$size-key}) / 2);
+          }
         }
       }
     }
@@ -128,8 +132,9 @@
   }
 
   .neo-input-number-button {
-    border: var(--border-width-base) solid var(--border-field-color);
-    background-color: var(--border-field-color);
+    border: var(--border-width-base) solid var(--bg-button-number-color);
+    background-color: var(--bg-button-number-color);
+    color: var(--field-prefix-color);
     cursor: pointer;
 
     &:focus,
@@ -140,12 +145,8 @@
     &:hover,
     &:focus,
     &:active {
-      background-color: var(--hover-border-field-color);
-      border-color: var(--hover-border-field-color);
-    }
-
-    &.neo-btn--icon i::before {
-      color: var(--hover-border-field-color);
+      background-color: var(--bg-button-number-hover-color);
+      border-color: var(--bg-button-number-hover-color);
     }
   }
 
@@ -216,7 +217,7 @@
     }
 
     &--bg {
-      background-color: var(--border-field-color);
+      background-color: var(--bg-prefix-color);
     }
 
     &.neo-input-number__prefix,
