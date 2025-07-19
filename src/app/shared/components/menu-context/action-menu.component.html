@@ -8,31 +8,44 @@
   [attr.aria-haspopup]="'menu'"
   [attr.aria-expanded]="isOpened()"
   [attr.aria-controls]="_id()"
-  (onClick)="toggleMenuContext($event)"
+  (onClick)="toggleActionMenu($event)"
   cdkOverlayOrigin
-  #menuContext
-  #btnMenuContext="cdkOverlayOrigin"
+  #actionMenu
+  #btnActionMenu="cdkOverlayOrigin"
 >
   <i [class]="icon"></i>
 </neo-button>
 
 <ng-template
   cdkConnectedOverlay
-  [cdkConnectedOverlayOrigin]="btnMenuContext"
+  [cdkConnectedOverlayOrigin]="btnActionMenu"
   [cdkConnectedOverlayOpen]="isOpened()"
   [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
   [cdkConnectedOverlayPositions]="overlayPositions"
   (detach)="close()"
 >
   <div
-    class="menu-context"
+    class="action-menu"
     cdkTrapFocus
     [cdkTrapFocusAutoCapture]="true"
     [attr.id]="_id()"
-    #menuContextOverlay
+    #actionMenuOverlay
     [@fadeInOutScale]="isOpened() ? '*' : 'void'"
     (keydown)="onKeyDown($event)"
   >
-    <ng-content select="neo-item-menu-context"></ng-content>
+    @for (item of items; track item) {
+      <neo-action-menu-item
+        [label]="item?.label ?? ''"
+        [icon]="item?.icon ?? ''"
+        [title]="item?.title || item?.label || ''"
+        [disabled]="item.disabled"
+        (itemClick)="onDynamicItemClick(item, $event)"
+      >
+        @if (!item.label) {
+          {{ item.title }}
+        }
+      </neo-action-menu-item>
+    }
+    <ng-content select="neo-action-menu-item"></ng-content>
   </div>
 </ng-template>

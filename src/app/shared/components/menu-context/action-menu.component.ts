@@ -15,47 +15,53 @@ import {
 import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { Subject, takeUntil } from 'rxjs';
 import {
-  NEO_MENU_CONTEXT,
+  ActionMenuItem,
+  ACTION_MENU,
   OVERLAY_POSITIONS,
-} from './models/menu-context.model';
-import { MenuContextManagerService } from './services/menu-context-manager/menu-context-manager.service';
+} from './models/action-menu.model';
+import { ActionMenuManagerService } from './services/action-menu-manager/action-menu-manager.service';
 import { FocusKeyManager } from '@angular/cdk/a11y';
-import { ItemMenuContextComponent } from './item-menu-context/item-menu-context.component';
+import { ActionMenuItemComponent } from './action-menu-item/action-menu-item.component';
 import { NEOUI_COMPONENT_CONFIG } from '@shared/configs/component.config';
 import { ComponentColor, ComponentSize } from '@shared/configs/component.model';
 import { DEFAULT_COLOR, DEFAULT_SIZE } from '@shared/configs/component.consts';
 
 /**
  * @name
- * neo-menu-context
+ * neo-action-menu
  * @description
- * Componente para crear un menú contextual junto con el componente `neo-item-menu-context`.
+ * Componente para crear un menú contextual junto con el componente `neo-action-menu-item`.
  * @example
- * <neo-menu-context [icon]="'ri-more-2-fill'" [size]="'xm'" [title]="'Título'">
- *    <neo-item-menu-context [title]='Título diferente al contenido'>Test 1</neo-item-menu-context>
- *    <neo-item-menu-context>Test 2</neo-item-menu-context>
- * </neo-menu-context>
+ * <neo-action-menu [icon]="'ri-more-2-fill'" [size]="'xm'" [title]="'Título'">
+ *    <neo-action-menu-item [title]='Título diferente al contenido'>Test 1</neo-action-menu-item>
+ *    <neo-action-menu-item>Test 2</neo-action-menu-item>
+ * </neo-action-menu>
  */
 @Component({
-  selector: 'neo-menu-context',
-  templateUrl: './menu-context.component.html',
-  styleUrls: ['./menu-context.component.scss'],
+  selector: 'neo-action-menu',
+  templateUrl: './action-menu.component.html',
+  styleUrls: ['./action-menu.component.scss'],
   animations: [FADE_IN_OUT_SCALE],
   providers: [
     {
-      provide: NEO_MENU_CONTEXT,
-      useExisting: MenuContextComponent,
+      provide: ACTION_MENU,
+      useExisting: ActionMenuComponent,
     },
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class MenuContextComponent {
-  @ViewChild('menuContextOverlay', { read: ElementRef })
-  menuContextOverlayRef!: ElementRef;
-  @ViewChild('menuContext') menuContextRef!: ElementRef<HTMLElement>;
+export class ActionMenuComponent {
+  @ViewChild('actionMenuOverlay', { read: ElementRef })
+  actionMenuOverlayRef!: ElementRef;
+  @ViewChild('actionMenu') actionMenuRef!: ElementRef<HTMLElement>;
 
-  @ContentChildren(ItemMenuContextComponent)
-  menuItems!: QueryList<ItemMenuContextComponent>; // Obtener los ítems del menú
+  @ContentChildren(ActionMenuItemComponent)
+  menuItems!: QueryList<ActionMenuItemComponent>; // Obtener los ítems del menú
+
+  /**
+   * Input que recibe un array de objetos para crear dinámicamente los ítems del menú.
+   */
+  @Input() items: ActionMenuItem[] = [];
 
   /**
    * Input que recibe el icono del menú, por defecto es 'ri-more-2-fill'
@@ -111,11 +117,11 @@ export class MenuContextComponent {
   isOpened: WritableSignal<boolean> = signal(false);
 
   // Manager para el control de teclas en las opciones
-  private keyManager!: FocusKeyManager<ItemMenuContextComponent>;
+  private keyManager!: FocusKeyManager<ActionMenuItemComponent>;
 
   private readonly overlay = inject(Overlay);
-  private readonly _menuContextManagerService = inject(
-    MenuContextManagerService,
+  private readonly _ActionMenuManagerService = inject(
+    ActionMenuManagerService,
   );
 
   private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
@@ -127,11 +133,11 @@ export class MenuContextComponent {
   @HostListener('document:click', ['$event'])
   onOutsideClick(event: MouseEvent) {
     // Verificar si las referencias a los elementos existen para evitar errores
-    const clickedInsideBtnMenu = this.menuContextRef?.nativeElement?.contains(
+    const clickedInsideBtnMenu = this.actionMenuRef?.nativeElement?.contains(
       event.target as Node,
     );
     const clickedInsideMenuCtxtOverlay =
-      this.menuContextOverlayRef?.nativeElement?.contains(event.target as Node);
+      this.actionMenuOverlayRef?.nativeElement?.contains(event.target as Node);
 
     // Si el menú está abierto y el clic no fue dentro del botón NI dentro del overlay
     if (
@@ -161,6 +167,11 @@ export class MenuContextComponent {
     this.createUniqueId();
   }
 
+  ngOnDestroy(): void {
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.complete();
+  }
+
   /**
    * Método para establecer las propiedades por defecto del componente.
    */
@@ -186,11 +197,6 @@ export class MenuContextComponent {
     });
   }
 
-  ngOnDestroy(): void {
-    this.ngUnsubscribe$.next();
-    this.ngUnsubscribe$.complete();
-  }
-
   /**
    * Función para crear un id único para el label del input
    */
@@ -199,12 +205,12 @@ export class MenuContextComponent {
   }
 
   /**
-   * Método para suscribirse a las notificaciones del servicio MenuContextManagerService
+   * Método para suscribirse a las notificaciones del servicio ActionMenuManagerService
    * para cerrar el menú contextual si otro componente de tipo MenuContext se abre.
    */
   menuContextManager() {
     // Nos suscribimos a las notificaciones del servicio
-    this._menuContextManagerService.menuContextOpened$
+    this._ActionMenuManagerService.actionMenuOpened$
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe((openedComponent) => {
         // Si el componente notificado no es este mismo, ciérrate.
@@ -218,7 +224,7 @@ export class MenuContextComponent {
    * Función para abrir el menú contextual
    */
   open() {
-    this._menuContextManagerService.notifyOpened(this);
+    this._ActionMenuManagerService.notifyOpened(this);
     this.initKeyManager(); // Inicializamos el KeyManager para manejar la navegación por teclado
     this.isOpened.set(true);
   }
@@ -235,7 +241,7 @@ export class MenuContextComponent {
    * Función para abrir o cerrar el menú contextual
    * @param {Event} event
    */
-  toggleMenuContext(event: Event) {
+  toggleActionMenu(event: Event) {
     event?.preventDefault();
     event?.stopPropagation();
 
@@ -243,6 +249,15 @@ export class MenuContextComponent {
     // Si no, lo abrimos.
     if (this.isOpened()) this.close();
     else this.open();
+  }
+
+  // Si necesitas manejar los clics de los ítems definidos en el array
+  // podrías tener un método que los emita o los maneje directamente aquí
+  onDynamicItemClick(item: ActionMenuItem, event: Event) {
+    if (item.action) {
+      item.action(event);
+    }
+    this.close(event);
   }
 
   /**

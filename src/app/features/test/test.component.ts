@@ -18,7 +18,8 @@ import { CardModule } from '@shared/components/card/card.module';
 import { DropdownModule } from '@shared/components/form-fields/dropdown/dropdown.module';
 import { FormFieldsModule } from '@shared/components/form-fields/form-fields.module';
 import { InputDatePickerComponent } from '@shared/components/form-fields/input-date-picker/input-date-picker.component';
-import { MenuContextModule } from '@shared/components/menu-context/menu-context.module';
+import { MenuContextModule } from '@shared/components/menu-context/action-menu.module';
+import { ActionMenuItem } from '@shared/components/menu-context/models/action-menu.model';
 import { ModalOptionsEntity } from '@shared/components/modal/models/modal.entity';
 import { ModalDialogService } from '@shared/components/modal/services/modal-dialog.service';
 import { PaginatorComponent } from '@shared/components/paginator/paginator.component';
@@ -194,6 +195,42 @@ export class TestComponent implements OnInit {
     { id_item: 2, texto_item: 'Segundo Artículo' },
     { id_item: 3, texto_item: 'Tercer Artículo' },
     { id_item: 4, texto_item: 'Cuarto Artículo' },
+  ];
+
+  documentActions: ActionMenuItem[] = [
+    {
+      label: 'Editar Documento',
+      icon: 'ri-pencil-line',
+      action: () => null,
+    },
+    {
+      label: 'Descargar PDF',
+      icon: 'ri-download-2-line',
+      action: () => null,
+    },
+    {
+      label: 'Compartir',
+      icon: 'ri-share-line',
+      disabled: true, // Este ítem estará deshabilitado
+    },
+    {
+      label: 'Eliminar',
+      icon: 'ri-delete-bin-line',
+      action: () => null,
+    },
+  ];
+
+  mixedActions: ActionMenuItem[] = [
+    {
+      label: 'Acción Mixta 1',
+      icon: 'ri-add-line',
+      action: () => console.log('Acción Mixta 1'),
+    },
+    {
+      label: 'Acción Mixta 2',
+      icon: 'ri-subtract-line',
+      action: () => console.log('Acción Mixta 2'),
+    },
   ];
 
   constructor(

@@ -6,21 +6,21 @@ import {
 } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { MenuContextComponent } from './menu-context.component';
-import { MenuContextModule } from './menu-context.module';
+import { ActionMenuComponent } from './action-menu.component';
+import { MenuContextModule } from './action-menu.module';
 
 @Component({
-  selector: 'test-menu-context',
-  template: ` <neo-menu-context size="xm">
-    <neo-item-menu-context>Test 1</neo-item-menu-context>
-    <neo-item-menu-context>Test 2</neo-item-menu-context>
-  </neo-menu-context>`,
+  selector: 'test-action-menu',
+  template: ` <neo-action-menu size="xm">
+    <neo-action-menu-item>Test 1</neo-action-menu-item>
+    <neo-action-menu-item>Test 2</neo-action-menu-item>
+  </neo-action-menu>`,
 })
-class TestMenuContextComponent extends MenuContextComponent {}
+class TestActionMenuComponent extends ActionMenuComponent {}
 
-describe('MenuContextComponent', () => {
-  let component: MenuContextComponent;
-  let fixture: ComponentFixture<MenuContextComponent>;
+describe('ActionMenuComponent', () => {
+  let component: ActionMenuComponent;
+  let fixture: ComponentFixture<ActionMenuComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe('MenuContextComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MenuContextComponent);
+    fixture = TestBed.createComponent(ActionMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MenuContextComponent } from '../menu-context.component';
-import { ItemMenuContextComponent } from './item-menu-context.component';
+import { ActionMenuComponent } from '../action-menu.component';
+import { ActionMenuItemComponent } from './action-menu-item.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { MenuContextModule } from '../menu-context.module';
+import { MenuContextModule } from '../action-menu.module';
 
-describe('ItemMenuContextComponent', () => {
-  let component: ItemMenuContextComponent;
-  let fixture: ComponentFixture<ItemMenuContextComponent>;
+describe('ActionMenuItemComponent', () => {
+  let component: ActionMenuItemComponent;
+  let fixture: ComponentFixture<ActionMenuItemComponent>;
   let e: Event;
 
   beforeEach(async () => {
@@ -19,12 +19,12 @@ describe('ItemMenuContextComponent', () => {
         TranslateModule.forRoot(),
         OverlayModule
       ],
-      providers: [MenuContextComponent],
+      providers: [ActionMenuComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ItemMenuContextComponent);
+    fixture = TestBed.createComponent(ActionMenuItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

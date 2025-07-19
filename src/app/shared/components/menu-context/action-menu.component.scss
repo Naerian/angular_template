@@ -5,7 +5,7 @@
   display: flex;
 }
 
-.menu-context {
+.action-menu {
   @include flex-col-center;
   border: calc(#{$border-width-base} / 2) solid var(--border-field-color);
   background-color: var(--bg-field-color);
@@ -16,7 +16,7 @@
   max-width: 280px;
   border-radius: $border-radius-md;
 
-  &__item-menu {
+  &__item {
     @include flex-row-center;
     @include component-size(s);
     @include transition(background-color 0.2s ease, color 0.2s ease);

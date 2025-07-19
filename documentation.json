@@ -10675,15 +10675,15 @@
       "templateData": "<div\r\n  class=\"neo-input-password\"\r\n  [class.neo-input-password--disabled]=\"_disabled()\"\r\n>\r\n  @if (label) {\r\n    <label\r\n      class=\"neo-input-password__label\"\r\n      [for]=\"id\"\r\n      [id]=\"labelId()\"\r\n      [class.neo-input-password__label--required]=\"required\"\r\n    >\r\n      <span [innerHtml]=\"label\"></span>\r\n    </label>\r\n  }\r\n  <div class=\"neo-input-password__wrapper\">\r\n    <input\r\n      #inputPassword=\"ngModel\"\r\n      class=\"neo-input-password__wrapper__field size-{{ inputSize }}\"\r\n      [class.neo-input-password__wrapper__field--has-error]=\"\r\n        hasErrors() ||\r\n        (inputPassword?.errors &&\r\n          (inputPassword?.dirty || inputPassword?.touched)) ||\r\n        false\r\n      \"\r\n      type=\"{{ show() ? 'text' : 'password' }}\"\r\n      (input)=\"onInput(inputPassword.value)\"\r\n      (blur)=\"onBlur()\"\r\n      [(ngModel)]=\"value\"\r\n      [attr.id]=\"id\"\r\n      [attr.autofocus]=\"autofocus\"\r\n      [attr.aria-disabled]=\"_disabled()\"\r\n      [attr.aria-readonly]=\"readonly\"\r\n      [attr.aria-label]=\"placeholder\"\r\n      [attr.aria-labelledby]=\"labelId()\"\r\n      [readonly]=\"readonly\"\r\n      [disabled]=\"_disabled()\"\r\n      [attr.required]=\"required\"\r\n      [attr.aria-required]=\"required\"\r\n      [attr.placeholder]=\"placeholder\"\r\n      [attr.size]=\"size\"\r\n      [attr.minlength]=\"minlength\"\r\n      [attr.maxlength]=\"maxlength\"\r\n      autocomplete=\"new-password\"\r\n      [title]=\"label\"\r\n    />\r\n    @if (!_disabled()) {\r\n      <div\r\n        class=\"neo-input-password__wrapper__icon-show\"\r\n        [title]=\"\r\n          (show() ? 'app.hide_password' : 'app.show_password') | translate\r\n        \"\r\n        (click)=\"togglePassword($event)\"\r\n      >\r\n        <i\r\n          [ngClass]=\"{ 'ri-eye-off-fill': show(), 'ri-eye-fill': !show() }\"\r\n        ></i>\r\n      </div>\r\n    }\r\n  </div>\r\n</div>\r\n"
     },
     {
-      "name": "ItemMenuContextComponent",
-      "id": "component-ItemMenuContextComponent-fbbe38797eb3c091d05e682d8bcdeb7ea2a2add458726277177ff640e36129b3f7e4251be26294a0a418d5e45c5edf760b785baaed9026610e8433df9179ee12",
+      "name": "ActionMenuItemComponent",
+      "id": "component-ActionMenuItemComponent-fbbe38797eb3c091d05e682d8bcdeb7ea2a2add458726277177ff640e36129b3f7e4251be26294a0a418d5e45c5edf760b785baaed9026610e8433df9179ee12",
       "file": "src/app/shared/components/menu-context/item-menu-context/item-menu-context.component.ts",
       "encapsulation": [],
       "entryComponents": [],
       "inputs": [],
       "outputs": [],
       "providers": [],
-      "selector": "neo-item-menu-context",
+      "selector": "neo-action-menu-item",
       "styleUrls": ["./item-menu-context.component.scss"],
       "styles": [],
       "templateUrl": ["./item-menu-context.component.html"],
@@ -10851,10 +10851,10 @@
       "hostListeners": [],
       "standalone": false,
       "imports": [],
-      "description": "<p>neo-item-menu-context\nComponente para crear un item de un menú contextual en el componente <code>neo-menu-context</code>.</p>\n<b>Example :</b><div><pre class=\"line-numbers\"><code class=\"language-html\">&lt;neo-menu-context [icon]=&quot;&#39;ri-more-2-fill&#39;&quot; [size]=&quot;&#39;xm&#39;&quot; [title]=&quot;&#39;Título&#39;&quot;&gt;\n   &lt;neo-item-menu-context [title]=&quot;&#39;Título diferente al contenido&#39;&quot;&quot;&gt;Test 1&lt;/neo-item-menu-context&gt;\n   &lt;neo-item-menu-context [label]=&quot;&#39;Texto del item&#39;&quot; [icon]=&quot;&#39;icono-del-item&#39;&quot;&gt;&lt;/neo-item-menu-context&gt;\n   &lt;neo-item-menu-context&gt;Test 2&lt;/neo-item-menu-context&gt;\n&lt;/neo-menu-context&gt;</code></pre></div>",
-      "rawdescription": "\n\nneo-item-menu-context\nComponente para crear un item de un menú contextual en el componente `neo-menu-context`.\n```html\n<neo-menu-context [icon]=\"'ri-more-2-fill'\" [size]=\"'xm'\" [title]=\"'Título'\">\n   <neo-item-menu-context [title]=\"'Título diferente al contenido'\"\">Test 1</neo-item-menu-context>\n   <neo-item-menu-context [label]=\"'Texto del item'\" [icon]=\"'icono-del-item'\"></neo-item-menu-context>\n   <neo-item-menu-context>Test 2</neo-item-menu-context>\n</neo-menu-context>\n```",
+      "description": "<p>neo-action-menu-item\nComponente para crear un item de un menú contextual en el componente <code>neo-action-menu</code>.</p>\n<b>Example :</b><div><pre class=\"line-numbers\"><code class=\"language-html\">&lt;neo-action-menu [icon]=&quot;&#39;ri-more-2-fill&#39;&quot; [size]=&quot;&#39;xm&#39;&quot; [title]=&quot;&#39;Título&#39;&quot;&gt;\n   &lt;neo-action-menu-item [title]=&quot;&#39;Título diferente al contenido&#39;&quot;&quot;&gt;Test 1&lt;/neo-action-menu-item&gt;\n   &lt;neo-action-menu-item [label]=&quot;&#39;Texto del item&#39;&quot; [icon]=&quot;&#39;icono-del-item&#39;&quot;&gt;&lt;/neo-action-menu-item&gt;\n   &lt;neo-action-menu-item&gt;Test 2&lt;/neo-action-menu-item&gt;\n&lt;/neo-action-menu&gt;</code></pre></div>",
+      "rawdescription": "\n\nneo-action-menu-item\nComponente para crear un item de un menú contextual en el componente `neo-action-menu`.\n```html\n<neo-action-menu [icon]=\"'ri-more-2-fill'\" [size]=\"'xm'\" [title]=\"'Título'\">\n   <neo-action-menu-item [title]=\"'Título diferente al contenido'\"\">Test 1</neo-action-menu-item>\n   <neo-action-menu-item [label]=\"'Texto del item'\" [icon]=\"'icono-del-item'\"></neo-action-menu-item>\n   <neo-action-menu-item>Test 2</neo-action-menu-item>\n</neo-action-menu>\n```",
       "type": "component",
-      "sourceCode": "import { Component, Output, EventEmitter, ElementRef, ViewChild, Input, WritableSignal, signal } from '@angular/core';\r\nimport { MenuContextComponent } from '../menu-context.component';\r\n\r\n/**\r\n * @name\r\n * neo-item-menu-context\r\n * @description\r\n * Componente para crear un item de un menú contextual en el componente `neo-menu-context`.\r\n * @example\r\n * <neo-menu-context [icon]=\"'ri-more-2-fill'\" [size]=\"'xm'\" [title]=\"'Título'\">\r\n *    <neo-item-menu-context [title]=\"'Título diferente al contenido'\"\">Test 1</neo-item-menu-context>\r\n *    <neo-item-menu-context [label]=\"'Texto del item'\" [icon]=\"'icono-del-item'\"></neo-item-menu-context>\r\n *    <neo-item-menu-context>Test 2</neo-item-menu-context>\r\n * </neo-menu-context>\r\n */\r\n@Component({\r\n  selector: 'neo-item-menu-context',\r\n  templateUrl: './item-menu-context.component.html',\r\n  styleUrls: ['./item-menu-context.component.scss'],\r\n})\r\nexport class ItemMenuContextComponent {\r\n\r\n  @ViewChild('itemMenuContent') itemMenuContent!: ElementRef;\r\n\r\n  /**\r\n   * Label para darle nombre al item del menú en caso de no utilizar el contenido `ng-content` para ello\r\n   */\r\n  @Input() label: string = '';\r\n\r\n  /**\r\n   * Si hemos utilizado `label` para mostrar texto podemos asignarle también un icono\r\n   */\r\n  @Input() icon: string = '';\r\n\r\n  _title: WritableSignal<string> = signal('');\r\n  get title(): string {\r\n    return this._title();\r\n  }\r\n\r\n  /**\r\n   * Título que recibirá el item si éste no consta de un `label`\r\n   */\r\n  @Input() set title(title: string) {\r\n    this._title.set(title);\r\n  }\r\n\r\n  @Output() click: EventEmitter<any> = new EventEmitter();\r\n\r\n  constructor(\r\n    private menuContextParent: MenuContextComponent,\r\n  ) { }\r\n\r\n  /**\r\n   * Trigger al hacer click en el item del menú que emite el evento `click`\r\n   * @param {Event} event\r\n   */\r\n  onClickItem(event: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this.menuContextParent.close(); // Cerramos el menú padre\r\n    this.click.emit(event);\r\n  }\r\n\r\n  /**\r\n   * Función que se ejecuta después de que el componente se haya inicializado\r\n   */\r\n  ngAfterViewInit(): void {\r\n    if (this._title() === '' || this._title().length === 0 && this.label !== '')\r\n      this._title.set(this.label);\r\n    else {\r\n      if (this._title() === '' || this._title().length === 0)\r\n        this._title.set(this.itemMenuContent.nativeElement.innerHTML.replace(/(<([^>]+)>)/gi, \"\"));\r\n    }\r\n  }\r\n}\r\n",
+      "sourceCode": "import { Component, Output, EventEmitter, ElementRef, ViewChild, Input, WritableSignal, signal } from '@angular/core';\r\nimport { ActionMenuComponent } from '../menu-context.component';\r\n\r\n/**\r\n * @name\r\n * neo-action-menu-item\r\n * @description\r\n * Componente para crear un item de un menú contextual en el componente `neo-action-menu`.\r\n * @example\r\n * <neo-action-menu [icon]=\"'ri-more-2-fill'\" [size]=\"'xm'\" [title]=\"'Título'\">\r\n *    <neo-action-menu-item [title]=\"'Título diferente al contenido'\"\">Test 1</neo-action-menu-item>\r\n *    <neo-action-menu-item [label]=\"'Texto del item'\" [icon]=\"'icono-del-item'\"></neo-action-menu-item>\r\n *    <neo-action-menu-item>Test 2</neo-action-menu-item>\r\n * </neo-action-menu>\r\n */\r\n@Component({\r\n  selector: 'neo-action-menu-item',\r\n  templateUrl: './item-menu-context.component.html',\r\n  styleUrls: ['./item-menu-context.component.scss'],\r\n})\r\nexport class ActionMenuItemComponent {\r\n\r\n  @ViewChild('itemMenuContent') itemMenuContent!: ElementRef;\r\n\r\n  /**\r\n   * Label para darle nombre al item del menú en caso de no utilizar el contenido `ng-content` para ello\r\n   */\r\n  @Input() label: string = '';\r\n\r\n  /**\r\n   * Si hemos utilizado `label` para mostrar texto podemos asignarle también un icono\r\n   */\r\n  @Input() icon: string = '';\r\n\r\n  _title: WritableSignal<string> = signal('');\r\n  get title(): string {\r\n    return this._title();\r\n  }\r\n\r\n  /**\r\n   * Título que recibirá el item si éste no consta de un `label`\r\n   */\r\n  @Input() set title(title: string) {\r\n    this._title.set(title);\r\n  }\r\n\r\n  @Output() click: EventEmitter<any> = new EventEmitter();\r\n\r\n  constructor(\r\n    private menuContextParent: ActionMenuComponent,\r\n  ) { }\r\n\r\n  /**\r\n   * Trigger al hacer click en el item del menú que emite el evento `click`\r\n   * @param {Event} event\r\n   */\r\n  onClickItem(event: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this.menuContextParent.close(); // Cerramos el menú padre\r\n    this.click.emit(event);\r\n  }\r\n\r\n  /**\r\n   * Función que se ejecuta después de que el componente se haya inicializado\r\n   */\r\n  ngAfterViewInit(): void {\r\n    if (this._title() === '' || this._title().length === 0 && this.label !== '')\r\n      this._title.set(this.label);\r\n    else {\r\n      if (this._title() === '' || this._title().length === 0)\r\n        this._title.set(this.itemMenuContent.nativeElement.innerHTML.replace(/(<([^>]+)>)/gi, \"\"));\r\n    }\r\n  }\r\n}\r\n",
       "assetsDirs": [],
       "styleUrlsData": [
         {
@@ -10871,7 +10871,7 @@
         "args": [
           {
             "name": "menuContextParent",
-            "type": "MenuContextComponent",
+            "type": "ActionMenuComponent",
             "deprecated": false,
             "deprecationMessage": ""
           }
@@ -10880,7 +10880,7 @@
         "jsdoctags": [
           {
             "name": "menuContextParent",
-            "type": "MenuContextComponent",
+            "type": "ActionMenuComponent",
             "deprecated": false,
             "deprecationMessage": "",
             "tagName": {
@@ -11075,15 +11075,15 @@
       "templateData": "<div class=\"logo\">\r\n  @switch (size) {\r\n    @case (\"m\") {\r\n      <img [src]=\"logo\" alt=\"logo\" />\r\n    }\r\n    @default {\r\n      <img [src]=\"logoSmall\" alt=\"logo\" />\r\n    }\r\n  }\r\n</div>\r\n"
     },
     {
-      "name": "MenuContextComponent",
-      "id": "component-MenuContextComponent-eaf1981e809313cbcc9e2c6b1cf0f304361f3dcc352fda0d500425ef39c49c462428366711e0ee4aadc1e8c4e9402370663f1a630ce5b1e760c051e9464b5692",
+      "name": "ActionMenuComponent",
+      "id": "component-ActionMenuComponent-eaf1981e809313cbcc9e2c6b1cf0f304361f3dcc352fda0d500425ef39c49c462428366711e0ee4aadc1e8c4e9402370663f1a630ce5b1e760c051e9464b5692",
       "file": "src/app/shared/components/menu-context/menu-context.component.ts",
       "encapsulation": [],
       "entryComponents": [],
       "inputs": [],
       "outputs": [],
       "providers": [],
-      "selector": "neo-menu-context",
+      "selector": "neo-action-menu",
       "styleUrls": ["./menu-context.component.scss"],
       "styles": [],
       "templateUrl": ["./menu-context.component.html"],
@@ -11149,7 +11149,7 @@
       "outputsClass": [],
       "propertiesClass": [
         {
-          "name": "isMenuContextOpened",
+          "name": "isactionMenuOpened",
           "defaultValue": "signal(false)",
           "deprecated": false,
           "deprecationMessage": "",
@@ -11182,7 +11182,7 @@
           "description": "<p>Función para cerrar el menú contextual</p>\n"
         },
         {
-          "name": "toggleMenuContext",
+          "name": "toggleActionMenu",
           "args": [
             {
               "name": "event",
@@ -11258,10 +11258,10 @@
       "hostListeners": [],
       "standalone": false,
       "imports": [],
-      "description": "<p>neo-menu-context\nComponente para crear un menú contextual junto con el componente <code>neo-item-menu-context</code>.</p>\n<b>Example :</b><div><pre class=\"line-numbers\"><code class=\"language-html\">&lt;neo-menu-context [icon]=&quot;&#39;ri-more-2-fill&#39;&quot; [size]=&quot;&#39;xm&#39;&quot; [title]=&quot;&#39;Título&#39;&quot;&gt;\n   &lt;neo-item-menu-context [title]=&#39;Título diferente al contenido&#39;&gt;Test 1&lt;/neo-item-menu-context&gt;\n   &lt;neo-item-menu-context&gt;Test 2&lt;/neo-item-menu-context&gt;\n&lt;/neo-menu-context&gt;</code></pre></div>",
-      "rawdescription": "\n\nneo-menu-context\nComponente para crear un menú contextual junto con el componente `neo-item-menu-context`.\n```html\n<neo-menu-context [icon]=\"'ri-more-2-fill'\" [size]=\"'xm'\" [title]=\"'Título'\">\n   <neo-item-menu-context [title]='Título diferente al contenido'>Test 1</neo-item-menu-context>\n   <neo-item-menu-context>Test 2</neo-item-menu-context>\n</neo-menu-context>\n```",
+      "description": "<p>neo-action-menu\nComponente para crear un menú contextual junto con el componente <code>neo-action-menu-item</code>.</p>\n<b>Example :</b><div><pre class=\"line-numbers\"><code class=\"language-html\">&lt;neo-action-menu [icon]=&quot;&#39;ri-more-2-fill&#39;&quot; [size]=&quot;&#39;xm&#39;&quot; [title]=&quot;&#39;Título&#39;&quot;&gt;\n   &lt;neo-action-menu-item [title]=&#39;Título diferente al contenido&#39;&gt;Test 1&lt;/neo-action-menu-item&gt;\n   &lt;neo-action-menu-item&gt;Test 2&lt;/neo-action-menu-item&gt;\n&lt;/neo-action-menu&gt;</code></pre></div>",
+      "rawdescription": "\n\nneo-action-menu\nComponente para crear un menú contextual junto con el componente `neo-action-menu-item`.\n```html\n<neo-action-menu [icon]=\"'ri-more-2-fill'\" [size]=\"'xm'\" [title]=\"'Título'\">\n   <neo-action-menu-item [title]='Título diferente al contenido'>Test 1</neo-action-menu-item>\n   <neo-action-menu-item>Test 2</neo-action-menu-item>\n</neo-action-menu>\n```",
       "type": "component",
-      "sourceCode": "import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';\r\nimport { Component, Input, WritableSignal, signal } from '@angular/core';\r\nimport { ButtonColor, ButtonSize } from '../button/models/button.entity';\r\n\r\n/**\r\n * @name\r\n * neo-menu-context\r\n * @description\r\n * Componente para crear un menú contextual junto con el componente `neo-item-menu-context`.\r\n * @example\r\n * <neo-menu-context [icon]=\"'ri-more-2-fill'\" [size]=\"'xm'\" [title]=\"'Título'\">\r\n *    <neo-item-menu-context [title]='Título diferente al contenido'>Test 1</neo-item-menu-context>\r\n *    <neo-item-menu-context>Test 2</neo-item-menu-context>\r\n * </neo-menu-context>\r\n */\r\n@Component({\r\n  selector: 'neo-menu-context',\r\n  templateUrl: './menu-context.component.html',\r\n  styleUrls: ['./menu-context.component.scss'],\r\n})\r\nexport class MenuContextComponent {\r\n\r\n  /**\r\n   * Input que recibe el icono del menú, por defecto es 'ri-more-2-fill'\r\n   */\r\n  @Input() icon: string = 'ri-more-2-fill';\r\n\r\n  /**\r\n   * Input que recibe el color del icono del menú, por defecto es 'primary'\r\n   */\r\n  @Input() color: ButtonColor = 'primary';\r\n\r\n  /**\r\n   * Input que recibe el tamaño del icono del menú, por defecto es 'xm'\r\n   */\r\n  @Input() size: ButtonSize = 'xm';\r\n\r\n  /**\r\n   * Input que recibe el color del icono del menú, por defecto es 'primary'\r\n   */\r\n  @Input() transparent: boolean = true;\r\n\r\n  /**\r\n   * Input que recibe el título del menú\r\n   */\r\n  @Input() title: string = '';\r\n\r\n  isMenuContextOpened: WritableSignal<boolean> = signal(false);\r\n  scrollStrategy: ScrollStrategy;\r\n\r\n  constructor(\r\n    scrollStrategyOptions: ScrollStrategyOptions\r\n  ) {\r\n    this.scrollStrategy = scrollStrategyOptions.close();\r\n  }\r\n\r\n  /**\r\n   * Función para cerrar el menú contextual\r\n   */\r\n  close() {\r\n    this.isMenuContextOpened.set(false);\r\n  }\r\n\r\n  /**\r\n   * Función para abrir o cerrar el menú contextual\r\n   * @param {Event} event\r\n   */\r\n  toggleMenuContext(event: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this.isMenuContextOpened.set(!this.isMenuContextOpened());\r\n  }\r\n\r\n}\r\n",
+      "sourceCode": "import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';\r\nimport { Component, Input, WritableSignal, signal } from '@angular/core';\r\nimport { ButtonColor, ButtonSize } from '../button/models/button.entity';\r\n\r\n/**\r\n * @name\r\n * neo-action-menu\r\n * @description\r\n * Componente para crear un menú contextual junto con el componente `neo-action-menu-item`.\r\n * @example\r\n * <neo-action-menu [icon]=\"'ri-more-2-fill'\" [size]=\"'xm'\" [title]=\"'Título'\">\r\n *    <neo-action-menu-item [title]='Título diferente al contenido'>Test 1</neo-action-menu-item>\r\n *    <neo-action-menu-item>Test 2</neo-action-menu-item>\r\n * </neo-action-menu>\r\n */\r\n@Component({\r\n  selector: 'neo-action-menu',\r\n  templateUrl: './menu-context.component.html',\r\n  styleUrls: ['./menu-context.component.scss'],\r\n})\r\nexport class ActionMenuComponent {\r\n\r\n  /**\r\n   * Input que recibe el icono del menú, por defecto es 'ri-more-2-fill'\r\n   */\r\n  @Input() icon: string = 'ri-more-2-fill';\r\n\r\n  /**\r\n   * Input que recibe el color del icono del menú, por defecto es 'primary'\r\n   */\r\n  @Input() color: ButtonColor = 'primary';\r\n\r\n  /**\r\n   * Input que recibe el tamaño del icono del menú, por defecto es 'xm'\r\n   */\r\n  @Input() size: ButtonSize = 'xm';\r\n\r\n  /**\r\n   * Input que recibe el color del icono del menú, por defecto es 'primary'\r\n   */\r\n  @Input() transparent: boolean = true;\r\n\r\n  /**\r\n   * Input que recibe el título del menú\r\n   */\r\n  @Input() title: string = '';\r\n\r\n  isactionMenuOpened: WritableSignal<boolean> = signal(false);\r\n  scrollStrategy: ScrollStrategy;\r\n\r\n  constructor(\r\n    scrollStrategyOptions: ScrollStrategyOptions\r\n  ) {\r\n    this.scrollStrategy = scrollStrategyOptions.close();\r\n  }\r\n\r\n  /**\r\n   * Función para cerrar el menú contextual\r\n   */\r\n  close() {\r\n    this.isactionMenuOpened.set(false);\r\n  }\r\n\r\n  /**\r\n   * Función para abrir o cerrar el menú contextual\r\n   * @param {Event} event\r\n   */\r\n  toggleActionMenu(event: Event) {\r\n    event?.preventDefault();\r\n    event?.stopPropagation();\r\n    this.isactionMenuOpened.set(!this.isactionMenuOpened());\r\n  }\r\n\r\n}\r\n",
       "assetsDirs": [],
       "styleUrlsData": [
         {
@@ -11297,7 +11297,7 @@
         ]
       },
       "extends": [],
-      "templateData": "<neo-button\r\n  mode=\"icon\"\r\n  [color]=\"color\"\r\n  [size]=\"size\"\r\n  [transparent]=\"transparent\"\r\n  (click)=\"toggleMenuContext($event)\"\r\n  [title]=\"title\"\r\n  cdkOverlayOrigin\r\n  #menuContext=\"cdkOverlayOrigin\"\r\n>\r\n  <i [class]=\"icon\"></i>\r\n</neo-button>\r\n\r\n<ng-template\r\n  cdkConnectedOverlay\r\n  [cdkConnectedOverlayOrigin]=\"menuContext\"\r\n  [cdkConnectedOverlayOpen]=\"isMenuContextOpened()\"\r\n  [cdkConnectedOverlayScrollStrategy]=\"scrollStrategy\"\r\n  cdkConnectedOverlayBackdropClass=\"cdk-overlay-transparent-backdrop\"\r\n  [cdkConnectedOverlayHasBackdrop]=\"true\"\r\n  (detach)=\"close()\"\r\n  (backdropClick)=\"close()\"\r\n>\r\n  <div\r\n    class=\"menu-context\"\r\n    (clickOutside)=\"close()\"\r\n    (escapeKey)=\"close()\"\r\n    cdkTrapFocus\r\n    [cdkTrapFocusAutoCapture]=\"true\"\r\n  >\r\n    <ng-content></ng-content>\r\n  </div>\r\n</ng-template>\r\n"
+      "templateData": "<neo-button\r\n  mode=\"icon\"\r\n  [color]=\"color\"\r\n  [size]=\"size\"\r\n  [transparent]=\"transparent\"\r\n  (click)=\"toggleActionMenu($event)\"\r\n  [title]=\"title\"\r\n  cdkOverlayOrigin\r\n  #menuContext=\"cdkOverlayOrigin\"\r\n>\r\n  <i [class]=\"icon\"></i>\r\n</neo-button>\r\n\r\n<ng-template\r\n  cdkConnectedOverlay\r\n  [cdkConnectedOverlayOrigin]=\"menuContext\"\r\n  [cdkConnectedOverlayOpen]=\"isactionMenuOpened()\"\r\n  [cdkConnectedOverlayScrollStrategy]=\"scrollStrategy\"\r\n  cdkConnectedOverlayBackdropClass=\"cdk-overlay-transparent-backdrop\"\r\n  [cdkConnectedOverlayHasBackdrop]=\"true\"\r\n  (detach)=\"close()\"\r\n  (backdropClick)=\"close()\"\r\n>\r\n  <div\r\n    class=\"menu-context\"\r\n    (clickOutside)=\"close()\"\r\n    (escapeKey)=\"close()\"\r\n    cdkTrapFocus\r\n    [cdkTrapFocusAutoCapture]=\"true\"\r\n  >\r\n    <ng-content></ng-content>\r\n  </div>\r\n</ng-template>\r\n"
     },
     {
       "name": "ModalDialogComponent",
@@ -17676,7 +17676,7 @@
       "deprecated": false,
       "file": "src/app/shared/components/menu-context/menu-context.module.ts",
       "methods": [],
-      "sourceCode": "import { NgModule } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\nimport { A11yModule } from '@angular/cdk/a11y';\r\nimport { OverlayModule } from '@angular/cdk/overlay';\r\nimport { TranslateModule } from '@ngx-translate/core';\r\nimport { ClickOutsideDirective } from '@shared/directives/click-outside.directive';\r\nimport { ClickableDirective } from '@shared/directives/clickable.directive';\r\nimport { EscapeKeyDirective } from '@shared/directives/escape-key.directive';\r\nimport { ButtonComponent } from '../button/button.component';\r\nimport { MenuContextComponent } from './menu-context.component';\r\nimport { ItemMenuContextComponent } from './item-menu-context/item-menu-context.component';\r\n\r\n@NgModule({\r\n  declarations: [\r\n    MenuContextComponent,\r\n    ItemMenuContextComponent,\r\n  ],\r\n  imports: [\r\n    CommonModule,\r\n    ClickableDirective,\r\n    ClickOutsideDirective,\r\n    EscapeKeyDirective,\r\n    ButtonComponent,\r\n    TranslateModule,\r\n    A11yModule,\r\n    OverlayModule\r\n  ],\r\n  exports: [\r\n    MenuContextComponent,\r\n    ItemMenuContextComponent\r\n  ]\r\n})\r\nexport class MenuContextModule { }\r\n",
+      "sourceCode": "import { NgModule } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\nimport { A11yModule } from '@angular/cdk/a11y';\r\nimport { OverlayModule } from '@angular/cdk/overlay';\r\nimport { TranslateModule } from '@ngx-translate/core';\r\nimport { ClickOutsideDirective } from '@shared/directives/click-outside.directive';\r\nimport { ClickableDirective } from '@shared/directives/clickable.directive';\r\nimport { EscapeKeyDirective } from '@shared/directives/escape-key.directive';\r\nimport { ButtonComponent } from '../button/button.component';\r\nimport { ActionMenuComponent } from './menu-context.component';\r\nimport { ActionMenuItemComponent } from './item-menu-context/item-menu-context.component';\r\n\r\n@NgModule({\r\n  declarations: [\r\n    ActionMenuComponent,\r\n    ActionMenuItemComponent,\r\n  ],\r\n  imports: [\r\n    CommonModule,\r\n    ClickableDirective,\r\n    ClickOutsideDirective,\r\n    EscapeKeyDirective,\r\n    ButtonComponent,\r\n    TranslateModule,\r\n    A11yModule,\r\n    OverlayModule\r\n  ],\r\n  exports: [\r\n    ActionMenuComponent,\r\n    ActionMenuItemComponent\r\n  ]\r\n})\r\nexport class MenuContextModule { }\r\n",
       "children": [
         {
           "type": "providers",
@@ -17686,10 +17686,10 @@
           "type": "declarations",
           "elements": [
             {
-              "name": "ItemMenuContextComponent"
+              "name": "ActionMenuItemComponent"
             },
             {
-              "name": "MenuContextComponent"
+              "name": "ActionMenuComponent"
             }
           ]
         },
@@ -17714,10 +17714,10 @@
           "type": "exports",
           "elements": [
             {
-              "name": "ItemMenuContextComponent"
+              "name": "ActionMenuItemComponent"
             },
             {
-              "name": "MenuContextComponent"
+              "name": "ActionMenuComponent"
             }
           ]
         },
@@ -19912,7 +19912,7 @@
         "filePath": "src/app/shared/components/menu-context/item-menu-context/item-menu-context.component.ts",
         "type": "component",
         "linktype": "component",
-        "name": "ItemMenuContextComponent",
+        "name": "ActionMenuItemComponent",
         "coveragePercent": 60,
         "coverageCount": "6/10",
         "status": "good"
@@ -19921,7 +19921,7 @@
         "filePath": "src/app/shared/components/menu-context/menu-context.component.ts",
         "type": "component",
         "linktype": "component",
-        "name": "MenuContextComponent",
+        "name": "ActionMenuComponent",
         "coveragePercent": 72,
         "coverageCount": "8/11",
         "status": "good"

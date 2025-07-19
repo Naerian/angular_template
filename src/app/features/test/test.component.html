@@ -984,26 +984,62 @@
 <hr />
 <neo-card>
   <neo-card-header>
-    <div>Misceláneo</div>
+    <div>Menú de acciones</div>
     <small>
-      Este apartado contiene componentes misceláneos que no encajan en las
-      categorías anteriores. Incluye menús contextuales, toggles de tema, etc...
+      El componente <b>neo-action-menu</b> permite crear menús contextuales
+      que se pueden activar al hacer clic en un icono. Estos menús pueden 
+      contener una lista de acciones o elementos que el usuario puede seleccionar.
+      El componente <b>neo-action-menu-item</b> se utiliza para definir cada
+      elemento del menú contextual. Los menús pueden ser estáticos o dinámicos,
+      y pueden incluir iconos, etiquetas y acciones personalizadas.
     </small>
   </neo-card-header>
   <div class="row">
     <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
-      <label>Menú contextual</label>
-      <neo-menu-context>
-        <neo-item-menu-context>Test 1</neo-item-menu-context>
-        <neo-item-menu-context>Test 2</neo-item-menu-context>
-        <neo-item-menu-context [disabled]="true"
-          >Test 3 (Deshabilitado)</neo-item-menu-context
-        >
-      </neo-menu-context>
+      <label>Menú contextual con array</label>
+      <neo-action-menu
+        [icon]="'ri-menu-line'"
+        [size]="'m'"
+        [color]="'primary'"
+        [title]="'Opciones de Documento'"
+        [items]="documentActions"
+      ></neo-action-menu>
     </div>
     <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
-      <label>Cambio de tema (claro / oscuro)</label>
-      <neo-theme-toggle></neo-theme-toggle>
+      <label>Menú contextual con iconos y label</label>
+      <neo-action-menu
+        [icon]="'ri-settings-3-line'"
+        [size]="'m'"
+        [color]="'accent'"
+        [title]="'Configuración de Usuario'"
+      >
+        <neo-action-menu-item
+          [icon]="'ri-user-line'"
+          label="Perfil"
+        ></neo-action-menu-item>
+        <neo-action-menu-item
+          [icon]="'ri-lock-line'"
+          label="Cambiar Contraseña"
+        ></neo-action-menu-item>
+        <neo-action-menu-item disabled
+          >Item Deshabilitado</neo-action-menu-item
+        >
+        <neo-action-menu-item>Cerrar Sesión</neo-action-menu-item>
+      </neo-action-menu>
+    </div>
+    <div class="col-12 col-md-12 col-lg-2 mb-2 mt-2">
+      <label>Menú contextual mixto</label>
+      <neo-action-menu
+        [icon]="'ri-dashboard-line'"
+        [size]="'m'"
+        [color]="'warning'"
+        [title]="'Menú Mixto'"
+        [items]="mixedActions"
+      >
+        <neo-action-menu-item
+          label="Elemento Extra Estático"
+        ></neo-action-menu-item>
+      </neo-action-menu>
     </div>
   </div>
 </neo-card>

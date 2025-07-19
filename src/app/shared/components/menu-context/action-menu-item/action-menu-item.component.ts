@@ -11,37 +11,37 @@ import {
   inject,
   AfterViewInit,
 } from '@angular/core';
-import { MenuContextComponent } from '../menu-context.component';
+import { ActionMenuComponent } from '../action-menu.component';
 import { FocusableOption } from '@angular/cdk/a11y';
 import {
-  NEO_ITEMS_MENU_CONTEXT,
-  NEO_MENU_CONTEXT,
-} from '../models/menu-context.model';
+  ACTION_MENU_ITEM,
+  ACTION_MENU,
+} from '../models/action-menu.model';
 
 /**
  * @name
- * neo-item-menu-context
+ * neo-action-menu-item
  * @description
- * Componente para crear un item de un menú contextual en el componente `neo-menu-context`.
+ * Componente para crear un item de un menú contextual en el componente `neo-action-menu`.
  * @example
- * <neo-menu-context [icon]="'ri-more-2-fill'" [size]="'xm'" [title]="'Título'">
- *    <neo-item-menu-context [title]="'Título diferente al contenido'"">Test 1</neo-item-menu-context>
- *    <neo-item-menu-context [label]="'Texto del item'" [icon]="'icono-del-item'"></neo-item-menu-context>
- *    <neo-item-menu-context>Test 2</neo-item-menu-context>
- * </neo-menu-context>
+ * <neo-action-menu [icon]="'ri-more-2-fill'" [size]="'xm'" [title]="'Título'">
+ *    <neo-action-menu-item [title]="'Título diferente al contenido'"">Test 1</neo-action-menu-item>
+ *    <neo-action-menu-item [label]="'Texto del item'" [icon]="'icono-del-item'"></neo-action-menu-item>
+ *    <neo-action-menu-item>Test 2</neo-action-menu-item>
+ * </neo-action-menu>
  */
 @Component({
-  selector: 'neo-item-menu-context',
-  templateUrl: './item-menu-context.component.html',
-  styleUrls: ['./item-menu-context.component.scss'],
+  selector: 'neo-action-menu-item',
+  templateUrl: './action-menu-item.component.html',
+  styleUrls: ['./action-menu-item.component.scss'],
   host: {
     role: 'menuitem',
-    '[attr.id]': 'this.menuContext?.id + "-item"',
+    '[attr.id]': 'this.actionMenu?.id + "-item"',
     '[attr.title]': 'title',
     '[attr.aria-label]': 'title',
     '[attr.aria-disabled]': 'disabled',
-    '[class.menu-context__item-menu]': 'true',
-    '[class.menu-context__item-menu--disabled]': 'disabled',
+    '[class.action-menu__item]': 'true',
+    '[class.action-menu__item--disabled]': 'disabled',
     '[tabindex]': 'disabled ? -1 : 0',
     '(click)': 'onClickItem($event)',
     '(keydown.enter)': 'onClickItem()',
@@ -49,12 +49,12 @@ import {
   },
   providers: [
     {
-      provide: NEO_ITEMS_MENU_CONTEXT,
-      useExisting: ItemMenuContextComponent,
+      provide: ACTION_MENU_ITEM,
+      useExisting: ActionMenuItemComponent,
     },
   ],
 })
-export class ItemMenuContextComponent
+export class ActionMenuItemComponent
   implements AfterViewInit, FocusableOption
 {
   /**
@@ -94,11 +94,11 @@ export class ItemMenuContextComponent
 
   private readonly elementRef = inject(ElementRef);
 
-  // Inyectamos el componente MenuContextComponent para poder acceder a sus propiedades y métodos
-  // desde el componente ItemMenuContextComponent hijo.
-  private readonly menuContext = inject(NEO_MENU_CONTEXT, {
+  // Inyectamos el componente ActionMenuComponent para poder acceder a sus propiedades y métodos
+  // desde el componente ActionMenuItemComponent hijo.
+  private readonly actionMenu = inject(ACTION_MENU, {
     optional: true,
-  }) as MenuContextComponent | null;
+  }) as ActionMenuComponent | null;
 
   /**
    * Función que se ejecuta después de que el componente se haya inicializado
@@ -115,7 +115,7 @@ export class ItemMenuContextComponent
     event?.stopPropagation();
     if (this.disabled) return;
     this.itemClick.emit(event);
-    this.menuContext?.close(event);
+    this.actionMenu?.close(event);
   }
 
   /**
@@ -142,7 +142,7 @@ export class ItemMenuContextComponent
   /**
    * Método para enfocar la opción. Este método es necesario para implementar la interfaz `FocusableOption`
    * en la clase. Se enfoca el elemento nativo de la opción para poder seleccionarla las flechas
-   * del teclado gracias al uso de `FocusKeyManager` en el componente `neo-menu-context`.
+   * del teclado gracias al uso de `FocusKeyManager` en el componente `neo-action-menu`.
    */
   focus() {
     this.elementRef?.nativeElement?.focus();
