@@ -91,7 +91,6 @@ export class ItemMenuContextComponent
   @Output() itemClick: EventEmitter<any> = new EventEmitter();
 
   private _title: WritableSignal<string> = signal('');
-  private _elementRef: ElementRef;
 
   private readonly elementRef = inject(ElementRef);
 
@@ -100,10 +99,6 @@ export class ItemMenuContextComponent
   private readonly menuContext = inject(NEO_MENU_CONTEXT, {
     optional: true,
   }) as MenuContextComponent | null;
-
-  constructor() {
-    this._elementRef = this.elementRef;
-  }
 
   /**
    * Función que se ejecuta después de que el componente se haya inicializado
@@ -135,7 +130,7 @@ export class ItemMenuContextComponent
         this._title.set(this.label);
       } else {
         const innerText =
-          this._elementRef?.nativeElement?.innerHTML?.replace(
+          this.elementRef?.nativeElement?.innerHTML?.replace(
             /(<([^>]+)>)/gi,
             '',
           ) ?? '';
@@ -150,7 +145,7 @@ export class ItemMenuContextComponent
    * del teclado gracias al uso de `FocusKeyManager` en el componente `neo-menu-context`.
    */
   focus() {
-    this._elementRef?.nativeElement?.focus();
+    this.elementRef?.nativeElement?.focus();
   }
 
   /**

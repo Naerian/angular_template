@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { MenuContextComponent } from '../../menu-context.component';
 
 @Injectable({ providedIn: 'root' })
 export class MenuContextManagerService {
@@ -20,7 +21,7 @@ export class MenuContextManagerService {
    * Notifica a todos los suscriptores que un menu-context se ha abierto.
    * @param componentInstance La instancia del componente que se abre.
    */
-  public notifyOpened(componentInstance: any): void {
+  public notifyOpened(componentInstance: MenuContextComponent): void {
     this.menuContextOpenedSource.next(componentInstance);
   }
 }

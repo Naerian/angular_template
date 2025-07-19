@@ -15,7 +15,6 @@ import {
 import { FADE_IN_OUT_SCALE } from '@shared/animations/fade-in-out-scale.animation';
 import { Subject, takeUntil } from 'rxjs';
 import {
-  NEO_ITEMS_MENU_CONTEXT,
   NEO_MENU_CONTEXT,
   OVERLAY_POSITIONS,
 } from './models/menu-context.model';
@@ -96,11 +95,6 @@ export class MenuContextComponent {
   @Input() title: string = '';
 
   /**
-   * Output para notificar si el menú contextual se ha abierto o cerrado.
-   */
-  @Input() isOpened: WritableSignal<boolean> = signal(false);
-
-  /**
    * Input para crear un id único para el menú contextual.
    */
   _id: WritableSignal<string> = signal('');
@@ -114,6 +108,8 @@ export class MenuContextComponent {
   scrollStrategy: ScrollStrategy;
   overlayPositions = OVERLAY_POSITIONS;
 
+  isOpened: WritableSignal<boolean> = signal(false);
+
   // Manager para el control de teclas en las opciones
   private keyManager!: FocusKeyManager<ItemMenuContextComponent>;
 
@@ -123,7 +119,6 @@ export class MenuContextComponent {
   );
 
   private readonly globalConfig = inject(NEOUI_COMPONENT_CONFIG);
-
   private ngUnsubscribe$ = new Subject<void>();
 
   /**
